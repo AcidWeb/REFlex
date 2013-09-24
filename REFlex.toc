@@ -1,7 +1,7 @@
 ## Interface: 40100
 ## Title: REFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds. 
-## Version: 0.9.3.1
+## Version: 0.9.4
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
@@ -11,10 +11,10 @@ Locals\frFR.lua
 Locals\zhTW.lua
 
 Libs\LibStub\LibStub.lua
-
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1-1\LibDataBroker-1.1.lua
-Libs\LibSt\lib-st.xml
-Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.xml
+Libs\LibSt\lib-st.lua
+Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.lua
 libs\LibQTip-1.0\LibQTip-1.0.lua
 
 REFlex.xml

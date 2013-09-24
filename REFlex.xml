@@ -101,6 +101,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$Parent_MMR" justifyH="CENTER" inherits="SystemFont_Huge1">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="235" y="-44" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 				<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
 					<Color r="0.8" g="0.5" b="0" a="1"/>
 					<Anchors>

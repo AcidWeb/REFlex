@@ -103,6 +103,8 @@ function REFlex_LDBTooltipFill(Field)
 		if team5ID ~= nil then
 			_, _, _, _, _, _, _, _, _, _, RENew = GetArenaTeam(team5ID);
 		end
+	elseif Field == "MMR" then
+		RENew = REFSettings["CurrentMMR"];
 	end
 
 	if RENew == nil then
@@ -123,14 +125,13 @@ function REFlex_LDBTooltip(self)
 	local REBGWin, REBGLoss, REArenaWin, REArenaLoss, REKBTotal, REHKTotal, REHealingTotal, REDamageTotal, REKBTop, REHKTop, REHealingTop, REDamageTop = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 	local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
 	local REDatabaseItems, REDatabaseAItems = #REFDatabase, #REFDatabaseA;
-	local _, REFaction = UnitFactionGroup("player");
 
 	for i=1, #REFDatabase do
 		if tonumber(REFDatabase[REDatabaseItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabase[REDatabaseItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabase[REDatabaseItems]["TimeYe"]) ~= RETimeYear then
 			break;
 		end
 
-		if REFaction == REFDatabase[REDatabaseItems]["Winner"] then
+		if RE.Faction == REFDatabase[REDatabaseItems]["Winner"] then
 			REBGWin = REBGWin + 1;
 		else
 			REBGLoss = REBGLoss + 1;
@@ -181,6 +182,8 @@ function REFlex_LDBTooltip(self)
 		REDatabaseAItems = REDatabaseAItems - 1;
 	end
 
+	local REMMRDiff = REFSettings["LastDayStats"]["MMR"] + REFSettings["CurrentMMR"];
+
 	local RETooltip = RE.QTip:Acquire("RELDBToolTip", 3, "RIGHT", "CENTER", "LEFT");
 	local RENormalFont = RETooltip:GetFont();
 	self.tooltip = RETooltip;
@@ -197,6 +200,9 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine();
 	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
 	RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
+	RETooltip:AddLine();
+	RETooltip:AddHeader("", "|cFF74D06C" .. string.gsub(SCORE_TEAM_SKILL, "\n", " ")  .. "|r", "");
+	RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100)|r", "");
 	RETooltip:SetFont(RENormalFont);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
@@ -207,8 +213,8 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine("HK", REHKTotal, REHKTop);
 	RETooltip:AddLine(DAMAGE, REFlex_NumberClean(REDamageTotal), REFlex_NumberClean(REDamageTop));
 	RETooltip:AddLine(SHOW_COMBAT_HEALING, REFlex_NumberClean(REHealingTotal), REFlex_NumberClean(REHealingTop));
-	RETooltip:SetLineColor(15, 1, 1, 1, 0.5);
-	RETooltip:SetLineColor(17, 1, 1, 1, 0.5);
+	RETooltip:SetLineColor(18, 1, 1, 1, 0.5);
+	RETooltip:SetLineColor(20, 1, 1, 1, 0.5);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
 	RETooltip:AddLine();

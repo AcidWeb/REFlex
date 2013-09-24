@@ -332,26 +332,25 @@ end
 function REFlex_WinLoss(Rated, TalentSets, Map)
 	RE.Win = 0;
 	RE.Loss = 0;
-	local REFaction = UnitFactionGroup("player");
 
 	if Map == nil then
 		if TalentSets ~= nil then
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(REFaction, j);
+						REFlex_WinLossI(RE.Faction, j);
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			end
@@ -359,18 +358,18 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
-					REFlex_WinLossI(REFaction, j);
+					REFlex_WinLossI(RE.Faction, j);
 				end
 			end
 		end
@@ -379,19 +378,19 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);
+						REFlex_WinLossI(RE.Faction, j);
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			end
@@ -399,19 +398,19 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);	
+						REFlex_WinLossI(RE.Faction, j);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(REFaction, j);
+						REFlex_WinLossI(RE.Faction, j);
 					end
 				end
 			end
@@ -662,6 +661,9 @@ end
 
 -- String subsection
 function REFlex_ShortMap(MapName)
+	if MapName == nil then
+		MapName = "-";
+	end
 	local MapNameTemp = { strsplit(" ", MapName) };
 	local ShortMapName = "";
 	for j=1, #MapNameTemp do
@@ -785,12 +787,57 @@ function REFlex_Tab_NameFilter(self, rowdata)
 	end
 end
 
-function REFlex_TableRatingArena(PlayerTeam, j)
-	if PlayerTeam  == 0 then
-		return REFDatabaseA[j]["GreenTeamRatingChange"];
+function REFlex_TableRatingMMRArena(PlayerTeam, j)
+	local Rating = 0;
+	local MMR = REFDatabaseA[j]["MMRChange"];
+
+	if MMR ~= nil then
+		if MMR > 0 then
+			MMR = " / |cFF00FF00+" .. MMR.. "|r";
+		elseif MMR < 0 then
+			MMR = " / |cFFFF141C" .. MMR.. "|r";
+		end
 	else
-		return REFDatabaseA[j]["GoldTeamRatingChange"];
+		MMR = "";
 	end
+	
+	if PlayerTeam  == 0 then
+		Rating = REFDatabaseA[j]["GreenTeamRatingChange"];
+	else
+		Rating = REFDatabaseA[j]["GoldTeamRatingChange"];
+	end
+
+	if Rating > 0 then
+		Rating = "|cFF00FF00+" .. Rating.. "|r";
+	elseif Rating < 0 then
+		Rating = "|cFFFF141C" .. Rating.. "|r";
+	end
+
+	return Rating .. MMR;
+end
+
+function REFlex_TableRBGRatingMMRColor(Rating, j)
+	local Color = "";
+	
+	if Rating > 0 then
+		Color = "|CFF00FF00+"; 
+	elseif Rating < 0 then
+		Color = "|CFFFF141C"; 
+	end
+
+	local MMR = REFDatabase[j]["MMRChange"];
+
+	if MMR ~= nil then
+		if MMR > 0 then
+			MMR = " / |cFF00FF00+" .. MMR.. "|r";
+		elseif MMR < 0 then
+			MMR = " / |cFFFF141C" .. MMR.. "|r";
+		end
+	else
+		MMR = "";
+	end
+
+	return Color .. Rating .. "|r" .. MMR;
 end
 
 function REFlex_TableTeamArenaTab6(TeamString)
@@ -800,7 +847,7 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	for i=1, (#RETeam - 1) do
 		local REMember = { strsplit("*", RETeam[i]) };
 
-		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:27:27:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
+		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
 	end
 
 	return RETeamLine;
@@ -814,14 +861,14 @@ function REFlex_TableTeamArena(IsEnemy, j)
 
 		for jj=1, #REEnemyID do
 			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][REEnemyID[jj]]["ClassToken"];
-			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
+			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
 		end
 	else
 		local _, _, REFriendNames, REFriendID, Team = REFlex_ArenaTeamHash(j, false);
 
 		for jj=1, #REFriendID do
 			local ClassToken = REFDatabaseA[j][Team .. "Team"][REFriendID[jj]]["ClassToken"];
-			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
+			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
 		end
 	end
 
@@ -835,7 +882,11 @@ function REFlex_TableTeamArenaRating(IsEnemy, j)
 		local _, _, _, _, _, TeamE = REFlex_ArenaTeamHash(j, true);
 
 		if REFDatabaseA[j][TeamE .. "TeamRating"] >= 0 then
-			Line = REFDatabaseA[j][TeamE .. "TeamRating"];
+			if REFDatabaseA[j][TeamE .. "TeamMMR"] ~= nil then
+				Line = REFDatabaseA[j][TeamE .. "TeamRating"] .. " / " .. REFDatabaseA[j][TeamE .. "TeamMMR"];
+			else
+				Line = REFDatabaseA[j][TeamE .. "TeamRating"];
+			end
 		else
 			Line = "-";
 		end
@@ -843,7 +894,11 @@ function REFlex_TableTeamArenaRating(IsEnemy, j)
 		local _, _, _, _, Team = REFlex_ArenaTeamHash(j, false);
 
 		if REFDatabaseA[j][Team .. "TeamRating"] >= 0 then
-			Line = REFDatabaseA[j][Team .. "TeamRating"];
+			if REFDatabaseA[j][Team .. "TeamMMR"] ~= nil then
+				Line = REFDatabaseA[j][Team .. "TeamRating"] .. " / " .. REFDatabaseA[j][Team .. "TeamMMR"];
+			else
+				Line = REFDatabaseA[j][Team .. "TeamRating"];
+			end
 		else
 			Line = "-";
 		end
@@ -894,64 +949,6 @@ function REFlex_TableCheckRated(Rated)
 			["r"] = 1,
 			["g"] = 0,
 			["b"] = 0,
-			["a"] = 1.0,
-		};
-	else
-		return { 
-			["r"] = 1,
-			["g"] = 1,
-			["b"] = 1,
-			["a"] = 1.0,
-		};
-	end
-end
-
-function REFlex_TableRatingColor(Rating)
-	if Rating > 0 then
-		return { 
-			["r"] = 0,
-			["g"] = 1,
-			["b"] = 0,
-			["a"] = 1.0,
-		};
-	elseif Rating < 0 then
-		return { 
-			["r"] = 1,
-			["g"] = 0.08,
-			["b"] = 0.11,
-			["a"] = 1.0,
-		};
-	else
-		return { 
-			["r"] = 1,
-			["g"] = 1,
-			["b"] = 1,
-			["a"] = 1.0,
-		};
-	end
-end
-
-function REFlex_TableRatingColorArena(PlayerTeam, j)
-	local Rating = 0;
-
-	if PlayerTeam  == 0 then
-		Rating = REFDatabaseA[j]["GreenTeamRatingChange"];
-	else
-		Rating = REFDatabaseA[j]["GoldTeamRatingChange"];
-	end
-
-	if Rating > 0 then
-		return { 
-			["r"] = 0,
-			["g"] = 1,
-			["b"] = 0,
-			["a"] = 1.0,
-		};
-	elseif Rating < 0 then
-		return { 
-			["r"] = 1,
-			["g"] = 0.08,
-			["b"] = 0.11,
 			["a"] = 1.0,
 		};
 	else
