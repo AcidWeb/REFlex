@@ -200,12 +200,23 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
 	RETooltip:AddLine();
-	RETooltip:AddHeader("", "|cFF74D06C" .. BATTLEGROUND .. "|r", "");
-	RETooltip:SetFont(GameTooltipHeader);
-	RETooltip:AddLine("|cFF00CC00" .. REBGWin .. "|r", "-", "|cFFCC0000" .. REBGLoss .. "|r");
+	if REFSettings["UNBGSupport"] or REFSettings["RBGSupport"] then
+		RETooltip:AddHeader("", "|cFF74D06C" .. BATTLEGROUND .. "|r", "");
+		RETooltip:SetFont(GameTooltipHeader);
+		RETooltip:AddLine("|cFF00CC00" .. REBGWin .. "|r", "-", "|cFFCC0000" .. REBGLoss .. "|r");
+	else
+		RETooltip:AddHeader("", "", "");
+		RETooltip:SetFont(GameTooltipHeader);
+		RETooltip:AddLine("", "", "");
+	end
 	RETooltip:AddLine();
-	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
-	RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
+	if REFSettings["ArenaSupport"] then
+		RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
+		RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
+	else
+		RETooltip:AddHeader("", "", "");
+		RETooltip:AddLine("", "", "");
+	end
 	RETooltip:AddLine();
 	--RETooltip:AddLine();
 	--RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. " MMR / RBG MMR|r", "");
@@ -403,7 +414,8 @@ function REFlex_UpdateMiniBar()
 	local REMiniBarValue = "";
 	local REMiniBarLDBValue = "";
 	local RESecondTimeBGLDB = false;
-	
+	local REIsRated = IsRatedBattleground();
+
 	if REFSettings["LDBBGMorph"] then
 		RE.LDBBar.text = "|r";
 	end
@@ -424,18 +436,23 @@ function REFlex_UpdateMiniBar()
 					REMiniBarLDBValue = "|cFFFFFFFF" .. REMkillingBlows .. "|r  (" .. REMKBD .. ")";
 				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "HonorKills" then
-				if REMHKD > 0 then
-					REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
-				elseif REMHKD < 0 then
-					REMHKD = "|cFFFF141D" .. REMHKD .. "|r"
-				end
-
-				REMiniBarLabel = "HK:";
-				REMiniBarValue = REMhonorKills .. " (" .. REMHKD .. ")";
-				if REFSettings["LDBShowPlace"] then
-					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REPlaceHK .. ")";
+				if REIsRated then
+					REMiniBarLabel = "";
+					REMiniBarValue = "";
 				else
-					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REMHKD .. ")";
+					if REMHKD > 0 then
+						REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
+					elseif REMHKD < 0 then
+						REMHKD = "|cFFFF141D" .. REMHKD .. "|r"
+					end
+
+					REMiniBarLabel = "HK:";
+					REMiniBarValue = REMhonorKills .. " (" .. REMHKD .. ")";
+					if REFSettings["LDBShowPlace"] then
+						REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REPlaceHK .. ")";
+					else
+						REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REMHKD .. ")";
+					end
 				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "Damage" then
 				if REMDamageD > 0 then
@@ -510,7 +527,9 @@ function REFlex_UpdateMiniBar()
 			end
 			if REFSettings["LDBBGMorph"] then
 				if RESecondTimeBGLDB == false then
-					RE.LDBBar.text = RE.LDBBar.text .. " " .. REMiniBarLabel .. "  " .. REMiniBarLDBValue;
+					if REMiniBarLabel ~= "" and REMiniBarLDBValue ~= "" then
+						RE.LDBBar.text = RE.LDBBar.text .. " " .. REMiniBarLabel .. "  " .. REMiniBarLDBValue;
+					end
 					RESecondTimeBGLDB = true;
 				else
 					RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |r" .. REMiniBarLabel .. "  " .. REMiniBarLDBValue;
