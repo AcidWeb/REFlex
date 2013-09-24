@@ -3,6 +3,27 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update15()
+	local RETempLocalClasses, RELocalClasses = {}, {};
+	FillLocalizedClassList(RETempLocalClasses, false)
+	for token, localizedName in pairs(RETempLocalClasses) do
+		RELocalClasses[localizedName] = token;
+	end
+	RETempLocalClasses = {};
+	FillLocalizedClassList(RETempLocalClasses, true)
+	for token, localizedName in pairs(RETempLocalClasses) do
+		RELocalClasses[localizedName] = token;
+	end
+
+	for i=1, #REFDatabase do
+		if REFDatabase[i]["IsRated"] == true and REFDatabase[i]["RBGAllianceTeam"] ~= nil then
+			for k=1, #REFDatabase[i]["RBGAllianceTeam"] do
+				REFDatabase[i]["RBGAllianceTeam"][k]["classToken"] = RELocalClasses[REFDatabase[i]["RBGAllianceTeam"][k]["class"]];
+			end
+		end
+	end
+end
+
 function REFlex_Update14()
 	REFSettings["AllowQuery"] = true;
 end

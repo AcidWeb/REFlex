@@ -17,9 +17,9 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 15;
-RE.AddonVersion = "v0.9.6";
-RE.AddonVersionCheck = 960;
+RE.DataVersion = 16;
+RE.AddonVersion = "v0.9.6.1";
+RE.AddonVersionCheck = 961;
 
 RE.Debug = 0;
 
@@ -294,6 +294,8 @@ SLASH_REFLEX1, SLASH_REFLEX2 = "/ref", "/reflex";
 -- *** Event & initialisation functions
 
 function REFlex_OnLoad(self)
+	REFlex_LoadLDB();
+
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	self:RegisterEvent("ADDON_LOADED");
@@ -667,26 +669,33 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 15 then -- 0.9.6
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
 			REFlex_Update1112();	
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFlex_Update10();	
 			REFlex_Update1112();
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
 			REFlex_Update89();
 			REFlex_Update10();
 			REFlex_Update1112();
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 7 then -- 0.9
 			REFlex_Update7();
 			REFlex_Update89();
@@ -694,6 +703,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update1112();
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
 			REFlex_Update6();	
 			REFlex_Update7();
@@ -702,6 +712,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update1112();
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
 			REFlex_UpdateOld();	
 			REFlex_Update6();
@@ -711,13 +722,15 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update1112();
 			REFlex_Update13();
 			REFlex_Update14();
+			REFlex_Update15();
 		end
 		REFSettings["Version"] = RE.DataVersion;
 		---
 
 		RegisterAddonMessagePrefix("REFlex");
-		SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
-		REFlex_LoadLDB();
+		if RE.InGuild == 1 then
+			SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
+		end
 
 		if RE.Debug == 2 then
 			RE.CurrentMemoryUsage = 0;
@@ -3358,7 +3371,7 @@ function REFlex_BGEnd()
 						REAllianceNum = REAllianceNum + 1;
 						REAverageAlliance = REAverageAlliance + ratingTemp;
 						if REBGRated then
-							local REPLayerdataTemp = {["name"] = name, ["class"] = class, ["classToken"] = classTokenn, ["BGRating"] = ratingTemp, ["BGRatingChange"] = ratingChangeTemp, ["PreMMR"] = preMMRTemp, ["MMRChange"] = changeMMRTemp}
+							local REPLayerdataTemp = {["name"] = name, ["class"] = class, ["classToken"] = classToken, ["BGRating"] = ratingTemp, ["BGRatingChange"] = ratingChangeTemp, ["PreMMR"] = preMMRTemp, ["MMRChange"] = changeMMRTemp}
 							table.insert(RERBGAlly, REPLayerdataTemp);
 						end
 					else
@@ -3381,7 +3394,7 @@ function REFlex_BGEnd()
 						REAllianceNum = REAllianceNum + 1;
 						REAverageAlliance = REAverageAlliance + ratingTemp;
 						if REBGRated then
-							local REPLayerdataTemp = {["name"] = name, ["class"] = class, ["classToken"] = classTokenn, ["BGRating"] = ratingTemp, ["BGRatingChange"] = ratingChangeTemp, ["PreMMR"] = preMMRTemp, ["MMRChange"] = changeMMRTemp}
+							local REPLayerdataTemp = {["name"] = name, ["class"] = class, ["classToken"] = classToken, ["BGRating"] = ratingTemp, ["BGRatingChange"] = ratingChangeTemp, ["PreMMR"] = preMMRTemp, ["MMRChange"] = changeMMRTemp}
 							table.insert(RERBGAlly, REPLayerdataTemp);
 						end
 					end
