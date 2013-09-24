@@ -29,7 +29,7 @@ function REFlex_SettingsReload()
 	REFlex_GUI_SliderScale:SetValue(REFSettings["MiniBarScale"]);
 	RE.SecondTimeMiniBar = false;
 	RE.MiniBarSecondLineRdy = false;
-	if UnitLevel("player") > 9 and PVPHonorFrame.selectedPvpID ~= nil then
+	if UnitLevel("player") > 9 then
 		RequestRatedBattlegroundInfo();
 	end
 	RequestPVPRewards();
@@ -915,9 +915,10 @@ end
 -- Timers subsection
 function REFlex_PVPUpdateDelay()
 	RE.RBGCounter = true;
-	PVPFrame:Show();
-	PVPFrame:Hide();
-	if UnitLevel("player") > 9 and PVPHonorFrame.selectedPvpID ~= nil then
+	PVP_LoadUI();
+	PVPUIFrame:Show();
+	PVPUIFrame:Hide();
+	if UnitLevel("player") > 9 then
 		RequestRatedBattlegroundInfo();
 	end
 	RequestPVPRewards();

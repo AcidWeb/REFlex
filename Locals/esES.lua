@@ -9,7 +9,7 @@ REFlexLocale:CreateLocaleTable({
 	Attendance = "Asistencia", -- Needs review
 	["Bar 1"] = "Barra 1", -- Needs review
 	["Bar 2"] = "Barra 2", -- Needs review
-	["Both Specs"] = "Ambas Especializaciones", -- Needs review
+	["Both Specs"] = "Ambas Especs.", -- Needs review
 	Date = "Fecha", -- Needs review
 	["Easiest compositions"] = "Composiciones M\195\161s F\195\161ciles", -- Needs review
 	["Guild query"] = "Consulta de hermandad", -- Needs review
@@ -48,9 +48,9 @@ REFlexLocale:CreateLocaleTable({
 	["Show minimap button"] = "Mostrar bot\195\179n minimapa", -- Needs review
 	["Show place instead difference of score"] = "Mostrar lugar en vez de diferencia de puntuaci\195\179n", -- Needs review
 	["Show queues"] = "Mostrar colas", -- Needs review
-	["Spec 1"] = "Especializaci\195\179n 1", -- Needs review
-	["Spec 2"] = "Especializaci\195\179n 2", -- Needs review
-	Top = "Superior", -- Needs review
+	["Spec 1"] = "Espec.1", -- Needs review
+	["Spec 2"] = "Espec.2", -- Needs review
+	Top = "Mejor", -- Needs review
 	Total = "Total", -- Needs review
 	["Unrated battlegrounds support"] = "Soporte Campos de Batalla No Puntuados", -- Needs review
 	["Unrated BGs"] = "CdB No Puntuados", -- Needs review
