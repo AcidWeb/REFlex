@@ -23,7 +23,7 @@ function REFlex_OnEvent(self,event,...)
 	local REAddonName = ...;
 	local _, REZoneType = IsInInstance();
 	if event == "UPDATE_BATTLEFIELD_SCORE" then
-		if RESecondTimeMiniBarTimer ~= true and then
+		if RESecondTimeMiniBarTimer ~= true then
 			REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
 			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 30);
 			RESecondTimeMiniBarTimer = true;
