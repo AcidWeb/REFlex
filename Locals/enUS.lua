@@ -15,14 +15,15 @@ local L = {
 	["All"] = true,
 	["Normal"] = true,
 	["Rated"] = true,
+	["Statistics"] = true,
 	["Both Specs"] = true,
 	["Spec 1"] = true,
 	["Spec 2"] = true,
 	["Show minimap button"] = true,
-	["Show main window."] = true,
-	["Show battleground minibar."] = true,
-	["Minibar works only on Battlegrounds."] = true,
-	["Show minibar (Battleground only)"] = true
+	["Show main window"] = true,
+	["Show battleground minibar"] = true,
+	["Minibar works only on Battlegrounds"] = true,
+	["Show minibar (Battlegrounds only)"] = true
 }
 
 REFlexLocale = L

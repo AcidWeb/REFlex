@@ -1,12 +1,13 @@
 ## Interface: 40000
 ## Title: REFlex
 ## Notes: Records statistics of played battlegrounds. 
-## Version: 0.3
+## Version: 0.4
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings
 Locals\enUS.lua
 
 Libs\LibStub\LibStub.lua
+
 Libs\lib-st\lib-st.xml
 Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.xml
 
