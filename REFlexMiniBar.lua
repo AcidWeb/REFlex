@@ -35,13 +35,16 @@ function REFlex_UpdateLDB()
 
 		if RE.RBGPointsWeek ~= nil then
 			local REColor = "FFFFFFFF";
-			if (RE.RBGSoftPointsWeek >= RE.RBGSoftMaxPointsWeek) and (RE.RBGPointsWeek ~= RE.RBGMaxPointsWeek) then
+			if (RE.RBGSoftPointsWeek >= RE.RBGSoftMaxPointsWeek) and (RE.RBGPointsWeek ~= RE.RBGMaxPointsWeek) and RECP ~= RE.CPCap then
 				REColor = "FFFFFF33";
-			elseif RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
+			elseif RE.RBGPointsWeek == RE.RBGMaxPointsWeek or RECP == RE.CPCap then
 				REColor = "FFFF141D";
 			end
 			if REFSettings["LDBCPCap"] then
 				local RECPToGo = RE.RBGMaxPointsWeek - RE.RBGPointsWeek;
+				if RECP == RE.CPCap then
+					RECPToGo = 0;
+				end
 				if RECPToGo == 0 then
 					RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r";	
 				else

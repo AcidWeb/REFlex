@@ -17,19 +17,16 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 17;
-RE.AddonVersion = "v0.9.7.1";
-RE.AddonVersionCheck = 971;
+RE.DataVersion = 18;
+RE.AddonVersion = "v0.9.8";
+RE.AddonVersionCheck = 980;
 
 RE.Debug = 0;
 
 RE.GuildMembers = {};
-RE.ArenaBuilds = {};
 RE.ArenaTeams = {};
-RE.ArenaRaces = {};
 RE.ArenaTeamsSpec = {};
 RE.Tab7Matrix = {};
-RE.ClassTable = {};
 RE.FriendRosterStringTable = {};
 RE.EnemyRosterStringTable = {};
 RE.Tab7Default = {["F"] = {["d"] = 1, ["m"] = 1, ["y"] = 2011}, ["T"] = {["d"] = 0, ["m"] = 0, ["y"] = 0}};
@@ -40,6 +37,7 @@ RE.BattlegroundReload = true;
 RE.Tab7GuildOnly = false;
 RE.FoundNewVersion = false;
 RE.QueryBlock = false;
+RE.ArenaPrep = {[1] = false, [2] = false, [3] = false, [4] = false, [5] = false};
 
 RE.Tab1LastID = 0;
 RE.Tab1TableData = {};
@@ -57,19 +55,22 @@ RE.ArenaLastID = 0;
 
 RE.Options = {"ShowMinimapButton", "ShowMiniBar", "ShowDetectedBuilds", "ArenaSupport", "RBGSupport", "UNBGSupport", "LDBBGMorph", "LDBCPCap", "LDBHK", "LDBShowPlace", "LDBShowQueues", "LDBShowTotalBG", "LDBShowTotalArena", "OnlyNew", "AllowQuery"}
 RE.DeleteID = 0;
-RE.PartyArenaCheck = 0;
 RE.MiniBarPluginsCount = 0;
 RE.RBGCounter = false;
 RE.SlashTrigger = "";
 RE.LDBQueue = "";
 RE.HonorCap = 4000;
+RE.CPCap = 4000;
 RE.Faction = UnitFactionGroup("player");
 RE.CurrentSeason = GetCurrentArenaSeason(); 
-FillLocalizedClassList(RE.ClassTable);
-if RE.Faction == "Horde" then
-	RE.FactionNum = 0;
+if RE.Faction == "Neutral" then
+	RE.FactionNum = -1;
 else
-	RE.FactionNum = 1;
+	if RE.Faction == "Horde" then
+		RE.FactionNum = 0;
+	else
+		RE.FactionNum = 1;
+	end
 end
 
 RE.ClassIconCoords = {
@@ -83,6 +84,7 @@ RE.ClassIconCoords = {
 	["WARLOCK"] = {0.7421875, 0.98828125, 0.25, 0.5},
 	["PALADIN"] = {0, 0.25, 0.5, 0.75},
 	["DEATHKNIGHT"] = {0.25, 0.49609375, 0.5, 0.75},
+	["MONK"] = {0.49609375, 0.7421875, 0.5, 0.75},
 };
 RE.RaceIconCoords = {
 	["HUMAN_MALE"] = {0, 0.125, 0, 0.25},
@@ -100,6 +102,7 @@ RE.RaceIconCoords = {
 	["DRAENEI_MALE"] = {0.5, 0.625, 0, 0.25},
 	["GOBLIN_MALE"] = {0.625, 0.750, 0.25, 0.5},
 	["WORGEN_MALE"] = {0.625, 0.750, 0, 0.25},
+	["PANDAREN_MALE"] = {0.750, 0.875, 0, 0.25},
 };
 RE.ClassColors = {
 	["HUNTER"] = "AAD372",
@@ -112,7 +115,100 @@ RE.ClassColors = {
 	["SHAMAN"] = "0070DD",
 	["WARRIOR"] = "C69B6D",
 	["DEATHKNIGHT"] = "C41E3A",
+	["MONK"] = "00FF96",
 };
+RE.Spec = {
+	["HUNTER"] = {
+		[255] = select(2, GetSpecializationInfoByID(255)),
+		[254] = select(2, GetSpecializationInfoByID(254)),
+		[253] = select(2, GetSpecializationInfoByID(253)),
+		[select(2, GetSpecializationInfoByID(255))] = 255,
+		[select(2, GetSpecializationInfoByID(254))] = 254,
+		[select(2, GetSpecializationInfoByID(253))] = 253,
+	},
+	["WARRIOR"] = {
+		[73] = select(2, GetSpecializationInfoByID(73)),
+		[71] = select(2, GetSpecializationInfoByID(71)),
+		[72] = select(2, GetSpecializationInfoByID(72)),
+		[select(2, GetSpecializationInfoByID(73))] = 73,
+		[select(2, GetSpecializationInfoByID(71))] = 71,
+		[select(2, GetSpecializationInfoByID(72))] = 72,
+	},
+	["PALADIN"] = {
+		[70] = select(2, GetSpecializationInfoByID(70)),
+		[65] = select(2, GetSpecializationInfoByID(65)),
+		[66] = select(2, GetSpecializationInfoByID(66)),
+		[select(2, GetSpecializationInfoByID(70))] = 70,
+		[select(2, GetSpecializationInfoByID(65))] = 65,
+		[select(2, GetSpecializationInfoByID(66))] = 66,
+	},
+	["MAGE"] = {
+		[64] = select(2, GetSpecializationInfoByID(64)),
+		[63] = select(2, GetSpecializationInfoByID(63)),
+		[62] = select(2, GetSpecializationInfoByID(62)),
+		[select(2, GetSpecializationInfoByID(64))] = 64,
+		[select(2, GetSpecializationInfoByID(63))] = 63,
+		[select(2, GetSpecializationInfoByID(62))] = 62,
+	},
+	["PRIEST"] = {
+		[257] = select(2, GetSpecializationInfoByID(257)),
+		[258] = select(2, GetSpecializationInfoByID(258)),
+		[256] = select(2, GetSpecializationInfoByID(256)),
+		[select(2, GetSpecializationInfoByID(257))] = 257,
+		[select(2, GetSpecializationInfoByID(258))] = 258,
+		[select(2, GetSpecializationInfoByID(256))] = 256,
+	},
+	["WARLOCK"] = {
+		[266] = select(2, GetSpecializationInfoByID(266)),
+		[267] = select(2, GetSpecializationInfoByID(267)),
+		[265] = select(2, GetSpecializationInfoByID(265)),
+		[select(2, GetSpecializationInfoByID(266))] = 266,
+		[select(2, GetSpecializationInfoByID(267))] = 267,
+		[select(2, GetSpecializationInfoByID(265))] = 265,
+	},
+	["DEATHKNIGHT"] = {
+		[252] = select(2, GetSpecializationInfoByID(252)),
+		[251] = select(2, GetSpecializationInfoByID(251)),
+		[250] = select(2, GetSpecializationInfoByID(250)),
+		[select(2, GetSpecializationInfoByID(252))] = 252,
+		[select(2, GetSpecializationInfoByID(251))] = 251,
+		[select(2, GetSpecializationInfoByID(250))] = 250,
+	},
+	["SHAMAN"] = {
+		[263] = select(2, GetSpecializationInfoByID(263)),
+		[264] = select(2, GetSpecializationInfoByID(264)),
+		[262] = select(2, GetSpecializationInfoByID(262)),
+		[select(2, GetSpecializationInfoByID(263))] = 263,
+		[select(2, GetSpecializationInfoByID(264))] = 264,
+		[select(2, GetSpecializationInfoByID(262))] = 262,
+	},
+	["DRUID"] = {
+		[103] = select(2, GetSpecializationInfoByID(103)),
+		[104] = select(2, GetSpecializationInfoByID(104)),
+		[102] = select(2, GetSpecializationInfoByID(102)),
+		[105] = select(2, GetSpecializationInfoByID(105)),
+		[select(2, GetSpecializationInfoByID(103))] = 103,
+		[select(2, GetSpecializationInfoByID(104))] = 104,
+		[select(2, GetSpecializationInfoByID(102))] = 102,
+		[select(2, GetSpecializationInfoByID(105))] = 105,
+	},
+	["MONK"] = {
+		[269] = select(2, GetSpecializationInfoByID(269)),
+		[270] = select(2, GetSpecializationInfoByID(270)),
+		[268] = select(2, GetSpecializationInfoByID(268)),
+		[select(2, GetSpecializationInfoByID(269))] = 269,
+		[select(2, GetSpecializationInfoByID(270))] = 270,
+		[select(2, GetSpecializationInfoByID(268))] = 268,
+	},
+	["ROGUE"] = {
+		[260] = select(2, GetSpecializationInfoByID(260)),
+		[261] = select(2, GetSpecializationInfoByID(261)),
+		[259] = select(2, GetSpecializationInfoByID(259)),
+		[select(2, GetSpecializationInfoByID(260))] = 260,
+		[select(2, GetSpecializationInfoByID(261))] = 261,
+		[select(2, GetSpecializationInfoByID(259))] = 259,
+	}
+}
 RE.BGSpecialFields = { 
 	["AlteracValley"] = {"Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture" .. RE.FactionNum,
 	"Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend" .. RE.FactionNum,
@@ -138,187 +234,22 @@ RE.TooltipBackdrop = {
     };
 };
 
-RE.BuildRecognition = {      
-	-- WARRIOR
-	[GetSpellInfo(12294)]	= L["Arms"],			-- Mortal Strike
-	[GetSpellInfo(46924)]	= L["Arms"],			-- Bladestorm
-	[GetSpellInfo(56638)]	= L["Arms"],			-- Taste for Blood
-	[GetSpellInfo(64976)]	= L["Arms"],			-- Juggernaut
-	[GetSpellInfo(85388)]	= L["Arms"],			-- Throwdown
-	[GetSpellInfo(85730)]	= L["Arms"],			-- Deadly Calm
-	[GetSpellInfo(12328)]	= L["Arms"],			-- Sweeping Strikes
-	[GetSpellInfo(23881)]	= L["Fury"],			-- Bloodthirst
-	[GetSpellInfo(29801)]	= L["Fury"],			-- Rampage
-	[GetSpellInfo(12323)]	= L["Fury"],			-- Piercing Howl
-	[GetSpellInfo(60970)]	= L["Fury"],			-- Heroic Fury
-	[GetSpellInfo(12292)]	= L["Fury"],			-- Death Wish
-	[GetSpellInfo(85288)]	= L["Fury"],			-- Raging Blow
-	[GetSpellInfo(12809)]	= L["Protection"],		-- Concussion Blow
-	[GetSpellInfo(23922)]	= L["Protection"],		-- Shield Slam
-	[GetSpellInfo(50227)]	= L["Protection"],		-- Sword and Board
-	[GetSpellInfo(12975)]	= L["Protection"],		-- Last Stand
-	[GetSpellInfo(50720)]	= L["Protection"],		-- Vigilance
-	[GetSpellInfo(46968)]	= L["Protection"],		-- Shockwave
-	-- PALADIN
-	[GetSpellInfo(31935)]	= L["Protection"],		-- Avenger's Shield
-	[GetSpellInfo(70940)]	= L["Protection"],		-- Divine Guardian
-	[GetSpellInfo(31850)]	= L["Protection"],		-- Ardent Defender
-	[GetSpellInfo(53595)]	= L["Protection"],		-- Hammer of the Righteous
-	[GetSpellInfo(53600)]	= L["Protection"],		-- Shield of the Righteous
-	[GetSpellInfo(20473)]	= L["Holy"],			-- Holy Shock
-	[GetSpellInfo(31842)]	= L["Holy"],			-- Divine Favor
-	[GetSpellInfo(53563)]	= L["Holy"],			-- Beacon of Light
-	[GetSpellInfo(31821)]	= L["Holy"],			-- Aura Mastery
-	[GetSpellInfo(85222)]	= L["Holy"],			-- Light of Dawn
-	[GetSpellInfo(68020)]	= L["Retribution"],		-- Seal of Command
-	[GetSpellInfo(35395)]	= L["Retribution"],		-- Crusader Strike
-	[GetSpellInfo(85285)]	= L["Retribution"],		-- Rebuke
-	[GetSpellInfo(85696)]	= L["Retribution"],		-- Zealotry
-	[GetSpellInfo(53385)]	= L["Retribution"],		-- Divine Storm
-	[GetSpellInfo(20066)]	= L["Retribution"],		-- Repentance
-	[GetSpellInfo(85256)]	= L["Retribution"],		-- Templar's Verdict
-	-- ROGUE
-	[GetSpellInfo(1329)]	= L["Assassination"],	   	-- Mutilate
-	[GetSpellInfo(79140)]	= L["Assassination"],	   	-- Vendetta
-	[GetSpellInfo(14177)]	= L["Assassination"],	   	-- Cold Blood
-	[GetSpellInfo(51690)]	= L["Combat"],			-- Killing Spree
-	[GetSpellInfo(13877)]	= L["Combat"],			-- Blade Flurry
-	[GetSpellInfo(13750)]	= L["Combat"],			-- Adrenaline Rush
-	[GetSpellInfo(84617)]	= L["Combat"],			-- Revealing Strike
-	[GetSpellInfo(16511)]	= L["Subtlety"],		-- Hemorrhage
-	[GetSpellInfo(36554)]	= L["Subtlety"],		-- Shadowstep
-	[GetSpellInfo(31223)]	= L["Subtlety"],		-- Master of Subtlety
-	[GetSpellInfo(14185)]	= L["Subtlety"],		-- Preparation
-	[GetSpellInfo(51713)]	= L["Subtlety"],		-- Shadow Dance
-	-- PRIEST	
-	[GetSpellInfo(47540)]	= L["Discipline"],		-- Penance
-	[GetSpellInfo(10060)]	= L["Discipline"],		-- Power Infusion
-	[GetSpellInfo(33206)]	= L["Discipline"],		-- Pain Suppression
-	[GetSpellInfo(52795)]	= L["Discipline"],		-- Borrowed Time
-	[GetSpellInfo(57472)]	= L["Discipline"],		-- Renewed Hope
-	--[GetSpellInfo(47517)]	= L["Discipline"],		-- Grace
-	[GetSpellInfo(89485)]	= L["Discipline"],		-- Inner Focus
-	[GetSpellInfo(34861)]	= L["Holy"],			-- Circle of Healing
-	[GetSpellInfo(14751)]	= L["Holy"],			-- Chakra
-	[GetSpellInfo(47788)]	= L["Holy"],			-- Guardian Spirit
-	[GetSpellInfo(88625)]	= L["Holy"],			-- Holy Word: Chastise
-	[GetSpellInfo(19236)]	= L["Holy"],			-- Desperate Prayer
-	[GetSpellInfo(15487)]	= L["Shadow"],			-- Silence
-	[GetSpellInfo(34914)]	= L["Shadow"],			-- Vampiric Touch	
-	[GetSpellInfo(15407)]	= L["Shadow"],			-- Mind Flay		
-	[GetSpellInfo(15473)]	= L["Shadow"],			-- Shadowform
-	[GetSpellInfo(15286)]	= L["Shadow"],			-- Vampiric Embrace
-	[GetSpellInfo(64044)]	= L["Shadow"],			-- Psychic Horror
-	[GetSpellInfo(47585)]	= L["Shadow"],			-- Dispersion
-	-- DEATHKNIGHT
-	[GetSpellInfo(55050)]	= L["Blood"],			-- Heart Strike
-	[GetSpellInfo(49016)]	= L["Blood"],			-- Hysteria
-	[GetSpellInfo(53138)]	= L["Blood"],			-- Abomination's Might
-	[GetSpellInfo(55233)]	= L["Blood"],			-- Vampiric Blood
-	[GetSpellInfo(49222)]	= L["Blood"],			-- Bone Shield
-	[GetSpellInfo(49203)]	= L["Frost"],			-- Hungering Cold
-	[GetSpellInfo(49143)]	= L["Frost"],			-- Frost Strike
-	[GetSpellInfo(49184)]	= L["Frost"],			-- Howling Blast
-	[GetSpellInfo(51271)]	= L["Frost"],			-- Pillar of Frost
-	[GetSpellInfo(55610)]	= L["Frost"],			-- Imp. Icy Talons
-	[GetSpellInfo(55090)]	= L["Unholy"],			-- Scourge Strike
-	[GetSpellInfo(49016)]	= L["Unholy"],			-- Unholy Frenzy
-	[GetSpellInfo(51052)]	= L["Unholy"],			-- Anti-Magic Zone
-	[GetSpellInfo(49206)]	= L["Unholy"],			-- Summon Gargoyle
-	[GetSpellInfo(63560)]	= L["Unholy"],			-- Dark Transformation
-	-- MAGE
-	[GetSpellInfo(44425)]	= L["Arcane"],			-- Arcane Barrage
-	[GetSpellInfo(12043)]	= L["Arcane"],			-- Presence of Mind
-	[GetSpellInfo(31589)]	= L["Arcane"],			-- Slow
-	[GetSpellInfo(54646)]	= L["Arcane"],			-- Focus Magic
-	[GetSpellInfo(12042)]	= L["Arcane"],			-- Arcane Power
-	[GetSpellInfo(44457)]	= L["Fire"],		   	-- Living Bomb
-	[GetSpellInfo(31661)]	= L["Fire"],		   	-- Dragon's Breath
-	[GetSpellInfo(11366)]	= L["Fire"],		   	-- Pyroblast
-	[GetSpellInfo(11129)]	= L["Fire"],			-- Combustion
-	[GetSpellInfo(11113)]	= L["Fire"],			-- Blast Wave
-	[GetSpellInfo(44572)]	= L["Frost"],		   	-- Deep Freeze
-	[GetSpellInfo(31687)]	= L["Frost"],		   	-- Summon Water Elemental
-	[GetSpellInfo(11426)]	= L["Frost"],			-- Ice Barrier	
-	[GetSpellInfo(12472)]	= L["Frost"],		   	-- Icy Veins
-	[GetSpellInfo(11958)]	= L["Frost"],			-- Cold Snap
-	-- WARLOCK
-	[GetSpellInfo(48181)]	= L["Affliction"],		-- Haunt
-	[GetSpellInfo(30108)]	= L["Affliction"],		-- Unstable Affliction
-	[GetSpellInfo(18223)]	= L["Affliction"],		-- Curse of Exhaustion
-	[GetSpellInfo(86121)]	= L["Affliction"],		-- Soul Swap
-	[GetSpellInfo(59672)]	= L["Demonology"],		-- Metamorphosis
-	[GetSpellInfo(30146)]	= L["Demonology"],		-- Summon Felguard
-	[GetSpellInfo(71521)]	= L["Demonology"],		-- Hand of Gul'dan
-	[GetSpellInfo(47193)]	= L["Demonology"],		-- Demonic Empowerment
-	[GetSpellInfo(50769)]	= L["Destruction"],		-- Chaos Bolt
-	[GetSpellInfo(30283)]	= L["Destruction"],		-- Shadowfury
-	[GetSpellInfo(30299)]	= L["Destruction"],		-- Nether Protection
-	[GetSpellInfo(17962)]	= L["Destruction"],		-- Conflagrate
-	[GetSpellInfo(80240)]	= L["Destruction"],		-- Bane of Havoc
-	[GetSpellInfo(17877)]	= L["Destruction"],		-- Shadowburn
-	-- SHAMAN
-	[GetSpellInfo(51490)]	= L["Elemental"],		-- Thunderstorm
-	[GetSpellInfo(16166)]	= L["Elemental"],		-- Elemental Mastery
-	[GetSpellInfo(51470)]	= L["Elemental"],		-- Elemental Oath
-	[GetSpellInfo(61882)]	= L["Elemental"],		-- Earthquake
-	[GetSpellInfo(30802)]	= L["Enhancement"],		-- Unleashed Rage
-	[GetSpellInfo(51533)]	= L["Enhancement"],		-- Feral Spirit
-	[GetSpellInfo(30823)]	= L["Enhancement"],		-- Shamanistic Rage
-	[GetSpellInfo(17364)]	= L["Enhancement"],		-- Stormstrike
-	[GetSpellInfo(60103)]	= L["Enhancement"],		-- Lava Lash
-	[GetSpellInfo(61295)]	= L["Restoration"],		-- Riptide
-	[GetSpellInfo(51886)]	= L["Restoration"],		-- Cleanse Spirit
-	[GetSpellInfo(974)]	= L["Restoration"],		-- Earth Shield
-	[GetSpellInfo(16188)]	= L["Restoration"],		-- Nature's Swiftness
-	-- HUNTER
-	[GetSpellInfo(19577)]	= L["Beast Mastery"],		-- Intimidation
-	[GetSpellInfo(20895)]	= L["Beast Mastery"],		-- Spirit Bond
-	[GetSpellInfo(82692)]	= L["Beast Mastery"],		-- Focus Fire
-	[GetSpellInfo(82726)]	= L["Beast Mastery"],		-- Fervor
-	[GetSpellInfo(19506)]	= L["Marksmanship"],	   	-- Trueshot Aura
-	[GetSpellInfo(34490)]	= L["Marksmanship"],	   	-- Silencing Shot
-	[GetSpellInfo(53209)]	= L["Marksmanship"],	   	-- Chimera Shot
-	[GetSpellInfo(19434)]	= L["Marksmanship"],    	-- Aimed Shot
-	[GetSpellInfo(23989)]	= L["Marksmanship"],    	-- Readiness
-	[GetSpellInfo(53301)]	= L["Survival"],		-- Explosive Shot
-	[GetSpellInfo(19386)]	= L["Survival"],		-- Wyvern Sting
-	[GetSpellInfo(3674)]	= L["Survival"],		-- Black Arrow
-	[GetSpellInfo(19306)]	= L["Survival"],		-- Counterattack 
-	-- DRUID
-	[GetSpellInfo(48505)]	= L["Balance"],			-- Starfall
-	[GetSpellInfo(50516)]	= L["Balance"],			-- Typhoon
-	[GetSpellInfo(78674)]	= L["Balance"],			-- Starsurge
-	[GetSpellInfo(33831)]	= L["Balance"],			-- Force of Nature
-	[GetSpellInfo(24907)]	= L["Balance"],			-- Moonkin Form
-	[GetSpellInfo(78675)]	= L["Balance"],			-- Solar Beam
-	[GetSpellInfo(33876)]	= L["Feral"],			-- Mangle (Cat)
-	[GetSpellInfo(33878)]	= L["Feral"],			-- Mangle (Bear)
-	[GetSpellInfo(24932)]	= L["Feral"],			-- Leader of the Pack
-	[GetSpellInfo(61336)]	= L["Feral"],			-- Survival Instincts
-	[GetSpellInfo(80313)]	= L["Feral"],			-- Pulverize
-	[GetSpellInfo(18562)]	= L["Restoration"],		-- Swiftmend
-	[GetSpellInfo(48438)]	= L["Restoration"],		-- Wild Growth		
-	[GetSpellInfo(33891)]	= L["Restoration"],		-- Tree of Life		
-	[GetSpellInfo(65139)]	= L["Restoration"],		-- Tree of Life
-	--[GetSpellInfo(17116)]	= L["Restoration"],		-- Nature's Swiftness
-}
-
 SLASH_REFLEX1, SLASH_REFLEX2 = "/ref", "/reflex";
 
 -- *** Event & initialisation functions
 
 function REFlex_OnLoad(self)
+	if select(4, GetBuildInfo()) < 50001 then
+		print("\124cFF74D06C[REFlex]\124r This release require 5.x client!");
+		return;
+	end
 	REFlex_LoadLDB();
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	self:RegisterEvent("ADDON_LOADED");
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE");
-	self:RegisterEvent("ARENA_OPPONENT_UPDATE");
-	self:RegisterEvent("UNIT_SPELLCAST_START");
-	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
-	self:RegisterEvent("UNIT_AURA");
+	self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS");
 	self:RegisterEvent("CHAT_MSG_ADDON");
 	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");
 	self:RegisterEvent("UPDATE_BATTLEFIELD_STATUS");
@@ -339,6 +270,9 @@ end
 function REFlex_OnEvent(self,Event,...)
 	local _, REZoneType = IsInInstance();
 	if Event == "UPDATE_BATTLEFIELD_SCORE" and REZoneType == "pvp" then
+		if RE.BGTimer == nil then
+			RE.BGTimer = RE.ShefkiTimer:ScheduleRepeatingTimer(RequestBattlefieldScoreData, 15);
+		end
 		if GetBattlefieldWinner() ~= nil then
 			REFlex_BGEnd();
 		end
@@ -351,77 +285,19 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_UpdateLDBQueues(j);
 		end
 		REFlex_UpdateLDB();
-	elseif (Event == "UNIT_SPELLCAST_START" or Event == "UNIT_SPELLCAST_SUCCEEDED") and REZoneType == "arena" and REFSettings["ArenaSupport"] then
-		local REUnitID, RESpellName = ...;
-
-		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" and REFSettings["ArenaSupport"] then
-			if RE.BuildRecognition[RESpellName] ~= nil then
-				local REName = table.concat({ strsplit(" ", GetUnitName(REUnitID, true), 3) });
-				if RE.ArenaBuilds[REName] == nil and REName ~= UNKNOWN then
-					_, RE.ArenaRaces[REName] = UnitRace(REUnitID);
-					RE.ArenaBuilds[REName] = RE.BuildRecognition[RESpellName];
-					local _, RETempClass = UnitClass(REUnitID);
-					if REFSettings["ShowDetectedBuilds"] then
-						UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[RESpellName] .. "\124r", 1, 1, 1, 2.0);
-						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[RESpellName]);
-					end
+	elseif Event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" and REFSettings["ShowDetectedBuilds"] and REZoneType == "arena" and REFSettings["ArenaSupport"] then
+		local numOpps = GetNumArenaOpponentSpecs();
+		for i=1, MAX_ARENA_ENEMIES do
+			if (i <= numOpps) then
+				local enemySpec = GetArenaOpponentSpec(i);
+				if not RE.ArenaPrep[i] and enemySpec > 0 then
+					RE.ArenaPrep[i] = true;
+					local _, spec, _, _, _, _, classToken = GetSpecializationInfoByID(enemySpec);
+					UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[classToken] .. LOCALIZED_CLASS_NAMES_MALE[classToken] .. " - " .. spec .. "\124r", 1, 1, 1, 2.0);
+					print("\124cFF74D06C[REFlex]\124r \124cFF" .. RE.ClassColors[classToken] .. LOCALIZED_CLASS_NAMES_MALE[classToken] .. " - " .. spec .. "\124r");
 				end
 			end
 		end
-	elseif Event == "UNIT_AURA" and REZoneType == "arena" and REFSettings["ArenaSupport"] then
-		local REUnitID = ...;
-
-		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" then
-			for i=1, 20 do
-				local  REAuraName, _, _, _, _, _, _, RECaster = UnitAura(REUnitID, i, "HELPFUL")
-				if not REAuraName then 
-					break 
-				end
-				if RE.BuildRecognition[REAuraName] ~= nil and RECaster ~= "" and RECaster ~= nil then
-					local REName = table.concat({ strsplit(" ", GetUnitName(RECaster, true), 3) });
-					if RE.ArenaBuilds[REName] == nil and REName ~= UNKNOWN then
-						_, RE.ArenaRaces[REName] = UnitRace(RECaster); 
-						RE.ArenaBuilds[REName] = RE.BuildRecognition[REAuraName];
-						local _, RETempClass = UnitClass(RECaster);
-						if REFSettings["ShowDetectedBuilds"] then
-							if RE.ClassColors[RETempClass] ~= nil and REName ~= nil and RE.BuildRecognition[REAuraName] ~= nil then 
-								UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[REAuraName] .. "\124r", 1, 1, 1, 2.0);
-								print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[REAuraName]);
-							end
-						end
-					end
-				end
-			end
-		end
-	elseif Event == "ARENA_OPPONENT_UPDATE" and REZoneType == "arena" and REFSettings["ArenaSupport"] then
-		REFlex_Frame:UnregisterEvent("ARENA_OPPONENT_UPDATE");
-		RE.ArenaBuilds = {};
-		RE.PartyArenaCheck = 0;
-		RE.ArenaRaces = {};
-		RE.ShefkiTimer:ScheduleTimer(REFlex_ArenaTalentCheck, 30);
-	elseif Event == "INSPECT_READY" then
-		REFlex_Frame:UnregisterEvent("INSPECT_READY");
-		local REInspectedGID = ...
-		if REInspectedGID == UnitGUID("party" .. RE.PartyArenaCheck) then
-			local RETalentGroup = GetActiveTalentGroup(true);
-			local REPartyName = GetUnitName("party" .. RE.PartyArenaCheck, true);
-			_, RE.ArenaRaces[REPartyName] = UnitRace("party" .. RE.PartyArenaCheck);
-
-			local REPrimaryTree = 1;
-			local REPoints = 0;
-			for j = 1, 3 do
-				local _, _, _, _, REPointsSpent = GetTalentTabInfo(j,true,false,RETalentGroup);
-				if (REPointsSpent > REPoints) then
-					REPrimaryTree = j;
-					REPoints = REPointsSpent;
-				end
-			end
-			local _, REBuildName = GetTalentTabInfo(REPrimaryTree,true,false,RETalentGroup);
-
-			RE.ArenaBuilds[REPartyName] = REBuildName;
-			RE.PartyArenaCheck = RE.PartyArenaCheck + 1;
-		end
-		REFlex_ArenaTalentCheck();
 	elseif Event == "CURRENCY_DISPLAY_UPDATE" and REZoneType == "none" then
 		REFlex_UpdateLDB();
 	elseif Event == "CHAT_MSG_ADDON" and ... == "REFlex" then
@@ -474,17 +350,15 @@ function REFlex_OnEvent(self,Event,...)
 	elseif Event == "PVP_REWARDS_UPDATE" and REZoneType == "none" then
 		if RE.RBGCounter then
 			RE.RBGPointsWeek, RE.RBGMaxPointsWeek, _, _, RE.RBGSoftPointsWeek, RE.RBGSoftMaxPointsWeek = GetPVPRewards();
-
-			REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.RBGMaxPointsWeek);
-			REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.RBGMaxPointsWeek);
-
 			REFlex_UpdateLDB();
 		end
 	elseif Event == "ZONE_CHANGED_NEW_AREA" and (REZoneType == "none" or REZoneType == "party" or REZoneType == "raid") then
-		REFlex_Frame:RegisterEvent("ARENA_OPPONENT_UPDATE");
+		RE.ShefkiTimer:CancelTimer(RE.BGTimer, true);
+		RE.BGTimer = nil;
 		RE.SecondTime = false;
 		RE.SecondTimeMiniBar = false;
 		RE.MiniBarSecondLineRdy = false;
+		RE.ArenaPrep = {[1] = false, [2] = false, [3] = false, [4] = false, [5] = false};
 		REFlex_UpdateLDB();
 		RE.CurrentSeason = GetCurrentArenaSeason();
 
@@ -498,14 +372,13 @@ function REFlex_OnEvent(self,Event,...)
 				_G["REFlex_MiniBar" .. i]:Hide();
 			end
 		end
-
 		if UnitLevel("player") > 9 then
 			RequestRatedBattlegroundInfo();
 		end
 		RequestPVPRewards();
 	elseif Event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		print("\124cFF74D06C[REFlex]\124r " .. L["Reloaded MiniBar settings"]);
-		RE.ActiveTalentGroup = GetActiveTalentGroup(false, false);
+		RE.ActiveTalentGroup = GetActiveSpecGroup(false, false);
 		if RE.RBGCounter then
 			REFlex_SettingsReload();
 		end
@@ -529,7 +402,7 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_MainTab_Tab7_SearchBoxMF:SetText(RE.Tab7Default["F"]["m"]);
 		REFlex_MainTab_Tab7_SearchBoxYF:SetText(RE.Tab7Default["F"]["y"]);
 
-		RE.ActiveTalentGroup = GetActiveTalentGroup(false, false);
+		RE.ActiveTalentGroup = GetActiveSpecGroup(false, false);
 		REFlex_SettingsReload();
 		RE.ShefkiTimer:ScheduleTimer(REFlex_PVPUpdateDelay, 10);
 	elseif Event == "ADDON_LOADED" and ... == "REFlex" then
@@ -584,41 +457,51 @@ function REFlex_OnEvent(self,Event,...)
 		CreateFrame("Frame", "REFlex_MainTab_Tab1_ScoreHolder", REFlex_MainTab_Tab1, "REFlex_Tab_ScoreHolder_Virtual");
 		CreateFrame("Frame", "REFlex_MainTab_Tab2_ScoreHolder", REFlex_MainTab_Tab2, "REFlex_Tab_ScoreHolder_Virtual");
 		CreateFrame("Frame", "REFlex_MainTab_Tab3_ScoreHolder", REFlex_MainTab_Tab3, "REFlex_Tab_ScoreHolder_Virtual");
-		CreateFrame("Frame", "REFlex_MainTab_Tab7_ScoreHolder", REFlex_MainTab_Tab7, "REFlex_Tab_ScoreHolder_Virtual");
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder1", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("TOPLEFT", 15, -45);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder2", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder2:SetPoint("TOPRIGHT", -15, -45);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder3", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder3:SetPoint("TOPLEFT", 15, -185);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder4", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder4:SetPoint("TOP", 0, -185);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder5", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder5:SetPoint("TOPRIGHT", -15, -185);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder6", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder6:SetPoint("TOPLEFT", 15, -325);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder7", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder7:SetPoint("TOP", 0, -325);
-		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder8", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder8:SetPoint("TOPRIGHT", -15, -325);
 		CreateFrame("Frame", "REFlex_MainTab_Tab5_ScoreHolder", REFlex_MainTab_Tab5, "REFlex_Tab_ScoreHolder_Virtual");
+		CreateFrame("Frame", "REFlex_MainTab_Tab7_ScoreHolder", REFlex_MainTab_Tab7, "REFlex_Tab_ScoreHolder_Virtual");
+		
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder1", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "LEFT", -17, 0);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder2", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder2:SetPoint("LEFT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "RIGHT", 17, 0);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder3", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder3:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder1, "BOTTOM", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder4", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder4:SetPoint("TOPLEFT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "BOTTOMLEFT", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder5", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder5:SetPoint("TOPRIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "BOTTOMRIGHT", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder6", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder6:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder2, "BOTTOM", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder7", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder7:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder3, "BOTTOM", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder8", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder8:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder4, "BOTTOM", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder9", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder9:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder5, "BOTTOM", 0, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder10", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder10:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder6, "BOTTOM", 0, -15);
+		
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder1", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab6_ScoreHolder1:SetPoint("TOPLEFT", 15, -45);
+		REFlex_MainTab_Tab6_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "LEFT", -10, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder2", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab6_ScoreHolder2:SetPoint("TOPRIGHT", -15, -45);
-		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder3", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab6_ScoreHolder3:SetPoint("TOPLEFT", 15, -185);
-		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder4", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab6_ScoreHolder4:SetPoint("TOP", 0, -185);
-		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder5", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab6_ScoreHolder5:SetPoint("TOPRIGHT", -15, -185);
-
+		REFlex_MainTab_Tab6_ScoreHolder2:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "RIGHT", 10, 0);
+		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder3", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
+		REFlex_MainTab_Tab6_ScoreHolder3:SetPoint("TOPRIGHT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "BOTTOM", -5, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder4", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
+		REFlex_MainTab_Tab6_ScoreHolder4:SetPoint("TOPLEFT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "BOTTOM", 5, -15);
+		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder5", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
+		REFlex_MainTab_Tab6_ScoreHolder5:SetPoint("RIGHT", REFlex_MainTab_Tab6_ScoreHolder3, "LEFT", -10, 0);
+		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder6", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
+		REFlex_MainTab_Tab6_ScoreHolder6:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder4, "RIGHT", 10, 0);
+		
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarColor(0, 0.9, 0);
+		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.CPCap);
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetStatusBarColor(0, 0.9, 0);
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetStatusBarColor(0, 0.9, 0);
+		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.CPCap);
 		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetStatusBarColor(0, 0.9, 0);
 		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarHonor_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
@@ -773,7 +656,7 @@ function REFlex_OnEvent(self,Event,...)
 		---
 
 		RegisterAddonMessagePrefix("REFlex");
-		if RE.InGuild == 1 then
+		if IsInGuild() == 1 then
 			SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
 		end
 
@@ -811,16 +694,16 @@ end
 
 function REFlex_DropDownTab4OnLoad(self, level)
 	local BGDropMenu = UIDropDownMenu_CreateInfo();
-	BGDropMenu.text       = ALL;
-	BGDropMenu.func       = REFlex_DropDownTab4Click
+	BGDropMenu.text = ALL;
+	BGDropMenu.func = REFlex_DropDownTab4Click
 	UIDropDownMenu_AddButton(BGDropMenu, level);
 	BGDropMenu = UIDropDownMenu_CreateInfo();
-	BGDropMenu.text       = L["Unrated BGs"];
-	BGDropMenu.func       = REFlex_DropDownTab4Click
+	BGDropMenu.text = L["Unrated BGs"];
+	BGDropMenu.func = REFlex_DropDownTab4Click
 	UIDropDownMenu_AddButton(BGDropMenu, level);
 	BGDropMenu = UIDropDownMenu_CreateInfo();
-	BGDropMenu.text       = L["Rated BGs"];
-	BGDropMenu.func       = REFlex_DropDownTab4Click 
+	BGDropMenu.text = L["Rated BGs"];
+	BGDropMenu.func = REFlex_DropDownTab4Click 
 	UIDropDownMenu_AddButton(BGDropMenu, level);
 end
 
@@ -1449,7 +1332,7 @@ function REFlex_ExportTabShow()
 					else
 						REMMRChange = REFDatabase[i]["MMRChange"];
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. tostring(REFDatabase[i]["IsRated"]) .. "\";\"" .. RERatingChange .. "\";" .. REAllianceRating .. ";" .. REHordeRating .. ";" .. REHordeAverageMMR .. ";" .. REAllianceAverageMMR .. ";" .. REMMR .. ";" .. REMMRChange;
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AllianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AllianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. tostring(REFDatabase[i]["IsRated"]) .. "\";\"" .. RERatingChange .. "\";" .. REAllianceRating .. ";" .. REHordeRating .. ";" .. REHordeAverageMMR .. ";" .. REAllianceAverageMMR .. ";" .. REMMR .. ";" .. REMMRChange;
 					REExport = REExport .. RELine .. "\n";
 					RELine = "";
 				end
@@ -1467,13 +1350,13 @@ function REFlex_ExportTabShow()
 					else
 						RELine = RELine .. "0;0;0;0;0;0;";
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"];
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AllianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AllianceNum"] .. ";" .. REFDatabase[i]["HordeNum"];
 					REExport = REExport .. RELine .. "\n";
 					RELine = "";
 				end
 			elseif REFDatabase[i]["IsRated"] == RERated and RERated == true then
 				if (REFDatabase[i]["TalentSet"] == RESpec and RESpec ~= nil) or RESpec == nil then
-					RELine = "\"" .. date("%H", REFDatabase[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabase[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabase[i]["TimeRaw"]) .. "." .. date("%m", REFDatabase[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabase[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabase[i]["TimeRaw"])) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"]), "M") .. ";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "S")) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
+					RELine = "\"" .. date("%H", REFDatabase[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabase[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabase[i]["TimeRaw"]) .. "." .. date("%m", REFDatabase[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabase[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabase[i]["TimeRaw"])) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "M")) .. ";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "S")) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
 					if REFDatabase[i]["MapInfo"] == "AlteracValley" then
 						RELine = RELine .. REFDatabase[i]["SpecialFields"][3] .. ";" .. REFDatabase[i]["SpecialFields"][4] .. ";0;0;" .. REFDatabase[i]["SpecialFields"][1] .. ";" .. REFDatabase[i]["SpecialFields"][2] .. ";";
 					elseif REFDatabase[i]["MapInfo"] == "WarsongGulch" or REFDatabase[i]["MapInfo"] == "TwinPeaks" then
@@ -1485,7 +1368,7 @@ function REFlex_ExportTabShow()
 					else
 						RELine = RELine .. "0;0;0;0;0;0;";
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. REFDatabase[i]["RatingChange"] .. "\";" .. REFDatabase[i]["AllianceRating"] .. ";" .. REFDatabase[i]["HordeRating"] .. ";";
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AllianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AllianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. REFDatabase[i]["RatingChange"] .. "\";" .. REFDatabase[i]["AllianceRating"] .. ";" .. REFDatabase[i]["HordeRating"] .. ";";
 					local REHordeAverageMMR, REAllianceAverageMMR, REMMR, REMMRChange;
 					if REFDatabase[i]["HordeMMR"] == nil then
 						REHordeAverageMMR = 0;
@@ -1579,18 +1462,18 @@ function REFlex_ExportTabShow()
 
 				local RESlotsTemp = RESlots;
 				for k=1, #REFriendID do
-					local REBuild = "Unknown";
+					local REBuild = UNKNOWN;
 					if REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Build"] ~= nil then
-						REBuild = REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Build"];
+						REBuild = REFlex_SpecTranslate(REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["classToken"], REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Build"]);
 					end
-					local RERace = "Unknown";
+					local RERace = UNKNOWN;
 					if REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Race"] ~= nil then
 						RERace = REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Race"];
 					end
 					if REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["PreMMR"] ~= nil then
-						RELine = RELine .. "\"" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Name"] .. "\";\"" .. RERace .. "\";\"" .. RE.ClassTable[REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["ClassToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Damage"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Healing"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["KB"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["PreMMR"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["MMRChange"] .. ";";
+						RELine = RELine .. "\"" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Name"] .. "\";\"" .. RERace .. "\";\"" .. LOCALIZED_CLASS_NAMES_MALE[REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["classToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Damage"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Healing"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["KB"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["PreMMR"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["MMRChange"] .. ";";
 					else
-						RELine = RELine .. "\"" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Name"] .. "\";\"" .. RERace .. "\";\"" .. RE.ClassTable[REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["ClassToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Damage"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Healing"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["KB"] .. ";;;";
+						RELine = RELine .. "\"" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Name"] .. "\";\"" .. RERace .. "\";\"" .. LOCALIZED_CLASS_NAMES_MALE[REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["classToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Damage"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["Healing"] .. ";" .. REFDatabaseA[i][Team .. "Team"][REFriendID[k]]["KB"] .. ";;;";
 					end
 					RESlotsTemp = RESlotsTemp - 1;
 				end
@@ -1601,18 +1484,18 @@ function REFlex_ExportTabShow()
 				end
 				local RESlotsTemp = RESlots;
 				for k=1, #REEnemyID do
-					local REBuild = "Unknown";
+					local REBuild = UNKNOWN;
 					if REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Build"] ~= nil then
-						REBuild = REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Build"];
+						REBuild = REFlex_SpecTranslate(REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["classToken"], REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Build"]);
 					end
-					local RERace = "Unknown";
+					local RERace = UNKNOWN;
 					if REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Race"] ~= nil then
 						RERace = REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Race"];
 					end
 					if REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["PreMMR"] ~= nil then
-						RELine = RELine .. "\"" .. REFlex_NameClean(REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Name"]) .. "\";\"" .. RERace .. "\";\"" .. RE.ClassTable[REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["ClassToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Damage"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Healing"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["KB"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["PreMMR"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["MMRChange"] .. ";";
+						RELine = RELine .. "\"" .. REFlex_NameClean(REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Name"]) .. "\";\"" .. RERace .. "\";\"" .. LOCALIZED_CLASS_NAMES_MALE[REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["classToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Damage"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Healing"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["KB"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["PreMMR"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["MMRChange"] .. ";";
 					else
-						RELine = RELine .. "\"" .. REFlex_NameClean(REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Name"]) .. "\";\"" .. RERace .. "\";\"" .. RE.ClassTable[REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["ClassToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Damage"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Healing"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["KB"] .. ";;;";
+						RELine = RELine .. "\"" .. REFlex_NameClean(REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Name"]) .. "\";\"" .. RERace .. "\";\"" .. LOCALIZED_CLASS_NAMES_MALE[REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["classToken"]] .. "\";\"" .. REBuild .. "\";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Damage"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["Healing"] .. ";" .. REFDatabaseA[i][TeamE .. "Team"][REEnemyID[k]]["KB"] .. ";;;";
 					end
 					RESlotsTemp = RESlotsTemp - 1;
 				end
@@ -1658,13 +1541,13 @@ function REFlex_MainTabShow()
 			RE.DataStructure12 = {
 				{
 					["name"] = L["Date"],
-					["width"] = 117,
+					["width"] = 122,
 					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = REFDatabase[self.data[rowa].cols[13].value]["TimeRaw"]; local RERowB = REFDatabase[self.data[rowb].cols[13].value]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = L["Map"],
-					["width"] = 137,
+					["width"] = 142,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1675,13 +1558,13 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = AUCTION_DURATION,
-					["width"] = 67,
+					["width"] = 72,
 					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = REFDatabase[self.data[rowa].cols[13].value]["DurationRaw"]; local RERowB = REFDatabase[self.data[rowb].cols[13].value]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = WIN,
-					["width"] = 67,
+					["width"] = 72,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1692,12 +1575,12 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = "KB",
-					["width"] = 42,
+					["width"] = 47,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "HK",
-					["width"] = 42,
+					["width"] = 47,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1708,13 +1591,13 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = DAMAGE,
-					["width"] = 67,
+					["width"] = 73,
 					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = REFDatabase[self.data[rowa].cols[13].value]["Damage"]; local RERowB = REFDatabase[self.data[rowb].cols[13].value]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = SHOW_COMBAT_HEALING,
-					["width"] = 67,
+					["width"] = 73,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1726,7 +1609,7 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = HONOR,
-					["width"] = 47,
+					["width"] = 53,
 					["align"] = "CENTER"
 				}
 			}
@@ -1933,13 +1816,13 @@ function REFlex_MainTabShow()
 			RE.DataStructure5 = {
 				{
 					["name"] = "\n" .. L["Date"],
-					["width"] = 92,
+					["width"] = 102,
 					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = REFDatabaseA[self.data[rowa].cols[13].value]["TimeRaw"]; local RERowB = REFDatabaseA[self.data[rowb].cols[13].value]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "\n" .. L["Map"],
-					["width"] = 40,
+					["width"] = 50,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1950,12 +1833,12 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = "\n" .. TEAM,
-					["width"] = 145,
+					["width"] = 200,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "\n" .. RATING .. " / MMR",
-					["width"] = 85,
+					["width"] = 95,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1967,12 +1850,12 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = "\n" .. ENEMY,
-					["width"] = 145,
+					["width"] = 200,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "\n" .. RATING .. " / MMR",
-					["width"] = 85,
+					["width"] = 95,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -2023,11 +1906,11 @@ function REFlex_MainTabShow()
 			RE.DataStructure6 = {
 				{
 					["name"] = "\n" .. TEAM,
-					["width"] = 240,
+					["width"] = 205,
 					["align"] = "LEFT"
 				},
 				{
-					["name"] = "\n" .. WIN,
+					["name"] = "\n" .. "W/L",
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -2036,10 +1919,23 @@ function REFlex_MainTabShow()
 					},
 					["width"] = 35,
 					["sortnext"]= 3,
+					["defaultsort"] = "asc",
+					["align"] = "CENTER"
+				},
+				{
+					["name"] = "\n" .. WIN,
+					["width"] = 35,
+					["sortnext"]= 4,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "\n" .. LOSS,
+					["bgcolor"] = { 
+						["r"] = 0.15, 
+						["g"] = 0.15, 
+						["b"] = 0.15, 
+						["a"] = 1.0 
+					},
 					["width"] = 35,
 					["defaultsort"] = "dsc",
 					["align"] = "CENTER"
@@ -2085,11 +1981,11 @@ function REFlex_MainTabShow()
 			RE.DataStructure8 = {
 				{
 					["name"] = "\n" .. TEAM,
-					["width"] = 240,
+					["width"] = 205,
 					["align"] = "LEFT"
 				},
 				{
-					["name"] = "\n" .. LOSS,
+					["name"] = "\n" .. "W/L",
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -2098,11 +1994,24 @@ function REFlex_MainTabShow()
 					},
 					["width"] = 35,
 					["sortnext"]= 3,
+					["defaultsort"] = "dsc",
+					["align"] = "CENTER"
+				},
+				{
+					["name"] = "\n" .. LOSS,
+					["width"] = 35,
+					["sortnext"]= 4,
 					["align"] = "CENTER"
 				},
 				{
 					["name"] = "\n" .. WIN,
 					["width"] = 35,
+					["bgcolor"] = { 
+						["r"] = 0.15, 
+						["g"] = 0.15, 
+						["b"] = 0.15, 
+						["a"] = 1.0 
+					},
 					["defaultsort"] = "dsc",
 					["align"] = "CENTER"
 				}
@@ -2311,7 +2220,7 @@ function REFlex_MainTabShow()
 end	
 
 function REFlex_Tab1Show()
-	REFlex_MainTab:SetSize(718, 502)
+	REFlex_MainTab:SetSize(767, 502);
 	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab_CSVExport:Show();
@@ -2404,7 +2313,7 @@ function REFlex_Tab1Show()
 end
 
 function REFlex_Tab2Show()
-	REFlex_MainTab:SetSize(718, 502)
+	REFlex_MainTab:SetSize(767, 502);
 	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab_CSVExport:Show();
@@ -2487,7 +2396,7 @@ function REFlex_Tab2Show()
 end
 
 function REFlex_Tab3Show()
-	REFlex_MainTab:SetSize(767, 502)
+	REFlex_MainTab:SetSize(767, 502);
 	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab_CSVExport:Show();
@@ -2508,7 +2417,7 @@ function REFlex_Tab3Show()
 				RETempCol[2] = {
 					["value"] = REFlex_ShortMap(REFDatabase[j]["MapName"]),
 					["color"] = REFlex_TableWinError,
-					["colorargs"] = {REFDatabase[j]["HordeNum"], REFDatabase[j]["AliianceNum"],}
+					["colorargs"] = {REFDatabase[j]["HordeNum"], REFDatabase[j]["AllianceNum"],}
 				}
 				RETempCol[3] = {
 					["value"] = REFlex_TableRBGRatingMMR("Alliance", j)
@@ -2591,7 +2500,7 @@ function REFlex_Tab3Show()
 end
 
 function REFlex_Tab7Show()
-	REFlex_MainTab:SetSize(767, 502)
+	REFlex_MainTab:SetSize(767, 502);
 	REFlex_MainTab_MsgGuild:Hide(); 
 	REFlex_MainTab_MsgParty:Hide();
 	REFlex_MainTab_CSVExport:Hide();
@@ -2609,7 +2518,7 @@ function REFlex_Tab7Show()
 		REBGCount = REFlex_Tab7PlayerGrid(time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59}));
 
 		wipe(RE.Tab7TableData);
-		local RETableCount, RETableI = REFlex_TableCount(RE.Tab7Matrix);
+		RETableCount, RETableI = REFlex_TableCount(RE.Tab7Matrix);
 		RE.AvCount, RE.AvRating, RE.AvMMR = 0, 0, 0;
 		for j=1, RETableCount do
 			local RETempCol = {};
@@ -2617,7 +2526,7 @@ function REFlex_Tab7Show()
 				["value"] = "|cFF" .. RE.ClassColors[RE.Tab7Matrix[RETableI[j]]["Class"]] .. RE.Tab7Matrix[RETableI[j]]["Name"] .. "|r"
 			}
 			RETempCol[2] = {
-				["value"] = date("%H:%M %d.%m.%y", REFDatabaseA[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeRaw"])
+				["value"] = date("%H:%M %d.%m.%y", REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeRaw"])
 			}
 			RETempCol[3] = {
 				["value"] = REFlex_Round(((RE.Tab7Matrix[RETableI[j]]["Attendance"]/REBGCount)*100), 0) .. "%  " .. RE.Tab7Matrix[RETableI[j]]["Attendance"] .. " / " .. REBGCount,
@@ -2720,7 +2629,7 @@ function REFlex_Tab4ShowI(j)
 end
 
 function REFlex_Tab4Show()
-	REFlex_MainTab:SetSize(1070, 502);
+	REFlex_MainTab:SetSize(767, 502);
 	REFlex_MainTab_MsgGuild:Hide(); 
 	REFlex_MainTab_MsgParty:Hide();
 	REFlex_MainTab_CSVExport:Hide();
@@ -2739,13 +2648,12 @@ function REFlex_Tab4Show()
 	local REhk = GetPVPLifetimeStats();
 	local _, REHonor = GetCurrencyInfo(HONOR_CURRENCY);
 	local _, RECP = GetCurrencyInfo(CONQUEST_CURRENCY);
-	REFlex_MainTab_Tab4_Bar_I:SetValue(REhk);
-	REFlex_MainTab_Tab4_Bar_Text:SetText(REhk .. " / 100000");
+	REFlex_Tab4BarFiller(REhk);
 	REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetValue(REHonor);
 	REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_Text:SetText(REHonor .. " / " .. RE.HonorCap);
 	if RE.RBGPointsWeek ~= nil then
-		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetValue(RE.RBGPointsWeek);
-		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_Text:SetText(RECP .. " - " .. RE.RBGPointsWeek .. " / " .. RE.RBGMaxPointsWeek);
+		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetValue(RECP);
+		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_Text:SetText(RECP .. " / " .. RE.CPCap .. " - " .. RE.RBGPointsWeek .. " / " .. RE.RBGMaxPointsWeek);
 	end
 
 	if RE.BattlegroundReload then
@@ -2799,22 +2707,22 @@ function REFlex_Tab4Show()
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_KB2"]:SetText(L["Top"] .. ": " .. RE.TopKB);
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_KB3"]:SetText(L["Total"] .. ": " .. RE.SumKB);
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage1"]:SetText(DAMAGE);
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage));
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage, 1));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage, 1));
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing1"]:SetText(SHOW_COMBAT_HEALING);
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing));
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing, 1));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing, 1));
 	end
 
-	if REUsed < 8 then
-		for j=1, 8-REUsed do
+	if REUsed < 10 then
+		for j=1, 10-REUsed do
 			_G["REFlex_MainTab_Tab4_ScoreHolder" .. (j+REUsed)]:Hide();
 		end
 	end
 end
 
 function REFlex_Tab5Show()
-	REFlex_MainTab:SetSize(921, 502);
+	REFlex_MainTab:SetSize(1070, 502);
 	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab_CSVExport:Show();
@@ -2998,8 +2906,8 @@ function REFlex_Tab6Show()
 	REFlex_MainTab_Tab6_ScoreHolderSpecial_BarHonor_I:SetValue(REHonor);
 	REFlex_MainTab_Tab6_ScoreHolderSpecial_BarHonor_Text:SetText(REHonor .. " / ".. RE.HonorCap);
 	if RE.RBGPointsWeek ~= nil then
-		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetValue(RE.RBGPointsWeek);
-		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_Text:SetText(RECP .. " - " .. RE.RBGPointsWeek .. " / " .. RE.RBGMaxPointsWeek);
+		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetValue(RECP);
+		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_Text:SetText(RECP .. " / " .. RE.CPCap .. " - " .. RE.RBGPointsWeek .. " / " .. RE.RBGMaxPointsWeek);
 	end
 
 	local REUsed = 0;
@@ -3010,7 +2918,7 @@ function REFlex_Tab6Show()
 		REUsed = REUsed + 1;
 
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j]:Show();
-		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Title"]:SetText("- " .. RE.MapsHolderArena[j] .. " -");
+		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Title"]:SetText("- " .. REFlex_ShortMap(RE.MapsHolderArena[j]) .. " -");
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Wins"]:SetText(RE.Wins);
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Lose"]:SetText(RE.Losses);
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage1"]:SetText(DAMAGE);
@@ -3021,8 +2929,8 @@ function REFlex_Tab6Show()
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing));
 	end
 
-	if REUsed < 5 then
-		for j=1, 5-REUsed do
+	if REUsed < 6 then
+		for j=1, 6-REUsed do
 			_G["REFlex_MainTab_Tab6_ScoreHolder" .. (j+REUsed)]:Hide();
 		end
 	end
@@ -3043,16 +2951,19 @@ function REFlex_Tab6Show()
 
 		local RETableCount, RETableI = REFlex_TableCount(RE.ArenaTeamsSpec);
 		for j=1, RETableCount do
-			if (REBracket == "" and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0) or (RE.ArenaTeamsSpec[RETableI[j]]["Bracket"] == REBracket and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0) then
+			if (REBracket == "" and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0 and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0) or (RE.ArenaTeamsSpec[RETableI[j]]["Bracket"] == REBracket and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0 and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0) then
 				local RETempCol = {};
 				RETempCol[1] = {
 					["value"] = REFlex_TableTeamArenaTab6(RE.ArenaTeamsSpec[RETableI[j]]["Team"]),
 				}
 				RETempCol[2] = {
+					["value"] = REFlex_Round(RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent]/RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent], 2)
+				}
+				RETempCol[3] = {
 					["value"] = RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent],
 					["color"] = { ["r"] = 0, ["g"] = 1, ["b"] = 0, ["a"] = 1 },
 				}
-				RETempCol[3] = {
+				RETempCol[4] = {
 					["value"] = RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent],
 					["color"] = { ["r"] = 1, ["g"] = 0, ["b"] = 0, ["a"] = 1 },
 				}
@@ -3092,16 +3003,19 @@ function REFlex_Tab6Show()
 		end
 
 		for j=1, RETableCount do
-			if (REBracket == "" and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0) or (RE.ArenaTeamsSpec[RETableI[j]]["Bracket"] == REBracket and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0) then
+			if (REBracket == "" and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0 and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0) or (RE.ArenaTeamsSpec[RETableI[j]]["Bracket"] == REBracket and RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent] > 0 and RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent] > 0) then
 				local RETempCol = {};
 				RETempCol[1] = {
 					["value"] = REFlex_TableTeamArenaTab6(RE.ArenaTeamsSpec[RETableI[j]]["Team"]),
 				}
 				RETempCol[2] = {
+					["value"] = REFlex_Round(RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent]/RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent], 2)
+				}
+				RETempCol[3] = {
 					["value"] = RE.ArenaTeamsSpec[RETableI[j]]["Loss" .. RETalent],
 					["color"] = { ["r"] = 1, ["g"] = 0, ["b"] = 0, ["a"] = 1 },
 				}
-				RETempCol[3] = {
+				RETempCol[4] = {
 					["value"] = RE.ArenaTeamsSpec[RETableI[j]]["Win" .. RETalent],
 					["color"] = { ["r"] = 0, ["g"] = 1, ["b"] = 0, ["a"] = 1 },
 				}
@@ -3146,7 +3060,7 @@ function REFlex_ShowBGDetails_OnEnter(OptionArray)
 	Me.tooltip = RETooltip;
 
 	RETooltip:AddHeader("", "|cFF74D06C" .. TUTORIAL_TITLE19 .. "|r", "");
-	RETooltip:AddLine("|cFF00A9FF" .. FACTION_ALLIANCE .. ":|r " .. REFDatabase[DatabaseID]["AliianceNum"], "", "|cFFFF141D" .. FACTION_HORDE .. ":|r " .. REFDatabase[DatabaseID]["HordeNum"]);
+	RETooltip:AddLine("|cFF00A9FF" .. FACTION_ALLIANCE .. ":|r " .. REFDatabase[DatabaseID]["AllianceNum"], "", "|cFFFF141D" .. FACTION_HORDE .. ":|r " .. REFDatabase[DatabaseID]["HordeNum"]);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
 	RETooltip:AddLine();
@@ -3245,7 +3159,7 @@ function REFlex_ShowBGDetails_OnEnter(OptionArray)
 
 				if REFDatabase[DatabaseID][Friend][i] ~= nil then
 					if New then
-						FriendString = "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][1]*256 .. ":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][2]*256 .. ":".. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][3]*256 ..":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][4]*256 .."|t%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Friend][i]["classToken"]] .. REFlex_NameClean(REFDatabase[DatabaseID][Friend][i]["name"]) .. "|r%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Friend][i]["classToken"]] .. REFDatabase[DatabaseID][Friend][i]["Build"] .. "|r%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Friend][i]["Damage"]) .. "%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Friend][i]["Healing"]);
+						FriendString = "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][1]*256 .. ":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][2]*256 .. ":".. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][3]*256 ..":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Friend][i]["classToken"]][4]*256 .."|t%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Friend][i]["classToken"]] .. REFlex_NameClean(REFDatabase[DatabaseID][Friend][i]["name"]) .. "|r%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Friend][i]["classToken"]] .. REFlex_SpecTranslate(REFDatabase[DatabaseID][Friend][i]["classToken"], REFDatabase[DatabaseID][Friend][i]["Build"]) .. "|r%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Friend][i]["Damage"]) .. "%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Friend][i]["Healing"]);
 						TotalDamageF = TotalDamageF + REFDatabase[DatabaseID][Friend][i]["Damage"];
 						TotalHealingF = TotalHealingF + REFDatabase[DatabaseID][Friend][i]["Healing"];
 					else
@@ -3254,7 +3168,7 @@ function REFlex_ShowBGDetails_OnEnter(OptionArray)
 				end
 				if REFDatabase[DatabaseID][Enemy][i] ~= nil then
 					if New then
-						EnemyString = "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][1]*256 .. ":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][2]*256 .. ":".. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][3]*256 ..":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][4]*256 .."|t%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Enemy][i]["classToken"]] .. REFlex_NameClean(REFDatabase[DatabaseID][Enemy][i]["name"]) .. "|r%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Enemy][i]["classToken"]] .. REFDatabase[DatabaseID][Enemy][i]["Build"] .. "|r%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Enemy][i]["Damage"]) .. "%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Enemy][i]["Healing"]);
+						EnemyString = "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][1]*256 .. ":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][2]*256 .. ":".. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][3]*256 ..":" .. RE.ClassIconCoords[REFDatabase[DatabaseID][Enemy][i]["classToken"]][4]*256 .."|t%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Enemy][i]["classToken"]] .. REFlex_NameClean(REFDatabase[DatabaseID][Enemy][i]["name"]) .. "|r%   |cFF" .. RE.ClassColors[REFDatabase[DatabaseID][Enemy][i]["classToken"]] .. REFlex_SpecTranslate(REFDatabase[DatabaseID][Enemy][i]["classToken"], REFDatabase[DatabaseID][Enemy][i]["Build"]) .. "|r%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Enemy][i]["Damage"]) .. "%" .. REFlex_NumberClean(REFDatabase[DatabaseID][Enemy][i]["Healing"]);
 						TotalDamageE = TotalDamageE + REFDatabase[DatabaseID][Enemy][i]["Damage"];
 						TotalHealingE = TotalHealingE + REFDatabase[DatabaseID][Enemy][i]["Healing"];
 					else
@@ -3341,7 +3255,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 		local RaceClassCell, NameCell, BuildCell, EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell = "", "", "", "", "", "";
 
 		if REFriendID[i] ~= nil then
-			local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
+			local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["classToken"];
 			local RaceToken = nil;
 			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] ~= nil then
 				RaceToken = string.upper(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] .. "_MALE");
@@ -3355,14 +3269,14 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 			NameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
 
 			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"] ~= nil then
-				BuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"] .. "|r";
+				BuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_SpecTranslate(ClassToken, REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"]) .. "|r";
 			else
 				BuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. UNKNOWN .. "|r";
 			end
 		end
 
 		if REEnemyID[i] ~= nil then
-			local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
+			local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["classToken"];
 			local RaceToken = nil;
 			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] ~= nil then
 				RaceToken = string.upper(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] .. "_MALE");
@@ -3376,7 +3290,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 			EnemyNameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
 
 			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"] ~= nil then
-				EnemyBuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"] .. "|r";
+				EnemyBuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_SpecTranslate(ClassToken, REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"]) .. "|r";
 			else
 				EnemyBuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. UNKNOWN .. "|r";
 			end
@@ -3399,7 +3313,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 			if REFriendID[i] ~= nil then
 				RETotalDamage = RETotalDamage + REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Damage"];
 				RETotalHealing = RETotalHealing + REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Healing"];
-				local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
+				local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["classToken"];
 				if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["PreMMR"] ~= nil then
 					NameCell = "   |cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r"
 					if not (REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["PreMMR"] == 0 and REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["MMRChange"] == 0) then
@@ -3415,7 +3329,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 			if REEnemyID[i] ~= nil then
 				RETotalDamageEnemy = RETotalDamageEnemy + REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Damage"];
 				RETotalHealingEnemy = RETotalHealingEnemy + REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Healing"];
-				local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
+				local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["classToken"];
 				if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["PreMMR"] ~= nil then
 					EnemyNameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r"
 					if not (REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["PreMMR"] == 0 and REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["MMRChange"] == 0) then
@@ -3472,7 +3386,7 @@ function REFlex_BGEnd()
 		SetMapToCurrentZone();
 		RE.Map = GetMapNameByID(GetCurrentMapAreaID());
 		local REPlayerName = GetUnitName("player");
-		local RETalentGroup = GetActiveTalentGroup(false, false);
+		local RETalentGroup = GetActiveSpecGroup(false, false);
 		RE.BGPlayers = GetNumBattlefieldScores();
 		local REMyFaction = GetBattlefieldArenaFaction();
 		local REArenaSeason = RE.CurrentSeason;
@@ -3511,6 +3425,7 @@ function REFlex_BGEnd()
 		end
 
 		RE.playerName, RE.killingBlows, RE.honorKills, _, RE.honorGained, _, _, _, RE.classToken, RE.damageDone, RE.healingDone, RE.BGRating, RE.BGRatingChange, RE.BGPreMatchMMR, RE.BGMMRChange, RE.playerBuild = GetBattlefieldScore(RE.PlayerID);
+		RE.playerBuild = REFlex_SpecTranslate(RE.classToken, RE.playerBuild);
 		RE.PlaceKB, RE.PlaceHK, RE.PlaceHonor, RE.PlaceDamage, RE.PlaceHealing = RE.BGPlayers, RE.BGPlayers, RE.BGPlayers, RE.BGPlayers, RE.BGPlayers;
 		local REHordeNum, REAllianceNum = 0, 0;
 		local REAverageHorde, REAverageAlliance = 0, 0;
@@ -3551,6 +3466,7 @@ function REFlex_BGEnd()
 		for j=1, RE.BGPlayers do
 			if j ~= RE.PlayerID then
 				local name, killingBlowsTemp, honorKillsTemp, _, honorGainedTemp, factionTemp, _, _, classToken, damageDoneTemp, healingDoneTemp, ratingTemp, ratingChangeTemp, preMMRTemp, changeMMRTemp, buildTemp = GetBattlefieldScore(j);
+				buildTemp = REFlex_SpecTranslate(classToken, buildTemp);
 				if RE.killingBlows >= killingBlowsTemp then
 					RE.PlaceKB = RE.PlaceKB - 1;
 				end
@@ -3714,7 +3630,7 @@ function REFlex_BGEnd()
 		end
 		print("\n");
 
-		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, Season=REArenaSeason,MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationRaw=RE.BGTimeRaw, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
+		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, Season=REArenaSeason,MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, HordeNum=REHordeNum, AllianceNum=REAllianceNum, DurationRaw=RE.BGTimeRaw, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
 		table.insert(REFDatabase, REBGData);
 	end
 	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");	
@@ -3729,7 +3645,7 @@ function REFlex_ArenaEnd()
 		local REWinSide = REWinner;
 		local REMap = GetRealZoneText();
 		local REPlayerName = GetUnitName("player");
-		local RETalentGroup = GetActiveTalentGroup(false, false);
+		local RETalentGroup = GetActiveSpecGroup(false, false);
 		local REArenaSeason = RE.CurrentSeason;
 		local REBGPlayers = GetNumBattlefieldScores();
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
@@ -3743,12 +3659,28 @@ function REFlex_ArenaEnd()
 
 		local REPLayerTemp = {};
 		local REPlayerTeam, RELocalDamage, RELocalHealing, RELocalKB = "", "", "", "";
+		
+		local REArenaRaces = {};
+		for i=1, MAX_ARENA_ENEMIES do
+			if GetUnitName("arena"..i, true) then
+				local REName = table.concat({ strsplit(" ", GetUnitName("arena"..i, true), 3) });
+				_, REArenaRaces[REName] = UnitRace("arena"..i);
+			end
+		end
+		for i=1, MAX_ARENA_ENEMIES-1 do
+			if GetUnitName("party"..i, true) then
+				local REName = table.concat({ strsplit(" ", GetUnitName("party"..i, true), 3) });
+				_, REArenaRaces[REName] = UnitRace("party"..i);
+			end
+		end
+		_, REArenaRaces[GetUnitName("player", true)] = UnitRace("player");
+		
 		for j=1, REBGPlayers do
 			local REPlayerTemp = {};
-			local REPName, REKillingBlows, _, _, _, REFaction, _, _, REClassToken, REDamageDone, REHealingDone, _, _, REpreMatchMmr, REmmrChange = GetBattlefieldScore(j);
-			local REBuild = RE.ArenaBuilds[REPName];
-			local RERace = RE.ArenaRaces[REPName]; 
-			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, ClassToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone, PreMMR=REpreMatchMmr, MMRChange=REmmrChange};
+			local REPName, REKillingBlows, _, _, _, REFaction, _, _, REClassToken, REDamageDone, REHealingDone, _, _, REpreMatchMmr, REmmrChange, REBuild = GetBattlefieldScore(j);
+			REBuild = REFlex_SpecTranslate(REClassToken, REBuild);
+			local RERace = REArenaRaces[REPName]; 
+			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, classToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone, PreMMR=REpreMatchMmr, MMRChange=REmmrChange};
 
 			if REPName == REPlayerName then
 				REPlayerTeam = REFaction;
@@ -3767,7 +3699,7 @@ function REFlex_ArenaEnd()
 			end
 		end
 
-		-- Workaround - GetBattlefieldStatus() is broken
+		-- Workaround - GetBattlefieldStatus() sometimes return incorrect data
 		local REBracket = 0;
 		for i=1, 3 do
 			local teamName, teamSize = GetArenaTeam(i);

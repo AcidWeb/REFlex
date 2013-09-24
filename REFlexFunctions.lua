@@ -122,6 +122,77 @@ function REFlex_PVPStatsCompleting()
 	end
 	REFlex_UpdateLDB();
 end
+
+function REFlex_Tab4Hover(self, isLeaving)
+		local frameName = self:GetName();
+		if isLeaving then
+			_G[frameName .. "_Title"]:Show();
+			_G[frameName .. "_Wins"]:Show();
+			_G[frameName .. "_Lose"]:Show();
+			_G[frameName .. "_Line"]:Show();
+			_G[frameName .. "_HK1"]:Hide();
+			_G[frameName .. "_HK2"]:Hide();
+			_G[frameName .. "_HK3"]:Hide();
+			_G[frameName .. "_KB1"]:Hide();
+			_G[frameName .. "_KB2"]:Hide();
+			_G[frameName .. "_KB3"]:Hide();
+			_G[frameName .. "_Damage1"]:Hide();
+			_G[frameName .. "_Damage2"]:Hide();
+			_G[frameName .. "_Damage3"]:Hide();
+			_G[frameName .. "_Healing1"]:Hide();
+			_G[frameName .. "_Healing2"]:Hide();
+			_G[frameName .. "_Healing3"]:Hide();
+		else
+			_G[frameName .. "_Title"]:Hide();
+			_G[frameName .. "_Wins"]:Hide();
+			_G[frameName .. "_Lose"]:Hide();
+			_G[frameName .. "_Line"]:Hide();
+			_G[frameName .. "_HK1"]:Show();
+			_G[frameName .. "_HK2"]:Show();
+			_G[frameName .. "_HK3"]:Show();
+			_G[frameName .. "_KB1"]:Show();
+			_G[frameName .. "_KB2"]:Show();
+			_G[frameName .. "_KB3"]:Show();
+			_G[frameName .. "_Damage1"]:Show();
+			_G[frameName .. "_Damage2"]:Show();
+			_G[frameName .. "_Damage3"]:Show();
+			_G[frameName .. "_Healing1"]:Show();
+			_G[frameName .. "_Healing2"]:Show();
+			_G[frameName .. "_Healing3"]:Show();
+		end
+end
+
+function REFlex_Tab4BarFiller(honorKills)
+	local hkMax = 0;
+	if honorKills < 100 then
+		hkMax = 100;
+	elseif honorKills < 500 then
+		hkMax = 500;
+	elseif honorKills < 1000 then
+		hkMax = 1000;
+	elseif honorKills < 5000 then
+		hkMax = 5000;
+	elseif honorKills < 10000 then
+		hkMax = 10000;
+	elseif honorKills < 25000 then
+		hkMax = 25000;
+	elseif honorKills < 50000 then
+		hkMax = 50000;
+	elseif honorKills < 100000 then
+		hkMax = 100000;
+	elseif honorKills < 250000 then
+		hkMax = 250000;
+	end
+	
+	if hkMax ~= 0 then
+		REFlex_MainTab_Tab4_Bar_Text:SetText(honorKills .. " / " .. hkMax);
+		REFlex_MainTab_Tab4_Bar_I:SetMinMaxValues(0, hkMax);
+	else
+		REFlex_MainTab_Tab4_Bar_Text:SetText(honorKills);
+		REFlex_MainTab_Tab4_Bar_I:SetMinMaxValues(0, honorKills);
+	end
+	REFlex_MainTab_Tab4_Bar_I:SetValue(honorKills);
+end
 --
 
 -- Minimap subsection
@@ -514,7 +585,11 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT, Season)
 		end
 	end
 
-	local RERatio = math.floor((RE.Win/(RE.Win+RE.Loss))*100) .. "%";
+	local REDiv = 1;
+	if RE.Win+RE.Loss ~= 0 then
+		REDiv = RE.Win+RE.Loss;
+	end
+	local RERatio = math.floor((RE.Win/REDiv)*100) .. "%";
 	return RE.Win, RE.Loss, RERatio;
 end
 
@@ -606,7 +681,11 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map, Season)
 		end
 	end
 
-	local RERatio = math.floor((RE.Win/(RE.Win+RE.Loss))*100) .. "%";
+	local REDiv = 1;
+	if RE.Win+RE.Loss ~= 0 then
+		REDiv = RE.Win+RE.Loss;
+	end
+	local RERatio = math.floor((RE.Win/REDiv)*100) .. "%";
 	return RE.Win, RE.Loss, RERatio;
 end
 
@@ -655,7 +734,7 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 		for jj=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
 			table.insert(RE.ATHEnemyNames, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Name"]);
 			if REBuildComplete then	
-				table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["ClassToken"] .. "*" .. REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Build"] .. "@");
+				table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["classToken"] .. "*" .. REFlex_SpecTranslate(REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["classToken"], REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Build"]) .. "@");
 			end
 		end
 		table.sort(RE.ATHEnemyNames);
@@ -842,42 +921,6 @@ function REFlex_PVPUpdateDelay()
 	RequestPVPRewards();
 	REFlex_UpdateLDB();
 end
-
-function REFlex_ArenaTalentCheck()
-	local _, REZoneType = IsInInstance();
-	if REZoneType == "arena" then
-		if RE.PartyArenaCheck == 0 then
-			local RETalentGroup = GetActiveTalentGroup(false);
-			local REPartyName = GetUnitName("player", true);
-			_, RE.ArenaRaces[REPartyName] = UnitRace("player");
-
-			local REPrimaryTree = 1;
-			local REPoints = 0;
-			for j = 1, 3 do
-				local _, _, _, _, REPointsSpent = GetTalentTabInfo(j,false,false,RETalentGroup);
-				if (REPointsSpent > REPoints) then
-					REPrimaryTree = j;
-					REPoints = REPointsSpent;
-				end
-			end
-			local _, REBuildName = GetTalentTabInfo(REPrimaryTree,false,false,RETalentGroup);
-
-			RE.ArenaBuilds[REPartyName] = REBuildName;
-			RE.PartyArenaCheck = 1;
-			REFlex_ArenaTalentCheck();
-		elseif RE.PartyArenaCheck < 5 then
-			local REPartyName = GetUnitName("party" .. RE.PartyArenaCheck, true)
-
-			if REPartyName ~= nil and REPartyName ~= UNKNOWN then
-				ClearInspectPlayer();
-				REFlex_Frame:RegisterEvent("INSPECT_READY");
-				NotifyInspect("party" .. RE.PartyArenaCheck);
-			else
-				RE.ShefkiTimer:ScheduleTimer(REFlex_ArenaTalentCheck, 10);
-			end
-		end
-	end
-end
 --
 
 -- String subsection
@@ -968,6 +1011,26 @@ function REFlex_UTF8sub(str, startChar, numChars)
 		numChars = numChars -1
 	end
 	return str:sub(startIndex, currentIndex - 1)
+end
+
+function REFlex_SpecTranslate(classToken, toTranslate)
+	if RE.Spec[classToken] ~= nil then
+		if RE.Spec[classToken][toTranslate] ~= nil then
+			return RE.Spec[classToken][toTranslate];
+		else
+			if type(toTranslate) == "string" then
+				return 0;
+			else
+				return UNKNOWN;
+			end
+		end
+	else
+		if type(toTranslate) == "string" then
+			return 0;
+		else
+			return UNKNOWN;
+		end
+	end
 end
 --
 
@@ -1265,7 +1328,7 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	for i=1, (#RETeam - 1) do
 		local REMember = { strsplit("*", RETeam[i]) };
 
-		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. REFlex_UTF8sub(REMember[2], 1, 2) .. "|r  ";
+		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256+5 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256-5 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256+5 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256-5 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. REFlex_UTF8sub(REMember[2], 1, 2) .. "|r  ";
 	end
 
 	return RETeamLine;
@@ -1334,15 +1397,15 @@ function REFlex_TableTeamArena(IsEnemy, j)
 		local REEnemyNames, REEnemyID, _, _, _, TeamE = REFlex_ArenaTeamHash(j, true);
 
 		for jj=1, #REEnemyID do
-			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][REEnemyID[jj]]["ClassToken"];
-			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
+			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][REEnemyID[jj]]["classToken"];
+			Line = Line .. "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256+5 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256-5 .. ":".. RE.ClassIconCoords[ClassToken][3]*256+5 ..":" .. RE.ClassIconCoords[ClassToken][4]*256-5 .. "|t  ";
 		end
 	else
 		local _, _, REFriendNames, REFriendID, Team = REFlex_ArenaTeamHash(j, false);
 
 		for jj=1, #REFriendID do
-			local ClassToken = REFDatabaseA[j][Team .. "Team"][REFriendID[jj]]["ClassToken"];
-			Line = Line .. " |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t "
+			local ClassToken = REFDatabaseA[j][Team .. "Team"][REFriendID[jj]]["classToken"];
+			Line = Line .. "  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256+5 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256-5 .. ":".. RE.ClassIconCoords[ClassToken][3]*256+5 ..":" .. RE.ClassIconCoords[ClassToken][4]*256-5 .. "|t  "
 		end
 	end
 
