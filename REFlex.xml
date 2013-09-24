@@ -96,7 +96,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString inherits="GameFontNormal" text="REFlex v0.2.1">
+				<FontString inherits="GameFontNormal" text="REFlex v0.3">
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
@@ -664,6 +664,68 @@
 							</Layer>
 						</Layers>	
 					</Frame>
+				</Frames>
+			</Frame>
+			<Frame name="$parent_SpecHolder">
+				<Size>
+					<AbsDimension x="1" y="1"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-205" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad> PanelTemplates_SetNumTabs(REFlex_MainTab_SpecHolder, 3); </OnLoad>
+				</Scripts>
+				<Frames>
+					<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
+						<Anchors>
+							<Anchor point="CENTER" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="30" y="-10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 1);
+								REFlex_SpecTab(nil);
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="-16" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 2);
+								REFlex_SpecTab(1);
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="-16" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 3);
+								REFlex_SpecTab(2);
+							</OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 			<Button name="$parent_CloseButton" inherits="UIPanelCloseButton">

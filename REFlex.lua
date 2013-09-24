@@ -48,6 +48,9 @@ function REFlex_OnEvent(self,event,...)
 		REFlex_MainTabTab1:SetText(L["All"]);
 		REFlex_MainTabTab2:SetText(L["Normal"]);
 		REFlex_MainTabTab3:SetText(L["Rated"]);
+		REFlex_MainTab_SpecHolderTab1:SetText(L["Both Specs"]);
+		REFlex_MainTab_SpecHolderTab2:SetText(L["Spec 1"]);
+		REFlex_MainTab_SpecHolderTab3:SetText(L["Spec 2"]);
 
 		if REFDatabase == nil then
 			REFDatabase = {};
@@ -57,7 +60,6 @@ function REFlex_OnEvent(self,event,...)
 		end
 
 		RequestRatedBattlegroundInfo();
-
 		REFlex_SettingsReload();
 
 		self:UnregisterEvent("ADDON_LOADED");
@@ -172,100 +174,133 @@ function REFlex_NumberCleanNegative(Number, round)
 	return Number;
 end
 
-function REFlex_Find(FieldName, Rated)
+function REFlex_Find(FieldName, Rated, TalentSets)
 	local Top = 0;
 	local Sum = 0;
 
-	if Rated then
-		for j=1, #REFDatabase do
-			if REFDatabase[j]["IsRated"] then
-				Sum = Sum + REFDatabase[j][FieldName];
-				if Top < REFDatabase[j][FieldName] then
-					Top = REFDatabase[j][FieldName];
+	if TalentSets ~= nil then
+		if Rated then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
+					Sum = Sum + REFDatabase[j][FieldName];
+					if Top < REFDatabase[j][FieldName] then
+						Top = REFDatabase[j][FieldName];
+					end
 				end
 			end
-		end
-	elseif Rated == false then
-		for j=1, #REFDatabase do
-			if REFDatabase[j]["IsRated"] == false then 
-				Sum = Sum + REFDatabase[j][FieldName];
-				if Top < REFDatabase[j][FieldName] then
-					Top = REFDatabase[j][FieldName];
+		elseif Rated == false then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets then 
+					Sum = Sum + REFDatabase[j][FieldName];
+					if Top < REFDatabase[j][FieldName] then
+						Top = REFDatabase[j][FieldName];
+					end
+				end
+			end
+		else
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["TalentSet"] == TalentSets then
+					Sum = Sum + REFDatabase[j][FieldName];
+					if Top < REFDatabase[j][FieldName] then
+						Top = REFDatabase[j][FieldName];
+					end
 				end
 			end
 		end
 	else
-		for j=1, #REFDatabase do
-			Sum = Sum + REFDatabase[j][FieldName];
-			if Top < REFDatabase[j][FieldName] then
-				Top = REFDatabase[j][FieldName];
+		if Rated then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] then
+					Sum = Sum + REFDatabase[j][FieldName];
+					if Top < REFDatabase[j][FieldName] then
+						Top = REFDatabase[j][FieldName];
+					end
+				end
+			end
+		elseif Rated == false then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] == false then 
+					Sum = Sum + REFDatabase[j][FieldName];
+					if Top < REFDatabase[j][FieldName] then
+						Top = REFDatabase[j][FieldName];
+					end
+				end
+			end
+		else
+			for j=1, #REFDatabase do
+				Sum = Sum + REFDatabase[j][FieldName];
+				if Top < REFDatabase[j][FieldName] then
+					Top = REFDatabase[j][FieldName];
+				end
 			end
 		end
 	end
 	return Top, Sum;
 end
 
-function REFlex_WinLoss(Rated)
-	local Win = 0;
-	local Loss = 0;
+function REFlex_WinLossI(Faction, j)
+	if Faction == "Horde" then
+		if REFDatabase[j]["Winner"] == FACTION_HORDE then
+			REWin = REWin + 1;
+		else
+			RELoss = RELoss + 1;
+		end
+	else
+		if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
+			REWin = REWin + 1;
+		else
+			RELoss = RELoss + 1;
+		end
+	end
+end
+
+function REFlex_WinLoss(Rated, TalentSets)
+	REWin = 0;
+	RELoss = 0;
 	local REFaction = UnitFactionGroup("player");
 
-	if Rated then
-		for j=1, #REFDatabase do
-			if REFDatabase[j]["IsRated"] then
-				if REFaction == "Horde" then
-					if REFDatabase[j]["Winner"] == FACTION_HORDE then
-						Win = Win + 1;
-					else
-						Loss = Loss + 1;
-					end
-				else
-					if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
-						Win = Win + 1;
-					else
-						Loss = Loss + 1;
-					end
+	if TalentSets ~= nil then
+		if Rated then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
+					REFlex_WinLossI(REFaction, j);
 				end
 			end
-		end
-	elseif Rated == false then
-		for j=1, #REFDatabase do
-			if REFDatabase[j]["IsRated"] == false then
-				if REFaction == "Horde" then
-					if REFDatabase[j]["Winner"] == FACTION_HORDE then
-						Win = Win + 1;
-					else
-						Loss = Loss + 1;
-					end
-				else
-					if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
-						Win = Win + 1;
-					else
-						Loss = Loss + 1;
-					end
+		elseif Rated == false then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets then
+					REFlex_WinLossI(REFaction, j);	
+				end
+			end
+		else
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["TalentSet"] == TalentSets then
+					REFlex_WinLossI(REFaction, j);	
 				end
 			end
 		end
 	else
-		for j=1, #REFDatabase do
-			if REFaction == "Horde" then
-				if REFDatabase[j]["Winner"] == FACTION_HORDE then
-					Win = Win + 1;
-				else
-					Loss = Loss + 1;
+		if Rated then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] then
+					REFlex_WinLossI(REFaction, j);	
 				end
-			else
-				if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
-					Win = Win + 1;
-				else
-					Loss = Loss + 1;
+			end
+		elseif Rated == false then
+			for j=1, #REFDatabase do
+				if REFDatabase[j]["IsRated"] == false then
+					REFlex_WinLossI(REFaction, j);	
 				end
+			end
+		else
+			for j=1, #REFDatabase do
+				REFlex_WinLossI(REFaction, j);
 			end
 		end
 	end
 
-	local Ratio = math.floor((Win/(Win+Loss))*100) .. "%";
-	return Win, Loss, Ratio;
+	local RERatio = math.floor((REWin/(REWin+RELoss))*100) .. "%";
+	return REWin, RELoss, RERatio;
 end
 --
 
@@ -276,31 +311,8 @@ end
 --
 
 -- String subsection
-function REFlex_Split(str, delim, maxNb)
-	if string.gmatch(str, delim) == nil then
-		return { str }
-	end
-	if maxNb == nil or maxNb < 1 then
-		maxNb = 0
-	end
-	local result = {}
-	local pat = "(.-)" .. delim .. "()"
-	local nb = 0
-	local lastPos
-	for part, pos in string.gmatch(str, pat) do
-		nb = nb + 1
-		result[nb] = part
-		lastPos = pos
-		if nb == maxNb then break end
-	end
-	if nb ~= maxNb then
-		result[nb + 1] = string.sub(str, lastPos)
-	end
-	return result
-end
-
 function REFlex_ShortMap(MapName)
-	local MapNameTemp = REFlex_Split(MapName, " ");
+	local MapNameTemp = { strsplit(" ", MapName) };
 	local ShortMapName = "";
 	for j=1, #MapNameTemp do
 		ShortMapName = ShortMapName .. string.sub(MapNameTemp[j], 0, 1)
@@ -480,6 +492,7 @@ function REFlex_MainTabShow()
 			["align"] = "CENTER"
 		}
 	}
+
 	local REDataStructure3 = {
 		{
 			["name"] = L["Date"],
@@ -581,64 +594,96 @@ function REFlex_MainTabShow()
 		RESecondTimeMainTab = true;
 	end
 
+	RETalentTab = nil;
+
 	PanelTemplates_SetTab(REFlex_MainTab, 1);
+	PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 1);
 	REFlex_MainTab_Tab1:Show();
 	REFlex_MainTab_Tab2:Hide();
 	REFlex_MainTab_Tab3:Hide();
 end
 
+function REFlex_SpecTab(Spec)
+	RETalentTab = Spec;
+
+	local Visible1 = REFlex_MainTab_Tab1:IsVisible();
+	local Visible2 = REFlex_MainTab_Tab2:IsVisible();
+	local Visible3 = REFlex_MainTab_Tab3:IsVisible();
+
+	if Visible1 == 1 then
+		REFlex_MainTab_Tab1:Hide();
+		REFlex_MainTab_Tab1:Show();
+	elseif Visible2 == 1 then
+		REFlex_MainTab_Tab2:Hide();
+		REFlex_MainTab_Tab2:Show();
+	elseif Visible3 == 1 then
+		REFlex_MainTab_Tab3:Hide();
+		REFlex_MainTab_Tab3:Show();
+	end
+end
+
+function REFlex_Tab1Data(j)
+	local RETempCol = {};
+	RETempCol[1] = {
+		["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
+	}
+	RETempCol[2] = {
+		["value"] = REFDatabase[j]["MapName"],
+		["color"] = REFlex_TableCheckRated,
+		["colorargs"] = {REFDatabase[j]["IsRated"],}
+	}
+	RETempCol[3] = {
+		["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+	}
+	RETempCol[4] = {
+		["value"] = REFDatabase[j]["Winner"],
+		["color"] = REFlex_TableWinColor,
+		["colorargs"] = {REFDatabase[j]["Winner"],}
+	}
+	RETempCol[5] = {
+		["value"] = REFDatabase[j]["KB"]
+	}
+	RETempCol[6] = {
+		["value"] = REFDatabase[j]["HK"]
+	}
+	RETempCol[7] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+	}
+	RETempCol[8] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+	}
+	RETempCol[9] = {
+		["value"] = REFDatabase[j]["Honor"]
+	}
+
+	local RETempRow = {
+		["cols"] = RETempCol
+	}
+
+	table.insert(RETableData, RETempRow);
+end
+
 function REFlex_Tab1Show()
-	local RETableData = {};
+	RETableData = {};
 
 	for j=1, #REFDatabase do
-		local RETempCol = {};
-		RETempCol[1] = {
-			["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
-		}
-		RETempCol[2] = {
-			["value"] = REFDatabase[j]["MapName"],
-			["color"] = REFlex_TableCheckRated,
-			["colorargs"] = {REFDatabase[j]["IsRated"],}
-		}
-		RETempCol[3] = {
-			["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
-		}
-		RETempCol[4] = {
-			["value"] = REFDatabase[j]["Winner"],
-			["color"] = REFlex_TableWinColor,
-			["colorargs"] = {REFDatabase[j]["Winner"],}
-		}
-		RETempCol[5] = {
-			["value"] = REFDatabase[j]["KB"]
-		}
-		RETempCol[6] = {
-			["value"] = REFDatabase[j]["HK"]
-		}
-		RETempCol[7] = {
-			["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
-		}
-		RETempCol[8] = {
-			["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
-		}
-		RETempCol[9] = {
-			["value"] = REFDatabase[j]["Honor"]
-		}
-
-		local RETempRow = {
-			["cols"] = RETempCol
-		}
-
-		table.insert(RETableData, RETempRow);
+		if RETalentTab ~= nil then
+			if REFDatabase[j]["TalentSet"] == RETalentTab then
+				REFlex_Tab1Data(j);
+			end
+		else
+			REFlex_Tab1Data(j);
+		end
 	end
 
 	REMainTable1:SetData(RETableData);
 	REMainTable1:SortData();
 
-	RETopKB, RESumKB = REFlex_Find("KB", nil);
-	RETopHK, RESumHK = REFlex_Find("HK", nil);
-	RETopDamage, RESumDamage = REFlex_Find("Damage", nil);
-	RETopHealing, RESumHealing = REFlex_Find("Healing", nil);
-	REWins, RELosses = REFlex_WinLoss(nil); 
+	RETopKB, RESumKB = REFlex_Find("KB", nil, RETalentTab);
+	RETopHK, RESumHK = REFlex_Find("HK", nil, RETalentTab);
+	RETopDamage, RESumDamage = REFlex_Find("Damage", nil, RETalentTab);
+	RETopHealing, RESumHealing = REFlex_Find("Healing", nil, RETalentTab);
+	REWins, RELosses = REFlex_WinLoss(nil, RETalentTab); 
 
 	REFlex_MainTab_Tab1_ScoreHolder_Wins:SetText(REWins);
 	REFlex_MainTab_Tab1_ScoreHolder_Lose:SetText(RELosses);
@@ -657,58 +702,66 @@ function REFlex_Tab1Show()
 	REFlex_MainTab_Tab1_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
 end
 
+function REFlex_Tab2Data(j)
+	local RETempCol = {};
+	RETempCol[1] = {
+		["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
+	}
+	RETempCol[2] = {
+		["value"] = REFDatabase[j]["MapName"]
+	}
+	RETempCol[3] = {
+		["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+	}
+	RETempCol[4] = {
+		["value"] = REFDatabase[j]["Winner"],
+		["color"] = REFlex_TableWinColor,
+		["colorargs"] = {REFDatabase[j]["Winner"],}
+	}
+	RETempCol[5] = {
+		["value"] = REFDatabase[j]["KB"]
+	}
+	RETempCol[6] = {
+		["value"] = REFDatabase[j]["HK"]
+	}
+	RETempCol[7] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+	}
+	RETempCol[8] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+	}
+	RETempCol[9] = {
+		["value"] = REFDatabase[j]["Honor"]
+	}
+
+	local RETempRow = {
+		["cols"] = RETempCol
+	}
+
+	table.insert(RETableData, RETempRow);
+end
+
 function REFlex_Tab2Show()
-	local RETableData = {};
+	RETableData = {};
 
 	for j=1, #REFDatabase do
-		if REFDatabase[j]["IsRated"] == false then
-			local RETempCol = {};
-			RETempCol[1] = {
-				["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
-			}
-			RETempCol[2] = {
-				["value"] = REFDatabase[j]["MapName"]
-			}
-			RETempCol[3] = {
-				["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
-			}
-			RETempCol[4] = {
-				["value"] = REFDatabase[j]["Winner"],
-				["color"] = REFlex_TableWinColor,
-				["colorargs"] = {REFDatabase[j]["Winner"],}
-			}
-			RETempCol[5] = {
-				["value"] = REFDatabase[j]["KB"]
-			}
-			RETempCol[6] = {
-				["value"] = REFDatabase[j]["HK"]
-			}
-			RETempCol[7] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
-			}
-			RETempCol[8] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
-			}
-			RETempCol[9] = {
-				["value"] = REFDatabase[j]["Honor"]
-			}
-
-			local RETempRow = {
-				["cols"] = RETempCol
-			}
-
-			table.insert(RETableData, RETempRow);
+		if RETalentTab ~= nil then
+			if REFDatabase[j]["TalentSet"] == RETalentTab and REFDatabase[j]["IsRated"] == false then
+				REFlex_Tab2Data(j);
+			end
+		elseif REFDatabase[j]["IsRated"] == false then
+			REFlex_Tab2Data(j);
 		end
 	end
 
 	REMainTable2:SetData(RETableData);
 	REMainTable2:SortData();
 
-	RETopKB, RESumKB = REFlex_Find("KB", false);
-	RETopHK, RESumHK = REFlex_Find("HK", false);
-	RETopDamage, RESumDamage = REFlex_Find("Damage", false);
-	RETopHealing, RESumHealing = REFlex_Find("Healing", false);
-	REWins, RELosses = REFlex_WinLoss(false); 
+	RETopKB, RESumKB = REFlex_Find("KB", false, RETalentTab);
+	RETopHK, RESumHK = REFlex_Find("HK", false, RETalentTab);
+	RETopDamage, RESumDamage = REFlex_Find("Damage", false, RETalentTab);
+	RETopHealing, RESumHealing = REFlex_Find("Healing", false, RETalentTab);
+	REWins, RELosses = REFlex_WinLoss(false, RETalentTab); 
 
 	REFlex_MainTab_Tab2_ScoreHolder_Wins:SetText(REWins);
 	REFlex_MainTab_Tab2_ScoreHolder_Lose:SetText(RELosses);
@@ -726,66 +779,74 @@ function REFlex_Tab2Show()
 	REFlex_MainTab_Tab2_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
 end
 
+function REFlex_Tab3Data(j)
+	local RETempCol = {};
+	RETempCol[1] = {
+		["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. string.sub(REFDatabase[j]["TimeYe"], 3)
+	}
+	RETempCol[2] = {
+		["value"] = REFlex_ShortMap(REFDatabase[j]["MapName"])
+	}
+	RETempCol[3] = {
+		["value"] = REFDatabase[j]["AllianceRating"]
+	}
+	RETempCol[4] = {
+		["value"] = REFDatabase[j]["HordeRating"]
+	}
+	RETempCol[5] = {
+		["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+	}
+	RETempCol[6] = {
+		["value"] = REFDatabase[j]["Winner"],
+		["color"] = REFlex_TableWinColor,
+		["colorargs"] = {REFDatabase[j]["Winner"],}
+	}
+	RETempCol[7] = {
+		["value"] = REFDatabase[j]["KB"]
+	}
+	RETempCol[8] = {
+		["value"] = REFDatabase[j]["HK"]
+	}
+	RETempCol[9] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+	}
+	RETempCol[10] = {
+		["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+	}
+	RETempCol[11] = {
+		["value"] = REFDatabase[j]["RatingChange"],
+		["color"] = REFlex_TableRatingColor,
+		["colorargs"] = {REFDatabase[j]["RatingChange"],}
+	}
+
+	local RETempRow = {
+		["cols"] = RETempCol
+	}
+
+	table.insert(RETableData, RETempRow);
+end
+
 function REFlex_Tab3Show()
-	local RETableData = {};
+	RETableData = {};
 
 	for j=1, #REFDatabase do
-		if REFDatabase[j]["IsRated"] then
-			local RETempCol = {};
-			RETempCol[1] = {
-				["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. string.sub(REFDatabase[j]["TimeYe"], 3)
-			}
-			RETempCol[2] = {
-				["value"] = REFlex_ShortMap(REFDatabase[j]["MapName"])
-			}
-			RETempCol[3] = {
-				["value"] = REFDatabase[j]["AllianceRating"]
-			}
-			RETempCol[4] = {
-				["value"] = REFDatabase[j]["HordeRating"]
-			}
-			RETempCol[5] = {
-				["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
-			}
-			RETempCol[6] = {
-				["value"] = REFDatabase[j]["Winner"],
-				["color"] = REFlex_TableWinColor,
-				["colorargs"] = {REFDatabase[j]["Winner"],}
-			}
-			RETempCol[7] = {
-				["value"] = REFDatabase[j]["KB"]
-			}
-			RETempCol[8] = {
-				["value"] = REFDatabase[j]["HK"]
-			}
-			RETempCol[9] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
-			}
-			RETempCol[10] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
-			}
-			RETempCol[11] = {
-				["value"] = REFDatabase[j]["RatingChange"],
-				["color"] = REFlex_TableRatingColor,
-				["colorargs"] = {REFDatabase[j]["RatingChange"],}
-			}
-
-			local RETempRow = {
-				["cols"] = RETempCol
-			}
-
-			table.insert(RETableData, RETempRow);
+		if RETalentTab ~= nil then
+			if REFDatabase[j]["TalentSet"] == RETalentTab and REFDatabase[j]["IsRated"] then
+				REFlex_Tab3Data(j);
+			end
+		elseif REFDatabase[j]["IsRated"] then
+			REFlex_Tab3Data(j);
 		end
 	end
 
 	REMainTable3:SetData(RETableData);
 	REMainTable3:SortData();
 
-	RETopKB, RESumKB = REFlex_Find("KB", true);
-	RETopHK, RESumHK = REFlex_Find("HK", true);
-	RETopDamage, RESumDamage = REFlex_Find("Damage", true);
-	RETopHealing, RESumHealing = REFlex_Find("Healing", true);
-	REWins, RELosses = REFlex_WinLoss(true); 
+	RETopKB, RESumKB = REFlex_Find("KB", true, RETalentTab);
+	RETopHK, RESumHK = REFlex_Find("HK", true, RETalentTab);
+	RETopDamage, RESumDamage = REFlex_Find("Damage", true, RETalentTab);
+	RETopHealing, RESumHealing = REFlex_Find("Healing", true, RETalentTab);
+	REWins, RELosses = REFlex_WinLoss(true, RETalentTab); 
 
 	REFlex_MainTab_Tab3_ScoreHolder_Wins:SetText(REWins);
 	REFlex_MainTab_Tab3_ScoreHolder_Lose:SetText(RELosses);
@@ -900,10 +961,10 @@ function REFlex_BGEnd()
 
 		local REBGRated = IsRatedBattleground();
 		if REBGRated then
-			RETopKB = REFlex_Find("KB", true);
-			RETopHK = REFlex_Find("HK", true);
-			RETopDamage = REFlex_Find("Damage", true);
-			RETopHealing = REFlex_Find("Healing", true);
+			RETopKB = REFlex_Find("KB", true, RETalentGroup);
+			RETopHK = REFlex_Find("HK", true, RETalentGroup);
+			RETopDamage = REFlex_Find("Damage", true, RETalentGroup);
+			RETopHealing = REFlex_Find("Healing", true, RETalentGroup);
 
 			if REFaction == "Horde" then
 				REBGHordeRating = REFlex_Round((REAverageHorde + REBGRating) / REHordeNum, 0);
@@ -913,10 +974,10 @@ function REFlex_BGEnd()
 				REBGAllyRating = REFlex_Round((REAverageAlliance + REBGRating) / REAllianceNum, 0);
 			end
 		else
-			RETopKB = REFlex_Find("KB", false);
-			RETopHK = REFlex_Find("HK", false);
-			RETopDamage = REFlex_Find("Damage", false);
-			RETopHealing = REFlex_Find("Healing", false);
+			RETopKB = REFlex_Find("KB", false, RETalentGroup);
+			RETopHK = REFlex_Find("HK", false, RETalentGroup);
+			RETopDamage = REFlex_Find("Damage", false, RETalentGroup);
+			RETopHealing = REFlex_Find("Healing", false, RETalentGroup);
 
 			REBGRating = nil;
 			REBGRatingChange = nil;
