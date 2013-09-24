@@ -21,7 +21,7 @@ RE.DataVersion = 20;
 RE.AddonVersion = "v0.9.8.5";
 RE.AddonVersionCheck = 985;
 
-RE.Debug = 0;
+RE.Debug = 1;
 
 RE.GuildMembers = {};
 RE.ArenaTeams = {};
