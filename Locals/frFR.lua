@@ -23,6 +23,7 @@ REFlexLocale:CreateLocaleTable({
 	Discipline = "Discipline",
 	["Easiest compositions"] = "Compos les plus faciles",
 	Elemental = "\195\137l\195\169mentaire", -- Needs review
+	["Use only records from current season to calculate statistics"] = "Use only records from current season to calculate statistics", -- Requires localization
 	Enhancement = "Am\195\169lioration",
 	Feral = "F\195\169ral",
 	Fire = "Feu",

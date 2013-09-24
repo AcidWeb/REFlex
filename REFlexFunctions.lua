@@ -41,12 +41,12 @@ end
 function REFlex_GUISaveInternal(Field)
 	local REButtonCheck = _G["REFlex_GUI_" .. Field]:GetChecked();
 	if REButtonCheck == 1 then
-		if REFSettings[Field] == false and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport") then
+		if REFSettings[Field] == false and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport" or Field == "OnlyNew") then
 			RE.NeedReload = true;
 		end
 		REFSettings[Field] = true;
 	else
-		if REFSettings[Field] == true and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport") then
+		if REFSettings[Field] == true and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport" or Field == "OnlyNew") then
 			RE.NeedReload = true;
 		end
 		REFSettings[Field] = false;
@@ -177,7 +177,7 @@ function REFlex_FindI(FieldName, j)
 	end
 end
 
-function REFlex_Find(FieldName, Rated, TalentSets, Map)
+function REFlex_Find(FieldName, Rated, TalentSets, Map, Season)
 	RE.FTop = 0;
 	RE.FSum = 0;
 
@@ -186,7 +186,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_FindI(FieldName, j);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -198,7 +200,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_FindI(FieldName, j);
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -206,7 +210,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] then
-						REFlex_FindI(FieldName, j);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -217,7 +223,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 				end
 			else
 				for j=1, #REFDatabase do
-					REFlex_FindI(FieldName, j);
+					if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+						REFlex_FindI(FieldName, j);
+					end
 				end
 			end
 		end
@@ -226,7 +234,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_FindI(FieldName, j);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -238,7 +248,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_FindI(FieldName, j);
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -246,7 +258,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["MapName"] == Map then
-						REFlex_FindI(FieldName, j);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -258,7 +272,9 @@ function REFlex_Find(FieldName, Rated, TalentSets, Map)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["MapName"] == Map then
-						REFlex_FindI(FieldName, j);
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -275,7 +291,7 @@ function REFlex_FindArenaI(FieldName, j)
 	end
 end
 
-function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
+function REFlex_FindArena(FieldName, Bracket, TalentSets, Map, Season)
 	RE.FTop = 0;
 	RE.FSum = 0;
 
@@ -284,13 +300,17 @@ function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["TalentSet"] == TalentSets then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["TalentSet"] == TalentSets then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -298,12 +318,16 @@ function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
-					REFlex_FindArenaI(FieldName, j);
+					if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+						REFlex_FindArenaI(FieldName, j);
+					end
 				end
 			end
 		end
@@ -312,13 +336,17 @@ function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["TalentSet"] == TalentSets and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["TalentSet"] == TalentSets and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -326,13 +354,17 @@ function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
 			if Bracker ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["MapName"] == Map then
-						REFlex_FindArenaI(FieldName, j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_FindArenaI(FieldName, j);
+						end
 					end
 				end
 			end
@@ -360,7 +392,7 @@ function REFlex_WinLossI(Faction, j, TimeF, TimeT)
 	end
 end
 
-function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
+function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT, Season)
 	RE.Win = 0;
 	RE.Loss = 0;
 
@@ -369,7 +401,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -381,7 +415,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						end
 					end
 				end
 			end
@@ -389,7 +425,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						end
 					end
 				end
 			elseif Rated == false then
@@ -400,7 +438,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 				end
 			else
 				for j=1, #REFDatabase do
-					REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+					if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+					end
 				end
 			end
 		end
@@ -409,7 +449,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						end
 					end
 				end
 			elseif Rated == false then
@@ -421,7 +463,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						end
 					end
 				end
 			end
@@ -429,7 +473,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						if Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
+						end
 					end
 				end
 			elseif Rated == false then
@@ -441,7 +487,9 @@ function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						if (REFDatabase[j]["IsRated"] == false) or (Season == false or (Season == true and REFDatabase[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
+						end
 					end
 				end
 			end
@@ -460,7 +508,7 @@ function REFlex_WinLossArenaI(j)
 	end
 end
 
-function REFlex_WinLossArena(Bracket, TalentSets, Map)
+function REFlex_WinLossArena(Bracket, TalentSets, Map, Season)
 	RE.Win = 0;
 	RE.Loss = 0;
 
@@ -469,13 +517,17 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossArenaI(j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossArenaI(j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			end
@@ -483,12 +535,16 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket then
-						REFlex_WinLossArenaI(j);	
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
-					REFlex_WinLossArenaI(j);
+					if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+						REFlex_WinLossArenaI(j);
+					end
 				end
 			end
 		end
@@ -497,13 +553,17 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["TalentSet"] == TalentSets and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_WinLossArenaI(j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["TalentSet"] == TalentSets and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_WinLossArenaI(j);	
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);	
+						end
 					end
 				end
 			end
@@ -511,13 +571,17 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map)
 			if Bracket ~= nil then
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["Bracket"] == Bracket and REFDatabaseA[j]["MapName"] == Map then
-						REFlex_WinLossArenaI(j);	
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			else
 				for j=1, #REFDatabaseA do
 					if REFDatabaseA[j]["MapName"] == Map then
-						REFlex_WinLossArenaI(j);
+						if Season == false or (Season == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_WinLossArenaI(j);
+						end
 					end
 				end
 			end
@@ -534,6 +598,7 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 	local REFriendNames = {};
 	local REFriendID = {};
 	local REEnemyNamesSpec = {};
+	local RESeason = REFDatabaseA[DatabaseID]["Season"];
 
 	local Team, TeamE = "", "";
 	if REFDatabaseA[DatabaseID]["PlayerTeam"] == 0 then
@@ -594,7 +659,7 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 		end
 	end
 
-	return REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE, REEnemyNamesSpec;
+	return REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE, REEnemyNamesSpec, RESeason;
 end
 
 function REFlex_ArenaTeamGrid(IDTo)
@@ -603,7 +668,7 @@ function REFlex_ArenaTeamGrid(IDTo)
 			break;
 		end
 
-		local REEnemyNames, _, _, _, _, _, REEnemyNamesSpec = REFlex_ArenaTeamHash(j, true);
+		local REEnemyNames, _, _, _, _, _, REEnemyNamesSpec, RESeason = REFlex_ArenaTeamHash(j, true);
 
 		local REEnemyTeamID = table.concat(REEnemyNames);
 		if RE.ArenaTeams[REEnemyTeamID] == nil then
@@ -620,31 +685,33 @@ function REFlex_ArenaTeamGrid(IDTo)
 		if REEnemyNamesSpec[1] ~= nil then
 			local RETempBracket = { strsplit("#", table.concat(REEnemyNamesSpec)) };
 			local REEnemyTeamID = RETempBracket[3];
-			
-			if RE.ArenaTeamsSpec[REEnemyTeamID] == nil then
-				RE.ArenaTeamsSpec[REEnemyTeamID] = {};
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Win1"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss1"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Total1"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Win2"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss2"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Total2"] = 0;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Team"] = REEnemyTeamID;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Bracket"] = RETempBracket[2];
+		
+			if REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (RESeason == RE.CurrentSeason)) then
+				if RE.ArenaTeamsSpec[REEnemyTeamID] == nil then
+					RE.ArenaTeamsSpec[REEnemyTeamID] = {};
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Win1"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Loss1"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Total1"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Win2"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Loss2"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Total2"] = 0;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Team"] = REEnemyTeamID;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Bracket"] = RETempBracket[2];
+				end
+
+				if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] + 1;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] + 1;
+				else
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] + 1;
+					RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] + 1;
+				end
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] + 1;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] + 1;
 			end
-			
-			if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] + 1;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] + 1;
-			else
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] + 1;
-				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] + 1;
-			end
-			RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] + 1;
-			RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] + 1;
 		end
 		RE.ArenaLastID = j;
 	end
@@ -831,7 +898,7 @@ function REFlex_FindTab7Default()
 	_, RE.Tab7Search["T"]["m"], RE.Tab7Search["T"]["d"], RE.Tab7Search["T"]["y"] = CalendarGetDate();
 
 	for i=1, #REFDatabase do
-		if REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil then
+		if (REFSettings["OnlyNew"] == false and REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil) or (REFSettings["OnlyNew"] == true and REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil and REFDatabase[i]["Season"] == RE.CurrentSeason) then
 			RE.Tab7Default["F"]["m"] = tonumber(REFDatabase[i]["TimeMo"]);
 			RE.Tab7Default["F"]["d"] = tonumber(REFDatabase[i]["TimeDa"]);
 			RE.Tab7Default["F"]["y"] = tonumber(REFDatabase[i]["TimeYe"]);
@@ -963,7 +1030,7 @@ end
 function REFlex_TableRBGRatingMMR(Faction, j)
 	local RELine = "";
 	
-	if REFDatabase[j][Faction .. "MMR"] ~= nil and REFDatabase[j]["DataVersion"] < 12 then
+	if REFDatabase[j][Faction .. "MMR"] ~= nil then
 		RELine = " / " .. REFDatabase[j][Faction .. "MMR"];
 	end
 

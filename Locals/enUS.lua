@@ -28,6 +28,7 @@ local L = {
 	["Show minimap button"] = true,
 	["Show main window"] = true,
 	["Show MiniBar (Battlegrounds only)"] = true,
+	["Use only records from current season to calculate statistics"] = true,
 	["Show LDB MiniBar (Battlegrounds only)"] = true,
 	["Show amount of CPs to cap"] = true,
 	["Show Honorable Kills"] = true,

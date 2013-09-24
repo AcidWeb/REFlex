@@ -28,6 +28,7 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "Feuer",
 	Frost = "Frost",
 	Fury = "Furor",
+	["Use only records from current season to calculate statistics"] = "Use only records from current season to calculate statistics", -- Requires localization
 	["H Rating"] = "H Wertung",
 	["Hardest compositions"] = "Schwerste Zusammenstellung",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Halte SHIFT w\195\164hrend des Anschauens von Arenapartien f\195\188r einen erweiterten Tooltip.", -- Needs review

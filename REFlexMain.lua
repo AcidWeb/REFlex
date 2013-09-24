@@ -17,9 +17,9 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 12;
-RE.AddonVersion = "v0.9.5.2";
-RE.AddonVersionCheck = 952;
+RE.DataVersion = 13;
+RE.AddonVersion = "v0.9.5.3";
+RE.AddonVersionCheck = 953;
 
 RE.Debug = false;
 
@@ -50,7 +50,7 @@ RE.Tab6TableData3 = {};
 RE.Tab7TableData = {};
 RE.ArenaLastID = 0;
 
-RE.Options = {"ShowMinimapButton", "ShowMiniBar", "ShowDetectedBuilds", "ArenaSupport", "RBGSupport", "UNBGSupport", "LDBBGMorph", "LDBCPCap", "LDBHK", "LDBShowPlace", "LDBShowQueues", "LDBShowTotalBG", "LDBShowTotalArena"}
+RE.Options = {"ShowMinimapButton", "ShowMiniBar", "ShowDetectedBuilds", "ArenaSupport", "RBGSupport", "UNBGSupport", "LDBBGMorph", "LDBCPCap", "LDBHK", "LDBShowPlace", "LDBShowQueues", "LDBShowTotalBG", "LDBShowTotalArena", "OnlyNew"}
 RE.DeleteID = 0;
 RE.PartyArenaCheck = 0;
 RE.MiniBarPluginsCount = 0;
@@ -59,6 +59,7 @@ RE.SlashTrigger = "";
 RE.LDBQueue = "";
 RE.HonorCap = 4000;
 RE.Faction = UnitFactionGroup("player");
+RE.CurrentSeason = GetCurrentArenaSeason(); 
 if RE.Faction == "Horde" then
 	RE.FactionNum = 0;
 else
@@ -431,14 +432,7 @@ function REFlex_OnEvent(self,Event,...)
 		end
 	elseif Event == "PVP_REWARDS_UPDATE" and REZoneType == "none" then
 		if RE.RBGCounter then
-			local TempLimitT1, TempLimitT2;
-
-			RE.RBGPointsWeek, RE.RBGMaxPointsWeek, _, TempLimitT2, _, TempLimitT1 = GetPVPRewards();
-			if TempLimitT1 > TempLimitT2 then
-				RE.RBGSoftMaxPointsWeek = TempLimitT2;
-			else
-				RE.RBGSoftMaxPointsWeek = TempLimitT1;
-			end
+			RE.RBGPointsWeek, RE.RBGMaxPointsWeek, _, _, RE.RBGSoftPointsWeek, RE.RBGSoftMaxPointsWeek = GetPVPRewards();
 
 			REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.RBGMaxPointsWeek);
 			REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RE.RBGMaxPointsWeek);
@@ -634,15 +628,19 @@ function REFlex_OnEvent(self,Event,...)
 		end
 
 		if REFSettings == nil then
-			REFSettings = {["Version"] = RE.DataVersion ,["MinimapPos"] = 45, ["ShowDetectedBuilds"] = true, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = false, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["ArenasListFirstTime"] = true, ["LDBBGMorph"] = true, ["LDBShowPlace"] = false, ["LDBShowQueues"] = true, ["LDBCPCap"] = true, ["LDBHK"] = false, ["LDBShowTotalBG"] = false, ["LDBShowTotalArena"] = false, ["ArenaSupport"] = true, ["RBGSupport"] = true, ["UNBGSupport"] = true, ["LastDay"] = 0, ["CurrentMMR"] = 0, ["CurrentMMRBG"] = 0, ["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0}, ["MiniBarOrder"] = {}, ["MiniBarVisible"] = {}};
+			REFSettings = {["Version"] = RE.DataVersion ,["MinimapPos"] = 45, ["ShowDetectedBuilds"] = true, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = false, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["ArenasListFirstTime"] = true, ["LDBBGMorph"] = true, ["LDBShowPlace"] = false, ["LDBShowQueues"] = true, ["LDBCPCap"] = true, ["LDBHK"] = false, ["LDBShowTotalBG"] = false, ["LDBShowTotalArena"] = false, ["ArenaSupport"] = true, ["RBGSupport"] = true, ["UNBGSupport"] = true, ["LastDay"] = 0, ["CurrentMMR"] = 0, ["CurrentMMRBG"] = 0, ["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0}, ["MiniBarOrder"] = {}, ["MiniBarVisible"] = {}, ["OnlyNew"] = false};
 			REFSettings["MiniBarVisible"][1] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["MiniBarVisible"][2] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["MiniBarOrder"][1] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 12 then -- 0.9.5.2
+			REFSettings["Version"] = RE.DataVersion;
+			REFSettings["OnlyNew"] = false;
 		elseif REFSettings["Version"] == 11 then -- 0.9.5.1
 			REFSettings["Version"] = RE.DataVersion;
+			REFSettings["OnlyNew"] = false;
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFSettings["Version"] = RE.DataVersion;
 			if REFSettings["CurrentMMR"] == nil then
@@ -653,12 +651,14 @@ function REFlex_OnEvent(self,Event,...)
 			end
 			REFSettings["CurrentMMRBG"] = 0;
 			REFSettings["LastDayStats"]["MMRBG"] = 0;
+			REFSettings["OnlyNew"] = false;
 		elseif REFSettings["Version"] == 9 or REFSettings["Version"] == 8 then -- 0.9.3.1/0.9.1
 			REFSettings["Version"] = RE.DataVersion;
 			REFSettings["CurrentMMR"] = 0;
 			REFSettings["LastDayStats"]["MMR"] = 0;
 			REFSettings["CurrentMMRBG"] = 0;
 			REFSettings["LastDayStats"]["MMRBG"] = 0;
+			REFSettings["OnlyNew"] = false;
 	
 			for i=1, #REFDatabase do
 				for k=1, #REFDatabase[i]["SpecialFields"] do
@@ -676,6 +676,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["LastDayStats"]["MMR"] = 0;
 			REFSettings["CurrentMMRBG"] = 0;
 			REFSettings["LastDayStats"]["MMRBG"] = 0;
+			REFSettings["OnlyNew"] = false;
 
 			for i=1, #REFDatabase do
 				for k=1, #REFDatabase[i]["SpecialFields"] do
@@ -702,6 +703,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["LDBShowTotalArena"] = false;
 			REFSettings["CurrentMMR"] = 0;
 			REFSettings["CurrentMMRBG"] = 0;
+			REFSettings["OnlyNew"] = false;
 
 			for i=1, #REFDatabase do
 				for k=1, #REFDatabase[i]["SpecialFields"] do
@@ -735,6 +737,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["LDBShowTotalArena"] = false;
 			REFSettings["CurrentMMR"] = 0;
 			REFSettings["CurrentMMRBG"] = 0;
+			REFSettings["OnlyNew"] = false;
 
 			for i=1, #REFDatabase do
 				if REFDatabase[i]["SpecialFields"] == nil then
@@ -878,6 +881,7 @@ function REFlex_GUIOnLoad(REPanel)
 
 	REFlex_GUI_ShowMinimapButtonText:SetText(L["Show minimap button"]);
 	REFlex_GUI_ShowMiniBarText:SetText(L["Show MiniBar (Battlegrounds only)"]);
+	REFlex_GUI_OnlyNewText:SetText(L["Use only records from current season to calculate statistics"]);
 	REFlex_GUI_SliderScaleText:SetText(L["MiniBar scale"]);
 	REFlex_GUI_LDBBGMorphText:SetText(L["Show LDB MiniBar (Battlegrounds only)"]);
 	REFlex_GUI_LDBShowPlaceText:SetText("|cFFFFFFFF" .. L["Show place instead difference of score"]  .. "|r");
@@ -1006,11 +1010,16 @@ function SlashCmdList.REFLEX(RECommand)
 	elseif RECommand == "5v5Wipe" then
 		RESlashArenaWipe(5);
 	elseif RECommand == "OldSeasonWipe" then
-		RESlashArenaSeasonWipe(GetCurrentArenaSeason());
+		RESlashArenaSeasonWipe(RE.CurrentSeason);
 	elseif RECommand == "FullWipe" then
-		REFDatabase = {};
-		REFDatabaseA = {};
-		ReloadUI();
+		if RE.SlashTrigger == "FullWipe" then
+			REFDatabase = {};
+			REFDatabaseA = {};
+			ReloadUI();
+		else
+			RE.SlashTrigger = "FullWipe";
+			print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe"]);
+		end
 	else
 		REFlex_MinimapButtonClick();
 	end
@@ -1073,6 +1082,20 @@ function RESlashArenaSeasonWipe(Season)
 		for j=1, #REToWipe do
 			local REWipeID = REToWipe[j] - REWipeCounter;
 			table.remove(REFDatabaseA,REWipeID);
+			REWipeCounter = REWipeCounter + 1;
+		end
+
+		REToWipe = {};
+		for j=1, #REFDatabase do
+			if REFDatabase[j]["Season"] ~= Season and REFDatabase[j]["IsRated"] == true then
+				table.insert(REToWipe, j);
+			end
+		end
+		REWipeCounter = 0;
+		table.sort(REToWipe);
+		for j=1, #REToWipe do
+			local REWipeID = REToWipe[j] - REWipeCounter;
+			table.remove(REFDatabase,REWipeID);
 			REWipeCounter = REWipeCounter + 1;
 		end
 		ReloadUI();
@@ -1254,7 +1277,7 @@ function REFlex_Tab7SearchOnClick()
 		RE.Tab7Search["F"]["m"] = tonumber(REFlex_MainTab_Tab7_SearchBoxMF:GetText());
 		RE.Tab7Search["F"]["y"] = tonumber(REFlex_MainTab_Tab7_SearchBoxYF:GetText());
 
-		RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab, nil, time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59})); 
+		RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab, nil, time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59}), REFSettings["OnlyNew"]); 
 		REFlex_MainTab_Tab7_ScoreHolder_Wins:SetText(RE.Wins);
 		REFlex_MainTab_Tab7_ScoreHolder_Lose:SetText(RE.Losses);
 
@@ -1572,7 +1595,7 @@ function REFlex_MainTabShow()
 		if RE.Debug == true then
 			print(REDiff);
 		end
-		if REDiff > 1500 then
+		if REDiff > 1300 then
 			collectgarbage('collect');
 		end
 	end
@@ -2268,11 +2291,11 @@ function REFlex_Tab1Show()
 		RE.Table1Rdy = true;
 	end
 
-	RE.TopKB, RE.SumKB = REFlex_Find("KB", nil, RE.TalentTab);
-	RE.TopHK, RE.SumHK = REFlex_Find("HK", nil, RE.TalentTab);
-	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", nil, RE.TalentTab);
-	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", nil, RE.TalentTab);
-	RE.Wins, RE.Losses = REFlex_WinLoss(nil, RE.TalentTab); 
+	RE.TopKB, RE.SumKB = REFlex_Find("KB", nil, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHK, RE.SumHK = REFlex_Find("HK", nil, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", nil, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", nil, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.Wins, RE.Losses = REFlex_WinLoss(nil, RE.TalentTab, nil, nil, nil, REFSettings["OnlyNew"]); 
 
 	REFlex_MainTab_Tab1_ScoreHolder_Wins:SetText(RE.Wins);
 	REFlex_MainTab_Tab1_ScoreHolder_Lose:SetText(RE.Losses);
@@ -2354,11 +2377,11 @@ function REFlex_Tab2Show()
 	RE.MainTable2:SetData(RE.Tab2TableData);
 	RE.MainTable2:SetFilter(REFlex_Tab_DefaultFilter);
 
-	RE.TopKB, RE.SumKB = REFlex_Find("KB", false, RE.TalentTab);
-	RE.TopHK, RE.SumHK = REFlex_Find("HK", false, RE.TalentTab);
-	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", false, RE.TalentTab);
-	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", false, RE.TalentTab);
-	RE.Wins, RE.Losses = REFlex_WinLoss(false, RE.TalentTab); 
+	RE.TopKB, RE.SumKB = REFlex_Find("KB", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHK, RE.SumHK = REFlex_Find("HK", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.Wins, RE.Losses = REFlex_WinLoss(false, RE.TalentTab, nil, nil, nil, REFSettings["OnlyNew"]); 
 
 	REFlex_MainTab_Tab2_ScoreHolder_Wins:SetText(RE.Wins);
 	REFlex_MainTab_Tab2_ScoreHolder_Lose:SetText(RE.Losses);
@@ -2448,11 +2471,11 @@ function REFlex_Tab3Show()
 		RE.Table3Rdy = true;
 	end
 
-	RE.TopKB, RE.SumKB = REFlex_Find("KB", true, RE.TalentTab);
-	RE.TopHK, RE.SumHK = REFlex_Find("HK", true, RE.TalentTab);
-	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", true, RE.TalentTab);
-	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", true, RE.TalentTab);
-	RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab); 
+	RE.TopKB, RE.SumKB = REFlex_Find("KB", true, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHK, RE.SumHK = REFlex_Find("HK", true, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", true, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", true, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab, nil, nil, nil, REFSettings["OnlyNew"]); 
 
 	REFlex_MainTab_Tab3_ScoreHolder_Wins:SetText(RE.Wins);
 	REFlex_MainTab_Tab3_ScoreHolder_Lose:SetText(RE.Losses);
@@ -2557,7 +2580,7 @@ function REFlex_Tab7Show()
 		RE.Table9Rdy = true;
 	end
 
-	RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab, nil, time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59})); 
+	RE.Wins, RE.Losses = REFlex_WinLoss(true, RE.TalentTab, nil, time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59}), REFSettings["OnlyNew"]); 
 
 	REFlex_MainTab_Tab7_ScoreHolder_Wins:SetText(RE.Wins);
 	REFlex_MainTab_Tab7_ScoreHolder_Lose:SetText(RE.Losses);
@@ -2618,7 +2641,9 @@ function REFlex_Tab4Show()
 			if RE.TalentTab ~= nil then
 				if RE.RatedDrop ~= nil then
 					if REFDatabase[j]["TalentSet"] == RE.TalentTab and REFDatabase[j]["IsRated"] == RE.RatedDrop then
-						REFlex_Tab4ShowI(j);		
+						if REFDatabase[j]["IsRated"] == false or (REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabase[j]["Season"] == RE.CurrentSeason))) then
+							REFlex_Tab4ShowI(j);
+						end
 					end
 				else
 					if REFDatabase[j]["TalentSet"] == RE.TalentTab then
@@ -2628,7 +2653,9 @@ function REFlex_Tab4Show()
 			else
 				if RE.RatedDrop ~= nil then
 					if REFDatabase[j]["IsRated"] == RE.RatedDrop then
-						REFlex_Tab4ShowI(j);
+						if REFDatabase[j]["IsRated"] == false or (REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabase[j]["Season"] == RE.CurrentSeason))) then
+							REFlex_Tab4ShowI(j);
+						end
 					end
 				else
 					REFlex_Tab4ShowI(j);
@@ -2641,11 +2668,11 @@ function REFlex_Tab4Show()
 
 	local REUsed = 0;
 	for j=1, #RE.MapsHolder do
-		RE.TopKB, RE.SumKB = REFlex_Find("KB", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j]);
-		RE.TopHK, RE.SumHK = REFlex_Find("HK", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j]);
-		RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j]);
-		RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j]);
-		RE.Wins, RE.Losses = REFlex_WinLoss(RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j]); 
+		RE.TopKB, RE.SumKB = REFlex_Find("KB", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j], REFSettings["OnlyNew"]);
+		RE.TopHK, RE.SumHK = REFlex_Find("HK", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j], REFSettings["OnlyNew"]);
+		RE.TopDamage, RE.SumDamage = REFlex_Find("Damage", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j], REFSettings["OnlyNew"]);
+		RE.TopHealing, RE.SumHealing = REFlex_Find("Healing", RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j], REFSettings["OnlyNew"]);
+		RE.Wins, RE.Losses = REFlex_WinLoss(RE.RatedDrop, RE.TalentTab, RE.MapsHolder[j], nil, nil, REFSettings["OnlyNew"]); 
 		REUsed = REUsed + 1;
 
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j]:Show();
@@ -2794,9 +2821,9 @@ function REFlex_Tab5Show()
 		RE.Table5Rdy = true;
 	end
 
-	RE.TopDamage, RE.SumDamage = REFlex_FindArena("Damage", RE.BracketDrop, RE.TalentTab);
-	RE.TopHealing, RE.SumHealing = REFlex_FindArena("Healing", RE.BracketDrop, RE.TalentTab);
-	RE.Wins, RE.Losses = REFlex_WinLossArena(RE.BracketDrop, RE.TalentTab); 
+	RE.TopDamage, RE.SumDamage = REFlex_FindArena("Damage", RE.BracketDrop, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.TopHealing, RE.SumHealing = REFlex_FindArena("Healing", RE.BracketDrop, RE.TalentTab, nil, REFSettings["OnlyNew"]);
+	RE.Wins, RE.Losses = REFlex_WinLossArena(RE.BracketDrop, RE.TalentTab, nil, REFSettings["OnlyNew"]); 
 
 	local RERatings = "";
 	local team2ID = ArenaTeam_GetTeamSizeID(2);
@@ -2866,20 +2893,28 @@ function REFlex_Tab6Show()
 			if RE.TalentTab ~= nil then
 				if RE.BracketDropTab6 ~= nil then
 					if REFDatabaseA[j]["TalentSet"] == RE.TalentTab and REFDatabaseA[j]["Bracket"] == RE.BracketDropTab6 then
-						REFlex_Tab6ShowI(j);		
+						if REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_Tab6ShowI(j);
+						end
 					end
 				else
 					if REFDatabaseA[j]["TalentSet"] == RE.TalentTab then
-						REFlex_Tab6ShowI(j);
+						if REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_Tab6ShowI(j);
+						end
 					end
 				end
 			else
 				if RE.BracketDropTab6 ~= nil then
 					if REFDatabaseA[j]["Bracket"] == RE.BracketDropTab6 then
-						REFlex_Tab6ShowI(j);
+						if REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+							REFlex_Tab6ShowI(j);
+						end
 					end
 				else
-					REFlex_Tab6ShowI(j);
+					if REFSettings["OnlyNew"] == false or (REFSettings["OnlyNew"] == true and (REFDatabaseA[j]["Season"] == RE.CurrentSeason)) then
+						REFlex_Tab6ShowI(j);
+					end
 				end
 			end
 		end
@@ -2897,9 +2932,9 @@ function REFlex_Tab6Show()
 
 	local REUsed = 0;
 	for j=1, #RE.MapsHolderArena do
-		RE.TopDamage, RE.SumDamage = REFlex_FindArena("Damage", RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j]);
-		RE.TopHealing, RE.SumHealing = REFlex_FindArena("Healing", RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j]);
-		RE.Wins, RE.Losses = REFlex_WinLossArena(RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j]); 
+		RE.TopDamage, RE.SumDamage = REFlex_FindArena("Damage", RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j], REFSettings["OnlyNew"]);
+		RE.TopHealing, RE.SumHealing = REFlex_FindArena("Healing", RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j], REFSettings["OnlyNew"]);
+		RE.Wins, RE.Losses = REFlex_WinLossArena(RE.BracketDropTab6, RE.TalentTab, RE.MapsHolderArena[j], REFSettings["OnlyNew"]); 
 		REUsed = REUsed + 1;
 
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j]:Show();
@@ -3225,7 +3260,7 @@ function REFlex_BGEnd()
 		local RETalentGroup = GetActiveTalentGroup(false, false);
 		RE.BGPlayers = GetNumBattlefieldScores();
 		local REMyFaction = GetBattlefieldArenaFaction();
-		local REArenaSeason = GetCurrentArenaSeason();
+		local REArenaSeason = RE.CurrentSeason;
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
 		RE.BGMinutes = math.floor(BGTimeRaw / 60);
 		RE.BGSeconds = math.floor(BGTimeRaw % 60);
@@ -3378,10 +3413,10 @@ function REFlex_BGEnd()
 			REFlex_ScoreTab:SetPoint("BOTTOMRIGHT", -6, -33);
 			REFlex_ScoreTab:Show();
 
-			RE.TopKB = REFlex_Find("KB", true, RETalentGroup);
-			RE.TopHK = REFlex_Find("HK", true, RETalentGroup);
-			RE.TopDamage = REFlex_Find("Damage", true, RETalentGroup);
-			RE.TopHealing = REFlex_Find("Healing", true, RETalentGroup);
+			RE.TopKB = REFlex_Find("KB", true, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopHK = REFlex_Find("HK", true, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopDamage = REFlex_Find("Damage", true, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopHealing = REFlex_Find("Healing", true, RETalentGroup, nil, REFSettings["OnlyNew"]);
 
 			if RE.Faction == "Horde" then
 				REBGHordeRating = REFlex_Round((REAverageHorde + RE.BGRating) / REHordeNum, 0);
@@ -3395,10 +3430,10 @@ function REFlex_BGEnd()
 			REFlex_ScoreTab:SetPoint("BOTTOMRIGHT", -6, 2);
 			REFlex_ScoreTab:Show();
 
-			RE.TopKB = REFlex_Find("KB", false, RETalentGroup);
-			RE.TopHK = REFlex_Find("HK", false, RETalentGroup);
-			RE.TopDamage = REFlex_Find("Damage", false, RETalentGroup);
-			RE.TopHealing = REFlex_Find("Healing", false, RETalentGroup);
+			RE.TopKB = REFlex_Find("KB", false, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopHK = REFlex_Find("HK", false, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopDamage = REFlex_Find("Damage", false, RETalentGroup, nil, REFSettings["OnlyNew"]);
+			RE.TopHealing = REFlex_Find("Healing", false, RETalentGroup, nil, REFSettings["OnlyNew"]);
 
 			REArenaSeason = nil;
 			RE.BGRating = nil;
@@ -3490,7 +3525,7 @@ function REFlex_ArenaEnd()
 		local REMap = GetRealZoneText();
 		local REPlayerName = GetUnitName("player");
 		local RETalentGroup = GetActiveTalentGroup(false, false);
-		local REArenaSeason = GetCurrentArenaSeason();
+		local REArenaSeason = RE.CurrentSeason;
 		local REBGPlayers = GetNumBattlefieldScores();
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
 		local REBGMinutes = math.floor(BGTimeRaw / 60);

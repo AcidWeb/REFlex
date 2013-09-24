@@ -31,6 +31,7 @@ REFlexLocale:CreateLocaleTable({
 	["H Rating"] = "\233\131\168\232\144\189\230\150\185\229\136\134\230\149\184", -- Needs review
 	["Hardest compositions"] = "Hardest compositions", -- Requires localization
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Hold SHIFT key when browsing arena matches to see extended tooltips.", -- Requires localization
+	["Use only records from current season to calculate statistics"] = "Use only records from current season to calculate statistics", -- Requires localization
 	Holy = "\231\165\158\232\129\150", -- Needs review
 	["Honor Kills"] = "\230\166\174\232\173\189\230\147\138\230\174\186", -- Needs review
 	["Issue command second time to confirm database wipe"] = "Issue command second time to confirm database wipe", -- Requires localization

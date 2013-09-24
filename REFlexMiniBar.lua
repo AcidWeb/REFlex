@@ -35,7 +35,7 @@ function REFlex_UpdateLDB()
 
 		if RE.RBGPointsWeek ~= nil then
 			local REColor = "FFFFFFFF";
-			if RE.RBGPointsWeek >= RE.RBGSoftMaxPointsWeek then
+			if (RE.RBGSoftPointsWeek >= RE.RBGSoftMaxPointsWeek) and (RE.RBGPointsWeek ~= RE.RBGMaxPointsWeek) then
 				REColor = "FFFFFF33";
 			elseif RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
 				REColor = "FFFF141D";
@@ -59,11 +59,11 @@ function REFlex_UpdateLDB()
 		end
 
 		if REFSettings["LDBShowTotalBG"] then
-			RE.LDBBGWin, RE.LDBBGLoss, RE.LDBBGRatio = REFlex_WinLoss(nil, nil, nil);
+			RE.LDBBGWin, RE.LDBBGLoss, RE.LDBBGRatio = REFlex_WinLoss(nil, nil, nil, nil, nil, REFSettings["OnlyNew"]);
 			RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rBG: |cFF00CC00" .. RE.LDBBGWin .. "|r - |cFFCC0000" .. RE.LDBBGLoss .. "|r |cFFFFFFFF(" .. RE.LDBBGRatio .. ")|r";
 		end
 		if REFSettings["LDBShowTotalArena"] then
-			RE.LDBArenaWin, RE.LDBArenaLoss, RE.LDBArenaRatio = REFlex_WinLossArena(nil, nil, nil);
+			RE.LDBArenaWin, RE.LDBArenaLoss, RE.LDBArenaRatio = REFlex_WinLossArena(nil, nil, nil, nil, nil, REFSettings["OnlyNew"]);
 			RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rA: |cFF00CC00" .. RE.LDBArenaWin .. "|r - |cFFCC0000" .. RE.LDBArenaLoss .. "|r |cFFFFFFFF(" .. RE.LDBArenaRatio .. ")|r";
 		end
 
@@ -206,6 +206,7 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine();
 	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
 	RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
+	RETooltip:AddLine();
 	--RETooltip:AddLine();
 	--RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. " MMR / RBG MMR|r", "");
 	--RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100) / |r" .. REFSettings["CurrentMMRBG"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMRBG") .. "|cFFFFD100)|r", "");
@@ -219,8 +220,8 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine("HK", REHKTotal, REHKTop);
 	RETooltip:AddLine(DAMAGE, REFlex_NumberClean(REDamageTotal), REFlex_NumberClean(REDamageTop));
 	RETooltip:AddLine(SHOW_COMBAT_HEALING, REFlex_NumberClean(REHealingTotal), REFlex_NumberClean(REHealingTop));
+	RETooltip:SetLineColor(16, 1, 1, 1, 0.5);
 	RETooltip:SetLineColor(18, 1, 1, 1, 0.5);
-	RETooltip:SetLineColor(20, 1, 1, 1, 0.5);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
 	RETooltip:AddLine();

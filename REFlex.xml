@@ -1643,11 +1643,20 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<CheckButton name="$parent_OnlyNew" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-60"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<CheckButton name="$parent_LDBBGMorph" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-115"></AbsDimension>
+							<AbsDimension x="10" y="-155"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1656,7 +1665,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="25" y="-140"></AbsDimension>
+							<AbsDimension x="25" y="-180"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1665,7 +1674,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-165"></AbsDimension>
+							<AbsDimension x="10" y="-205"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1674,7 +1683,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-190"></AbsDimension>
+							<AbsDimension x="10" y="-230"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1683,7 +1692,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-215"></AbsDimension>
+							<AbsDimension x="10" y="-255"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1692,7 +1701,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-240"></AbsDimension>
+							<AbsDimension x="10" y="-280"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1701,7 +1710,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-265"></AbsDimension>
+							<AbsDimension x="10" y="-305"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1710,7 +1719,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-305"></AbsDimension>
+							<AbsDimension x="10" y="-355"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1719,7 +1728,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="25" y="-330"></AbsDimension>
+							<AbsDimension x="25" y="-380"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1728,7 +1737,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-355"></AbsDimension>
+							<AbsDimension x="10" y="-405"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1737,7 +1746,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-380"></AbsDimension>
+							<AbsDimension x="10" y="-430"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1749,7 +1758,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="16" y="-75"/>
+							<AbsDimension x="16" y="-100"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
