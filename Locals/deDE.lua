@@ -1,8 +1,8 @@
 if GetLocale() ~= "deDE" then return end
 
---Translation by Gixx
+--Translation by Gixx and PeterbusUnum
 REFlexLocale:CreateLocaleTable({
-	["Allow sending daily statistics to other guild members"] = "Das Senden t\195\164glicher Statistiken zu anderen Gildenmitgliedern zulassen",
+	["Allow sending daily statistics to other guild members"] = "Das Senden t\\195\\164glicher Statistiken zu anderen Gildenmitgliedern zulassen",
 	["A Rating"] = "A Wertung",
 	["Arena support"] = "Arenaunterst\\195\\188tzung",
 	["Are you sure you want to delete this entry?"] = "Bist du sicher, dass du diesen Eintrag l\\195\\182schen willst?",
@@ -15,11 +15,11 @@ REFlexLocale:CreateLocaleTable({
 	["Guild query"] = "Guild query", -- Requires localization
 	["Hardest compositions"] = "Schwerste Zusammenstellung",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Halte SHIFT w\\195\\164hrend des Anschauens von Arenapartien f\\195\\188r einen erweiterten Tooltip.",
-	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Hold SHIFT key when browsing rated battleground to see extended tooltips.", -- Requires localization
+	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Halte SHIFT w\\195\\164hrend des Anschauens von Gew Schlachtfeldern f\\195\\188r einen erweiterten Tooltip.", -- Needs review
 	["Honor Kills"] = "Ehrenhafte Todesst\\195\\182\\195\\159e",
 	["H Rating"] = "H Wertung",
 	["Issue command second time to confirm database wipe"] = "Kommando wiederholen, um die Datenbank zu l\\195\\182schen.",
-	["K/D Ratio"] = "K/D Rate",
+	["K/D Ratio"] = "K/D Verh\\195\\164ltnis", -- Needs review
 	["Last active"] = "Zuletzt aktiv",
 	Left = "Links",
 	Map = "Karte",

@@ -17,9 +17,9 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 18;
-RE.AddonVersion = "v0.9.8";
-RE.AddonVersionCheck = 980;
+RE.DataVersion = 19;
+RE.AddonVersion = "v0.9.8.1";
+RE.AddonVersionCheck = 981;
 
 RE.Debug = 0;
 
@@ -243,6 +243,7 @@ function REFlex_OnLoad(self)
 		print("\124cFF74D06C[REFlex]\124r This release require 5.x client!");
 		return;
 	end
+	PVPHonorFrame.selectedPvpID = 1;
 	REFlex_LoadLDB();
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -574,26 +575,33 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 18 then -- 0.9.8
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 17 then -- 0.9.7.1	
 			REFlex_Update17();	
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 16 then -- 0.9.6.2
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 15 then -- 0.9.6
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
 			REFlex_Update13();
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
 			REFlex_Update1112();	
 			REFlex_Update13();
@@ -601,6 +609,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFlex_Update10();	
 			REFlex_Update1112();
@@ -609,6 +618,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
 			REFlex_Update89();
 			REFlex_Update10();
@@ -618,6 +628,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 7 then -- 0.9
 			REFlex_Update7();
 			REFlex_Update89();
@@ -628,6 +639,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
 			REFlex_Update6();	
 			REFlex_Update7();
@@ -639,6 +651,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
 			REFlex_UpdateOld();	
 			REFlex_Update6();
@@ -651,6 +664,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
+			REFlex_Update18();
 		end
 		REFSettings["Version"] = RE.DataVersion;
 		---
@@ -3381,7 +3395,7 @@ function REFlex_BGEnd()
 	local _, REZoneType = IsInInstance();
 	local REBGRated = IsRatedBattleground();
 	if REWinner ~= nil and RE.SecondTime ~= true and REArena == nil and REZoneType == "pvp" and ((REFSettings["UNBGSupport"] and REBGRated ~= true) or (REFSettings["RBGSupport"] and REBGRated)) then
-		SendAddonMessage("REFlex", RE.AddonVersionCheck, "BATTLEGROUND");
+		SendAddonMessage("REFlex", RE.AddonVersionCheck, "INSTANCE_CHAT");
 
 		SetMapToCurrentZone();
 		RE.Map = GetMapNameByID(GetCurrentMapAreaID());
@@ -3425,6 +3439,12 @@ function REFlex_BGEnd()
 		end
 
 		RE.playerName, RE.killingBlows, RE.honorKills, _, RE.honorGained, _, _, _, RE.classToken, RE.damageDone, RE.healingDone, RE.BGRating, RE.BGRatingChange, RE.BGPreMatchMMR, RE.BGMMRChange, RE.playerBuild = GetBattlefieldScore(RE.PlayerID);
+		if RE.classToken == nil or RE.classToken == "" then
+			_, _, _, _, _, _, _, _, RE.classToken = GetBattlefieldScore(RE.PlayerID);
+		end
+		if RE.classToken == nil or RE.classToken == "" then
+			RE.classToken = "WARRIOR";
+		end
 		RE.playerBuild = REFlex_SpecTranslate(RE.classToken, RE.playerBuild);
 		RE.PlaceKB, RE.PlaceHK, RE.PlaceHonor, RE.PlaceDamage, RE.PlaceHealing = RE.BGPlayers, RE.BGPlayers, RE.BGPlayers, RE.BGPlayers, RE.BGPlayers;
 		local REHordeNum, REAllianceNum = 0, 0;
@@ -3466,6 +3486,12 @@ function REFlex_BGEnd()
 		for j=1, RE.BGPlayers do
 			if j ~= RE.PlayerID then
 				local name, killingBlowsTemp, honorKillsTemp, _, honorGainedTemp, factionTemp, _, _, classToken, damageDoneTemp, healingDoneTemp, ratingTemp, ratingChangeTemp, preMMRTemp, changeMMRTemp, buildTemp = GetBattlefieldScore(j);
+				if classToken == nil or classToken == "" then
+					_, _, _, _, _, _, _, _, classToken = GetBattlefieldScore(j);
+				end
+				if classToken == nil or classToken == "" then
+					classToken = "WARRIOR";
+				end
 				buildTemp = REFlex_SpecTranslate(classToken, buildTemp);
 				if RE.killingBlows >= killingBlowsTemp then
 					RE.PlaceKB = RE.PlaceKB - 1;
@@ -3678,6 +3704,12 @@ function REFlex_ArenaEnd()
 		for j=1, REBGPlayers do
 			local REPlayerTemp = {};
 			local REPName, REKillingBlows, _, _, _, REFaction, _, _, REClassToken, REDamageDone, REHealingDone, _, _, REpreMatchMmr, REmmrChange, REBuild = GetBattlefieldScore(j);
+			if REClassToken == nil or REClassToken == "" then
+				_, _, _, _, _, _, _, _, REClassToken = GetBattlefieldScore(j);
+			end
+			if REClassToken == nil or REClassToken == "" then
+				REClassToken = "WARRIOR";
+			end
 			REBuild = REFlex_SpecTranslate(REClassToken, REBuild);
 			local RERace = REArenaRaces[REPName]; 
 			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, classToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone, PreMMR=REpreMatchMmr, MMRChange=REmmrChange};

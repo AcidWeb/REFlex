@@ -3,6 +3,41 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update18()
+	for i=1, #REFDatabase do
+		if REFDatabase[i]["RBGHordeTeam"] ~= nil then
+			for k=1, #REFDatabase[i]["RBGHordeTeam"] do
+				if REFDatabase[i]["RBGHordeTeam"][k]["classToken"] == nil then
+					REFDatabase[i]["RBGHordeTeam"][k]["classToken"] = "WARRIOR";
+				end
+			end
+		end
+		if REFDatabase[i]["RBGAllianceTeam"] ~= nil then
+			for k=1, #REFDatabase[i]["RBGAllianceTeam"] do
+				if REFDatabase[i]["RBGAllianceTeam"][k]["classToken"] == nil then
+					REFDatabase[i]["RBGAllianceTeam"][k]["classToken"] = "WARRIOR";
+				end
+			end
+		end
+	end
+	for i=1, #REFDatabaseA do
+		if REFDatabaseA[i]["GoldTeam"] ~= nil then
+			for k=1, #REFDatabaseA[i]["GoldTeam"] do
+				if REFDatabaseA[i]["GoldTeam"][k]["classToken"] == nil then
+					REFDatabaseA[i]["GoldTeam"][k]["classToken"] = "WARRIOR";
+				end	
+			end
+		end
+		if REFDatabaseA[i]["GreenTeam"] ~= nil then
+			for k=1, #REFDatabaseA[i]["GreenTeam"] do
+				if REFDatabaseA[i]["GreenTeam"][k]["classToken"] == nil then
+					REFDatabaseA[i]["GreenTeam"][k]["classToken"] = "WARRIOR";
+				end
+			end
+		end
+	end
+end
+
 function REFlex_Update17()
 	local RETranslationMatrix = {
 	["HUNTER"] = {

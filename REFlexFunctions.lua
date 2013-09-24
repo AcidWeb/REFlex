@@ -733,7 +733,7 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 		end
 		for jj=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
 			table.insert(RE.ATHEnemyNames, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Name"]);
-			if REBuildComplete then	
+			if REBuildComplete then
 				table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["classToken"] .. "*" .. REFlex_SpecTranslate(REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["classToken"], REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Build"]) .. "@");
 			end
 		end
