@@ -1,4 +1,4 @@
-﻿# RETabBinder
+﻿# REFlex
 
 [Curse](http://www.curse.com/addons/wow/reflex-battleground-historian)
 
