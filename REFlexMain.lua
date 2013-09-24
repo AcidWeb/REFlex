@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 19;
-RE.AddonVersion = "v0.9.8.1";
-RE.AddonVersionCheck = 981;
+RE.AddonVersion = "v0.9.8.2";
+RE.AddonVersionCheck = 982;
 
 RE.Debug = 0;
 
@@ -243,7 +243,6 @@ function REFlex_OnLoad(self)
 		print("\124cFF74D06C[REFlex]\124r This release require 5.x client!");
 		return;
 	end
-	PVPHonorFrame.selectedPvpID = 1;
 	REFlex_LoadLDB();
 
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -373,7 +372,7 @@ function REFlex_OnEvent(self,Event,...)
 				_G["REFlex_MiniBar" .. i]:Hide();
 			end
 		end
-		if UnitLevel("player") > 9 then
+		if UnitLevel("player") > 9 and PVPHonorFrame.selectedPvpID ~= nil then
 			RequestRatedBattlegroundInfo();
 		end
 		RequestPVPRewards();
@@ -1536,7 +1535,7 @@ function REFlex_MainTabShow()
 		RE.CurrentMemoryIgnition = GetAddOnMemoryUsage("REFlex");
 	end
 
-	if UnitLevel("player") > 9 then
+	if UnitLevel("player") > 9 and PVPHonorFrame.selectedPvpID ~= nil then
 		RequestRatedBattlegroundInfo();
 	end
 	RequestPVPRewards();

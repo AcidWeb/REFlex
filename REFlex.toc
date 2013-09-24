@@ -1,7 +1,7 @@
 ## Interface: 50100
 ## Title: REFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds. 
-## Version: 0.9.8.1
+## Version: 0.9.8.2
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
