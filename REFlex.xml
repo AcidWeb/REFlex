@@ -1549,7 +1549,7 @@
 				REFlex_MinimapButton_DraggingFrame:Hide()
 			</OnDragStop>
 			<OnClick>
-				REFlex_MinimapButtonClick()
+				REFlex_MinimapButtonClick(button)
 			</OnClick>
 		</Scripts>
 	</Button>

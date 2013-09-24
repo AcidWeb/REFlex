@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: REFlex
-## Notes: Records statistics of played battlegrounds. 
-## Version: 0.6
+## Notes: Records statistics of played arenas and battlegrounds. 
+## Version: 0.7
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
@@ -11,5 +11,6 @@ Libs\LibStub\LibStub.lua
 
 Libs\lib-st\lib-st.xml
 Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.xml
+libs\LibQTip-1.0\LibQTip-1.0.lua
 
 REFlex.xml

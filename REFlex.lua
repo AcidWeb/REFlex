@@ -1,5 +1,6 @@
 local REScrollingTable = LibStub("ScrollingTable");
 local REShefkiTimer = LibStub("LibShefkiTimer-1.0");
+local REQTip = LibStub('LibQTip-1.0');
 
 local L = REFlexLocale;
 local REModuleTranslation = {
@@ -10,12 +11,14 @@ local REModuleTranslation = {
 	["Deaths"] = DEATHS,
 	["KDRatio"] = L["K/D Ratio"],
 	["Honor"] = HONOR 
-}
+};
 
-local REDataVersion = 2;
-local REAddonVersion = "v0.6";
+local REDataVersion = 3;
+local REAddonVersion = "v0.7";
 local REArenaBuilds = {};
+local REArenaTeams = {};
 local REPartyArenaCheck = 0;
+
 local REClassIconCoords = {
 	["WARRIOR"] = {0, 0.25, 0, 0.25},
 	["MAGE"] = {0.25, 0.49609375, 0, 0.25},
@@ -27,8 +30,35 @@ local REClassIconCoords = {
 	["WARLOCK"] = {0.7421875, 0.98828125, 0.25, 0.5},
 	["PALADIN"] = {0, 0.25, 0.5, 0.75},
 	["DEATHKNIGHT"] = {0.25, 0.49609375, 0.5, 0.75},
-}
-local REFlex_BuildRecognition = {      
+};
+local RERaceIconCoords = {
+	["HUMAN_MALE"] = {0, 0.125, 0, 0.25},
+	["DWARF_MALE"] = {0.125, 0.25, 0, 0.25},
+	["GNOME_MALE"] = {0.25, 0.375, 0, 0.25},
+	["NIGHT ELF_MALE"] = {0.375, 0.5, 0, 0.25},
+	["TAUREN_MALE"] = {0, 0.125, 0.25, 0.5},
+	["UNDEAD_MALE"] = {0.125, 0.25, 0.25, 0.5},
+	["TROLL_MALE"] = {0.25, 0.375, 0.25, 0.5},
+	["ORC_MALE"] = {0.375, 0.5, 0.25, 0.5},
+	["BLOOD ELF_MALE"] = {0.5, 0.625, 0.25, 0.5},
+	["DRAENEI_MALE"] = {0.5, 0.625, 0, 0.25},
+	["GOBLIN_MALE"] = {0.625, 0.750, 0.25, 0.5},
+	["WORGEN_MALE"] = {0.625, 0.750, 0, 0.25},
+};
+local REClassColors = {
+	["HUNTER"] = "AAD372",
+	["WARLOCK"] = "9482C9",
+	["PRIEST"] = "FFFFFF",
+	["PALADIN"] = "F48CBA",
+	["MAGE"] = "68CCEF",
+	["ROGUE"] = "FFF468",
+	["DRUID"] = "FF7C0A",
+	["SHAMAN"] = "0070DD",
+	["WARRIOR"] = "C69B6D",
+	["DEATHKNIGHT"] = "C41E3A",
+};
+
+local REBuildRecognition = {      
 	-- WARRIOR
 	[GetSpellInfo(12294)]	= L["Arms"],			-- Mortal Strike
 	[GetSpellInfo(46924)]	= L["Arms"],			-- Bladestorm
@@ -230,12 +260,12 @@ function REFlex_OnEvent(self,Event,...)
 		local REUnitID, RESpellName = ...;
 
 		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" then
-			if REFlex_BuildRecognition[RESpellName] ~= nil then
+			if REBuildRecognition[RESpellName] ~= nil then
 				local REName =  table.concat({ strsplit(" ", GetUnitName(REUnitID, true), 3) });
 				if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
-					REArenaBuilds[REName] = REFlex_BuildRecognition[RESpellName];
+					REArenaBuilds[REName] = REBuildRecognition[RESpellName];
 					print("\n");
-					print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REFlex_BuildRecognition[RESpellName]);
+					print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[RESpellName]);
 					print("\n");
 				end
 			end
@@ -251,12 +281,12 @@ function REFlex_OnEvent(self,Event,...)
 					break 
 				end
 
-				if REFlex_BuildRecognition[REAuraName] ~= nil then
+				if REBuildRecognition[REAuraName] ~= nil then
 					local REName =  table.concat({ strsplit(" ", GetUnitName(RECaster, true), 3) });
 					if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
-						REArenaBuilds[REName] = REFlex_BuildRecognition[REAuraName];
+						REArenaBuilds[REName] = REBuildRecognition[REAuraName];
 						print("\n");
-						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REFlex_BuildRecognition[REAuraName]);
+						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[REAuraName]);
 						print("\n");
 					end
 				end
@@ -303,7 +333,7 @@ function REFlex_OnEvent(self,Event,...)
 		REMiniBarSecondLineRdy = false;
 
 		if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount ~= nil then
-			_, _, _, REFSettings["MiniBarX"], REFSettings["MiniBarY"] = REFlex_MiniBar1:GetPoint(1);
+			REFSettings["MiniBarAnchor"], _, _, REFSettings["MiniBarX"], REFSettings["MiniBarY"] = REFlex_MiniBar1:GetPoint(1);
 			REFSettings["MiniBarX"] = REFlex_Round(REFSettings["MiniBarX"], 2);
 			REFSettings["MiniBarY"] = REFlex_Round(REFSettings["MiniBarY"], 2);
 
@@ -323,12 +353,12 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_MainTab_MsgParty:SetText(PARTY);
 
 		REFlex_MainTab_Title:SetText("REFlex " .. REAddonVersion);
-		REFlex_MainTabTab1:SetText(L["All"]);
-		REFlex_MainTabTab2:SetText(L["Normal"]);
+		REFlex_MainTabTab1:SetText(ALL);
+		REFlex_MainTabTab2:SetText(PLAYER_DIFFICULTY1);
 		REFlex_MainTabTab3:SetText(L["Rated"]);
-		REFlex_MainTabTab4:SetText(L["Statistics"]);
-		REFlex_MainTabTab5:SetText(L["Arena"]);
-		REFlex_MainTabTab6:SetText(L["Statistics"]);
+		REFlex_MainTabTab4:SetText(STATISTICS);
+		REFlex_MainTabTab5:SetText(ARENA);
+		REFlex_MainTabTab6:SetText(STATISTICS);
 
 		REFlex_MainTab_SpecHolderTab1:SetText(L["Both Specs"]);
 		REFlex_MainTab_SpecHolderTab2:SetText(L["Spec 1"]);
@@ -404,9 +434,13 @@ function REFlex_OnEvent(self,Event,...)
 		if REFDatabaseA == nil then
 			REFDatabaseA = {};
 		end
+
 		if REFSettings == nil then
-			REFSettings = {["Version"] = 2 ,["MinimapPos"] = 45, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarScale"] = 1, ["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"}, ["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}};
-		elseif REFSettings["Version"] == nil then
+			REFSettings = {["Version"] = REDataVersion ,["MinimapPos"] = 45, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"}, ["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}};
+		elseif REFSettings["Version"] == 2 then -- 0.6
+			REFSettings["Version"] = REDataVersion;
+			REFSettings["MiniBarAnchor"] = "CENTER";
+		elseif REFSettings["Version"] == nil then -- 0.5
 			REFSettings["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 			REFSettings["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["Version"] = REDataVersion;
@@ -442,7 +476,7 @@ end
 
 function REFlex_DropDownTab4OnLoad(self, level)
 	local BGDropMenu = UIDropDownMenu_CreateInfo();
-	BGDropMenu.text       = L["All"];
+	BGDropMenu.text       = ALL;
 	BGDropMenu.func       = REFlex_DropDownTab4Click
 	UIDropDownMenu_AddButton(BGDropMenu, level);
 	BGDropMenu = UIDropDownMenu_CreateInfo();
@@ -472,7 +506,7 @@ end
 
 function REFlex_DropDownTab5OnLoad(self, level)
 	local BGDropMenu2 = UIDropDownMenu_CreateInfo();
-	BGDropMenu2.text       = L["All"];
+	BGDropMenu2.text       = ALL;
 	BGDropMenu2.func       = REFlex_DropDownTab5Click
 	UIDropDownMenu_AddButton(BGDropMenu2, level);
 	BGDropMenu2 = UIDropDownMenu_CreateInfo();
@@ -505,7 +539,7 @@ end
 
 function REFlex_DropDownTab6OnLoad(self, level)
 	local BGDropMenu3 = UIDropDownMenu_CreateInfo();
-	BGDropMenu3.text       = L["All"];
+	BGDropMenu3.text       = ALL;
 	BGDropMenu3.func       = REFlex_DropDownTab6Click
 	UIDropDownMenu_AddButton(BGDropMenu3, level);
 	BGDropMenu3 = UIDropDownMenu_CreateInfo();
@@ -579,7 +613,7 @@ function REFlex_GUIModulesOnShow()
 			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Name"]:SetText(REModuleTranslation[REFSettings["MiniBarOrder"][j]]);
 			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar1ButtonText"]:SetText(L["Bar 1"]);
 			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar2ButtonText"]:SetText(L["Bar 2"]);
-			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButtonText"]:SetText(L["Hide"]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButtonText"]:SetText(HIDE);
 			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_LeftButtonText"]:SetText(L["Left"]);
 			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_RightButtonText"]:SetText(L["Right"]);
 
@@ -619,13 +653,17 @@ function REFlex_MinimapButtonDrag()
 	REFlex_MinimapButtonReposition()
 end
 
-function REFlex_MinimapButtonClick(...)
-	local Visible = REFlex_MainTab:IsVisible();
+function REFlex_MinimapButtonClick(Button)
+	if Button == "LeftButton" or Button == nil then
+		local Visible = REFlex_MainTab:IsVisible();
 
-	if Visible ~= 1 then
-		REFlex_MainTab:Show();
-	else
-		REFlex_MainTab:Hide();
+		if Visible ~= 1 then
+			REFlex_MainTab:Show();
+		else
+			REFlex_MainTab:Hide();
+		end
+	elseif Button == "RightButton" then
+		InterfaceOptionsFrame_OpenToCategory("REFlex") 	
 	end
 end
 --
@@ -1122,6 +1160,76 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map)
 	local RERatio = math.floor((REWin/(REWin+RELoss))*100) .. "%";
 	return REWin, RELoss, RERatio;
 end
+
+function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
+	local REEnemyNames = {};
+	local REEnemyID = {};
+	local REFriendNames = {};
+	local REFriendID = {};
+
+	local Team, TeamE = "", "";
+	if REFDatabaseA[DatabaseID]["PlayerTeam"] == 0 then
+		Team = "Green";
+		TeamE = "Gold";
+	else
+		Team = "Gold";
+		TeamE = "Green";
+	end
+
+	if isEnemy == true or isEnemy == nil then
+		for jj=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
+			table.insert(REEnemyNames, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Name"]);
+		end
+		table.sort(REEnemyNames);
+		for jj=1, #REEnemyNames do
+			for kk=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
+				if REEnemyNames[jj] == REFDatabaseA[DatabaseID][TeamE .. "Team"][kk]["Name"] then
+					table.insert(REEnemyID, kk);
+					break;
+				end
+			end
+		end
+	end
+
+	if isEnemy == false or isEnemy == nil then
+		for jj=1, #REFDatabaseA[DatabaseID][Team .. "Team"] do
+			table.insert(REFriendNames, REFDatabaseA[DatabaseID][Team .. "Team"][jj]["Name"]);
+		end
+		table.sort(REFriendNames);
+
+		for jj=1, #REFriendNames do
+			for kk=1, #REFDatabaseA[DatabaseID][Team .. "Team"] do
+				if REFriendNames[jj] == REFDatabaseA[DatabaseID][Team .. "Team"][kk]["Name"] then
+					table.insert(REFriendID, kk);
+					break;
+				end
+			end
+		end
+	end
+
+	return REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE;
+end
+
+function REFlex_ArenaTeamGrid()
+	for j=1, #REFDatabaseA do
+		local REEnemyNames, REEnemyID = REFlex_ArenaTeamHash(j, true);
+
+		local REEnemyTeamID = table.concat(REEnemyNames);
+		if REArenaTeams[REEnemyTeamID] == nil then
+			REArenaTeams[REEnemyTeamID] = {};
+			REArenaTeams[REEnemyTeamID]["Win"] = 0;
+			REArenaTeams[REEnemyTeamID]["Loss"] = 0;
+			REArenaTeams[REEnemyTeamID]["GameID"] = {};
+		end
+		if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
+			REArenaTeams[REEnemyTeamID]["Win"] = REArenaTeams[REEnemyTeamID]["Win"] + 1;
+			table.insert(REArenaTeams[REEnemyTeamID]["GameID"], j);
+		else
+			REArenaTeams[REEnemyTeamID]["Loss"] = REArenaTeams[REEnemyTeamID]["Loss"] + 1;
+			table.insert(REArenaTeams[REEnemyTeamID]["GameID"], j);
+		end
+	end
+end
 --
 
 -- Timers subsection
@@ -1204,7 +1312,7 @@ end
 
 function REFlex_Tab_DefaultFilter(self, rowdata)
 	if RETalentTab ~= nil then
-		if rowdata["cols"][REDefaultFilterValue]["value"] == RETalentTab then
+		if rowdata["cols"][12]["value"] == RETalentTab then
 			return true;
 		else
 			return false;
@@ -1223,18 +1331,13 @@ function REFlex_TableRatingArena(PlayerTeam, j)
 end
 
 function REFlex_TableTeamArena(IsEnemy, j)
-	local Team, TeamE, Line = "", "", "";
-	if REFDatabaseA[j]["PlayerTeam"] == 0 then
-		Team = "Green";
-		TeamE = "Gold";
-	else
-		Team = "Gold";
-		TeamE = "Green";
-	end
+	local Line = "";
 
 	if IsEnemy then
-		for jj=1, #REFDatabaseA[j][TeamE .. "Team"] do
-			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][jj]["ClassToken"];
+		local REEnemyNames, REEnemyID, _, _, Team, TeamE = REFlex_ArenaTeamHash(j, true);
+
+		for jj=1, #REEnemyID do
+			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][REEnemyID[jj]]["ClassToken"];
 			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t  "
 		end
 		if REFDatabaseA[j][TeamE .. "TeamRating"] >= 0 then
@@ -1243,8 +1346,10 @@ function REFlex_TableTeamArena(IsEnemy, j)
 			Line = "-";
 		end
 	else
-		for jj=1, #REFDatabaseA[j][Team .. "Team"] do
-			local ClassToken = REFDatabaseA[j][Team .. "Team"][jj]["ClassToken"];
+		local _, _, REFriendNames, REFriendID, Team, TeamE = REFlex_ArenaTeamHash(j, false);
+
+		for jj=1, #REFriendID do
+			local ClassToken = REFDatabaseA[j][Team .. "Team"][REFriendID[jj]]["ClassToken"];
 			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t  "
 		end
 		if REFDatabaseA[j][Team .. "TeamRating"] >= 0 then
@@ -1369,6 +1474,18 @@ function REFlex_TableRatingColorArena(PlayerTeam, j)
 	end
 end
 --
+
+-- Tooltips Subsection
+function REFlex_ToolTipRatingColorArena(Rating)
+	if Rating > 0 then
+		return "00FF00+"; 
+	elseif Rating < 0 then
+		return "FF141C"; 
+	else
+		return "FFFFFF"; 
+	end
+end
+--
 -- ***
 
 -- *** Main functions
@@ -1395,307 +1512,335 @@ function REFlex_MainOnClick(Channel)
 	else
 		REAddidional = "";
 	end
-	SendChatMessage("[REFlex] " .. L["Wins"] .. ": " .. REWins .. " - " .. L["Losses"] .. ": " .. RELosses .. REAddidional,Channel ,nil ,nil);
+	SendChatMessage("[REFlex] " .. WINS .. ": " .. REWins .. " - " .. LOSSES .. ": " .. RELosses .. REAddidional,Channel ,nil ,nil);
 	SendChatMessage("<KB> " .. L["Total"] .. ": " .. RESumKB .. " - " .. L["Top"] .. ": " .. RETopKB .. " <HK> " .. L["Total"] .. ": " .. RESumHK .. " - " .. L["Top"] .. ": " .. RETopHK,Channel ,nil ,nil);
 	SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage , 2),Channel ,nil ,nil);
 	SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2),Channel ,nil ,nil);
 end
 --
 
+-- Tabs subsection
 function REFlex_MainTabShow()
 	RequestRatedBattlegroundInfo();
-	local REDataStructure12 = {
-		{
-			["name"] = L["Date"],
-			["width"] = 110,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["TimeRaw"]; RERowB = REFDatabase[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = L["Map"],
-			["width"] = 130,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},    
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = AUCTION_DURATION,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["DurationRaw"]; RERowB = REFDatabase[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = WIN,
-			["width"] = 60,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "KB",
-			["width"] = 35,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "HK",
-			["width"] = 35,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = DAMAGE,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Damage"]; RERowB = REFDatabase[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = SHOW_COMBAT_HEALING,
-			["width"] = 60,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Healing"]; RERowB = REFDatabase[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = HONOR,
-			["width"] = 40,
-			["align"] = "CENTER"
-		}
-	}
-
-	local REDataStructure3 = {
-		{
-			["name"] = L["Date"],
-			["width"] = 92,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["TimeRaw"]; RERowB = REFDatabase[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = L["Map"],
-			["width"] = 40,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},    
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = L["A Rating"],
-			["width"] = 54,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = L["H Rating"],
-			["width"] = 54,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},    
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = AUCTION_DURATION,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["DurationRaw"]; RERowB = REFDatabase[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = WIN,
-			["width"] = 60,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "KB",
-			["width"] = 35,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "HK",
-			["width"] = 35,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = DAMAGE,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Damage"]; RERowB = REFDatabase[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = SHOW_COMBAT_HEALING,
-			["width"] = 60,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Healing"]; RERowB = REFDatabase[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = RATING,
-			["width"] = 40,
-			["align"] = "CENTER"
-		}
-	}
-
-	local REDataStructure5 = {
-		{
-			["name"] = "\n" .. L["Date"],
-			["width"] = 92,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["TimeRaw"]; RERowB = REFDatabaseA[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. L["Map"],
-			["width"] = 40,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},    
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. L["Team"],
-			["width"] = 160,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. L["Enemy"],
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["width"] = 160,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. AUCTION_DURATION,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["DurationRaw"]; RERowB = REFDatabaseA[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. DAMAGE,
-			["width"] = 60,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["Damage"]; RERowB = REFDatabaseA[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. SHOW_COMBAT_HEALING,
-			["width"] = 60,
-			["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["Healing"]; RERowB = REFDatabaseA[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
-			["align"] = "CENTER"
-		},
-		{
-			["name"] = "\n" .. RATING,
-			["width"] = 40,
-			["bgcolor"] = { 
-				["r"] = 0.15, 
-				["g"] = 0.15, 
-				["b"] = 0.15, 
-				["a"] = 1.0 
-			},
-			["align"] = "CENTER"
-		}
-	}
+	REArenaTeams = {};
+	REFlex_ArenaTeamGrid();
 
 	if RESecondTimeMainTab == false then
+		local REDataStructure12 = {
+			{
+				["name"] = L["Date"],
+				["width"] = 110,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["TimeRaw"]; RERowB = REFDatabase[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = L["Map"],
+				["width"] = 130,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},    
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = AUCTION_DURATION,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["DurationRaw"]; RERowB = REFDatabase[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = WIN,
+				["width"] = 60,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "KB",
+				["width"] = 35,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "HK",
+				["width"] = 35,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = DAMAGE,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Damage"]; RERowB = REFDatabase[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = SHOW_COMBAT_HEALING,
+				["width"] = 60,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Healing"]; RERowB = REFDatabase[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = HONOR,
+				["width"] = 40,
+				["align"] = "CENTER"
+			}
+		}
+
+		local REDataStructure3 = {
+			{
+				["name"] = L["Date"],
+				["width"] = 92,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["TimeRaw"]; RERowB = REFDatabase[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = L["Map"],
+				["width"] = 40,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},    
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = L["A Rating"],
+				["width"] = 54,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = L["H Rating"],
+				["width"] = 54,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},    
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = AUCTION_DURATION,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["DurationRaw"]; RERowB = REFDatabase[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = WIN,
+				["width"] = 60,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "KB",
+				["width"] = 35,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "HK",
+				["width"] = 35,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = DAMAGE,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Damage"]; RERowB = REFDatabase[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = SHOW_COMBAT_HEALING,
+				["width"] = 60,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabase[rowa]["Healing"]; RERowB = REFDatabase[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = RATING,
+				["width"] = 40,
+				["align"] = "CENTER"
+			}
+		}
+
+		local REDataStructure5 = {
+			{
+				["name"] = "\n" .. L["Date"],
+				["width"] = 92,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["TimeRaw"]; RERowB = REFDatabaseA[rowb]["TimeRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. L["Map"],
+				["width"] = 40,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},    
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. TEAM,
+				["width"] = 160,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. ENEMY,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["width"] = 160,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. AUCTION_DURATION,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["DurationRaw"]; RERowB = REFDatabaseA[rowb]["DurationRaw"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. DAMAGE,
+				["width"] = 60,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["Damage"]; RERowB = REFDatabaseA[rowb]["Damage"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. SHOW_COMBAT_HEALING,
+				["width"] = 60,
+				["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; RERowA = REFDatabaseA[rowa]["Healing"]; RERowB = REFDatabaseA[rowb]["Healing"]; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+				["align"] = "CENTER"
+			},
+			{
+				["name"] = "\n" .. RATING,
+				["width"] = 40,
+				["bgcolor"] = { 
+					["r"] = 0.15, 
+					["g"] = 0.15, 
+					["b"] = 0.15, 
+					["a"] = 1.0 
+				},
+				["align"] = "CENTER"
+			}
+		}
+
 		REMainTable1 = REScrollingTable:CreateST(REDataStructure12, 25, nil, nil, REFlex_MainTab_Tab1_Table)
-		ScrollTable1:SetPoint("TOP");
+		_G[REMainTable1["frame"]:GetName()]:SetPoint("TOP");
 		REMainTable1:RegisterEvents({
-			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+			["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
 				if realrow ~= nil then
-					REFlex_ShowBGDetails(realrow);    
+					REFlex_ShowBGDetails_OnEnter(cellFrame, data[realrow]["cols"][13]["value"]);    
+				end
+			end,
+			["OnLeave"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowDetails_OnLeave(cellFrame);    
 				end
 			end,
 		});
 		REMainTable2 = REScrollingTable:CreateST(REDataStructure12, 25, nil, nil, REFlex_MainTab_Tab2_Table)
-		ScrollTable2:SetPoint("TOP");
+		_G[REMainTable2["frame"]:GetName()]:SetPoint("TOP");
 		REMainTable2:RegisterEvents({
-			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+			["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
 				if realrow ~= nil then
-					REFlex_ShowBGDetails(realrow);    
+					REFlex_ShowBGDetails_OnEnter(cellFrame, data[realrow]["cols"][13]["value"]);    
+				end
+			end,
+			["OnLeave"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowDetails_OnLeave(cellFrame);    
 				end
 			end,
 		});
 		REMainTable3 = REScrollingTable:CreateST(REDataStructure3, 25, nil, nil, REFlex_MainTab_Tab3_Table)
-		ScrollTable3:SetPoint("TOP");
+		_G[REMainTable3["frame"]:GetName()]:SetPoint("TOP");
 		REMainTable3:RegisterEvents({
-			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+			["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
 				if realrow ~= nil then
-					REFlex_ShowBGDetails(realrow);    
+					REFlex_ShowBGDetails_OnEnter(cellFrame, data[realrow]["cols"][13]["value"], "REMainTable3");    
+				end
+			end,
+			["OnLeave"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowDetails_OnLeave(cellFrame);    
 				end
 			end,
 		});
 		REMainTable5 = REScrollingTable:CreateST(REDataStructure5, 15, 25, nil, REFlex_MainTab_Tab5_Table)
-		ScrollTable4:SetPoint("TOP");
+		_G[REMainTable5["frame"]:GetName()]:SetPoint("TOP");
 		REMainTable5:RegisterEvents({
 			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
-				if realrow ~= nil then
-					REFlex_ShowArenaDetails(realrow);    
-				elseif row == nil and (column == 3 or column == 4) then
+				if row == nil and (column == 3 or column == 4) then
 					return true;   
 				end
 			end,
+			["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowArenaDetails_OnEnter(cellFrame, data[realrow]["cols"][13]["value"]);    
+				end
+			end,
+			["OnLeave"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowDetails_OnLeave(cellFrame);    
+				end
+			end,
 		});
+
+		RETalentTab = nil;
+
+		PanelTemplates_SetTab(REFlex_MainTab, 1);
+		PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 1);
+		REFlex_MainTab_Tab1:Hide();
+		REFlex_MainTab_Tab1:Show();
+		REFlex_MainTab_Tab2:Hide();
+		REFlex_MainTab_Tab3:Hide();
+		REFlex_MainTab_Tab4:Hide();
+		REFlex_MainTab_Tab5:Hide();
+		REFlex_MainTab_Tab6:Hide();
+
 		RESecondTimeMainTab = true;
 	end
-
-	RETalentTab = nil;
-
-	PanelTemplates_SetTab(REFlex_MainTab, 1);
-	PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 1);
-	REFlex_MainTab_Tab1:Hide();
-	REFlex_MainTab_Tab1:Show();
-	REFlex_MainTab_Tab2:Hide();
-	REFlex_MainTab_Tab3:Hide();
-	REFlex_MainTab_Tab4:Hide();
-	REFlex_MainTab_Tab5:Hide();
-	REFlex_MainTab_Tab6:Hide();
 end	
 
 function REFlex_Tab1Show()
@@ -1737,8 +1882,11 @@ function REFlex_Tab1Show()
 		RETempCol[9] = {
 			["value"] = REFDatabase[j]["Honor"]
 		}
-		RETempCol[10] = {
+		RETempCol[12] = {
 			["value"] = REFDatabase[j]["TalentSet"]
+		}
+		RETempCol[13] = {
+			["value"] = j
 		}
 
 		local RETempRow = {
@@ -1749,7 +1897,6 @@ function REFlex_Tab1Show()
 	end
 
 	REMainTable1:SetData(RETableData);
-	REDefaultFilterValue = 10;
 	REMainTable1:SetFilter(REFlex_Tab_DefaultFilter);
 
 	if RETable1Rdy then
@@ -1820,8 +1967,11 @@ function REFlex_Tab2Show()
 			RETempCol[9] = {
 				["value"] = REFDatabase[j]["Honor"]
 			}
-			RETempCol[10] = {
+			RETempCol[12] = {
 				["value"] = REFDatabase[j]["TalentSet"]
+			}
+			RETempCol[13] = {
+				["value"] = j
 			}
 
 			local RETempRow = {
@@ -1833,7 +1983,6 @@ function REFlex_Tab2Show()
 	end
 
 	REMainTable2:SetData(RETableData);
-	REDefaultFilterValue = 10;
 	REMainTable2:SetFilter(REFlex_Tab_DefaultFilter);
 	REMainTable2:SortData();
 
@@ -1908,6 +2057,9 @@ function REFlex_Tab3Show()
 			RETempCol[12] = {
 				["value"] = REFDatabase[j]["TalentSet"]
 			}
+			RETempCol[13] = {
+				["value"] = j
+			}
 
 			local RETempRow = {
 				["cols"] = RETempCol
@@ -1918,7 +2070,6 @@ function REFlex_Tab3Show()
 	end
 
 	REMainTable3:SetData(RETableData);
-	REDefaultFilterValue = 12;
 	REMainTable3:SetFilter(REFlex_Tab_DefaultFilter);
 	if RETable3Rdy then
 		REMainTable3:SortData();
@@ -2076,8 +2227,11 @@ function REFlex_Tab5Show()
 					["color"] = REFlex_TableRatingColorArena,
 					["colorargs"] = {REFDatabaseA[j]["PlayerTeam"], j,}
 				}
-				RETempCol[9] = {
+				RETempCol[12] = {
 					["value"] = REFDatabaseA[j]["TalentSet"]
+				}
+				RETempCol[13] = {
+					["value"] = j
 				}
 
 				local RETempRow = {
@@ -2116,8 +2270,11 @@ function REFlex_Tab5Show()
 				["color"] = REFlex_TableRatingColorArena,
 				["colorargs"] = {REFDatabaseA[j]["PlayerTeam"], j,}
 			}
-			RETempCol[9] = {
+			RETempCol[12] = {
 				["value"] = REFDatabaseA[j]["TalentSet"]
+			}
+			RETempCol[13] = {
+				["value"] = j
 			}
 
 			local RETempRow = {
@@ -2129,7 +2286,6 @@ function REFlex_Tab5Show()
 	end
 
 	REMainTable5:SetData(RETableData);
-	REDefaultFilterValue = 9;
 	REMainTable5:SetFilter(REFlex_Tab_DefaultFilter);
 	if RETable5Rdy then
 		REMainTable5:SortData();
@@ -2259,14 +2415,99 @@ function REFlex_Tab6Show()
 		end
 	end
 end
+-- 
 
-function REFlex_ShowBGDetails(DatabaseID)
-	-- TODO
+-- Tooltips subsection
+function REFlex_ShowBGDetails_OnEnter(self, DatabaseID, Table)
+	local RETooltip = REQTip:Acquire("REBGDetailsToolTip", 3, "CENTER", "CENTER", "CENTER");
+	self.tooltip = RETooltip;
+
+	RETooltip:AddHeader("", "|cFF74D06C" .. TUTORIAL_TITLE19 .. "|r", "");
+	RETooltip:AddLine("|cFF00A9FF" .. FACTION_ALLIANCE .. ":|r " .. REFDatabase[DatabaseID]["AliianceNum"], "", "|cFFFF141D" .. FACTION_HORDE .. ":|r " .. REFDatabase[DatabaseID]["HordeNum"]);
+
+	RETooltip:AddSeparator();
+	RETooltip:AddHeader("", "|cFF74D06C" .. L["Place"] .. "|r", "");
+	RETooltip:SetColumnLayout(3, "LEFT", "CENTER", "CENTER");
+	RETooltip:AddLine("", FACTION, ALL);
+	RETooltip:AddLine("KB", REFDatabase[DatabaseID]["PlaceFactionKB"], REFDatabase[DatabaseID]["PlaceKB"]);
+	RETooltip:AddLine("HK", REFDatabase[DatabaseID]["PlaceFactionHK"], REFDatabase[DatabaseID]["PlaceHK"]); 
+	RETooltip:AddLine(DAMAGE, REFDatabase[DatabaseID]["PlaceFactionDamage"], REFDatabase[DatabaseID]["PlaceDamage"]); 
+	RETooltip:AddLine(SHOW_COMBAT_HEALING, REFDatabase[DatabaseID]["PlaceFactionHealing"], REFDatabase[DatabaseID]["PlaceHealing"]);
+	RETooltip:SetLineColor(7, 1, 1, 1, 0.5);
+	RETooltip:SetLineColor(9, 1, 1, 1, 0.5);
+	if not REFDatabase[DatabaseID]["IsRated"] then
+		RETooltip:AddLine("Honor", REFDatabase[DatabaseID]["PlaceFactionHonor"], REFDatabase[DatabaseID]["PlaceHonor"]);
+	elseif Table == "REMainTable3" then
+		RETooltip:AddSeparator();
+		RETooltip:AddLine("", HONOR .. ": " .. REFDatabase[DatabaseID]["Honor"], "");
+	end
+
+	RETooltip:SmartAnchorTo(self);
+	RETooltip:Show();
 end
 
-function REFlex_ShowArenaDetails(DatabaseID)
-	-- TODO
+function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
+	local RETooltip = REQTip:Acquire("REArenaDetailsToolTip", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER");
+	self.tooltip = RETooltip;
+
+	local REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE = REFlex_ArenaTeamHash(DatabaseID);
+	local REEnemyTeamID = table.concat(REEnemyNames);
+
+	RETooltip:SetHeaderFont(SystemFont_Huge1);
+	RETooltip:AddHeader("", "", "", "|cFF00CC00" .. REArenaTeams[REEnemyTeamID]["Win"] .. "|r - |cFFCC0000" .. REArenaTeams[REEnemyTeamID]["Loss"] .. "|r", "", "", "");
+
+	local FriendRatingChange = REFDatabaseA[DatabaseID][Team .. "TeamRatingChange"];
+	local EnemyRatingChange = REFDatabaseA[DatabaseID][TeamE .. "TeamRatingChange"];
+	if REFDatabaseA[DatabaseID][TeamE .. "TeamRating"] < 0 then
+		EnemyRatingChange = 0;
+	end
+	RETooltip:SetHeaderFont(GameTooltipHeader);
+	RETooltip:AddHeader("", "[|cFF" .. REFlex_ToolTipRatingColorArena(FriendRatingChange) .. FriendRatingChange .. "|r]", "", "", "", "[|cFF" .. REFlex_ToolTipRatingColorArena(EnemyRatingChange) .. EnemyRatingChange .. "|r]","");
+	RETooltip:AddSeparator(3);
+
+	for i=1, REFDatabaseA[DatabaseID]["Bracket"] do
+		local RaceClassCell, NameCell, BuildCell, EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell = "", "", "", "", "", "";
+
+		if REFriendID[i] ~= nil then
+			local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
+			local RaceToken = string.upper(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] .. "_MALE");
+			RaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+
+			NameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
+
+			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"] ~= nil then
+				BuildCell = "|cFF" .. REClassColors[ClassToken] .. REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"] .. "|r";
+			else
+				BuildCell = "|cFF" .. REClassColors[ClassToken] .. UNKNOWN .. "|r";
+			end
+		end
+
+		if REEnemyID[i] ~= nil then
+			local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
+			local RaceToken = string.upper(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] .. "_MALE");
+			EnemyRaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+
+			EnemyNameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
+
+			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"] ~= nil then
+				EnemyBuildCell = "|cFF" .. REClassColors[ClassToken] .. REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"] .. "|r";
+			else
+				EnemyBuildCell = "|cFF" .. REClassColors[ClassToken] .. UNKNOWN .. "|r";
+			end
+		end
+
+		RETooltip:AddLine(RaceClassCell, NameCell, BuildCell, "", EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell);	
+	end
+
+	RETooltip:SmartAnchorTo(self);
+	RETooltip:Show();
 end
+
+function REFlex_ShowDetails_OnLeave(self)
+	REQTip:Release(self.tooltip)
+	self.tooltip = nil
+end
+--
 
 function REFlex_BGEnd()
 	local REWinner = GetBattlefieldWinner();
@@ -2551,7 +2792,7 @@ function REFlex_UpdateMiniBar()
 					CreateFrame("Frame", "REFlex_MiniBar" .. i, UIParent, "REFlex_MiniBar_Cell_Prime");
 					_G["REFlex_MiniBar" .. i]:Show();
 					_G["REFlex_MiniBar" .. i]:ClearAllPoints();
-					_G["REFlex_MiniBar" .. i]:SetPoint("LEFT", REFSettings["MiniBarX"], REFSettings["MiniBarY"]);
+					_G["REFlex_MiniBar" .. i]:SetPoint(REFSettings["MiniBarAnchor"], REFSettings["MiniBarX"], REFSettings["MiniBarY"]);
 					_G["REFlex_MiniBar" .. i]:SetScale(REFSettings["MiniBarScale"]);
 					REFirstLineID = i;
 				end
