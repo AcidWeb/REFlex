@@ -386,7 +386,7 @@
 		</Layers>	
 	</Frame>
 
-		<Frame name="REFlex_Tab6_ScoreHolder_Virtual" virtual="true">
+	<Frame name="REFlex_Tab6_ScoreHolder_Virtual" virtual="true">
 		<Size>
 			<AbsDimension x="340" y="125"/>
 		</Size>
@@ -500,7 +500,7 @@
 			</Layer>
 		</Layers>	
 	</Frame>
-		
+
 	<Frame name="REFlex_MainTab" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="655" y="502"/>
@@ -1045,6 +1045,84 @@
 										<Anchor point="TOP">
 											<Offset>
 												<AbsDimension x="0" y="-63" />
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+
+					<Frame name="$parent_Table1">
+						<Size>
+							<AbsDimension x="340" y="25"/>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT">
+								<Offset>
+									<AbsDimension x="15" y="-110"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer>
+								<FontString name="$Parent_Label" justifyH="CENTER" inherits="SystemFont_Shadow_Med3">
+									<Anchors>
+										<Anchor point="TOP">
+											<Offset>
+												<AbsDimension y="32"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+
+					<Frame name="$parent_Table2">
+						<Size>
+							<AbsDimension x="340" y="25"/>
+						</Size>
+						<Anchors>
+							<Anchor point="CENTER">
+								<Offset>
+									<AbsDimension y="-110"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer>
+								<FontString name="$Parent_Label" justifyH="CENTER" inherits="SystemFont_Shadow_Med3">
+									<Anchors>
+										<Anchor point="TOP">
+											<Offset>
+												<AbsDimension y="32"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+
+					<Frame name="$parent_Table3">
+						<Size>
+							<AbsDimension x="340" y="25"/>
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT">
+								<Offset>
+									<AbsDimension x="-15" y="-110"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer>
+								<FontString name="$Parent_Label" justifyH="CENTER" inherits="SystemFont_Shadow_Med3">
+									<Anchors>
+										<Anchor point="TOP">
+											<Offset>
+												<AbsDimension y="32"/>
 											</Offset>
 										</Anchor>
 									</Anchors>

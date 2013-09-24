@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: REFlex
-## Notes: Records statistics of played arenas and battlegrounds. 
-## Version: 0.7
+## Notes: Collect statistics of played arena matches and battlegrounds. 
+## Version: 0.8
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua

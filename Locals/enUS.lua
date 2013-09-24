@@ -12,6 +12,10 @@ local L = {
 	["Rated BGs"] = true,
 	["Unrated BGs"] = true,
 	["Rated"] = true,
+
+	["Most common compositions"] = true,
+	["Easiest compositions"] = true,
+	["Hardest compositions"] = true,
 	
 	["Both Specs"] = true,
 	["Spec 1"] = true,
