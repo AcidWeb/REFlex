@@ -14,9 +14,10 @@ local REModuleTranslation = {
 };
 
 local REDataVersion = 4;
-local REAddonVersion = "v0.8";
+local REAddonVersion = "v0.8.1";
 local REArenaBuilds = {};
 local REArenaTeams = {};
+local REArenaRaces = {};
 local REArenaTeamsSpec = {["2"] = {}, ["3"] = {}, ["5"] = {}, ["All"] = {}, ["AllNoTalent"] = {}};
 local REPartyArenaCheck = 0;
 
@@ -37,11 +38,14 @@ local RERaceIconCoords = {
 	["DWARF_MALE"] = {0.125, 0.25, 0, 0.25},
 	["GNOME_MALE"] = {0.25, 0.375, 0, 0.25},
 	["NIGHT ELF_MALE"] = {0.375, 0.5, 0, 0.25},
+	["NIGHTELF_MALE"] = {0.375, 0.5, 0, 0.25},
 	["TAUREN_MALE"] = {0, 0.125, 0.25, 0.5},
 	["UNDEAD_MALE"] = {0.125, 0.25, 0.25, 0.5},
+	["SCOURGE_MALE"] = {0.125, 0.25, 0.25, 0.5},
 	["TROLL_MALE"] = {0.25, 0.375, 0.25, 0.5},
 	["ORC_MALE"] = {0.375, 0.5, 0.25, 0.5},
 	["BLOOD ELF_MALE"] = {0.5, 0.625, 0.25, 0.5},
+	["BLOODELF_MALE"] = {0.5, 0.625, 0.25, 0.5},
 	["DRAENEI_MALE"] = {0.5, 0.625, 0, 0.25},
 	["GOBLIN_MALE"] = {0.625, 0.750, 0.25, 0.5},
 	["WORGEN_MALE"] = {0.625, 0.750, 0, 0.25},
@@ -262,8 +266,9 @@ function REFlex_OnEvent(self,Event,...)
 
 		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" then
 			if REBuildRecognition[RESpellName] ~= nil then
-				local REName =  table.concat({ strsplit(" ", GetUnitName(REUnitID, true), 3) });
+				local REName = table.concat({ strsplit(" ", GetUnitName(REUnitID, true), 3) });
 				if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
+					_, REArenaRaces[REName] = UnitRace(REUnitID);
 					REArenaBuilds[REName] = REBuildRecognition[RESpellName];
 					print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[RESpellName]);
 				end
@@ -281,8 +286,9 @@ function REFlex_OnEvent(self,Event,...)
 				end
 
 				if REBuildRecognition[REAuraName] ~= nil and RECaster ~= "" and RECaster ~= nil then
-					local REName =  table.concat({ strsplit(" ", GetUnitName(RECaster, true), 3) });
+					local REName = table.concat({ strsplit(" ", GetUnitName(RECaster, true), 3) });
 					if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
+						_, REArenaRaces[REName] = UnitRace(RECaster); 
 						REArenaBuilds[REName] = REBuildRecognition[REAuraName];
 						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[REAuraName]);
 					end
@@ -295,6 +301,7 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_Frame:UnregisterEvent("ARENA_OPPONENT_UPDATE");
 		REArenaBuilds = {};
 		REPartyArenaCheck = 0;
+		REArenaRaces = {};
 		REShefkiTimer:ScheduleTimer(REFlex_ArenaTalentCheck, 30);
 	elseif Event == "INSPECT_READY" then
 		REFlex_Frame:UnregisterEvent("INSPECT_READY");
@@ -302,6 +309,7 @@ function REFlex_OnEvent(self,Event,...)
 		if REInspectedGID == UnitGUID("party" .. REPartyArenaCheck) then
 			local RETalentGroup = GetActiveTalentGroup(true);
 			local REPartyName = GetUnitName("party" .. REPartyArenaCheck, true);
+			_, REArenaRaces[REPartyName] = UnitRace("party" .. REPartyArenaCheck);
 
 			local REPrimaryTree = 1;
 			local REPoints = 0;
@@ -1321,6 +1329,7 @@ function REFlex_ArenaTalentCheck()
 		if REPartyArenaCheck == 0 then
 			local RETalentGroup = GetActiveTalentGroup(false);
 			local REPartyName = GetUnitName("player", true);
+			_, REArenaRaces[REPartyName] = UnitRace("player");
 
 			local REPrimaryTree = 1;
 			local REPoints = 0;
@@ -2766,7 +2775,7 @@ function REFlex_ShowBGDetails_OnEnter(self, DatabaseID, Table)
 	RETooltip:SetLineColor(7, 1, 1, 1, 0.5);
 	RETooltip:SetLineColor(9, 1, 1, 1, 0.5);
 	if not REFDatabase[DatabaseID]["IsRated"] then
-		RETooltip:AddLine("Honor", REFDatabase[DatabaseID]["PlaceFactionHonor"], REFDatabase[DatabaseID]["PlaceHonor"]);
+		RETooltip:AddLine(HONOR, REFDatabase[DatabaseID]["PlaceFactionHonor"], REFDatabase[DatabaseID]["PlaceHonor"]);
 	elseif Table == "REMainTable3" then
 		RETooltip:AddSeparator();
 		RETooltip:AddLine("", HONOR .. ": " .. REFDatabase[DatabaseID]["Honor"], "");
@@ -2812,7 +2821,11 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 		if REFriendID[i] ~= nil then
 			local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
 			local RaceToken = string.upper(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] .. "_MALE");
-			RaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			if RERaceIconCoords[RaceToken] ~= nil then
+				RaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			else
+				RaceClassCell = "|TInterface\\Icons\\INV_Misc_QuestionMark:40:40|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			end
 
 			NameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
 
@@ -2826,7 +2839,11 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 		if REEnemyID[i] ~= nil then
 			local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
 			local RaceToken = string.upper(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] .. "_MALE");
-			EnemyRaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			if RERaceIconCoords[RaceToken] ~= nil then
+				EnemyRaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			else
+				EnemyRaceClassCell = "|TInterface\\Icons\\INV_Misc_QuestionMark:40:40|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
+			end
 
 			EnemyNameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
 
@@ -2852,7 +2869,7 @@ end
 
 function REFlex_BGEnd()
 	local REWinner = GetBattlefieldWinner();
-	local REArena, REArenaRegistered = IsActiveBattlefieldArena()
+	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
 	if REWinner ~= nil and RESecondTime ~= true and REArena == nil then
 		if REWinner == 1 then
 			REWinSide = FACTION_ALLIANCE;
@@ -3033,7 +3050,7 @@ function REFlex_BGEnd()
 			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(KILLING_BLOWS) .. " " .. L["RECORD"] ..":\124r " .. REkillingBlows .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. RETopKB);
 		end
 		if REhonorKills > RETopHK then
-			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(HONOR .. " " .. KILLS) .. " " .. L["RECORD"] ..":\124r " .. REhonorKills .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. RETopHK);
+			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(L["Honor Kills"]) .. " " .. L["RECORD"] ..":\124r " .. REhonorKills .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. RETopHK);
 		end
 		if REdamageDone > RETopDamage then
 			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(DAMAGE) .. " " .. L["RECORD"] ..":\124r " .. REFlex_NumberClean(REdamageDone, 2) .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
@@ -3050,7 +3067,7 @@ function REFlex_BGEnd()
 		local REMap = GetRealZoneText();
 		local REPlayerName = GetUnitName("player");
 		local RETalentGroup = GetActiveTalentGroup(false, false);
-		local REArenaSeason = GetCurrentArenaSeason()
+		local REArenaSeason = GetCurrentArenaSeason();
 		local REBGPlayers = GetNumBattlefieldScores();
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
 		local REBGMinutes = math.floor(BGTimeRaw / 60);
@@ -3087,8 +3104,9 @@ function REFlex_BGEnd()
 
 		for j=1, REBGPlayers do
 			local REPlayerTemp = {};
-			local REPName, REKillingBlows, _, _, _, REFaction, RERace, REClass, REClassToken, REDamageDone, REHealingDone = GetBattlefieldScore(j);
+			local REPName, REKillingBlows, _, _, _, REFaction, _, REClass, REClassToken, REDamageDone, REHealingDone = GetBattlefieldScore(j);
 			local REBuild = REArenaBuilds[REPName];
+			local RERace = REArenaRaces[REPName]; 
 			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, Class=REClass, ClassToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone};
 
 			if REPName == REPlayerName then
