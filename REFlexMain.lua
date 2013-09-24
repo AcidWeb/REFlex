@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 9;
-RE.AddonVersion = "v0.9.3";
-RE.AddonVersionCheck = 93;
+RE.AddonVersion = "v0.9.3.1";
+RE.AddonVersionCheck = 931;
 
 RE.Debug = false;
 
@@ -2800,7 +2800,7 @@ function REFlex_BGEnd()
 			REWinSidePrint = "\124cFFFF141D" .. FACTION_HORDE;
 		end
 
-		RE.Map = GetRealZoneText();
+		RE.Map = GetMapNameByID(GetCurrentMapAreaID());
 		local REPlayerName = GetUnitName("player");
 		local REFaction = UnitFactionGroup("player");
 		local RETalentGroup = GetActiveTalentGroup(false, false);
@@ -3007,7 +3007,7 @@ function REFlex_BGEnd()
 		table.insert(REFDatabase, REBGData);			
 	elseif REWinner ~= nil and RE.SecondTime ~= true and REArena == 1 and REArenaRegistered == 1 and REZoneType == "arena" and REFSettings["ArenaSupport"] then
 		local REWinSide = REWinner;
-		local REMap = GetRealZoneText();
+		local REMap = GetMapNameByID(GetCurrentMapAreaID());
 		local REPlayerName = GetUnitName("player");
 		local RETalentGroup = GetActiveTalentGroup(false, false);
 		local REArenaSeason = GetCurrentArenaSeason();
