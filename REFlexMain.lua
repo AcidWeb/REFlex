@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 20;
-RE.AddonVersion = "v0.9.8.4";
-RE.AddonVersionCheck = 984;
+RE.AddonVersion = "v0.9.8.5";
+RE.AddonVersionCheck = 985;
 
 RE.Debug = 0;
 
@@ -351,7 +351,7 @@ function REFlex_OnEvent(self,Event,...)
 		end
 	elseif Event == "PVP_RATED_STATS_UPDATE" and REZoneType == "none" then
 		if RE.RBGCounter then
-			RE.RBG = GetPersonalRatedBGInfo();
+			RE.RBG = GetPersonalRatedInfo(4);
 			REFlex_PVPStatsCompleting();
 		end
 	elseif Event == "PVP_REWARDS_UPDATE" and REZoneType == "none" then
@@ -380,7 +380,7 @@ function REFlex_OnEvent(self,Event,...)
 			end
 		end
 		if UnitLevel("player") > 9 then
-			RequestRatedBattlegroundInfo();
+			RequestRatedInfo();
 		end
 		RequestPVPRewards();
 	elseif Event == "ACTIVE_TALENT_GROUP_CHANGED" then
@@ -467,7 +467,6 @@ function REFlex_OnEvent(self,Event,...)
 		CreateFrame("Frame", "REFlex_MainTab_Tab5_ScoreHolder", REFlex_MainTab_Tab5, "REFlex_Tab_ScoreHolder_Virtual");
 		CreateFrame("Frame", "REFlex_MainTab_Tab7_ScoreHolder", REFlex_MainTab_Tab7, "REFlex_Tab_ScoreHolder_Virtual");
 		
-		--TODO
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder1", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
 		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "LEFT", -6, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder2", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
@@ -1562,7 +1561,7 @@ function REFlex_MainTabShow()
 	end
 
 	if UnitLevel("player") > 9 then
-		RequestRatedBattlegroundInfo();
+		RequestRatedInfo();
 	end
 	RequestPVPRewards();
 	REFlex_ExportTab:Hide();
@@ -2844,20 +2843,10 @@ function REFlex_Tab5Show()
 	RE.Wins, RE.Losses = REFlex_WinLossArena(RE.BracketDrop, RE.TalentTab, nil, REFSettings["OnlyNew"]); 
 
 	local RERatings = "";
-	local team2ID = ArenaTeam_GetTeamSizeID(2);
-	local team3ID = ArenaTeam_GetTeamSizeID(3);
-	local team5ID = ArenaTeam_GetTeamSizeID(5);
 	local player2Rating, player3Rating, player5Rating = nil, nil, nil;
-	if team2ID ~= nil then
-		_, _, _, _, _, _, _, _, _, _, player2Rating = GetArenaTeam(team2ID);
-	end
-	if team3ID ~= nil then
-		_, _, _, _, _, _, _, _, _, _, player3Rating = GetArenaTeam(team3ID);
-	end
-	if team5ID ~= nil then
-		_, _, _, _, _, _, _, _, _, _, player5Rating = GetArenaTeam(team5ID);
-	end
-
+	player2Rating = GetPersonalRatedInfo(1);
+	player3Rating = GetPersonalRatedInfo(2);
+	player5Rating = GetPersonalRatedInfo(3);
 	if player2Rating ~= nil then 
 		RERatings = player2Rating;
 	else
@@ -3711,8 +3700,10 @@ function REFlex_ArenaEnd()
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
 		local RETimeRaw = time();
 
-		local REGreenTeamName, REGreenTeamRating, REGreenNewTeamRating, REGreenMMR = GetBattlefieldTeamInfo(0);
-		local REGoldTeamName, REGoldTeamRating, REGoldNewTeamRating, REGoldMMR = GetBattlefieldTeamInfo(1);
+		local REGreenTeamName = ARENA_TEAM_NAME_GREEN
+		local REGoldTeamName = ARENA_TEAM_NAME_GOLD
+		local _, REGreenTeamRating, REGreenNewTeamRating, REGreenMMR = GetBattlefieldTeamInfo(0);
+		local _, REGoldTeamRating, REGoldNewTeamRating, REGoldMMR = GetBattlefieldTeamInfo(1);
 
 		local RETeamGreen, RETeamGold = {}, {};
 		local RELocalDamage, RELocalHealing, RELocalKB, RELocalPreMMR, RELocalMMRChange = 0, 0, 0, 0, 0;
@@ -3765,13 +3756,12 @@ function REFlex_ArenaEnd()
 			end
 		end
 
-		-- Workaround - GetBattlefieldStatus() sometimes return incorrect data
 		local REBracket = 0;
-		for i=1, 3 do
-			local teamName, teamSize = GetArenaTeam(i);
-			if (teamName == REGreenTeamName) or (teamName == REGoldTeamName) then
+		for i=1, GetMaxBattlefieldID() do
+			local status, _, teamSize = GetBattlefieldStatus(i);
+			if status == "active" then
 				REBracket = teamSize;
-				break
+				break;
 			end
 		end
 

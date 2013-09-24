@@ -30,7 +30,7 @@ function REFlex_SettingsReload()
 	RE.SecondTimeMiniBar = false;
 	RE.MiniBarSecondLineRdy = false;
 	if UnitLevel("player") > 9 then
-		RequestRatedBattlegroundInfo();
+		RequestRatedInfo();
 	end
 	RequestPVPRewards();
 	REFlex_UpdateLDB();
@@ -102,20 +102,10 @@ function REFlex_PVPStatsCompleting()
 		REFSettings["LastDay"] = REToday;
 		_, REFSettings["LastDayStats"]["Honor"] = GetCurrencyInfo(HONOR_CURRENCY);
 		_, REFSettings["LastDayStats"]["CP"] = GetCurrencyInfo(CONQUEST_CURRENCY);
-		local team2ID = ArenaTeam_GetTeamSizeID(2);
-		local team3ID = ArenaTeam_GetTeamSizeID(3);
-		local team5ID = ArenaTeam_GetTeamSizeID(5);
 		REFSettings["LastDayStats"]["2v2"], REFSettings["LastDayStats"]["3v3"], REFSettings["LastDayStats"]["5v5"] = 0, 0, 0;
-		if team2ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["2v2"] = GetArenaTeam(team2ID);
-		end
-		if team3ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["3v3"] = GetArenaTeam(team3ID);
-		end
-		if team5ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["5v5"] = GetArenaTeam(team5ID);
-		end
-
+		REFSettings["LastDayStats"]["2v2"] = GetPersonalRatedInfo(1);
+		REFSettings["LastDayStats"]["3v3"] = GetPersonalRatedInfo(2);
+		REFSettings["LastDayStats"]["5v5"] = GetPersonalRatedInfo(3);
 		REFSettings["LastDayStats"]["RBG"] = RE.RBG;
 		REFSettings["LastDayStats"]["MMR"] = REFSettings["CurrentMMR"];
 		REFSettings["LastDayStats"]["MMRBG"] = REFSettings["CurrentMMRBG"];
@@ -919,7 +909,7 @@ function REFlex_PVPUpdateDelay()
 	PVPUIFrame:Show();
 	PVPUIFrame:Hide();
 	if UnitLevel("player") > 9 then
-		RequestRatedBattlegroundInfo();
+		RequestRatedInfo();
 	end
 	RequestPVPRewards();
 	REFlex_UpdateLDB();
@@ -1618,19 +1608,10 @@ function REFlex_SendStats()
 		end
 		REDataString = REDataString .. REArenaWin .. ";" .. REArenaLoss .. ";" .. REBGWin .. ";" .. REBGLoss .. ";"
 
-		local team2ID = ArenaTeam_GetTeamSizeID(2);
-		local team3ID = ArenaTeam_GetTeamSizeID(3);
-		local team5ID = ArenaTeam_GetTeamSizeID(5);
 		local player2Rating, player3Rating, player5Rating = nil, nil, nil;
-		if team2ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, player2Rating = GetArenaTeam(team2ID);
-		end
-		if team3ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, player3Rating = GetArenaTeam(team3ID);
-		end
-		if team5ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, player5Rating = GetArenaTeam(team5ID);
-		end
+		player2Rating = GetPersonalRatedInfo(1);
+		player3Rating = GetPersonalRatedInfo(2);
+		player5Rating = GetPersonalRatedInfo(3);
 
 		if player2Rating ~= nil then 
 			REDataString = REDataString .. player2Rating .. ";";

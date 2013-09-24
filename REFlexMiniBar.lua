@@ -98,20 +98,11 @@ function REFlex_LDBTooltipFill(Field)
 	elseif Field == "RBG" then
 		RENew = RE.RBG;
 	elseif Field == "2v2" then
-		local team2ID = ArenaTeam_GetTeamSizeID(2);
-		if team2ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, RENew = GetArenaTeam(team2ID);
-		end
+		RENew = GetPersonalRatedInfo(1);
 	elseif Field == "3v3" then
-		local team3ID = ArenaTeam_GetTeamSizeID(3);
-		if team3ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, RENew = GetArenaTeam(team3ID);
-		end
+		RENew = GetPersonalRatedInfo(2);
 	elseif Field == "5v5" then
-		local team5ID = ArenaTeam_GetTeamSizeID(5);
-		if team5ID ~= nil then
-			_, _, _, _, _, _, _, _, _, _, RENew = GetArenaTeam(team5ID);
-		end
+		RENew = GetPersonalRatedInfo(3);
 	elseif Field == "MMR" then
 		RENew = REFSettings["CurrentMMR"];
 	elseif Field == "MMRBG" then
