@@ -3,6 +3,16 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update19()
+	for i=1, #REFDatabase do
+		if REFDatabase[i]["MapInfo"] == "TempleofKotmogu" then
+			REFDatabase[i]["SpecialFields"] = {0, 0};
+		elseif REFDatabase[i]["MapInfo"] == "STVDiamondMineBG" then
+			REFDatabase[i]["SpecialFields"] = {0};
+		end
+	end
+end
+
 function REFlex_Update18()
 	for i=1, #REFDatabase do
 		if REFDatabase[i]["RBGHordeTeam"] ~= nil then

@@ -510,7 +510,7 @@
 	
 	<Frame name="REFlex_Tab6_ScoreHolder_VirtualB" virtual="true">
 		<Size>
-			<AbsDimension x="252.5" y="125"/>
+			<AbsDimension x="200" y="125"/>
 		</Size>
 		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<EdgeSize>
@@ -538,7 +538,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="0" y="-42" />
+								<AbsDimension x="0" y="-40" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -548,7 +548,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="-40" y="-42" />
+								<AbsDimension x="-40" y="-40" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -558,7 +558,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="40" y="-42" />
+								<AbsDimension x="40" y="-40" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -568,7 +568,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="-80" y="-70" />
+								<AbsDimension x="-50" y="-70" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -577,7 +577,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="-80" y="-87" />
+								<AbsDimension x="-50" y="-87" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -586,7 +586,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="-80" y="-102" />
+								<AbsDimension x="-50" y="-102" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -596,7 +596,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="80" y="-70" />
+								<AbsDimension x="50" y="-70" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -605,7 +605,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="80" y="-87" />
+								<AbsDimension x="50" y="-87" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -614,7 +614,7 @@
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
-								<AbsDimension x="80" y="-102" />
+								<AbsDimension x="50" y="-102" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1106,7 +1106,7 @@
 
 					<Frame name="$Parent_Bar">
 						<Size>
-							<AbsDimension x="715" y="25"/>
+							<AbsDimension x="1035" y="35"/>
 						</Size>
 						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize>

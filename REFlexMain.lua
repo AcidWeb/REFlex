@@ -17,9 +17,9 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 19;
-RE.AddonVersion = "v0.9.8.3";
-RE.AddonVersionCheck = 983;
+RE.DataVersion = 20;
+RE.AddonVersion = "v0.9.8.4";
+RE.AddonVersionCheck = 984;
 
 RE.Debug = 0;
 
@@ -219,7 +219,14 @@ RE.BGSpecialFields = {
 	"Interface\\WorldStateFrame\\ColumnIcon-FlagReturn" .. RE.FactionNum},
 	["Other"] = {"Interface\\WorldStateFrame\\ColumnIcon-TowerCapture" .. RE.FactionNum,
 	"Interface\\WorldStateFrame\\ColumnIcon-TowerDefend" .. RE.FactionNum},
-	["NetherstormArena"] = {"Interface\\WorldStateFrame\\ColumnIcon-FlagCapture" .. RE.FactionNum}
+	["NetherstormArena"] = {"Interface\\WorldStateFrame\\ColumnIcon-FlagCapture" .. RE.FactionNum},
+	["STVDiamondMineBG"] = {"Interface\\WorldStateFrame\\ColumnIcon-MineCapture" .. RE.FactionNum},
+	["TempleofKotmogu"] = {"Interface\\WorldStateFrame\\ColumnIcon-FlagCapture" .. RE.FactionNum,
+	"Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
+	["GoldRush"] = {"Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture" .. RE.FactionNum,
+	"Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend" .. RE.FactionNum,
+	"Interface\\WorldStateFrame\\ColumnIcon-TowerCapture" .. RE.FactionNum,
+	"Interface\\WorldStateFrame\\ColumnIcon-TowerDefend" .. RE.FactionNum}
 }
 RE.TooltipBackdrop = {
     ["bgFile"] = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark";
@@ -460,39 +467,44 @@ function REFlex_OnEvent(self,Event,...)
 		CreateFrame("Frame", "REFlex_MainTab_Tab5_ScoreHolder", REFlex_MainTab_Tab5, "REFlex_Tab_ScoreHolder_Virtual");
 		CreateFrame("Frame", "REFlex_MainTab_Tab7_ScoreHolder", REFlex_MainTab_Tab7, "REFlex_Tab_ScoreHolder_Virtual");
 		
+		--TODO
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder1", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "LEFT", -17, 0);
+		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "LEFT", -6, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder2", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder2:SetPoint("LEFT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "RIGHT", 17, 0);
+		REFlex_MainTab_Tab4_ScoreHolder2:SetPoint("LEFT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "RIGHT", 6, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder3", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder3:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder1, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder3:SetPoint("RIGHT", REFlex_MainTab_Tab4_ScoreHolder1, "LEFT", -6, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder4", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder4:SetPoint("TOPLEFT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "BOTTOMLEFT", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder4:SetPoint("LEFT", REFlex_MainTab_Tab4_ScoreHolder2, "RIGHT", 6, 0);	
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder5", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder5:SetPoint("TOPRIGHT", REFlex_MainTab_Tab4_ScoreHolderSpecial, "BOTTOMRIGHT", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder5:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder3, "BOTTOM", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder6", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder6:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder2, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder6:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder1, "BOTTOM", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder7", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder7:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder3, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder7:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder2, "BOTTOM", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder8", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder8:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder4, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder8:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder4, "BOTTOM", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder9", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder9:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder5, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder9:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder5, "BOTTOM", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder10", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
-		REFlex_MainTab_Tab4_ScoreHolder10:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder6, "BOTTOM", 0, -15);
+		REFlex_MainTab_Tab4_ScoreHolder10:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder6, "BOTTOM", 0, -10);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder11", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder11:SetPoint("TOP", REFlex_MainTab_Tab4_ScoreHolder7, "BOTTOM", 0, -10);
 		
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder1", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
 		REFlex_MainTab_Tab6_ScoreHolder1:SetPoint("RIGHT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "LEFT", -10, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder2", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_Virtual");
 		REFlex_MainTab_Tab6_ScoreHolder2:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "RIGHT", 10, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder3", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
-		REFlex_MainTab_Tab6_ScoreHolder3:SetPoint("TOPRIGHT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "BOTTOM", -5, -15);
+		REFlex_MainTab_Tab6_ScoreHolder3:SetPoint("TOPLEFT", REFlex_MainTab_Tab6_ScoreHolder1, "BOTTOMLEFT", 0, -10);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder4", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
-		REFlex_MainTab_Tab6_ScoreHolder4:SetPoint("TOPLEFT", REFlex_MainTab_Tab6_ScoreHolderSpecial, "BOTTOM", 5, -15);
+		REFlex_MainTab_Tab6_ScoreHolder4:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder3, "RIGHT", 10, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder5", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
-		REFlex_MainTab_Tab6_ScoreHolder5:SetPoint("RIGHT", REFlex_MainTab_Tab6_ScoreHolder3, "LEFT", -10, 0);
+		REFlex_MainTab_Tab6_ScoreHolder5:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder4, "RIGHT", 10, 0);
 		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder6", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
-		REFlex_MainTab_Tab6_ScoreHolder6:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder4, "RIGHT", 10, 0);
+		REFlex_MainTab_Tab6_ScoreHolder6:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder5, "RIGHT", 10, 0);
+		CreateFrame("Frame", "REFlex_MainTab_Tab6_ScoreHolder7", REFlex_MainTab_Tab6, "REFlex_Tab6_ScoreHolder_VirtualB");
+		REFlex_MainTab_Tab6_ScoreHolder7:SetPoint("LEFT", REFlex_MainTab_Tab6_ScoreHolder6, "RIGHT", 10, 0);
 		
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarColor(0, 0.9, 0);
@@ -574,26 +586,33 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 19 then -- 0.9.8.3
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 18 then -- 0.9.8
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 17 then -- 0.9.7.1	
 			REFlex_Update17();	
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 16 then -- 0.9.6.2
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 15 then -- 0.9.6
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
 			REFlex_Update13();
 			REFlex_Update14();
@@ -601,6 +620,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
 			REFlex_Update1112();	
 			REFlex_Update13();
@@ -609,6 +629,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFlex_Update10();	
 			REFlex_Update1112();
@@ -618,6 +639,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
 			REFlex_Update89();
 			REFlex_Update10();
@@ -628,6 +650,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 7 then -- 0.9
 			REFlex_Update7();
 			REFlex_Update89();
@@ -639,6 +662,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
 			REFlex_Update6();	
 			REFlex_Update7();
@@ -651,6 +675,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
 			REFlex_UpdateOld();	
 			REFlex_Update6();
@@ -664,6 +689,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
+			REFlex_Update19();
 		end
 		REFSettings["Version"] = RE.DataVersion;
 		---
@@ -2642,7 +2668,7 @@ function REFlex_Tab4ShowI(j)
 end
 
 function REFlex_Tab4Show()
-	REFlex_MainTab:SetSize(767, 502);
+	REFlex_MainTab:SetSize(1070, 502);
 	REFlex_MainTab_MsgGuild:Hide(); 
 	REFlex_MainTab_MsgParty:Hide();
 	REFlex_MainTab_CSVExport:Hide();
@@ -2727,8 +2753,8 @@ function REFlex_Tab4Show()
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing, 1));
 	end
 
-	if REUsed < 10 then
-		for j=1, 10-REUsed do
+	if REUsed < 11 then
+		for j=1, 11-REUsed do
 			_G["REFlex_MainTab_Tab4_ScoreHolder" .. (j+REUsed)]:Hide();
 		end
 	end
@@ -2942,8 +2968,8 @@ function REFlex_Tab6Show()
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing));
 	end
 
-	if REUsed < 6 then
-		for j=1, 6-REUsed do
+	if REUsed < 7 then
+		for j=1, 7-REUsed do
 			_G["REFlex_MainTab_Tab6_ScoreHolder" .. (j+REUsed)]:Hide();
 		end
 	end
@@ -3110,6 +3136,13 @@ function REFlex_ShowBGDetails_OnEnter(OptionArray)
 			RETooltip:AddLine("|T" .. RE.BGSpecialFields["CTF"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "|T" .. RE.BGSpecialFields["CTF"][2] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][2]);
 		elseif REFDatabase[DatabaseID]["MapInfo"] == "NetherstormArena" then
 			RETooltip:AddLine("|T" .. RE.BGSpecialFields["NetherstormArena"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "");
+		elseif REFDatabase[DatabaseID]["MapInfo"] == "STVDiamondMineBG" then
+			RETooltip:AddLine("|T" .. RE.BGSpecialFields["STVDiamondMineBG"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "");
+		elseif REFDatabase[DatabaseID]["MapInfo"] == "GoldRush" then
+			RETooltip:AddLine("|T" .. RE.BGSpecialFields["GoldRush"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "|T" .. RE.BGSpecialFields["GoldRush"][2] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][2]);
+			RETooltip:AddLine("|T" .. RE.BGSpecialFields["GoldRush"][3] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][3], "", "|T" .. RE.BGSpecialFields["GoldRush"][4] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][4]);
+		elseif REFDatabase[DatabaseID]["MapInfo"] == "TempleofKotmogu" then
+			RETooltip:AddLine("|T" .. RE.BGSpecialFields["TempleofKotmogu"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "|T" .. RE.BGSpecialFields["TempleofKotmogu"][2] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][2]);
 		else
 			RETooltip:AddLine("|T" .. RE.BGSpecialFields["Other"][1] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1], "", "|T" .. RE.BGSpecialFields["Other"][2] .. ":22:22|t: " .. REFDatabase[DatabaseID]["SpecialFields"][2]);
 		end
@@ -3615,13 +3648,15 @@ function REFlex_BGEnd()
 			RESpecialFields[3] = GetBattlefieldStatData(RE.PlayerID, 3);
 			RESpecialFields[4] = GetBattlefieldStatData(RE.PlayerID, 4);
 			RESpecialFields[5] = GetBattlefieldStatData(RE.PlayerID, 5);
-		elseif REMapInfo == "WarsongGulch" or REMapInfo == "TwinPeaks" then
-			RESpecialFields[1] = GetBattlefieldStatData(RE.PlayerID, 1);
-			RESpecialFields[2] = GetBattlefieldStatData(RE.PlayerID, 2);	
-		elseif REMapInfo == "GilneasBattleground2" or REMapInfo == "IsleofConquest" or REMapInfo == "ArathiBasin" or REMapInfo == "StrandoftheAncients" then
+		elseif REMapInfo == "GoldRush" then
 			RESpecialFields[1] = GetBattlefieldStatData(RE.PlayerID, 1);
 			RESpecialFields[2] = GetBattlefieldStatData(RE.PlayerID, 2);
-		elseif REMapInfo == "NetherstormArena" then
+			RESpecialFields[3] = GetBattlefieldStatData(RE.PlayerID, 3);
+			RESpecialFields[4] = GetBattlefieldStatData(RE.PlayerID, 4);
+		elseif REMapInfo == "WarsongGulch" or REMapInfo == "TwinPeaks" or REMapInfo == "GilneasBattleground2" or REMapInfo == "IsleofConquest" or REMapInfo == "ArathiBasin" or REMapInfo == "StrandoftheAncients" or REMapInfo == "TempleofKotmogu" then
+			RESpecialFields[1] = GetBattlefieldStatData(RE.PlayerID, 1);
+			RESpecialFields[2] = GetBattlefieldStatData(RE.PlayerID, 2);
+		elseif REMapInfo == "NetherstormArena" or REMapInfo == "STVDiamondMineBG" then
 			RESpecialFields[1] = GetBattlefieldStatData(RE.PlayerID, 1);
 		end
 
