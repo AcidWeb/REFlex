@@ -517,5 +517,4 @@ function REFlex_UpdateMiniBar()
 	end
 end
 --
-
 -- ***

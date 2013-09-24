@@ -1,9 +1,12 @@
-local MAJOR, MINOR = "ScrollingTable", tonumber("v3.8") or 9999;
+local MAJOR, MINOR = "ScrollingTable", tonumber("145") or 40000;
+if MINOR < 40000 then
+	MINOR = MINOR + 10000;
+end
 local ScrollingTable, oldminor = LibStub:NewLibrary(MAJOR, MINOR);
 if not ScrollingTable then 
 	return; -- No Upgrade needed. 
 end 
-
+ 
 do 
 	local defaultcolor = { ["r"] = 1.0, ["g"] = 1.0, ["b"] = 1.0, ["a"] = 1.0 };
 	local defaulthighlight = { ["r"] = 1.0, ["g"] = 0.9, ["b"] = 0.0, ["a"] = 0.5 };
@@ -247,6 +250,7 @@ do
 			end
 		end
 		
+		self:SetDisplayRows(self.displayRows, self.rowHeight);
 		self:SetWidth();
 	end
 	
@@ -584,6 +588,14 @@ do
 		end
 	end
 	
+	--- API for a ScrollingTable table
+	-- @name IsRowVisible
+	-- @description Checks if a row is currently being shown
+	-- @usage st:IsRowVisible(realrow)
+	-- @thanks sapu94
+	local function IsRowVisible(self, realrow)
+		return (realrow > self.offset and realrow <= (self.displayRows + self.offset))
+	end
 	
 	function ScrollingTable:CreateST(cols, numRows, rowHeight, highlight, parent)
 		local st = {};
@@ -617,6 +629,7 @@ do
 		st.GetCell = GetCell;
 		st.GetRow = GetRow;
 		st.DoCellUpdate = DoCellUpdate;
+		st.RowIsVisible = IsRowVisible;
 		
 		st.SetFilter = SetFilter;
 		st.DoFilter = DoFilter;
@@ -752,7 +765,6 @@ do
 	
 		st:SetFilter(Filter);
 		st:SetDisplayCols(st.cols);
-		st:SetDisplayRows(st.displayRows, st.rowHeight);
 		st:RegisterEvents(st.DefaultEvents);
 		
 		return st;

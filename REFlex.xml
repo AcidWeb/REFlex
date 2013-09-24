@@ -1382,14 +1382,29 @@
 					</Anchor>
 				</Anchors>
 			</Button>
+			<Button name="$parent_CSVExport" inherits="OptionsButtonTemplate" text="CSV">
+				<Size>
+					<AbsDimension x="60" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="REFlex_MainTab_CloseButton" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> REFlex_ExportTab:Show(); </OnClick>
+				</Scripts>		
+			</Button>
 			<Button name="$parent_MsgGuild" inherits="OptionsButtonTemplate">
 				<Size>
 					<AbsDimension x="60" y="20"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT">
+					<Anchor point="RIGHT" relativeTo="REFlex_MainTab_CSVExport" relativePoint="LEFT">
 						<Offset>
-							<AbsDimension x="12" y="-12"/>
+							<AbsDimension x="-4" y="0"/>
 						</Offset>	
 					</Anchor>
 				</Anchors>
@@ -1402,23 +1417,15 @@
 					<AbsDimension x="60" y="20"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT">
+					<Anchor point="RIGHT" relativeTo="REFlex_MainTab_MsgGuild" relativePoint="LEFT">
 						<Offset>
-							<AbsDimension x="77" y="-12"/>
+							<AbsDimension x="-4" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick> REFlex_MainOnClick("PARTY"); </OnClick>
 				</Scripts>
-			</Button>
-			<Button name="$parent_CSVExport" inherits="OptionsButtonTemplate" text="CSV">
-				<Size>
-					<AbsDimension x="60" y="20"/>
-				</Size>
-				<Scripts>
-					<OnClick> REFlex_ExportTab:Show(); </OnClick>
-				</Scripts>		
 			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
 				<Scripts>

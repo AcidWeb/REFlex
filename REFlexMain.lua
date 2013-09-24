@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 11;
-RE.AddonVersion = "v0.9.5";
-RE.AddonVersionCheck = 950;
+RE.AddonVersion = "v0.9.5.1";
+RE.AddonVersionCheck = 951;
 
 RE.Debug = false;
 
@@ -305,25 +305,23 @@ function REFlex_OnLoad(self)
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 	self:RegisterEvent("CURRENCY_DISPLAY_UPDATE");
 	self:RegisterEvent("GUILD_ROSTER_UPDATE");
-
-	WorldStateScoreFrame:HookScript("OnShow", REFlex_BGEnd);
+	
+	WorldStateScoreFrame:HookScript("OnShow", REFlex_ArenaEnd);
 	WorldStateScoreFrame:HookScript("OnHide", function(self) REFlex_ScoreTab:Hide() end);
 	StaticPopup1:HookScript("OnShow", REFlex_EntryPopup);
 
 	RE.SecondTime = false;
 	RE.SecondTimeMainTab = false;
 	RE.SecondTimeMiniBar = false;
-	RE.SecondTimeMiniBarTimer = false;
 end
 
 function REFlex_OnEvent(self,Event,...)
 	local _, REZoneType = IsInInstance();
 	if Event == "UPDATE_BATTLEFIELD_SCORE" and REZoneType == "pvp" then
-		if RE.SecondTimeMiniBarTimer ~= true and (REFSettings["ShowMiniBar"] or REFSettings["LDBBGMorph"]) then
-			REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
-			RE.ShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 30);
-			RE.SecondTimeMiniBarTimer = true;
-		elseif RE.SecondTimeMiniBarTimer and (REFSettings["ShowMiniBar"] or REFSettings["LDBBGMorph"]) then
+		if GetBattlefieldWinner() ~= nil then
+			REFlex_BGEnd();
+		end
+		if REFSettings["ShowMiniBar"] or REFSettings["LDBBGMorph"] then
 			REFlex_UpdateMiniBar();
 		end
 	elseif Event == "UPDATE_BATTLEFIELD_STATUS" and REFSettings["LDBShowQueues"] and ((REZoneType ~= "pvp" and REZoneType ~= "arena") or REFSettings["LDBBGMorph"] == false) then
@@ -461,7 +459,6 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_Frame:RegisterEvent("ARENA_OPPONENT_UPDATE");
 		RE.SecondTime = false;
 		RE.SecondTimeMiniBar = false;
-		RE.SecondTimeMiniBarTimer = false;
 		RE.MiniBarSecondLineRdy = false;
 		REFlex_UpdateLDB();
 
@@ -1209,16 +1206,33 @@ function REFlex_ScoreOnClick(Channel)
 end
 
 function REFlex_MainOnClick(Channel)
-	local REAddidional = "";
-	if PanelTemplates_GetSelectedTab(REFlex_MainTab) == 3 then
-		REAddidional = " - " .. L["Rated BGs"];
-	elseif PanelTemplates_GetSelectedTab(REFlex_MainTab) == 2 then
-		REAddidional = " - " .. L["Unrated BGs"];	
+	local IsArena = REFlex_MainTab_Tab5:IsVisible();
+	if IsArena == 1 then
+		local REAddidional = "";
+		if RE.BracketDrop == 2 then
+			REAddidional = " - 2v2";
+		elseif RE.BracketDrop == 3 then
+			REAddidional = " - 3v3";
+		elseif RE.BracketDrop == 5 then
+			REAddidional = " - 5v5"
+		else
+			REAddidional = " - " .. ALL;	
+		end
+		SendChatMessage("[REFlex] " .. WINS .. ": " .. RE.Wins .. " - " .. LOSSES .. ": " .. RE.Losses .. REAddidional,Channel ,nil ,nil);
+		SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage), Channel ,nil ,nil);
+		SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing), Channel ,nil ,nil);
+	else
+		local REAddidional = "";
+		if PanelTemplates_GetSelectedTab(REFlex_MainTab) == 3 then
+			REAddidional = " - " .. L["Rated BGs"];
+		elseif PanelTemplates_GetSelectedTab(REFlex_MainTab) == 2 then
+			REAddidional = " - " .. L["Unrated BGs"];	
+		end
+		SendChatMessage("[REFlex] " .. WINS .. ": " .. RE.Wins .. " - " .. LOSSES .. ": " .. RE.Losses .. REAddidional,Channel ,nil ,nil);
+		SendChatMessage("<KB> " .. L["Total"] .. ": " .. RE.SumKB .. " - " .. L["Top"] .. ": " .. RE.TopKB .. " <HK> " .. L["Total"] .. ": " .. RE.SumHK .. " - " .. L["Top"] .. ": " .. RE.TopHK, Channel ,nil ,nil);
+		SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage), Channel ,nil ,nil);
+		SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing), Channel ,nil ,nil);
 	end
-	SendChatMessage("[REFlex] " .. WINS .. ": " .. RE.Wins .. " - " .. LOSSES .. ": " .. RE.Losses .. REAddidional,Channel ,nil ,nil);
-	SendChatMessage("<KB> " .. L["Total"] .. ": " .. RE.SumKB .. " - " .. L["Top"] .. ": " .. RE.TopKB .. " <HK> " .. L["Total"] .. ": " .. RE.SumHK .. " - " .. L["Top"] .. ": " .. RE.TopHK, Channel ,nil ,nil);
-	SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage), Channel ,nil ,nil);
-	SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing), Channel ,nil ,nil);
 end
 
 function REFlex_SearchOnClick()
@@ -1834,7 +1848,7 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = "\n" .. TEAM,
-					["width"] = 140,
+					["width"] = 145,
 					["align"] = "CENTER"
 				},
 				{
@@ -1851,7 +1865,7 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = "\n" .. ENEMY,
-					["width"] = 140,
+					["width"] = 145,
 					["align"] = "CENTER"
 				},
 				{
@@ -2192,10 +2206,8 @@ end
 
 function REFlex_Tab1Show()
 	REFlex_MainTab:SetSize(718, 502)
-	REFlex_MainTab_MsgGuild:Show(); 
+	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
-	REFlex_MainTab_CSVExport:ClearAllPoints();
-	REFlex_MainTab_CSVExport:SetPoint("TOPLEFT", 142 , -12)
 	REFlex_MainTab_CSVExport:Show();
 
 	if REFDatabase[RE.Tab1LastID + 1] ~= nil then
@@ -2285,10 +2297,8 @@ end
 
 function REFlex_Tab2Show()
 	REFlex_MainTab:SetSize(718, 502)
-	REFlex_MainTab_MsgGuild:Show(); 
+	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
-	REFlex_MainTab_CSVExport:ClearAllPoints();
-	REFlex_MainTab_CSVExport:SetPoint("TOPLEFT", 142 , -12)
 	REFlex_MainTab_CSVExport:Show();
 
 	if REFDatabase[RE.Tab2LastID + 1] ~= nil then
@@ -2369,10 +2379,8 @@ end
 
 function REFlex_Tab3Show()
 	REFlex_MainTab:SetSize(767, 502)
-	REFlex_MainTab_MsgGuild:Show(); 
+	REFlex_MainTab_MsgGuild:Show();
 	REFlex_MainTab_MsgParty:Show();
-	REFlex_MainTab_CSVExport:ClearAllPoints();
-	REFlex_MainTab_CSVExport:SetPoint("TOPLEFT", 142 , -12)
 	REFlex_MainTab_CSVExport:Show();
 
 	if REFDatabase[RE.Tab3LastID + 1] ~= nil then
@@ -2663,11 +2671,9 @@ function REFlex_Tab4Show()
 end
 
 function REFlex_Tab5Show()
-	REFlex_MainTab:SetSize(911, 502);
-	REFlex_MainTab_MsgGuild:Hide(); 
-	REFlex_MainTab_MsgParty:Hide();
-	REFlex_MainTab_CSVExport:ClearAllPoints();
-	REFlex_MainTab_CSVExport:SetPoint("LEFT", "REFlex_MainTab_Tab5_DropDownButton", "RIGHT", 4, 0)
+	REFlex_MainTab:SetSize(921, 502);
+	REFlex_MainTab_MsgGuild:Show();
+	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab_CSVExport:Show();
 	REFlex_MainTab_Tab5_SearchBox:SetText(NAME);
 
@@ -3090,11 +3096,15 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 
 	local FriendRatingChange = REFDatabaseA[DatabaseID][Team .. "TeamRatingChange"];
 	local EnemyRatingChange = REFDatabaseA[DatabaseID][TeamE .. "TeamRatingChange"];
+	local FriendTeamName = REFDatabaseA[DatabaseID][Team .. "TeamName"];
+	local EnemyTeamName = REFDatabaseA[DatabaseID][TeamE .. "TeamName"];
 	if REFDatabaseA[DatabaseID][TeamE .. "TeamRating"] < 0 then
 		EnemyRatingChange = 0;
 	end
 	RETooltip:SetHeaderFont(GameTooltipHeader);
 	RETooltip:AddHeader("", "[|cFF" .. REFlex_ToolTipRatingColorArena(FriendRatingChange) .. FriendRatingChange .. "|r]", "", "", "", "[|cFF" .. REFlex_ToolTipRatingColorArena(EnemyRatingChange) .. EnemyRatingChange .. "|r]","");
+	RETooltip:AddLine();
+	RETooltip:AddHeader("", "|cFFFFD100- " .. FriendTeamName .. " -|r", "", "", "", "|cFFFFD100- " .. EnemyTeamName .. " -|r", "");
 	RETooltip:AddLine();
 	RETooltip:AddSeparator(3);
 	RETooltip:AddLine();
@@ -3204,13 +3214,15 @@ end
 --
 
 function REFlex_BGEnd()
+	REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");	
 	local REWinner = GetBattlefieldWinner();
-	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
+	local REArena = IsActiveBattlefieldArena();
 	local _, REZoneType = IsInInstance();
 	local REBGRated = IsRatedBattleground();
 	if REWinner ~= nil and RE.SecondTime ~= true and REArena == nil and REZoneType == "pvp" and ((REFSettings["UNBGSupport"] and REBGRated ~= true) or (REFSettings["RBGSupport"] and REBGRated)) then
 		SendAddonMessage("REFlex", RE.AddonVersionCheck, "BATTLEGROUND");
 
+		SetMapToCurrentZone();
 		RE.Map = GetMapNameByID(GetCurrentMapAreaID());
 		local REPlayerName = GetUnitName("player");
 		local RETalentGroup = GetActiveTalentGroup(false, false);
@@ -3466,7 +3478,15 @@ function REFlex_BGEnd()
 
 		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, PlayersNum=RE.BGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=RE.BGMinutes, DurationSec=RE.BGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
 		table.insert(REFDatabase, REBGData);			
-	elseif REWinner ~= nil and RE.SecondTime ~= true and REArena == 1 and REArenaRegistered == 1 and REZoneType == "arena" and REFSettings["ArenaSupport"] then
+	end
+	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");	
+end
+
+function REFlex_ArenaEnd()
+	local REWinner = GetBattlefieldWinner();
+	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
+	local _, REZoneType = IsInInstance();
+	if REWinner ~= nil and RE.SecondTime ~= true and REArena == 1 and REArenaRegistered == 1 and REZoneType == "arena" and REFSettings["ArenaSupport"] then
 		local REWinSide = REWinner;
 		local REMap = GetRealZoneText();
 		local REPlayerName = GetUnitName("player");

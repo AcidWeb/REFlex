@@ -672,10 +672,6 @@ end
 --
 
 -- Timers subsection
-function REFlex_MiniBarDelay()
-	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");
-end
-
 function REFlex_PVPUpdateDelay()
 	RE.RBGCounter = true;
 	RequestRatedBattlegroundInfo();
@@ -885,6 +881,8 @@ function REFlex_TableRatingMMRArena(PlayerTeam, j)
 	if MMR ~= nil then
 		if MMR > 0 then
 			MMR = " / |cFF00FF00+" .. MMR.. "|r";
+		elseif MMR == 0 then
+			MMR = " / 0";
 		elseif MMR < 0 then
 			MMR = " / |cFFFF141C" .. MMR.. "|r";
 		end
@@ -892,7 +890,7 @@ function REFlex_TableRatingMMRArena(PlayerTeam, j)
 		MMR = "";
 	end
 	
-	if PlayerTeam  == 0 then
+	if PlayerTeam == 0 then
 		Rating = REFDatabaseA[j]["GreenTeamRatingChange"];
 	else
 		Rating = REFDatabaseA[j]["GoldTeamRatingChange"];
@@ -921,6 +919,8 @@ function REFlex_TableRBGRatingMMRColor(Rating, j)
 	if MMR ~= nil then
 		if MMR > 0 then
 			MMR = " / |cFF00FF00+" .. MMR.. "|r";
+		elseif MMR == 0 then
+			MMR = " / 0";
 		elseif MMR < 0 then
 			MMR = " / |cFFFF141C" .. MMR.. "|r";
 		end
@@ -948,7 +948,7 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	for i=1, (#RETeam - 1) do
 		local REMember = { strsplit("*", RETeam[i]) };
 
-		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:25:25:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
+		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
 	end
 
 	return RETeamLine;
