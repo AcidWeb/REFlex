@@ -653,7 +653,6 @@
 							<Anchor point="RIGHT" />
 						</Anchors>
 					</Frame>
-
 					<Button name="$Parent_DropDown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
@@ -662,6 +661,41 @@
 								</Offset>	
 							</Anchor>
 						</Anchors>
+					</Button>
+					<EditBox name="$parent_SearchBox" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="110" y="20"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="23" y="-50"/>
+								</Offset>	
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<Button name="$parent_Search" inherits="OptionsButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="TOPRIGHT" relativeTo="REFlex_MainTab_Tab5_SearchBox">
+								<Offset>
+									<AbsDimension x="5" y="1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick> REFlex_SearchOnClick(); </OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parent_Clear" inherits="OptionsButtonTemplate" >
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="BOTTOMRIGHT" relativeTo="REFlex_MainTab_Tab5_SearchBox">
+								<Offset>
+									<AbsDimension x="5" y="-1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick> REFlex_ClearOnClick(); </OnClick>
+						</Scripts>
 					</Button>
 				</Frames>
 			</Frame>
@@ -1243,13 +1277,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
-				<Anchors>
-					<Anchor point="CENTER" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="30" y="-10"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 1);
@@ -1263,13 +1290,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 2);
@@ -1283,13 +1303,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 3);
@@ -1303,13 +1316,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" id="4">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 4);
@@ -1323,13 +1329,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab5" inherits="CharacterFrameTabButtonTemplate" id="5">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTab4" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-6" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 5);
@@ -1343,13 +1342,6 @@
 				</Scripts>
 			</Button>
 			<Button name="$parentTab6" inherits="CharacterFrameTabButtonTemplate" id="6">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTab5" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="-16" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
 				<Scripts>
 					<OnClick>
 						PanelTemplates_SetTab(REFlex_MainTab, 6);
@@ -1388,11 +1380,38 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<CheckButton name="$parent_ArenaSupport" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-120"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<CheckButton name="$parent_SpecDetection" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-60"></AbsDimension>
+							<AbsDimension x="10" y="-145"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_RBGSupport" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-190"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_UNBGSupport" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-235"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1404,7 +1423,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="16" y="-100"/>
+							<AbsDimension x="16" y="-75"/>
 						</Offset>
 					</Anchor>
 				</Anchors>

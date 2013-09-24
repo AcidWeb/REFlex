@@ -5,6 +5,7 @@ REFlexLocale:CreateLocaleTable({
 	["A Rating"] = "A Wertung",
 	Affliction = "Gebrechen",
 	Arcane = "Arkan",
+	["Arena support"] = "Arena support", -- Requires localization
 	Arms = "Waffen",
 	Assassination = "Meucheln",
 	Balance = "Gleichgewicht",
@@ -27,6 +28,7 @@ REFlexLocale:CreateLocaleTable({
 	Fury = "Furor",
 	["H Rating"] = "H Wertung",
 	["Hardest compositions"] = "Schwerste Zusammenstellung",
+	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Hold SHIFT key when browsing arena matches to see extended tooltips.", -- Requires localization
 	Holy = "Heilig",
 	["Honor Kills"] = "Ehrenhafte Todesst\195\182\195\159e",
 	["K/D Ratio"] = "K/D Rate",
@@ -42,6 +44,7 @@ REFlexLocale:CreateLocaleTable({
 	RECORD = "REKORD",
 	Rated = "Gewertet",
 	["Rated BGs"] = "Gew Schlachtfelder",
+	["Rated battlegrounds support"] = "Rated battlegrounds support", -- Requires localization
 	Restoration = "Wiederherstellung",
 	Retribution = "Vergeltung",
 	Right = "Rechts",
@@ -58,4 +61,5 @@ REFlexLocale:CreateLocaleTable({
 	Total = "Gesamt",
 	Unholy = "Unheilig",
 	["Unrated BGs"] = "Ungew Schlachtfelder",
+	["Unrated battlegrounds support"] = "Unrated battlegrounds support", -- Requires localization
 });

@@ -21,6 +21,9 @@ local L = {
 	["Spec 1"] = true,
 	["Spec 2"] = true,
 	
+	["Arena support"] = true,
+	["Rated battlegrounds support"] = true,
+	["Unrated battlegrounds support"] = true,
 	["Show minimap button"] = true,
 	["Show main window"] = true,
 	["Show MiniBar (Battlegrounds only)"] = true,
@@ -33,6 +36,8 @@ local L = {
 	["K/D Ratio"] = true,
 	["Honor Kills"] = true,
 	["MiniBar scale"] = true,
+
+	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = true,
 
 	["Arms"] = true,
 	["Fury"] = true,
