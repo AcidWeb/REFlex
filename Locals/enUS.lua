@@ -45,6 +45,7 @@ local L = {
 	["MiniBar scale"] = true,
 
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = true,
+	["Are you sure you want to delete this entry?"] = true,
 	["Reloaded MiniBar settings"] = true,
 	["New version released!"] = true,
 	["Issue command second time to confirm database wipe"] = true,

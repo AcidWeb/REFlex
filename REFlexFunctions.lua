@@ -604,25 +604,15 @@ function REFlex_ArenaTeamGrid()
 				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Team"] = REEnemyTeamIDNoTalent;
 				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["TalentSet"] = REFDatabaseA[j]["TalentSet"];
 			end
-			if RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent] == nil then
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent] = {};
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Win"] = 0;
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Loss"] = 0;
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Total"] = 0;
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Team"] = REEnemyTeamIDNoTalent;
-			end
 			if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
 				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Win"] + 1;
 				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Win"] + 1;
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Win"] = RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Win"] + 1;
 			else
 				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Loss"] + 1;
 				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Loss"] + 1;
-				RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Loss"] = RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Loss"] + 1;
 			end
 			RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Total"] + 1;
 			RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Total"] + 1;
-			RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Total"] = RE.ArenaTeamsSpec["AllNoTalent"][REEnemyTeamIDNoTalent]["Total"] + 1;
 		end
 	end
 end
@@ -687,6 +677,37 @@ end
 --
 
 -- Table subsection
+function REFlex_DeleteEntry(DatabaseID)
+	local Visible, IsArena = 0, false;
+	local Visible1 = REFlex_MainTab_Tab1:IsVisible();
+	local Visible2 = REFlex_MainTab_Tab2:IsVisible();
+	local Visible3 = REFlex_MainTab_Tab3:IsVisible();
+	local Visible5 = REFlex_MainTab_Tab5:IsVisible();
+
+	if Visible1 == 1 then
+		Visible = 1;
+	elseif Visible2 == 1 then
+		Visible = 2;
+	elseif Visible3 == 1 then
+		Visible = 3;
+	elseif Visible5 == 1 then
+		IsArena = true;
+		Visible = 5;
+	end
+
+	_G["REFlex_MainTab_Tab" .. Visible]:Hide();
+
+	if IsArena then
+		table.remove(REFDatabaseA,DatabaseID);
+	else
+		table.remove(REFDatabase,DatabaseID);
+	end
+
+	_G["REFlexNamespace"]["Tab" .. Visible .. "LastID"] = 0;
+	_G["REFlexNamespace"]["Tab" .. Visible .. "TableData"] = {};
+	_G["REFlex_MainTab_Tab" .. Visible]:Show();
+end
+
 function REFlex_TableCount(Table)
 	local RENum = 0;
 	local RETable = {};

@@ -1,12 +1,14 @@
 ## Interface: 40000
 ## Title: REFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds. 
-## Version: 0.9.1
+## Version: 0.9.2
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
 Locals\deDE.lua
 Locals\ruRU.lua
+Locals\frFR.lua
+Locals\zhTW.lua
 
 Libs\LibStub\LibStub.lua
 
