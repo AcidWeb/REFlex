@@ -14,14 +14,15 @@ local REModuleTranslation = {
 };
 
 local REDataVersion = 5;
-local REAddonVersion = "v0.8.5";
-local REAddonVersionCheck = 85;
+local REAddonVersion = "v0.8.7";
+local REAddonVersionCheck = 87;
 
 local REArenaBuilds = {};
 local REArenaTeams = {};
 local REArenaRaces = {};
 local REArenaTeamsSpec = {["2"] = {}, ["3"] = {}, ["5"] = {}, ["All"] = {}, ["AllNoTalent"] = {}};
 local REPartyArenaCheck = 0;
+local REMiniBarPluginsCount = 0;
 
 local REClassIconCoords = {
 	["WARRIOR"] = {0, 0.25, 0, 0.25},
@@ -246,6 +247,7 @@ function REFlex_OnLoad(self)
 	self:RegisterEvent("CHAT_MSG_ADDON");
 
 	WorldStateScoreFrame:HookScript("OnShow", REFlex_BGEnd);
+	StaticPopup1:HookScript("OnShow", REFlex_EntryPopup)
 	WorldStateScoreFrame:HookScript("OnHide", function(self) REFlex_ScoreTab:Hide() end);
 
 	RESecondTime = false;
@@ -256,12 +258,12 @@ end
 
 function REFlex_OnEvent(self,Event,...)
 	local _, REZoneType = IsInInstance();
-	if Event == "UPDATE_BATTLEFIELD_SCORE" then
+	if Event == "UPDATE_BATTLEFIELD_SCORE" and REZoneType == "pvp" then
 		if RESecondTimeMiniBarTimer ~= true then
 			REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
-			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 25);
+			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 30);
 			RESecondTimeMiniBarTimer = true;
-		elseif REZoneType ~= "arena" then
+		else
 			REFlex_UpdateMiniBar();
 		end
 	elseif (Event == "UNIT_SPELLCAST_START" or Event == "UNIT_SPELLCAST_SUCCEEDED") and REZoneType == "arena" then
@@ -285,13 +287,11 @@ function REFlex_OnEvent(self,Event,...)
 		local REUnitID = ...;
 
 		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" then
-			local REId = 1;
-			while true do
-				local  REAuraName, _, _, _, _, _, _, RECaster = UnitAura(REUnitID, REId, "HELPFUL")
+			for i=1, 20 do
+				local  REAuraName, _, _, _, _, _, _, RECaster = UnitAura(REUnitID, i, "HELPFUL")
 				if not REAuraName then 
 					break 
 				end
-
 				if REBuildRecognition[REAuraName] ~= nil and RECaster ~= "" and RECaster ~= nil then
 					local REName = table.concat({ strsplit(" ", GetUnitName(RECaster, true), 3) });
 					if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
@@ -304,8 +304,6 @@ function REFlex_OnEvent(self,Event,...)
 						end
 					end
 				end
-
-				REId = REId + 1;
 			end
 		end
 	elseif Event == "ARENA_OPPONENT_UPDATE" and REZoneType == "arena" then
@@ -338,25 +336,23 @@ function REFlex_OnEvent(self,Event,...)
 		end
 		REFlex_ArenaTalentCheck();
 	elseif Event == "CHAT_MSG_ADDON" and ... == "REFlex" then
-		--local _, REMessage, _, RESender = ...;
-		--print("\124cFF74D06C[REFlex]\124r " .. RESender .. " - " .. REMessage);
 		local _, REMessage = ...;
 		if tonumber(REMessage) > REAddonVersionCheck then
 			REFlex_Frame:UnregisterEvent("CHAT_MSG_ADDON");
 			print("\124cFF74D06C[REFlex]\124r New version released!");
 		end
-	elseif Event == "PVP_RATED_STATS_UPDATE" then
+	elseif Event == "PVP_RATED_STATS_UPDATE" and REZoneType == "none" then
 		RERBG, _, RERBGPointsWeek, RERBGMaxPointsWeek = GetPersonalRatedBGInfo();
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RERBGMaxPointsWeek);
 		REFlex_MainTab_Tab6_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RERBGMaxPointsWeek);
-	elseif Event == "ZONE_CHANGED_NEW_AREA" and RESecondTime == true then
+	elseif Event == "ZONE_CHANGED_NEW_AREA" and (REZoneType == "none" or REZoneType == "party" or REZoneType == "raid") then
 		REFlex_Frame:RegisterEvent("ARENA_OPPONENT_UPDATE");
 		RESecondTime = false;
 		RESecondTimeMiniBar = false;
 		RESecondTimeMiniBarTimer = false;
 		REMiniBarSecondLineRdy = false;
 
-		if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount ~= nil then
+		if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount > 0 then
 			REFSettings["MiniBarAnchor"], _, _, REFSettings["MiniBarX"], REFSettings["MiniBarY"] = REFlex_MiniBar1:GetPoint(1);
 			REFSettings["MiniBarX"] = REFlex_Round(REFSettings["MiniBarX"], 2);
 			REFSettings["MiniBarY"] = REFlex_Round(REFSettings["MiniBarY"], 2);
@@ -367,10 +363,6 @@ function REFlex_OnEvent(self,Event,...)
 		end
 
 		RequestRatedBattlegroundInfo();
-	elseif Event == "ZONE_CHANGED_NEW_AREA" and REMiniBarPluginsCount ~= nil and REFSettings["ShowMiniBar"] then
-		for i=1, REMiniBarPluginsCount do
-			_G["REFlex_MiniBar" .. i]:Hide();
-		end
 	elseif Event == "ADDON_LOADED" and ... == "REFlex" then
 		BINDING_HEADER_REFLEXB = "REFlex";
 		BINDING_NAME_REFLEXSHOW = L["Show main window"];
@@ -629,7 +621,7 @@ end
 function REFlex_GUIScaleSlider()
 	REFlex_GUI_SliderScaleValue:SetText(REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2));
 
-	if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount ~= nil then
+	if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount > 0 then
 		for i=1, REMiniBarPluginsCount do
 			_G["REFlex_MiniBar" .. i]:SetScale(REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2));
 		end
@@ -849,18 +841,26 @@ function REFlex_Round(num, idp)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-function REFlex_NumberClean(Number, round)
+function REFlex_NumberClean(Number, Round)
+	local RoundAlpha, RoundBeta;
+	if Round == nil then
+		RoundAlpha = 2;
+		RoundBeta = 0;
+	else
+		RoundAlpha, RoundBeta = Round, Round;	
+	end
+
 	if Number >= 0 then 
 		if Number >= 1000000 then
-			Number = REFlex_Round((Number / 1000000), round) .. "M";
+			Number = REFlex_Round((Number / 1000000), RoundAlpha) .. "M";
 		elseif Number >= 1000 then
-			Number = REFlex_Round((Number / 1000), round) .. "K";
+			Number = REFlex_Round((Number / 1000), RoundBeta) .. "K";
 		end
 	else
 		if Number <= -1000000 then
-			Number = REFlex_Round((Number / 1000000), round) .. "M";
+			Number = REFlex_Round((Number / 1000000), RoundAlpha) .. "M";
 		elseif Number <= -1000 then
-			Number = REFlex_Round((Number / 1000), round) .. "K";
+			Number = REFlex_Round((Number / 1000), RoundBeta) .. "K";
 		end
 	end
 	return Number;
@@ -1470,7 +1470,7 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	local RETeam = { strsplit("@", TeamString) };
 	for i=1, (#RETeam - 1) do
 		local REMember = { strsplit("*", RETeam[i]) };
-		
+
 		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:27:27:0:0:256:256:" .. REClassIconCoords[REMember[1]][1]*256 .. ":" .. REClassIconCoords[REMember[1]][2]*256 .. ":".. REClassIconCoords[REMember[1]][3]*256 ..":" .. REClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. REClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
 	end
 
@@ -1641,13 +1641,13 @@ end
 function REFlex_ScoreOnClick(Channel)
 	local REBGRated = IsRatedBattleground();
 	if REBGRated then
-		SendChatMessage("[REFlex] - " .. REMap .. " - " .. WIN .. ": " .. REWinSide .. " - " .. REBGMinutes .. ":" .. REBGSeconds .. " - " .. RATING .. ": " .. REBGRatingChange,Channel ,nil ,nil);
-		SendChatMessage("<KB> " .. REkillingBlows .. " (" .. REPlaceKB .. "/" .. REBGPlayers .. ") - <HK> " .. REhonorKills .. " (" .. REPlaceHK .. "/" .. REBGPlayers .. ")" ,Channel ,nil ,nil);
-		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(REdamageDone, 2) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(REhealingDone, 2) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")" ,Channel ,nil ,nil);
+		SendChatMessage("[REFlex] - " .. REMap .. " - " .. WIN .. ": " .. REWinSide .. " - " .. REBGMinutes .. ":" .. REBGSeconds .. " - " .. RATING .. ": " .. REBGRatingChange, Channel ,nil ,nil);
+		SendChatMessage("<KB> " .. REkillingBlows .. " (" .. REPlaceKB .. "/" .. REBGPlayers .. ") - <HK> " .. REhonorKills .. " (" .. REPlaceHK .. "/" .. REBGPlayers .. ")", Channel ,nil ,nil);
+		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(REdamageDone) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(REhealingDone) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")", Channel ,nil ,nil);
 	else
 		SendChatMessage("[REFlex] - " .. REMap .. " - " .. WIN .. ": " .. REWinSide .. " - " .. REBGMinutes .. ":" .. REBGSeconds,Channel ,nil ,nil);
-		SendChatMessage("<KB> " .. REkillingBlows .. " (" .. REPlaceKB .. "/" .. REBGPlayers .. ") - <HK> " .. REhonorKills .. " (" .. REPlaceHK .. "/" .. REBGPlayers .. ") - <H> " .. REhonorGained .. " (" .. REPlaceHonor .. "/" .. REBGPlayers .. ")" ,Channel ,nil ,nil);
-		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(REdamageDone, 2) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(REhealingDone, 2) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")" ,Channel ,nil ,nil);
+		SendChatMessage("<KB> " .. REkillingBlows .. " (" .. REPlaceKB .. "/" .. REBGPlayers .. ") - <HK> " .. REhonorKills .. " (" .. REPlaceHK .. "/" .. REBGPlayers .. ") - <H> " .. REhonorGained .. " (" .. REPlaceHonor .. "/" .. REBGPlayers .. ")", Channel ,nil ,nil);
+		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(REdamageDone) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(REhealingDone) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")", Channel ,nil ,nil);
 	end
 end
 
@@ -1660,9 +1660,9 @@ function REFlex_MainOnClick(Channel)
 		REAddidional = "";
 	end
 	SendChatMessage("[REFlex] " .. WINS .. ": " .. REWins .. " - " .. LOSSES .. ": " .. RELosses .. REAddidional,Channel ,nil ,nil);
-	SendChatMessage("<KB> " .. L["Total"] .. ": " .. RESumKB .. " - " .. L["Top"] .. ": " .. RETopKB .. " <HK> " .. L["Total"] .. ": " .. RESumHK .. " - " .. L["Top"] .. ": " .. RETopHK,Channel ,nil ,nil);
-	SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage , 2),Channel ,nil ,nil);
-	SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2),Channel ,nil ,nil);
+	SendChatMessage("<KB> " .. L["Total"] .. ": " .. RESumKB .. " - " .. L["Top"] .. ": " .. RETopKB .. " <HK> " .. L["Total"] .. ": " .. RESumHK .. " - " .. L["Top"] .. ": " .. RETopHK, Channel ,nil ,nil);
+	SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage), Channel ,nil ,nil);
+	SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing), Channel ,nil ,nil);
 end
 --
 
@@ -2132,10 +2132,10 @@ function REFlex_Tab1Show()
 			["value"] = REFDatabase[j]["HK"]
 		}
 		RETempCol[7] = {
-			["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+			["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"])
 		}
 		RETempCol[8] = {
-			["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+			["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"])
 		}
 		RETempCol[9] = {
 			["value"] = REFDatabase[j]["Honor"]
@@ -2180,11 +2180,11 @@ function REFlex_Tab1Show()
 	REFlex_MainTab_Tab1_ScoreHolder_KB2:SetText(L["Top"] .. ": " .. RETopKB);
 	REFlex_MainTab_Tab1_ScoreHolder_KB3:SetText(L["Total"] .. ": " .. RESumKB);
 	REFlex_MainTab_Tab1_ScoreHolder_Damage1:SetText(DAMAGE);
-	REFlex_MainTab_Tab1_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-	REFlex_MainTab_Tab1_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+	REFlex_MainTab_Tab1_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+	REFlex_MainTab_Tab1_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 	REFlex_MainTab_Tab1_ScoreHolder_Healing1:SetText(SHOW_COMBAT_HEALING);
-	REFlex_MainTab_Tab1_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-	REFlex_MainTab_Tab1_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+	REFlex_MainTab_Tab1_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+	REFlex_MainTab_Tab1_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 end
 
 function REFlex_Tab2Show()
@@ -2217,10 +2217,10 @@ function REFlex_Tab2Show()
 				["value"] = REFDatabase[j]["HK"]
 			}
 			RETempCol[7] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"])
 			}
 			RETempCol[8] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"])
 			}
 			RETempCol[9] = {
 				["value"] = REFDatabase[j]["Honor"]
@@ -2259,11 +2259,11 @@ function REFlex_Tab2Show()
 	REFlex_MainTab_Tab2_ScoreHolder_KB2:SetText(L["Top"] .. ": " .. RETopKB);
 	REFlex_MainTab_Tab2_ScoreHolder_KB3:SetText(L["Total"] .. ": " .. RESumKB);
 	REFlex_MainTab_Tab2_ScoreHolder_Damage1:SetText(DAMAGE);
-	REFlex_MainTab_Tab2_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-	REFlex_MainTab_Tab2_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+	REFlex_MainTab_Tab2_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+	REFlex_MainTab_Tab2_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 	REFlex_MainTab_Tab2_ScoreHolder_Healing1:SetText(SHOW_COMBAT_HEALING);
-	REFlex_MainTab_Tab2_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-	REFlex_MainTab_Tab2_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+	REFlex_MainTab_Tab2_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+	REFlex_MainTab_Tab2_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 end
 
 function REFlex_Tab3Show()
@@ -2302,10 +2302,10 @@ function REFlex_Tab3Show()
 				["value"] = REFDatabase[j]["HK"]
 			}
 			RETempCol[9] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"], 2)
+				["value"] = REFlex_NumberClean(REFDatabase[j]["Damage"])
 			}
 			RETempCol[10] = {
-				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"], 2)
+				["value"] = REFlex_NumberClean(REFDatabase[j]["Healing"])
 			}
 			RETempCol[11] = {
 				["value"] = REFDatabase[j]["RatingChange"],
@@ -2352,11 +2352,11 @@ function REFlex_Tab3Show()
 	REFlex_MainTab_Tab3_ScoreHolder_KB2:SetText(L["Top"] .. ": " .. RETopKB);
 	REFlex_MainTab_Tab3_ScoreHolder_KB3:SetText(L["Total"] .. ": " .. RESumKB);
 	REFlex_MainTab_Tab3_ScoreHolder_Damage1:SetText(DAMAGE);
-	REFlex_MainTab_Tab3_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-	REFlex_MainTab_Tab3_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+	REFlex_MainTab_Tab3_ScoreHolder_Damage2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+	REFlex_MainTab_Tab3_ScoreHolder_Damage3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 	REFlex_MainTab_Tab3_ScoreHolder_Healing1:SetText(SHOW_COMBAT_HEALING);
-	REFlex_MainTab_Tab3_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-	REFlex_MainTab_Tab3_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+	REFlex_MainTab_Tab3_ScoreHolder_Healing2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+	REFlex_MainTab_Tab3_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 end
 
 function REFlex_Tab4ShowI(j)
@@ -2432,11 +2432,11 @@ function REFlex_Tab4Show()
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_KB2"]:SetText(L["Top"] .. ": " .. RETopKB);
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_KB3"]:SetText(L["Total"] .. ": " .. RESumKB);
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage1"]:SetText(DAMAGE);
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing1"]:SetText(SHOW_COMBAT_HEALING);
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 	end
 
 	if REUsed < 8 then
@@ -2475,10 +2475,10 @@ function REFlex_Tab5Show()
 					["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
 				}
 				RETempCol[6] = {
-					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"], 2)
+					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
 				}
 				RETempCol[7] = {
-					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"], 2)
+					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"])
 				}
 				RETempCol[8] = {
 					["value"] = REFlex_TableRatingArena(REFDatabaseA[j]["PlayerTeam"], j),
@@ -2518,10 +2518,10 @@ function REFlex_Tab5Show()
 				["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
 			}
 			RETempCol[6] = {
-				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"], 2)
+				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
 			}
 			RETempCol[7] = {
-				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"], 2)
+				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"])
 			}
 			RETempCol[8] = {
 				["value"] = REFlex_TableRatingArena(REFDatabaseA[j]["PlayerTeam"], j),
@@ -2591,11 +2591,11 @@ function REFlex_Tab5Show()
 	REFlex_MainTab_Tab5_ScoreHolder_Lose:SetText(RELosses);
 	REFlex_MainTab_Tab5_ScoreHolder_RBG:SetText(RERatings);
 	REFlex_MainTab_Tab5_ScoreHolder_KB1:SetText(DAMAGE);
-	REFlex_MainTab_Tab5_ScoreHolder_KB2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-	REFlex_MainTab_Tab5_ScoreHolder_KB3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+	REFlex_MainTab_Tab5_ScoreHolder_KB2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+	REFlex_MainTab_Tab5_ScoreHolder_KB3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 	REFlex_MainTab_Tab5_ScoreHolder_HK1:SetText(SHOW_COMBAT_HEALING);
-	REFlex_MainTab_Tab5_ScoreHolder_HK2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-	REFlex_MainTab_Tab5_ScoreHolder_HK3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+	REFlex_MainTab_Tab5_ScoreHolder_HK2:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+	REFlex_MainTab_Tab5_ScoreHolder_HK3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 end
 
 function REFlex_Tab6ShowI(j)
@@ -2660,11 +2660,11 @@ function REFlex_Tab6Show()
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Wins"]:SetText(REWins);
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Lose"]:SetText(RELosses);
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage1"]:SetText(DAMAGE);
-		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
-		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage, 2));
+		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopDamage));
+		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Damage3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumDamage));
 		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing1"]:SetText(SHOW_COMBAT_HEALING);
-		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
-		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
+		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing2"]:SetText(L["Top"] .. ": " .. REFlex_NumberClean(RETopHealing));
+		_G["REFlex_MainTab_Tab6_ScoreHolder" .. j .. "_Healing3"]:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing));
 	end
 
 	if REUsed < 5 then
@@ -2816,7 +2816,9 @@ function REFlex_ShowBGDetails_OnEnter(self, DatabaseID, Table)
 		RETooltip:AddLine("", HONOR .. ": " .. REFDatabase[DatabaseID]["Honor"], "");
 	end
 	if REFDatabase[DatabaseID]["MapInfo"] ~= nil then
+		RETooltip:AddLine();
 		RETooltip:AddSeparator();
+		RETooltip:AddLine();
 		if REFDatabase[DatabaseID]["MapInfo"] == "AlteracValley" then
 			RETooltip:AddLine("|T" .. REFDatabase[DatabaseID]["SpecialFields"][1][2] .. ":32:32|t: " .. REFDatabase[DatabaseID]["SpecialFields"][1][1], "", "|T" .. REFDatabase[DatabaseID]["SpecialFields"][2][2] .. ":32:32|t: " .. REFDatabase[DatabaseID]["SpecialFields"][2][1]);
 			RETooltip:AddLine("|T" .. REFDatabase[DatabaseID]["SpecialFields"][3][2] .. ":32:32|t: " .. REFDatabase[DatabaseID]["SpecialFields"][3][1], "", "|T" .. REFDatabase[DatabaseID]["SpecialFields"][4][2] .. ":32:32|t: " .. REFDatabase[DatabaseID]["SpecialFields"][4][1]);
@@ -2901,6 +2903,8 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 	end
 
 	if IsShiftKeyDown() == 1 then
+		local RETotalDamage, RETotalHealing, RETotalDamageEnemy, RETotalHealingEnemy = 0, 0, 0, 0;
+
 		RETooltip:AddLine();
 		RETooltip:AddSeparator(3);
 		RETooltip:AddLine();
@@ -2909,21 +2913,31 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 			local NameCell, DamageCell, HealingCell, EnemyNameCell, EnemyDamageCell, EnemyHealingCell = "", "", "", "", "", "";
 
 			if REFriendID[i] ~= nil then
+				RETotalDamage = RETotalDamage + REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Damage"];
+				RETotalHealing = RETotalHealing + REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Healing"];
 				local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
 				NameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
-				DamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Damage"], 0);
-				HealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Healing"], 0);
+				DamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Damage"]);
+				HealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Healing"]);
 			end
 
 			if REEnemyID[i] ~= nil then
+				RETotalDamageEnemy = RETotalDamageEnemy + REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Damage"];
+				RETotalHealingEnemy = RETotalHealingEnemy + REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Healing"];
 				local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
 				EnemyNameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
-				EnemyDamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Damage"], 0);
-				EnemyHealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Healing"], 0);
+				EnemyDamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Damage"]);
+				EnemyHealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Healing"]);
 			end
 
 			RETooltip:AddLine(NameCell, DamageCell, HealingCell, "", EnemyNameCell, EnemyDamageCell, EnemyHealingCell);
 		end
+
+		RETooltip:AddLine();
+		RETooltip:AddSeparator(3);
+		RETooltip:AddLine();
+		RETooltip:AddLine("", "|cFFFF141D" .. REFlex_NumberClean(RETotalDamage) .. "|r", "|cFF00ff00" .. REFlex_NumberClean(RETotalHealing) .. "|r", "", "", "|cFFFF141D" .. REFlex_NumberClean(RETotalDamageEnemy) .. "|r", "|cFF00ff00" .. REFlex_NumberClean(RETotalHealingEnemy) .. "|r");
+		RETooltip:AddLine();
 	end
 
 	RETooltip:SmartAnchorTo(self);
@@ -2936,12 +2950,19 @@ function REFlex_ShowDetails_OnLeave(self)
 end
 --
 
+function REFlex_EntryPopup()
+	if StaticPopup1["which"] == "CONFIRM_BATTLEFIELD_ENTRY" then
+		REFlex_MainTab:Hide();
+	end
+end
+
 function REFlex_BGEnd()
 	local REWinner = GetBattlefieldWinner();
 	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
-	if REWinner ~= nil and RESecondTime ~= true and REArena == nil then
+	local _, REZoneType = IsInInstance();
+	if REWinner ~= nil and RESecondTime ~= true and REArena == nil and REZoneType == "pvp" then
 		SendAddonMessage("REFlex", REAddonVersionCheck, "BATTLEGROUND");
-		
+
 		if REWinner == 1 then
 			REWinSide = FACTION_ALLIANCE;
 			REWinSidePrint = "\124cFF00A9FF" .. FACTION_ALLIANCE;
@@ -3116,7 +3137,7 @@ function REFlex_BGEnd()
 		print("\n");
 		print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. REMap .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. REBGMinutes .. ":" .. REBGSeconds);
 		print("\124cFFC5F3BCKB:\124r " .. REkillingBlows .. " (" .. REPlaceKB .. "/" .. REBGPlayers .. ") \124cFF555555* \124cFFC5F3BCHK:\124r " .. REhonorKills .. " (" .. REPlaceHK .. "/" .. REBGPlayers .. ") \124cFF555555* \124cFFC5F3BCH:\124r " .. REhonorGained .. " (" .. REPlaceHonor .. "/" .. REBGPlayers .. ")");
-		print("\124cFFC5F3BC" .. DAMAGE .. ":\124r " .. REFlex_NumberClean(REdamageDone, 2) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") \124cFF555555* \124cFFC5F3BC" .. SHOW_COMBAT_HEALING .. ":\124r " .. REFlex_NumberClean(REhealingDone, 2) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")");
+		print("\124cFFC5F3BC" .. DAMAGE .. ":\124r " .. REFlex_NumberClean(REdamageDone) .. " (" .. REPlaceDamage .. "/" .. REBGPlayers .. ") \124cFF555555* \124cFFC5F3BC" .. SHOW_COMBAT_HEALING .. ":\124r " .. REFlex_NumberClean(REhealingDone) .. " (" .. REPlaceHealing .. "/" .. REBGPlayers .. ")");
 		if REkillingBlows > RETopKB then
 			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(KILLING_BLOWS) .. " " .. L["RECORD"] ..":\124r " .. REkillingBlows .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. RETopKB);
 		end
@@ -3124,16 +3145,16 @@ function REFlex_BGEnd()
 			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(L["Honor Kills"]) .. " " .. L["RECORD"] ..":\124r " .. REhonorKills .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. RETopHK);
 		end
 		if REdamageDone > RETopDamage then
-			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(DAMAGE) .. " " .. L["RECORD"] ..":\124r " .. REFlex_NumberClean(REdamageDone, 2) .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. REFlex_NumberClean(RETopDamage, 2));
+			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(DAMAGE) .. " " .. L["RECORD"] ..":\124r " .. REFlex_NumberClean(REdamageDone) .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. REFlex_NumberClean(RETopDamage));
 		end
 		if REhealingDone > RETopHealing then
-			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(SHOW_COMBAT_HEALING) .. " " .. L["RECORD"] ..":\124r " .. REFlex_NumberClean(REhealingDone, 2) .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. REFlex_NumberClean(RETopHealing, 2));
+			print("\124cFF74D06C" .. string.upper(NEW) .. " " .. string.upper(SHOW_COMBAT_HEALING) .. " " .. L["RECORD"] ..":\124r " .. REFlex_NumberClean(REhealingDone) .. " \124cFF555555-\124r ".. L["Old"] .. ": " .. REFlex_NumberClean(RETopHealing));
 		end
 		print("\n");
 
 		local REBGData = { DataVersion=REDataVersion, SpecialFields=RESpecialFields, MapName=REMap, MapInfo=REMapInfo, Damage=REdamageDone, Healing=REhealingDone, KB=REkillingBlows, HK=REhonorKills, Honor=REhonorGained, TalentSet=RETalentGroup, Winner=REWinSide, PlayersNum=REBGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=REBGMinutes, DurationSec=REBGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=REBGRating, RatingChange=REBGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=REPlaceKB, PlaceHK=REPlaceHK, PlaceHonor=REPlaceHonor, PlaceDamage=REPlaceDamage, PlaceHealing=REPlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
 		table.insert(REFDatabase, REBGData);			
-	elseif REWinner ~= nil and RESecondTime ~= true and REArena == 1 and REArenaRegistered == 1 then
+	elseif REWinner ~= nil and RESecondTime ~= true and REArena == 1 and REArenaRegistered == 1 and REZoneType == "arena" then
 		local REWinSide = REWinner;
 		local REMap = GetRealZoneText();
 		local REPlayerName = GetUnitName("player");
@@ -3213,7 +3234,7 @@ end
 
 function REFlex_UpdateMiniBar()
 	if RESecondTimeMiniBar ~= true then
-		if REMiniBarPluginsCount ~= nil then
+		if REMiniBarPluginsCount > 0 then
 			for i=1, REMiniBarPluginsCount do
 				_G["REFlex_MiniBar" .. i]:Hide();
 			end
@@ -3348,46 +3369,22 @@ function REFlex_UpdateMiniBar()
 				REMiniBarValue = REMhonorKills .. " (" .. REMHKD .. ")";
 			elseif REFSettings["MiniBarOrder"][j] == "Damage" then
 				if REMDamageD > 0 then
-					if REMDamageD >= 1000000 then
-						REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
-					else
-						REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
-					end
+					REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD) .. "|r"
 				elseif REMDamageD < 0 then
-					if REMDamageD <= -1000000 then
-						REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
-					else
-						REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
-					end
+					REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD) .. "|r"
 				end
 
 				REMiniBarLabel = "Dam:";
-				if REMdamageDone > 1000000 then
-					REMiniBarValue = REFlex_NumberClean(REMdamageDone, 2) .. " (" .. REMDamageD .. ")";
-				else
-					REMiniBarValue = REFlex_NumberClean(REMdamageDone, 0) .. " (" .. REMDamageD .. ")";
-				end
+				REMiniBarValue = REFlex_NumberClean(REMdamageDone) .. " (" .. REMDamageD .. ")";
 			elseif REFSettings["MiniBarOrder"][j] == "Healing" then
 				if REMHealingD > 0 then
-					if REMHealingD >= 1000000 then
-						REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
-					else
-						REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
-					end
+					REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD) .. "|r"
 				elseif REMHealingD < 0 then
-					if REMHealingD <= -1000000 then
-						REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
-					else
-						REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
-					end
+					REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD) .. "|r"
 				end
 
 				REMiniBarLabel = "Hea:";
-				if REMhealingDone > 1000000 then
-					REMiniBarValue = REFlex_NumberClean(REMhealingDone, 2) .. " (" .. REMHealingD .. ")";
-				else
-					REMiniBarValue = REFlex_NumberClean(REMhealingDone, 0) .. " (" .. REMHealingD .. ")";
-				end
+				REMiniBarValue = REFlex_NumberClean(REMhealingDone) .. " (" .. REMHealingD .. ")";
 			elseif REFSettings["MiniBarOrder"][j] == "Deaths" then
 				if REMDeathsD > 0 then
 					REMDeathsD = "|cFFFF141D+" .. REMDeathsD .. "|r"
