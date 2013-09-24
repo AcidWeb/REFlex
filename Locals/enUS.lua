@@ -27,6 +27,9 @@ local L = {
 	["Show minimap button"] = true,
 	["Show main window"] = true,
 	["Show MiniBar (Battlegrounds only)"] = true,
+	["Show LDB MiniBar (Battlegrounds only)"] = true,
+	["LDB - Show remaining CP limit"] = true,
+	["LDB - Show Honorable Kills"] = true,
 	["Show detected builds"] = true,
 	["MiniBar modules"] = true,
 	["Bar 1"] = true,
@@ -38,6 +41,9 @@ local L = {
 	["MiniBar scale"] = true,
 
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = true,
+	["Reloaded MiniBar settings"] = true,
+	["New version released!"] = true,
+	["Issue command second time to confirm database wipe"] = true,
 
 	["Arms"] = true,
 	["Fury"] = true,

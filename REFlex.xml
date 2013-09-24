@@ -1,5 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="REFlex.lua"/>
+	<Script file="REFlexMain.lua"/>
+	<Script file="REFlexFunctions.lua"/>
+	<Script file="REFlexMiniBar.lua"/>
 	<Frame name="REFlex_Frame">
 		<Scripts>
 			<OnLoad> REFlex_OnLoad(self); </OnLoad>
@@ -1380,11 +1382,38 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<CheckButton name="$parent_LDBMorph" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-115"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_LDBCPCap" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-140"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_LDBHK" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-165"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<CheckButton name="$parent_ArenaSupport" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-120"></AbsDimension>
+							<AbsDimension x="10" y="-235"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1393,7 +1422,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-145"></AbsDimension>
+							<AbsDimension x="10" y="-260"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1402,7 +1431,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-190"></AbsDimension>
+							<AbsDimension x="10" y="-310"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1411,7 +1440,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-235"></AbsDimension>
+							<AbsDimension x="10" y="-355"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
