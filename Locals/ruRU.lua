@@ -33,8 +33,6 @@ REFlexLocale:CreateLocaleTable({
 	["Honor Kills"] = "\208\163\208\177\208\184\208\185\209\129\209\130\208\178\208\176 \"\209\135\208\181\209\129\209\130\208\184\"",
 	["Issue command second time to confirm database wipe"] = "Issue command second time to confirm database wipe", -- Requires localization
 	["K/D Ratio"] = "\208\163/\208\161 \208\190\209\130\208\189\208\190\209\136\208\181\208\189\208\184\208\181",
-	["LDB - Show Honorable Kills"] = "LDB - Show Honorable Kills", -- Requires localization
-	["LDB - Show remaining CP limit"] = "LDB - Show remaining CP limit", -- Requires localization
 	Left = "\208\161\208\187\208\181\208\178\208\176",
 	Map = "\208\154\208\176\209\128\209\130\208\176",
 	Marksmanship = "\208\161\209\130\209\128\208\181\208\187\209\140\208\177\208\176",
@@ -54,11 +52,17 @@ REFlexLocale:CreateLocaleTable({
 	Retribution = "\208\146\208\190\208\183\208\180\208\176\209\143\208\189\208\184\208\181",
 	Right = "\208\161\208\191\209\128\208\176\208\178\208\176",
 	Shadow = "\208\162\209\140\208\188\208\176",
+	["Show Arena totals"] = "Show Arena totals", -- Requires localization
+	["Show Battleground totals"] = "Show Battleground totals", -- Requires localization
+	["Show Honorable Kills"] = "Show Honorable Kills", -- Requires localization
 	["Show LDB MiniBar (Battlegrounds only)"] = "Show LDB MiniBar (Battlegrounds only)", -- Requires localization
 	["Show MiniBar (Battlegrounds only)"] = "\208\159\208\190\208\186\208\176\208\183\209\139\208\178\208\176\209\130\209\140 \208\188\208\184\208\189\208\184\208\191\208\176\208\189\208\181\208\187\209\140 (\209\130\208\190\208\187\209\140\208\186\208\190 \208\189\208\176 \208\159\208\190\208\187\209\143\209\133 \208\145\208\190\209\143)",
+	["Show amount of CPs to cap"] = "Show amount of CPs to cap", -- Requires localization
 	["Show detected builds"] = "\208\159\208\190\208\186\208\176\208\183\208\176\209\130\209\140 \208\190\208\191\209\128\208\181\208\180\208\181\208\187\208\181\208\189\208\189\209\139\208\181 \208\177\208\184\208\187\208\180\209\139",
 	["Show main window"] = "\208\159\208\190\208\186\208\176\208\183\208\176\209\130\209\140 \208\190\209\129\208\189\208\190\208\178\208\189\208\190\208\181 \208\190\208\186\208\189\208\190",
 	["Show minimap button"] = "\208\159\208\190\208\186\208\176\208\183\208\176\209\130\209\140 \208\186\208\189\208\190\208\191\208\186\209\131 \209\131 \208\188\208\184\208\189\208\184\208\186\208\176\209\128\209\130\209\139",
+	["Show place instead difference of score"] = "Show place instead difference of score", -- Requires localization
+	["Show queues"] = "Show queues", -- Requires localization
 	["Spec 1"] = "\208\161\208\191\208\181\208\186 1",
 	["Spec 2"] = "\208\161\208\191\208\181\208\186 2",
 	Subtlety = "\208\161\208\186\209\128\209\139\209\130\208\189\208\190\209\129\209\130\209\140",

@@ -4,61 +4,32 @@ local L = REFlexLocale;
 -- *** Auxiliary functions
 
 -- GUI subsection
+function REFlex_SettingsReloadInternal(Field)
+	if REFSettings[Field] then
+		_G["REFlex_GUI_" .. Field]:SetChecked(true);
+	else	
+		_G["REFlex_GUI_" .. Field]:SetChecked(false);
+	end
+end
+
 function REFlex_SettingsReload()
 	REFlex_MainTab:Hide();
 
 	if REFSettings["ShowMinimapButton"] then
 		REFlex_MinimapButton:Show();
 		REFlex_MinimapButtonReposition();
-		REFlex_GUI_MinimapButton:SetChecked(true);
 	else
 		REFlex_MinimapButton:Hide();
-		REFlex_GUI_MinimapButton:SetChecked(false);
 	end
-	if REFSettings["ShowMiniBar"] then
-		REFlex_GUI_MiniBar:SetChecked(true);
-	else	
-		REFlex_GUI_MiniBar:SetChecked(false);
-	end
-	if REFSettings["ShowDetectedBuilds"] then
-		REFlex_GUI_SpecDetection:SetChecked(true);
-	else
-		REFlex_GUI_SpecDetection:SetChecked(false);
-	end
-	if REFSettings["ArenaSupport"] then
-		REFlex_GUI_ArenaSupport:SetChecked(true);
-	else
-		REFlex_GUI_ArenaSupport:SetChecked(false);
-	end
-	if REFSettings["RBGSupport"] then
-		REFlex_GUI_RBGSupport:SetChecked(true);
-	else
-		REFlex_GUI_RBGSupport:SetChecked(false);
-	end
-	if REFSettings["UNBGSupport"] then
-		REFlex_GUI_UNBGSupport:SetChecked(true);
-	else
-		REFlex_GUI_UNBGSupport:SetChecked(false);
-	end
-	if REFSettings["LDBBGMorph"] then
-		REFlex_GUI_LDBMorph:SetChecked(true);
-	else
-		REFlex_GUI_LDBMorph:SetChecked(false);
-	end
-	if REFSettings["LDBCPCap"] then
-		REFlex_GUI_LDBCPCap:SetChecked(true);
-	else
-		REFlex_GUI_LDBCPCap:SetChecked(false);
-	end
-	if REFSettings["LDBHK"] then
-		REFlex_GUI_LDBHK:SetChecked(true);
-	else
-		REFlex_GUI_LDBHK:SetChecked(false);
-	end
+	
+	for i=1, #RE.Options do
+		REFlex_SettingsReloadInternal(RE.Options[i]);
+	end	
 
 	REFlex_GUI_SliderScale:SetValue(REFSettings["MiniBarScale"]);
 	RE.SecondTimeMiniBar = false;
 	RE.MiniBarSecondLineRdy = false;
+	RequestRatedBattlegroundInfo();
 	REFlex_UpdateLDB();
 	
 	if RE.NeedReload then
@@ -66,81 +37,28 @@ function REFlex_SettingsReload()
 	end
 end
 
+function REFlex_GUISaveInternal(Field)
+	local REButtonCheck = _G["REFlex_GUI_" .. Field]:GetChecked();
+	if REButtonCheck == 1 then
+		if REFSettings[Field] == false and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport") then
+			RE.NeedReload = true;
+		end
+		REFSettings[Field] = true;
+	else
+		if REFSettings[Field] == true and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport") then
+			RE.NeedReload = true;
+		end
+		REFSettings[Field] = false;
+	end
+end
+
 function REFlex_GUISave()
 	RE.NeedReload = false;
-	local REButtonCheck = REFlex_GUI_MinimapButton:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["ShowMinimapButton"] = true;
-	else
-		REFSettings["ShowMinimapButton"] = false;
+	
+	for i=1, #RE.Options do
+		REFlex_GUISaveInternal(RE.Options[i]);
 	end
-	REButtonCheck = REFlex_GUI_MiniBar:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["ShowMiniBar"] = true;
-	else
-		REFSettings["ShowMiniBar"] = false;
-	end
-	REButtonCheck = REFlex_GUI_SpecDetection:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["ShowDetectedBuilds"] = true;
-	else
-		REFSettings["ShowDetectedBuilds"] = false;
-	end
-	REButtonCheck = REFlex_GUI_ArenaSupport:GetChecked();
-	if REButtonCheck == 1 then
-		if REFSettings["ArenaSupport"] == false then
-			RE.NeedReload = true;
-		end
-		REFSettings["ArenaSupport"] = true;
-	else
-		if REFSettings["ArenaSupport"] == true then
-			RE.NeedReload = true;
-		end
-		REFSettings["ArenaSupport"] = false;
-	end
-	REButtonCheck = REFlex_GUI_RBGSupport:GetChecked();
-	if REButtonCheck == 1 then
-		if REFSettings["RBGSupport"] == false then
-			RE.NeedReload = true;
-		end
-		REFSettings["RBGSupport"] = true;
-	else
-		if REFSettings["RBGSupport"] == true then
-			RE.NeedReload = true;
-		end
-		REFSettings["RBGSupport"] = false;
-	end
-	REButtonCheck = REFlex_GUI_UNBGSupport:GetChecked();
-	if REButtonCheck == 1 then
-		if REFSettings["UNBGSupport"] == false then
-			RE.NeedReload = true;
-		end
-		REFSettings["UNBGSupport"] = true;
-	else
-		if REFSettings["UNBGSupport"] == true then
-			RE.NeedReload = true;
-		end
-		REFSettings["UNBGSupport"] = false;
-	end
-	REButtonCheck = REFlex_GUI_LDBMorph:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["LDBBGMorph"] = true;
-	else
-		REFSettings["LDBBGMorph"] = false;
-	end
-	REButtonCheck = REFlex_GUI_LDBCPCap:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["LDBCPCap"] = true;
-	else
-		REFSettings["LDBCPCap"] = false;
-	end
-	REButtonCheck = REFlex_GUI_LDBHK:GetChecked();
-	if REButtonCheck == 1 then
-		REFSettings["LDBHK"] = true;
-	else
-		REFSettings["LDBHK"] = false;
-	end
-
+	
 	REFSettings["MiniBarScale"] = REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2);
 
 	REFlex_SettingsReload();
@@ -185,6 +103,17 @@ end
 function REFlex_Round(num, idp)
 	local mult = 10^(idp or 0)
 	return math.floor(num * mult + 0.5) / mult
+end
+
+function REFlex_ShortTime(TimeToShort)
+	local TimeRaw = math.floor(TimeToShort / 1000);
+	local TimeSec = math.floor(TimeRaw % 60);
+	local TimeMin = math.floor(TimeRaw / 60);
+	if TimeSec < 10 then
+		TimeSec = "0" .. TimeSec;
+	end
+
+	return TimeMin .. ":" .. TimeSec;
 end
 
 function REFlex_NumberClean(Number, Round)
@@ -1027,9 +956,29 @@ function REFlex_ToolTipRatingColorArena(Rating)
 end
 --
 
+function REFlex_ArenaExportSearch(REID)
+	if RE.NameSearch ~= nil then
+		local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(REID);
+		for i=1, #REEnemyNames do
+			if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
+				return true;
+			end
+		end
+		for i=1, #REFriendNames do
+			if REFriendNames[i] == RE.NameSearch then
+				return true;
+			end
+		end
+		return false;
+	else
+		return true;
+	end
+end
+
 function REFlex_EntryPopup()
 	if StaticPopup1["which"] == "CONFIRM_BATTLEFIELD_ENTRY" then
 		REFlex_MainTab:Hide();
+		REFlex_ExportTab:Hide();
 	end
 end
 -- ***

@@ -1255,6 +1255,9 @@
 				</Anchors>
 			</Button>
 			<Button name="$parent_MsgGuild" inherits="OptionsButtonTemplate">
+				<Size>
+					<AbsDimension x="60" y="20"/>
+				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -1267,16 +1270,27 @@
 				</Scripts>		
 			</Button>
 			<Button name="$parent_MsgParty" inherits="OptionsButtonTemplate">
+				<Size>
+					<AbsDimension x="60" y="20"/>
+				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="102" y="-12"/>
+							<AbsDimension x="77" y="-12"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick> REFlex_MainOnClick("PARTY"); </OnClick>
 				</Scripts>
+			</Button>
+			<Button name="$parent_CSVExport" inherits="OptionsButtonTemplate" text="CSV">
+				<Size>
+					<AbsDimension x="60" y="20"/>
+				</Size>
+				<Scripts>
+					<OnClick> REFlex_ExportTab:Show(); </OnClick>
+				</Scripts>		
 			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
 				<Scripts>
@@ -1359,12 +1373,103 @@
 		</Frames>
 	</Frame>
 
+	<Frame name="REFlex_ExportTab" resizable="false" movable="true" hidden="true" parent="UIParent">
+		<Size>
+			<AbsDimension x="500" y="500"/>
+		</Size>
+		<Scripts>
+			<OnLoad> self:RegisterForDrag("LeftButton"); tinsert(UISpecialFrames,"REFlex_ExportTab");</OnLoad>
+			<OnShow> PlaySound("igCharacterInfoOpen"); REFlex_ExportTabShow(); </OnShow>
+			<OnHide> PlaySound("igCharacterInfoClose"); </OnHide>
+			<OnDragStart> self:StartMoving(); </OnDragStart>
+			<OnDragStop> self:StopMovingOrSizing(); </OnDragStop>
+		</Scripts>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parent_Title" inherits="GameFontNormal" text="REFlex CSV Export">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-3" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parent_CloseButton" inherits="UIPanelCloseButton">
+				<HitRectInsets>
+					<AbsInset left="5" right="5" top="5" bottom="5"/>
+				</HitRectInsets>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<ScrollFrame name="$parent_Panel" inherits="UIPanelScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="20" y="-35"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-35" y="20"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<EditBox name="$parent_Text">
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
+						</Anchors>
+						<Scripts>
+							<OnEscapePressed> REFlex_ExportTab:Hide(); </OnEscapePressed>
+						</Scripts>
+					</EditBox>
+				</Frames>
+			</ScrollFrame>
+		</Frames>
+	</Frame>
+
 	<Frame name="REFlex_GUI">
 		<Scripts>
 			<OnLoad> REFlex_GUIOnLoad(self); </OnLoad>
 		</Scripts>
 		<Frames>
-			<CheckButton name="$parent_MinimapButton" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_ShowMinimapButton" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -1373,7 +1478,7 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-			<CheckButton name="$parent_MiniBar" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_ShowMiniBar" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -1382,7 +1487,7 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-			<CheckButton name="$parent_LDBMorph" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_LDBBGMorph" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -1391,11 +1496,11 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-			<CheckButton name="$parent_LDBCPCap" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_LDBShowPlace" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-140"></AbsDimension>
+							<AbsDimension x="25" y="-140"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1409,20 +1514,56 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-			<CheckButton name="$parent_ArenaSupport" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_LDBShowQueues" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-235"></AbsDimension>
+							<AbsDimension x="10" y="-190"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-			<CheckButton name="$parent_SpecDetection" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_LDBShowTotalBG" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-260"></AbsDimension>
+							<AbsDimension x="10" y="-215"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_LDBShowTotalArena" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-240"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_LDBCPCap" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-265"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_ArenaSupport" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-305"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parent_ShowDetectedBuilds" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="25" y="-330"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1431,7 +1572,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-310"></AbsDimension>
+							<AbsDimension x="10" y="-355"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1440,7 +1581,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-355"></AbsDimension>
+							<AbsDimension x="10" y="-380"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>

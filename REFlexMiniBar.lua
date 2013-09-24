@@ -26,7 +26,7 @@ function REFlex_UpdateLDB()
 	local _, REHonor = GetCurrencyInfo(HONOR_CURRENCY);
 	local _, RECP = GetCurrencyInfo(CONQUEST_CURRENCY);
 
-	if REHonor == 4000 then
+	if REHonor == RE.HonorCap then
 		RE.LDBBar.text = " |rH: |cFFFF141D" .. REHonor;
 	else
 		RE.LDBBar.text = " |rH: |cFFFFFFFF" .. REHonor;
@@ -39,7 +39,11 @@ function REFlex_UpdateLDB()
 		end
 		if REFSettings["LDBCPCap"] then
 			local RECPToGo = RE.RBGMaxPointsWeek - RE.RBGPointsWeek;
-			RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r  (|cFFFFFFFF" .. RECPToGo .. "|r)"
+			if RECPToGo == 0 then
+				RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r";	
+			else
+				RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r (|cFFFFFFFF" .. RECPToGo .. "|r)";
+			end
 		else
 			RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r"
 		end
@@ -49,6 +53,28 @@ function REFlex_UpdateLDB()
 
 	if REFSettings["LDBHK"] then
 		RE.LDBBar.text = RE.LDBBar.text .. "|r  HK: |cFFFFFFFF" .. REhk .. "|r"
+	end
+
+	if REFSettings["LDBShowTotalBG"] then
+		RE.LDBBGWin, RE.LDBBGLoss, RE.LDBBGRatio = REFlex_WinLoss(nil, nil, nil);
+		RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rBG: |cFF00CC00" .. RE.LDBBGWin .. "|r - |cFFCC0000" .. RE.LDBBGLoss .. "|r |cFFFFFFFF(" .. RE.LDBBGRatio .. ")|r";
+	end
+	if REFSettings["LDBShowTotalArena"] then
+		RE.LDBArenaWin, RE.LDBArenaLoss, RE.LDBArenaRatio = REFlex_WinLossArena(nil, nil, nil);
+		RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rA: |cFF00CC00" .. RE.LDBArenaWin .. "|r - |cFFCC0000" .. RE.LDBArenaLoss .. "|r |cFFFFFFFF(" .. RE.LDBArenaRatio .. ")|r";
+	end
+
+	if RE.LDBQueue ~= "" then
+		RE.LDBBar.text = RE.LDBBar.text .. RE.LDBQueue;
+	end
+end
+
+function REFlex_UpdateLDBQueues(QueueID)
+	local REStatus, REMapName = GetBattlefieldStatus(QueueID);
+	if REStatus == "queued" then
+		local REWaitTime = GetBattlefieldEstimatedWaitTime(QueueID);
+		local RETimeInQueue = GetBattlefieldTimeWaited(QueueID);
+		RE.LDBQueue = RE.LDBQueue .. "|cFF696969  |  |r" .. REFlex_ShortMap(REMapName) .. ": |cFFFFFFFF" .. REFlex_ShortTime(RETimeInQueue) .. "|r / |cFF00CC00" .. REFlex_ShortTime(REWaitTime) .. "|r";
 	end
 end
 
@@ -142,10 +168,6 @@ function REFlex_LDBTooltip(self)
 		REKBTotal = REKBTotal + REFDatabaseA[REDatabaseAItems]["KB"];
 		if REFDatabaseA[REDatabaseAItems]["KB"] > REKBTop then
 			REKBTop = REFDatabaseA[REDatabaseAItems]["KB"];
-		end
-		REHKTotal = REHKTotal + REFDatabaseA[REDatabaseAItems]["HK"];
-		if REFDatabaseA[REDatabaseAItems]["HK"] > REHKTop then
-			REHKTop = REFDatabaseA[REDatabaseAItems]["HK"];
 		end
 		REDamageTotal = REDamageTotal + REFDatabaseA[REDatabaseAItems]["Damage"];
 		if REFDatabaseA[REDatabaseAItems]["Damage"] > REDamageTop then
@@ -290,11 +312,11 @@ function REFlex_UpdateMiniBar()
 		RE.SecondTimeMiniBar = true;
 	end
 
-	RE.MPlayerName = GetUnitName("player");
+	local REMPlayerName = GetUnitName("player");
 	local REMName = "";
 	local REMPlayerID = 0;
 	local i = 1;
-	while REMName ~= RE.MPlayerName do
+	while REMName ~= REMPlayerName do
 		REMName = GetBattlefieldScore(i);
 		REMPlayerID = i;
 		i = i + 1;
@@ -306,6 +328,7 @@ function REFlex_UpdateMiniBar()
 	local REMBGPlayers = GetNumBattlefieldScores();
 	local REMMaxKB, REMMaxHK, REMMaxDamage, REMMaxHealing, REMMaxDeaths, REMMaxHonorGained = 0, 0, 0, 0, 0, 0;
 	local _, REMkillingBlows, REMhonorKills, REMdeaths, REMhonorGained, _, _, _, _, REMdamageDone, REMhealingDone = GetBattlefieldScore(REMPlayerID);
+	local REPlaceKB, REPlaceHK, REPlaceHonor, REPlaceDamage, REPlaceHealing, REPlaceDeaths = REMBGPlayers, REMBGPlayers, REMBGPlayers, REMBGPlayers, REMBGPlayers, REMBGPlayers;
 
 	for j=1, REMBGPlayers do
 		if j ~= REMPlayerID then
@@ -327,6 +350,25 @@ function REFlex_UpdateMiniBar()
 			end
 			if REMMaxHonorGained < honorGainedTemp then
 				REMMaxHonorGained = honorGainedTemp;
+			end
+			
+			if REMkillingBlows > killingBlowsTemp then
+				REPlaceKB = REPlaceKB - 1;
+			end
+			if REMhonorKills > honorKillsTemp then
+				REPlaceHK = REPlaceHK - 1;
+			end
+			if REMhonorGained > honorGainedTemp then
+				REPlaceHonor = REPlaceHonor - 1;
+			end
+			if REMdamageDone > damageDoneTemp then
+				REPlaceDamage = REPlaceDamage - 1;
+			end
+			if REMhealingDone > healingDoneTemp then
+				REPlaceHealing = REPlaceHealing - 1;
+			end
+			if REMdeaths < deathsTemp then
+				REPlaceDeaths = REPlaceDeaths - 1;
 			end
 		end
 	end
@@ -363,7 +405,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "KB:";
 				REMiniBarValue = REMkillingBlows .. " (" .. REMKBD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REMkillingBlows .. "|r  (" .. REMKBD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMkillingBlows .. "|r  (" .. REPlaceKB .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMkillingBlows .. "|r  (" .. REMKBD .. ")";
+				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "HonorKills" then
 				if REMHKD > 0 then
 					REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
@@ -373,7 +419,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "HK:";
 				REMiniBarValue = REMhonorKills .. " (" .. REMHKD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REMHKD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REPlaceHK .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorKills .. "|r  (" .. REMHKD .. ")";
+				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "Damage" then
 				if REMDamageD > 0 then
 					REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD) .. "|r"
@@ -383,7 +433,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "Dam:";
 				REMiniBarValue = REFlex_NumberClean(REMdamageDone) .. " (" .. REMDamageD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMdamageDone) .. "|r  (" .. REMDamageD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMdamageDone) .. "|r  (" .. REPlaceDamage .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMdamageDone) .. "|r  (" .. REMDamageD .. ")";
+				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "Healing" then
 				if REMHealingD > 0 then
 					REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD) .. "|r"
@@ -393,7 +447,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "Hea:";
 				REMiniBarValue = REFlex_NumberClean(REMhealingDone) .. " (" .. REMHealingD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMhealingDone) .. "|r  (" .. REMHealingD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMhealingDone) .. "|r  (" .. REPlaceHealing .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REFlex_NumberClean(REMhealingDone) .. "|r  (" .. REMHealingD .. ")";
+				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "Deaths" then
 				if REMDeathsD > 0 then
 					REMDeathsD = "|cFFFF141D+" .. REMDeathsD .. "|r"
@@ -403,7 +461,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "Dea:";
 				REMiniBarValue = REMdeaths .. " (" .. REMDeathsD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REMdeaths .. "|r  (" .. REMDeathsD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMdeaths .. "|r  (" .. REPlaceDeaths .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMdeaths .. "|r  (" .. REMDeathsD .. ")";
+				end
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "KDRatio" then
 				REMiniBarLabel = "K/D:";
 				if REMKDRatio >= 1 then
@@ -422,7 +484,11 @@ function REFlex_UpdateMiniBar()
 
 				REMiniBarLabel = "Hon:";
 				REMiniBarValue = REMhonorGained .. " (" .. REMHonorD .. ")";
-				REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorGained .. "|r  (" .. REMHonorD .. ")";
+				if REFSettings["LDBShowPlace"] then
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorGained .. "|r  (" .. REPlaceHonor .. ")";
+				else
+					REMiniBarLDBValue = "|cFFFFFFFF" .. REMhonorGained .. "|r  (" .. REMHonorD .. ")";
+				end
 			end
 
 			if REFSettings["ShowMiniBar"] then
