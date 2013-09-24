@@ -57,6 +57,342 @@
 		</Frames>
 	</Frame>
 
+	<Frame name="REFlex_Tab_ScoreHolder_Virtual" virtual="true">
+		<Size>
+			<AbsDimension y="100"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOP"/>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-40" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
+					<Color r="0" g="0.8" b="0" a="1"/>				
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-40" y="-40" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
+					<Color r="0.8" g="0" b="0" a="1"/>				
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="40" y="-40" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_RBG" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-66" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-37" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-54" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-69" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-37" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-54" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-69" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-240" y="-37" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-240" y="-54" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-240" y="-69" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="240" y="-37" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="240" y="-54" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="240" y="-69" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>	
+	</Frame>
+
+	<Frame name="REFlex_Tab4_ScoreHolder_Virtual" virtual="true">
+		<Size>
+			<AbsDimension x="340" y="125"/>
+		</Size>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer>
+				<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-10" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-55" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
+					<Color r="0" g="0.8" b="0" a="1"/>				
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-40" y="-55" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
+					<Color r="0.8" g="0" b="0" a="1"/>				
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="40" y="-55" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-15" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-32" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-47" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-15" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-32" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-47" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-70" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-87" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-120" y="-102" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
+					<Color r="0.8" g="0.5" b="0" a="1"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-70" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-87" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="120" y="-102" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>	
+	</Frame>
+
 	<Frame name="REFlex_MainTab" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="655" y="502"/>
@@ -96,7 +432,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString inherits="GameFontNormal" text="REFlex v0.4.2">
+				<FontString name="$parent_Title" inherits="GameFontNormal">
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
@@ -131,170 +467,6 @@
 							<Anchor point="RIGHT" />
 						</Anchors>
 					</Frame>
-					<Frame name="$parent_ScoreHolder">
-						<Size>
-							<AbsDimension y="100"/>
-						</Size>
-						<Anchors>
-							<Anchor point="TOP"/>
-							<Anchor point="LEFT"/>
-							<Anchor point="RIGHT"/>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_RBG" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-66" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
 				</Frames>
 			</Frame>
 
@@ -320,161 +492,6 @@
 							<Anchor point="LEFT" />
 							<Anchor point="RIGHT" />
 						</Anchors>
-					</Frame>
-					<Frame name="$parent_ScoreHolder">
-						<Size>
-							<AbsDimension y="100"/>
-						</Size>
-						<Anchors>
-							<Anchor point="TOP"/>
-							<Anchor point="LEFT"/>
-							<Anchor point="RIGHT"/>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
 					</Frame>
 				</Frames>
 			</Frame>
@@ -502,170 +519,6 @@
 							<Anchor point="RIGHT" />
 						</Anchors>
 					</Frame>
-					<Frame name="$parent_ScoreHolder">
-						<Size>
-							<AbsDimension y="100"/>
-						</Size>
-						<Anchors>
-							<Anchor point="TOP"/>
-							<Anchor point="LEFT"/>
-							<Anchor point="RIGHT"/>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-40" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_RBG" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-66" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-37" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-54" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="240" y="-69" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
 				</Frames>
 			</Frame>
 
@@ -679,552 +532,6 @@
 					<OnHide> REFlex_Tab4Hide(); </OnHide>
 				</Scripts>
 				<Frames>
-					<Frame name="$parent_ScoreHolder1">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP" >
-								<Offset>
-									<AbsDimension x="0" y="-45" />
-								</Offset>
-							</Anchor>
-							<Anchor point="LEFT">
-								<Offset>
-									<AbsDimension x="15" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder3">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-185" />
-								</Offset>
-							</Anchor>
-							<Anchor point="LEFT">
-								<Offset>
-									<AbsDimension x="15" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder6">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-325" />
-								</Offset>
-							</Anchor>
-							<Anchor point="LEFT">
-								<Offset>
-									<AbsDimension x="15" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
 					<Frame name="$parent_ScoreHolderSpecial">
 						<Size>
 							<AbsDimension x="340" y="125"/>
@@ -1265,7 +572,7 @@
 									</Anchor>
 								</Anchors>
 								<Frames>
-									<Statusbar frameStrata="LOW" name="$Parent_I">
+									<Statusbar minValue="0" maxValue="4000" frameStrata="LOW" name="$Parent_I">
 										<Anchors>
 											<Anchor point="BOTTOM">
 												<Offset>
@@ -1376,906 +683,7 @@
 							</Layer>
 						</Layers>
 					</Frame>
-					<Frame name="$parent_ScoreHolder4">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-185" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder7">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-325" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder2">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP" >
-								<Offset>
-									<AbsDimension x="0" y="-45" />
-								</Offset>
-							</Anchor>
-							<Anchor point="RIGHT" >
-								<Offset>
-									<AbsDimension x="-15" y="-45" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder5">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-185" />
-								</Offset>
-							</Anchor>
-							<Anchor point="RIGHT">
-								<Offset>
-									<AbsDimension x="-15" y="-185" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
-					<Frame name="$parent_ScoreHolder8">
-						<Size>
-							<AbsDimension x="340" y="125"/>
-						</Size>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize>
-								<AbsValue val="16"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val="16"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left="5" right="5" top="5" bottom="5"/>
-							</BackgroundInsets>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-325" />
-								</Offset>
-							</Anchor>
-							<Anchor point="RIGHT">
-								<Offset>
-									<AbsDimension x="-15" y="-325" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer>
-								<FontString name="$Parent_Title" justifyH="CENTER" inherits="SystemFont_Shadow_Huge3">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Line" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4" text="-">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="0" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Wins" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0" g="0.8" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Lose" justifyH="CENTER" inherits="SystemFont_OutlineThick_Huge4">
-									<Color r="0.8" g="0" b="0" a="1"/>				
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="40" y="-55" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-15" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-32" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-47" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="-120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
-									<Color r="0.8" g="0.5" b="0" a="1"/>
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-70" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-87" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-								<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
-									<Anchors>
-										<Anchor point="TOP">
-											<Offset>
-												<AbsDimension x="120" y="-102" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
-							</Layer>
-						</Layers>	
-					</Frame>
+
 					<Frame name="$Parent_Bar">
 						<Size>
 							<AbsDimension x="1000" y="25"/>
@@ -2293,7 +701,7 @@
 							</Anchor>
 						</Anchors>
 						<Frames>
-							<Statusbar frameStrata="LOW" name="$Parent_I">
+							<Statusbar minValue="0" maxValue="100000" frameStrata="LOW" name="$Parent_I">
 								<Anchors>
 									<Anchor point="BOTTOM">
 										<Offset>
@@ -2328,6 +736,7 @@
 							</Layer>
 						</Layers>
 					</Frame>
+
 					<Button name="$Parent_DropDown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
@@ -2370,7 +779,7 @@
 						<Scripts>
 							<OnClick>
 								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 1);
-								REFlex_SpecTab(nil);
+								REFlex_SpecTabClick(nil);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -2385,7 +794,7 @@
 						<Scripts>
 							<OnClick>
 								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 2);
-								REFlex_SpecTab(1);
+								REFlex_SpecTabClick(1);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -2400,7 +809,7 @@
 						<Scripts>
 							<OnClick>
 								PanelTemplates_SetTab(REFlex_MainTab_SpecHolder, 3);
-								REFlex_SpecTab(2);
+								REFlex_SpecTabClick(2);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -2541,21 +950,113 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<Slider name="$parent_SliderScale" inherits="OptionsSliderTemplate" minValue="0.1" maxValue="2" orientation="HORIZONTAL">
+				<Size>
+					<AbsDimension x="200" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="16" y="-75"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentValue" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="TOP" relativePoint="BOTTOM"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnValueChanged> REFlex_GUIScaleSlider(); </OnValueChanged>
+				</Scripts>
+			</Slider>
 		</Frames>
 	</Frame>
 
-	<Frame name="REFlex_MiniBar" resizable="false" movable="true" hidden="true" parent="UIParent">
+	<Frame name="REFlex_GUI_Modules_Virtual" virtual="true">
 		<Size>
-			<AbsDimension x="275" y="50"/>
+			<AbsDimension x="10" y="10" />
 		</Size>
+		<Layers>
+			<Layer>
+				<FontString name="$parent_Name" inherits="SystemFont_Med2" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="85" y="10" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="10" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parent_Bar1Button" inherits="OptionsButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Name" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="15" y="11"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parent_Bar2Button" inherits="OptionsButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Bar1Button" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parent_HideButton" inherits="OptionsButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Bar2Button" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parent_LeftButton" inherits="OptionsButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_Name" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="15" y="-11"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parent_RightButton" inherits="OptionsButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_LeftButton" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>	
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+
+	<Frame name="REFlex_GUI_Modules">
 		<Scripts>
-			<OnLoad> self:RegisterForDrag("LeftButton");</OnLoad>
-			<OnDragStart> self:StartMoving(); </OnDragStart>
-			<OnDragStop> self:StopMovingOrSizing(); </OnDragStop>
+			<OnLoad> REFlex_GUIModulesOnLoad(self); </OnLoad>
+			<OnShow> REFlex_GUIModulesOnShow(); </OnShow>
 		</Scripts>
-		<Anchors>
-			<Anchor point="CENTER"/>
-		</Anchors>
+	</Frame>
+
+	<Frame name="REFlex_MiniBar_Cell" virtual="true" resizable="false" movable="true" hidden="true" parent="UIParent">
+		<Size>
+			<AbsDimension x="155" y="32"/>
+		</Size>
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true">
 			<TileSize>
 				<AbsValue val="32"/>
@@ -2566,7 +1067,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer>
-				<FontString name="$Parent_KB1" inherits="SystemFont_Outline" text="KB:">
+				<FontString name="$Parent_Label" inherits="SystemFont_Outline">
 					<Color r="0.8" g="0.5" b="0" a="1"/>
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -2576,68 +1077,53 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$Parent_KB2" inherits="SystemFont_Med2">
+				<FontString name="$Parent_Value" inherits="SystemFont_Med2">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="40" y="-10" />
+								<AbsDimension x="50" y="-10" />
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$Parent_HK1" inherits="SystemFont_Outline" text="HB:">
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="REFlex_MiniBar_Cell_Prime" virtual="true" resizable="false" movable="true" hidden="true" parent="UIParent">
+		<Size>
+			<AbsDimension x="155" y="32"/>
+		</Size>
+		<Scripts>
+			<OnLoad> self:RegisterForDrag("LeftButton");</OnLoad>
+			<OnDragStart> self:StartMoving(); </OnDragStart>
+			<OnDragStop> self:StopMovingOrSizing(); </OnDragStop>
+		</Scripts>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true">
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer>
+				<FontString name="$Parent_Label" inherits="SystemFont_Outline">
 					<Color r="0.8" g="0.5" b="0" a="1"/>
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="140" y="-10" />
+								<AbsDimension x="10" y="-10" />
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$Parent_HK2" inherits="SystemFont_Med2">
+				<FontString name="$Parent_Value" inherits="SystemFont_Med2">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="170" y="-10" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$Parent_Damage1" inherits="SystemFont_Outline" text="D:">
-					<Color r="0.8" g="0.5" b="0" a="1"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="10" y="10" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$Parent_Damage2" inherits="SystemFont_Med2">
-					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="30" y="10" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$Parent_Healing1" inherits="SystemFont_Outline" text="H:">
-					<Color r="0.8" g="0.5" b="0" a="1"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="140" y="10" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$Parent_Healing2" inherits="SystemFont_Med2">
-					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset>
-								<AbsDimension x="160" y="10" />
+								<AbsDimension x="50" y="-10" />
 							</Offset>
 						</Anchor>
 					</Anchors>

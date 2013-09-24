@@ -1,6 +1,19 @@
-local L = REFlexLocale;
 local REScrollingTable = LibStub("ScrollingTable");
 local REShefkiTimer = LibStub("LibShefkiTimer-1.0");
+
+local L = REFlexLocale;
+local REModuleTranslation = {
+	["KillingBlows"] = KILLING_BLOWS,
+	["HonorKills"] = L["Honor Kills"],
+	["Damage"] = DAMAGE,
+	["Healing"] = SHOW_COMBAT_HEALING,
+	["Deaths"] = DEATHS,
+	["KDRatio"] = L["K/D Ratio"],
+	["Honor"] = HONOR 
+}
+
+local REDataVersion = 2;
+local REAddonVersion = "v0.5";
 SLASH_REFLEX1, SLASH_REFLEX2 = "/ref", "/reflex";
 
 -- *** Event functions
@@ -25,7 +38,7 @@ function REFlex_OnEvent(self,event,...)
 	if event == "UPDATE_BATTLEFIELD_SCORE" then
 		if RESecondTimeMiniBarTimer ~= true then
 			REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
-			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 30);
+			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 25);
 			RESecondTimeMiniBarTimer = true;
 		elseif REZoneType ~= "arena" then
 			REFlex_UpdateMiniBar();
@@ -37,47 +50,100 @@ function REFlex_OnEvent(self,event,...)
 		RESecondTime = false;
 		RESecondTimeMiniBar = false;
 		RESecondTimeMiniBarTimer = false;
+		REMiniBarSecondLineRdy = false;
 
-		REFlex_MiniBar:Hide();
+		if REFSettings["ShowMiniBar"] then
+			_, _, _, REFSettings["MiniBarX"], REFSettings["MiniBarY"] = REFlex_MiniBar1:GetPoint(1);
+			REFSettings["MiniBarX"] = REFlex_Round(REFSettings["MiniBarX"], 2);
+			REFSettings["MiniBarY"] = REFlex_Round(REFSettings["MiniBarY"], 2);
+
+			for i=1, REMiniBarPluginsCount do
+				_G["REFlex_MiniBar" .. i]:Hide();
+			end
+		end
 
 		RequestRatedBattlegroundInfo();
 	elseif event == "ZONE_CHANGED_NEW_AREA" and RESecondTimeMiniBarTimer == true then
-	        RESecondTimeMiniBarTimer = false;
+		RESecondTimeMiniBarTimer = false;
+
+		if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount ~= nil then
+			for i=1, REMiniBarPluginsCount do
+				_G["REFlex_MiniBar" .. i]:Hide();
+			end
+		end
 	elseif event == "ADDON_LOADED" and REAddonName == "REFlex" then
+		BINDING_HEADER_REFLEXB = "REFlex";
+		BINDING_NAME_REFLEXSHOW = L["Show main window"];
+
 		REFlex_ScoreTab_MsgGuild:SetText(GUILD); 
 		REFlex_ScoreTab_MsgParty:SetText(PARTY);
 		REFlex_MainTab_MsgGuild:SetText(GUILD); 
 		REFlex_MainTab_MsgParty:SetText(PARTY);
+
+		REFlex_MainTab_Title:SetText("REFlex " .. REAddonVersion);
 		REFlex_MainTabTab1:SetText(L["All"]);
 		REFlex_MainTabTab2:SetText(L["Normal"]);
 		REFlex_MainTabTab3:SetText(L["Rated"]);
 		REFlex_MainTabTab4:SetText(L["Statistics"]);
+
 		REFlex_MainTab_SpecHolderTab1:SetText(L["Both Specs"]);
 		REFlex_MainTab_SpecHolderTab2:SetText(L["Spec 1"]);
 		REFlex_MainTab_SpecHolderTab3:SetText(L["Spec 2"]);
+
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_CP:SetText("- " .. PVP_CONQUEST .. " -");
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_Honor:SetText("- " .. HONOR .. " -");
-		BINDING_HEADER_REFLEXB = "REFlex";
-		BINDING_NAME_REFLEXSHOW = L["Show main window"];
+
+		CreateFrame("Frame", "REFlex_MainTab_Tab1_ScoreHolder", REFlex_MainTab_Tab1, "REFlex_Tab_ScoreHolder_Virtual");
+		CreateFrame("Frame", "REFlex_MainTab_Tab2_ScoreHolder", REFlex_MainTab_Tab2, "REFlex_Tab_ScoreHolder_Virtual");
+		CreateFrame("Frame", "REFlex_MainTab_Tab3_ScoreHolder", REFlex_MainTab_Tab3, "REFlex_Tab_ScoreHolder_Virtual");
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder1", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder1:SetPoint("TOPLEFT", 15, -45);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder2", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder2:SetPoint("TOPRIGHT", -15, -45);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder3", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder3:SetPoint("TOPLEFT", 15, -185);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder4", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder4:SetPoint("TOP", 0, -185);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder5", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder5:SetPoint("TOPRIGHT", -15, -185);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder6", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder6:SetPoint("TOPLEFT", 15, -325);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder7", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder7:SetPoint("TOP", 0, -325);
+		CreateFrame("Frame", "REFlex_MainTab_Tab4_ScoreHolder8", REFlex_MainTab_Tab4, "REFlex_Tab4_ScoreHolder_Virtual");
+		REFlex_MainTab_Tab4_ScoreHolder8:SetPoint("TOPRIGHT", -15, -325);
+
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_Bar_I:SetStatusBarColor(0, 0.9, 0);
-		REFlex_MainTab_Tab4_Bar_I:SetMinMaxValues(0, 100000);
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetStatusBarColor(0, 0.9, 0);
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetStatusBarColor(0, 0.9, 0);
-		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarHonor_I:SetMinMaxValues(0, 4000);
+
 		UIDropDownMenu_SetWidth(REFlex_MainTab_Tab4_DropDown, 140);
 		UIDropDownMenu_SetButtonWidth(REFlex_MainTab_Tab4_DropDown, 200)
 		UIDropDownMenu_SetSelectedID(REFlex_MainTab_Tab4_DropDown, 1)
 		UIDropDownMenu_JustifyText(REFlex_MainTab_Tab4_DropDown, "LEFT")
 
+		--- Settings and database patcher
 		if REFDatabase == nil then
 			REFDatabase = {};
 		end
 		if REFSettings == nil then
-			REFSettings = {["MinimapPos"] = 45, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true};
+			REFSettings = {["Version"] = 2 ,["MinimapPos"] = 45, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarScale"] = 1, ["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"}, ["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}};
+		elseif REFSettings["Version"] == nil then
+			REFSettings["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
+			REFSettings["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
+			REFSettings["Version"] = REDataVersion;
+			REFSettings["MiniBarScale"] = 1;
+
+			for i=1, #REFDatabase do
+				if REFDatabase[i]["DataVersion"] == nil then
+					REFDatabase[i]["DataVersion"] = REDataVersion;
+				end
+			end
 		end
+		-- ***
 
 		RequestRatedBattlegroundInfo();
 		REFlex_SettingsReload();
@@ -123,7 +189,81 @@ function REFlex_GUIOnLoad(REPanel)
 	InterfaceOptions_AddCategory(REPanel);
 
 	REFlex_GUI_MinimapButtonText:SetText(L["Show minimap button"]);
-	REFlex_GUI_MiniBarText:SetText(L["Show minibar (Battlegrounds only)"]);
+	REFlex_GUI_MiniBarText:SetText(L["Show MiniBar (Battlegrounds only)"]);
+	REFlex_GUI_SliderScaleText:SetText(L["MiniBar scale"]);
+	REFlex_GUI_SliderScaleLow:SetText("0.1");
+	REFlex_GUI_SliderScaleHigh:SetText("2.0");
+
+	REFlex_GUI_SliderScale:SetValueStep(0.05);
+end
+
+function REFlex_GUIModulesOnLoad(REPanel)
+	REPanel.name = L["MiniBar modules"];
+	REPanel.parent = "REFlex"
+	InterfaceOptions_AddCategory(REPanel);
+end
+
+function REFlex_GUIScaleSlider()
+	REFlex_GUI_SliderScaleValue:SetText(REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2));
+
+	if REFSettings["ShowMiniBar"] and REMiniBarPluginsCount ~= nil then
+		for i=1, REMiniBarPluginsCount do
+			_G["REFlex_MiniBar" .. i]:SetScale(REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2));
+		end
+	end
+end
+
+function REFlex_GUIModulesOnShow()
+	if REFSettings then
+		for j=1, #REFSettings["MiniBarOrder"] do
+			if j == 1 then
+				if _G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]] == nil then
+					CreateFrame("Frame", "REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j], REFlex_GUI_Modules, "REFlex_GUI_Modules_Virtual");
+				end
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]]:ClearAllPoints();
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]]:SetPoint("TOPLEFT", REFlex_GUI_Modules, "TOPLEFT", 10 , -35);
+
+			else
+				if _G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]] == nil then
+					CreateFrame("Frame", "REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j], REFlex_GUI_Modules, "REFlex_GUI_Modules_Virtual");
+				end
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]]:ClearAllPoints();
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j]]:SetPoint("TOPLEFT", _G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j-1]], "BOTTOMLEFT", 0 , -47);
+			end
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar1Button"]:Enable()
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar2Button"]:Enable()
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButton"]:Enable()
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_LeftButton"]:Enable()
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_RightButton"]:Enable()
+
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Name"]:SetText(REModuleTranslation[REFSettings["MiniBarOrder"][j]]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar1ButtonText"]:SetText(L["Bar 1"]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar2ButtonText"]:SetText(L["Bar 2"]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButtonText"]:SetText(L["Hide"]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_LeftButtonText"]:SetText(L["Left"]);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_RightButtonText"]:SetText(L["Right"]);
+
+			if j == 1 then
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_LeftButton"]:Disable()
+			elseif j == #REFSettings["MiniBarOrder"] then
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_RightButton"]:Disable()
+			end
+
+			if REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]] == 1 then
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar1Button"]:Disable()
+			elseif REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]] == 2 then
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar2Button"]:Disable()
+			else
+				_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButton"]:Disable()
+			end
+
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar1Button"]:SetScript("OnClick", function() REFlex_GUI_ModuleChangeBar(REFSettings["MiniBarOrder"][j], 1, REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]]) end);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_Bar2Button"]:SetScript("OnClick", function() REFlex_GUI_ModuleChangeBar(REFSettings["MiniBarOrder"][j], 2, REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]]) end);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_HideButton"]:SetScript("OnClick", function() REFlex_GUI_ModuleChangeBar(REFSettings["MiniBarOrder"][j], nil, REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]]) end);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_LeftButton"]:SetScript("OnClick", function() REFlex_GUI_ModuleChangeBarOrder(REFSettings["MiniBarOrder"][j], j, j-1) end);
+			_G["REFlex_GUI_Modules_" .. REFSettings["MiniBarOrder"][j] .. "_RightButton"]:SetScript("OnClick", function() REFlex_GUI_ModuleChangeBarOrder(REFSettings["MiniBarOrder"][j], j, j+1) end);
+		end
+	end
 end
 --
 
@@ -150,7 +290,7 @@ function REFlex_MinimapButtonClick(...)
 end
 --
 
-function REFlex_SpecTab(Spec)
+function REFlex_SpecTabClick(Spec)
 	RETalentTab = Spec;
 
 	local Visible1 = REFlex_MainTab_Tab1:IsVisible();
@@ -193,11 +333,11 @@ function REFlex_SettingsReload()
 	else	
 		REFlex_GUI_MiniBar:SetChecked(false);
 		REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
-		local Visible = REFlex_MiniBar:IsVisible();
-		if Visible == 1 then
-			REFlex_MiniBar:Hide();
-		end
 	end
+
+	REFlex_GUI_SliderScale:SetValue(REFSettings["MiniBarScale"]);
+	RESecondTimeMiniBar = false;
+	REMiniBarSecondLineRdy = false;
 end
 
 function REFlex_GUISave()
@@ -207,12 +347,44 @@ function REFlex_GUISave()
 	else
 		REFSettings["ShowMinimapButton"] = false;
 	end
+
 	REButtonCheck = REFlex_GUI_MiniBar:GetChecked();
 	if REButtonCheck == 1 then
 		REFSettings["ShowMiniBar"] = true;
 	else
 		REFSettings["ShowMiniBar"] = false;
 	end
+
+	REFSettings["MiniBarScale"] = REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2);
+
+	REFlex_SettingsReload();
+end
+
+function REFlex_GUI_ModuleChangeBar(ModuleName, NewBar, OldBar) 
+	if OldBar == 1 then
+		local FirstLineCount = 0;
+		for j=1, #REFSettings["MiniBarOrder"] do
+			if REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]] == 1 then
+				FirstLineCount = FirstLineCount + 1;
+			end
+		end
+		if FirstLineCount >= 2 then
+			REFSettings["MiniBarVisible"][ModuleName] = NewBar;
+		end
+	else
+		REFSettings["MiniBarVisible"][ModuleName] = NewBar;
+	end
+
+	REFlex_GUIModulesOnShow();
+	REFlex_SettingsReload();
+end
+
+function REFlex_GUI_ModuleChangeBarOrder(ModuleName, OldOrder, NewOrder) 
+	local RETempName = REFSettings["MiniBarOrder"][NewOrder]
+	REFSettings["MiniBarOrder"][NewOrder] = ModuleName;
+	REFSettings["MiniBarOrder"][OldOrder] = RETempName;
+
+	REFlex_GUIModulesOnShow();
 	REFlex_SettingsReload();
 end
 --
@@ -778,10 +950,31 @@ function REFlex_MainTabShow()
 	if RESecondTimeMainTab == false then
 		REMainTable1 = REScrollingTable:CreateST(REDataStructure12, 25, nil, nil, REFlex_MainTab_Tab1_Table)
 		ScrollTable1:SetPoint("TOP");
+		REMainTable1:RegisterEvents({
+			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowBGDetails(realrow);    
+				end
+			end,
+		});
 		REMainTable2 = REScrollingTable:CreateST(REDataStructure12, 25, nil, nil, REFlex_MainTab_Tab2_Table)
 		ScrollTable2:SetPoint("TOP");
+		REMainTable2:RegisterEvents({
+			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowBGDetails(realrow);    
+				end
+			end,
+		});
 		REMainTable3 = REScrollingTable:CreateST(REDataStructure3, 25, nil, nil, REFlex_MainTab_Tab3_Table)
 		ScrollTable3:SetPoint("TOP");
+		REMainTable3:RegisterEvents({
+			["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+				if realrow ~= nil then
+					REFlex_ShowBGDetails(realrow);    
+				end
+			end,
+		});
 		RESecondTimeMainTab = true;
 	end
 
@@ -1025,6 +1218,19 @@ function REFlex_Tab3Show()
 	REFlex_MainTab_Tab3_ScoreHolder_Healing3:SetText(L["Total"] .. ": " .. REFlex_NumberClean(RESumHealing, 2));
 end
 
+function REFlex_Tab4ShowI(j)
+	local REMapsTester = false;
+	for k=1, #REMapsHolder do
+		if REMapsHolder[k] == REFDatabase[j]["MapName"] then
+			REMapsTester = true;
+		end
+	end
+
+	if not REMapsTester then
+		table.insert(REMapsHolder, REFDatabase[j]["MapName"]);
+	end
+end
+
 function REFlex_Tab4Show()
 	REFlex_MainTab_MsgGuild:Hide(); 
 	REFlex_MainTab_MsgParty:Hide();
@@ -1040,16 +1246,26 @@ function REFlex_Tab4Show()
 	REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetValue(RERBGPointsWeek);
 	REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_Text:SetText(RECP .. " - " .. RERBGPointsWeek .. " / " .. RERBGMaxPointsWeek);
 
-	local REMapsHolder = {};
+	REMapsHolder = {};
 	for j=1, #REFDatabase do
-		local REMapsTester = false;
-		for k=1, #REMapsHolder do
-			if REMapsHolder[k] == REFDatabase[j]["MapName"] then
-				REMapsTester = true;
+		if RETalentTab ~= nil then
+			if RERatedDrop ~= nil then
+				if REFDatabase[j]["TalentSet"] == RETalentTab and REFDatabase[j]["IsRated"] == RERatedDrop then
+					REFlex_Tab4ShowI(j);		
+				end
+			else
+				if REFDatabase[j]["TalentSet"] == RETalentTab then
+					REFlex_Tab4ShowI(j);
+				end
 			end
-		end
-		if not REMapsTester then
-			table.insert(REMapsHolder, REFDatabase[j]["MapName"]);
+		else
+			if RERatedDrop ~= nil then
+				if REFDatabase[j]["IsRated"] == RERatedDrop then
+					REFlex_Tab4ShowI(j);
+				end
+			else
+				REFlex_Tab4ShowI(j);
+			end
 		end
 	end
 	table.sort(REMapsHolder);
@@ -1063,6 +1279,7 @@ function REFlex_Tab4Show()
 		REWins, RELosses = REFlex_WinLoss(RERatedDrop, RETalentTab, REMapsHolder[j]); 
 		REUsed = REUsed + 1;
 
+		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j]:Show();
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Title"]:SetText("- " .. REFlex_ShortMap(REMapsHolder[j]) .. " -");
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Wins"]:SetText(REWins);
 		_G["REFlex_MainTab_Tab4_ScoreHolder" .. j .. "_Lose"]:SetText(RELosses);
@@ -1091,6 +1308,10 @@ function REFlex_Tab4Hide()
 	REFlex_MainTab_MsgGuild:Show(); 
 	REFlex_MainTab_MsgParty:Show();
 	REFlex_MainTab:SetSize(655, 502);
+end
+
+function REFlex_ShowBGDetails(DatabaseID)
+	-- TODO
 end
 
 function REFlex_BGEnd()
@@ -1264,14 +1485,74 @@ function REFlex_BGEnd()
 		end
 		print("\n");
 
-		local REBGData = { MapName=REMap, Damage=REdamageDone, Healing=REhealingDone, KB=REkillingBlows, HK=REhonorKills, Honor=REhonorGained, TalentSet=RETalentGroup, Winner=REWinSide, PlayersNum=REBGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=REBGMinutes, DurationSec=REBGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=REBGRating, RatingChange=REBGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=REPlaceKB, PlaceHK=REPlaceHK, PlaceHonor=REPlaceHonor, PlaceDamage=REPlaceDamage, PlaceHealing=REPlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
+		local REBGData = { DataVersion=REDataVersion, MapName=REMap, Damage=REdamageDone, Healing=REhealingDone, KB=REkillingBlows, HK=REhonorKills, Honor=REhonorGained, TalentSet=RETalentGroup, Winner=REWinSide, PlayersNum=REBGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=REBGMinutes, DurationSec=REBGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=REBGRating, RatingChange=REBGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=REPlaceKB, PlaceHK=REPlaceHK, PlaceHonor=REPlaceHonor, PlaceDamage=REPlaceDamage, PlaceHealing=REPlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
 		table.insert(REFDatabase, REBGData);			
 	end
 end
 
 function REFlex_UpdateMiniBar()
 	if RESecondTimeMiniBar ~= true then
-		REFlex_MiniBar:Show();
+		if REMiniBarPluginsCount ~= nil then
+			for i=1, REMiniBarPluginsCount do
+				_G["REFlex_MiniBar" .. i]:Hide();
+			end
+		end
+
+		REMiniBarPluginsID = {};
+		REMiniBarPluginsCount = 0;
+		local i = 1;
+		local RESecondLineID = 0;
+		local REFirstLineID = 0;
+
+		for j=1, #REFSettings["MiniBarOrder"] do
+			if REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]] == 1 then
+				if i ~= 1 then
+					CreateFrame("Frame", "REFlex_MiniBar" .. i, _G["REFlex_MiniBar" .. REFirstLineID], "REFlex_MiniBar_Cell");
+					_G["REFlex_MiniBar" .. i]:Show();
+					_G["REFlex_MiniBar" .. i]:ClearAllPoints();
+					_G["REFlex_MiniBar" .. i]:SetPoint("LEFT", _G["REFlex_MiniBar" .. REFirstLineID], "RIGHT", -10 , 0);
+					_G["REFlex_MiniBar" .. i]:SetScale(REFSettings["MiniBarScale"]);
+					REFirstLineID = i;
+				else
+					CreateFrame("Frame", "REFlex_MiniBar" .. i, UIParent, "REFlex_MiniBar_Cell_Prime");
+					_G["REFlex_MiniBar" .. i]:Show();
+					_G["REFlex_MiniBar" .. i]:ClearAllPoints();
+					_G["REFlex_MiniBar" .. i]:SetPoint("LEFT", REFSettings["MiniBarX"], REFSettings["MiniBarY"]);
+					_G["REFlex_MiniBar" .. i]:SetScale(REFSettings["MiniBarScale"]);
+					REFirstLineID = i;
+				end
+				_G["REFlex_MiniBar" .. i]:Show();
+
+				REMiniBarPluginsID[REFSettings["MiniBarOrder"][j]] = i;
+				i = i + 1;
+			end
+		end
+		for j=1, #REFSettings["MiniBarOrder"] do
+			if REFSettings["MiniBarVisible"][REFSettings["MiniBarOrder"][j]] == 2 then 
+				if REMiniBarSecondLineRdy then
+					CreateFrame("Frame", "REFlex_MiniBar" .. i, _G["REFlex_MiniBar" .. RESecondLineID], "REFlex_MiniBar_Cell");
+					_G["REFlex_MiniBar" .. i]:Show();
+					_G["REFlex_MiniBar" .. i]:ClearAllPoints();
+					_G["REFlex_MiniBar" .. i]:SetPoint("LEFT", _G["REFlex_MiniBar" .. RESecondLineID], "RIGHT", -10 , 0);
+					_G["REFlex_MiniBar" .. i]:SetScale(REFSettings["MiniBarScale"]);
+					RESecondLineID = i;
+				else
+					CreateFrame("Frame", "REFlex_MiniBar" .. i, REFlex_MiniBar1, "REFlex_MiniBar_Cell");
+					_G["REFlex_MiniBar" .. i]:Show();
+					_G["REFlex_MiniBar" .. i]:ClearAllPoints();
+					_G["REFlex_MiniBar" .. i]:SetPoint("TOP", REFlex_MiniBar1, "BOTTOM", 0 , 10);
+					_G["REFlex_MiniBar" .. i]:SetScale(REFSettings["MiniBarScale"]);
+					REMiniBarSecondLineRdy = true;
+					RESecondLineID = i;
+				end
+				_G["REFlex_MiniBar" .. i]:Show();
+
+				REMiniBarPluginsID[REFSettings["MiniBarOrder"][j]] = i;
+				i = i + 1;
+			end
+		end
+
+		REMiniBarPluginsCount = i - 1;
 		REMPlayerName = GetUnitName("player");
 		RESecondTimeMiniBar = true;
 	end
@@ -1285,12 +1566,12 @@ function REFlex_UpdateMiniBar()
 	end
 
 	local REMBGPlayers = GetNumBattlefieldScores();
-	local REMMaxKB, REMMaxHK, REMMaxDamage, REMMaxHealing = 0, 0, 0, 0;
-	local _, REMkillingBlows, REMhonorKills, _, _, _, _, _, _, REMdamageDone, REMhealingDone = GetBattlefieldScore(REMPlayerID);
+	local REMMaxKB, REMMaxHK, REMMaxDamage, REMMaxHealing, REMMaxDeaths, REMMaxHonorGained = 0, 0, 0, 0, 0, 0;
+	local _, REMkillingBlows, REMhonorKills, REMdeaths, REMhonorGained, _, _, _, _, REMdamageDone, REMhealingDone = GetBattlefieldScore(REMPlayerID);
 
 	for j=1, REMBGPlayers do
 		if j ~= REMPlayerID then
-			local _, killingBlowsTemp, honorKillsTemp, _, _, _, _, _, _, damageDoneTemp, healingDoneTemp = GetBattlefieldScore(j);
+			local _, killingBlowsTemp, honorKillsTemp, deathsTemp, honorGainedTemp, _, _, _, _, damageDoneTemp, healingDoneTemp = GetBattlefieldScore(j);
 			if REMMaxKB < killingBlowsTemp then
 				REMMaxKB = killingBlowsTemp;
 			end
@@ -1303,6 +1584,12 @@ function REFlex_UpdateMiniBar()
 			if REMMaxHealing < healingDoneTemp then
 				REMMaxHealing = healingDoneTemp;
 			end
+			if REMMaxDeaths < deathsTemp then
+				REMMaxDeaths = deathsTemp;
+			end
+			if REMMaxHonorGained < honorGainedTemp then
+				REMMaxHonorGained = honorGainedTemp;
+			end
 		end
 	end
 
@@ -1310,78 +1597,111 @@ function REFlex_UpdateMiniBar()
 	local REMHKD = REMhonorKills - REMMaxHK;
 	local REMDamageD = REMdamageDone - REMMaxDamage;
 	local REMHealingD = REMhealingDone - REMMaxHealing;
-
-	if REMKBD > 0 then
-		REMKBD = "|cFF00ff00+" .. REMKBD .. "|r"
-	elseif REMKBD < 0 then
-		REMKBD = "|cFFFF141D" .. REMKBD .. "|r"
-	end
-	if REMHKD > 0 then
-		REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
-	elseif REMHKD < 0 then
-		REMHKD = "|cFFFF141D" .. REMHKD .. "|r"
-	end
-	if REMDamageD > 0 then
-		if REMDamageD >= 1000000 then
-			REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
-		else
-			REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
-		end
-	elseif REMDamageD < 0 then
-		if REMDamageD <= -1000000 then
-			REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
-		else
-			REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
-		end
-	end
-	if REMHealingD > 0 then
-		if REMHealingD >= 1000000 then
-			REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
-		else
-			REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
-		end
-	elseif REMHealingD < 0 then
-		if REMHealingD <= -1000000 then
-			REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
-		else
-			REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
-		end
+	local REMDeathsD = REMdeaths - REMMaxDeaths;
+	local REMHonorD = REMhonorGained - REMMaxHonorGained;
+	if REMdeaths ~= 0 then
+		REMKDRatio = REFlex_Round(REMkillingBlows/REMdeaths, 2);
+	else
+		REMKDRatio = REMkillingBlows;
 	end
 
-	REFlex_MiniBar_KB2:SetText(REMkillingBlows .. " (" .. REMKBD .. ")");
-	REFlex_MiniBar_HK2:SetText(REMhonorKills .. " (" .. REMHKD .. ")");
-	if REMdamageDone > 1000000 then
-		REFlex_MiniBar_Damage2:SetText(REFlex_NumberClean(REMdamageDone, 2) .. " (" .. REMDamageD .. ")");
-	else
-		REFlex_MiniBar_Damage2:SetText(REFlex_NumberClean(REMdamageDone, 0) .. " (" .. REMDamageD .. ")");
-	end
-	if REMhealingDone > 1000000 then
-		REFlex_MiniBar_Healing2:SetText(REFlex_NumberClean(REMhealingDone, 2) .. " (" .. REMHealingD .. ")");
-	else
-		REFlex_MiniBar_Healing2:SetText(REFlex_NumberClean(REMhealingDone, 0) .. " (" .. REMHealingD .. ")");
+	for j=1, #REFSettings["MiniBarOrder"] do
+		if REMiniBarPluginsID[REFSettings["MiniBarOrder"][j]] ~= nil then
+			if REFSettings["MiniBarOrder"][j] == "KillingBlows" then
+				if REMKBD > 0 then
+					REMKBD = "|cFF00ff00+" .. REMKBD .. "|r"
+				elseif REMKBD < 0 then
+					REMKBD = "|cFFFF141D" .. REMKBD .. "|r"
+				end
+
+				REMiniBarLabel = "KB:";
+				REMiniBarValue = REMkillingBlows .. " (" .. REMKBD .. ")";
+			elseif REFSettings["MiniBarOrder"][j] == "HonorKills" then
+				if REMHKD > 0 then
+					REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
+				elseif REMHKD < 0 then
+					REMHKD = "|cFFFF141D" .. REMHKD .. "|r"
+				end
+
+				REMiniBarLabel = "HK:";
+				REMiniBarValue = REMhonorKills .. " (" .. REMHKD .. ")";
+			elseif REFSettings["MiniBarOrder"][j] == "Damage" then
+				if REMDamageD > 0 then
+					if REMDamageD >= 1000000 then
+						REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
+					else
+						REMDamageD = "|cFF00ff00+" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
+					end
+				elseif REMDamageD < 0 then
+					if REMDamageD <= -1000000 then
+						REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 2) .. "|r"
+					else
+						REMDamageD = "|cFFFF141D" .. REFlex_NumberClean(REMDamageD, 0) .. "|r"
+					end
+				end
+
+				REMiniBarLabel = "Dam:";
+				if REMdamageDone > 1000000 then
+					REMiniBarValue = REFlex_NumberClean(REMdamageDone, 2) .. " (" .. REMDamageD .. ")";
+				else
+					REMiniBarValue = REFlex_NumberClean(REMdamageDone, 0) .. " (" .. REMDamageD .. ")";
+				end
+			elseif REFSettings["MiniBarOrder"][j] == "Healing" then
+				if REMHealingD > 0 then
+					if REMHealingD >= 1000000 then
+						REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
+					else
+						REMHealingD = "|cFF00ff00+" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
+					end
+				elseif REMHealingD < 0 then
+					if REMHealingD <= -1000000 then
+						REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 2) .. "|r"
+					else
+						REMHealingD = "|cFFFF141D" .. REFlex_NumberClean(REMHealingD, 0) .. "|r"
+					end
+				end
+
+				REMiniBarLabel = "Hea:";
+				if REMhealingDone > 1000000 then
+					REMiniBarValue = REFlex_NumberClean(REMhealingDone, 2) .. " (" .. REMHealingD .. ")";
+				else
+					REMiniBarValue = REFlex_NumberClean(REMhealingDone, 0) .. " (" .. REMHealingD .. ")";
+				end
+			elseif REFSettings["MiniBarOrder"][j] == "Deaths" then
+				if REMDeathsD > 0 then
+					REMDeathsD = "|cFFFF141D+" .. REMDeathsD .. "|r"
+				elseif REMDeathsD < 0 then
+					REMDeathsD = "|cFF00ff00" .. REMDeathsD .. "|r"
+				end
+
+				REMiniBarLabel = "Dea:";
+				REMiniBarValue = REMdeaths .. " (" .. REMDeathsD .. ")";
+			elseif REFSettings["MiniBarOrder"][j] == "KDRatio" then
+				REMiniBarLabel = "K/D:";
+				if REMKDRatio >= 1 then
+					REMiniBarValue = "|cFF00ff00" .. REMKDRatio .. "|r";
+				else
+					REMiniBarValue = "|cFFFF141D" .. REMKDRatio .. "|r";
+				end
+			elseif REFSettings["MiniBarOrder"][j] == "Honor" then
+				if REMHonorD > 0 then
+					REMHonorD = "|cFF00ff00+" .. REMHonorD .. "|r"
+				elseif REMHonorD < 0 then
+					REMHonorD = "|cFFFF141D" .. REMHonorD .. "|r"
+				end
+
+				REMiniBarLabel = "Hon:";
+				REMiniBarValue = REMhonorGained .. " (" .. REMHonorD .. ")";
+			end
+
+			_G["REFlex_MiniBar" .. REMiniBarPluginsID[REFSettings["MiniBarOrder"][j]] .. "_Label"]:SetText(REMiniBarLabel);
+			_G["REFlex_MiniBar" .. REMiniBarPluginsID[REFSettings["MiniBarOrder"][j]] .. "_Value"]:SetText(REMiniBarValue);
+		end
 	end
 end
 
 function SlashCmdList.REFLEX(msg)
-	if msg == "" then
-		print("\124cFF74D06C[REFlex]\124r");
-		print("/ref main - " .. L["Show main window"])
-		print("/ref minibar - " .. L["Show battleground minibar"])
-	elseif msg == "main" then
-		REFlex_MinimapButtonClick();
-	elseif msg == "minibar" then
-		local Visible = REFlex_MiniBar:IsVisible();
-		local _, REZoneType = IsInInstance();
-
-		if REZoneType == "pvp" then	
-			if Visible ~= 1 then
-				REFlex_MiniBar:Show();
-			else
-				REFlex_MiniBar:Hide();
-			end
-		else
-			print(L["Minibar works only on Battlegrounds"])
-		end
-	end
+	--TODO
+	REFlex_MinimapButtonClick();
 end
 -- ***
