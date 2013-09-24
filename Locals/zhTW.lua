@@ -64,8 +64,8 @@ REFlexLocale:CreateLocaleTable({
 	["Show minimap button"] = "\233\161\175\231\164\186\229\176\143\229\156\176\229\156\150\230\140\137\233\136\149", -- Needs review
 	["Show place instead difference of score"] = "Show place instead difference of score", -- Requires localization
 	["Show queues"] = "Show queues", -- Requires localization
-	["Spec 1"] = "Spec 1", -- Requires localization
-	["Spec 2"] = "Spec 2", -- Requires localization
+	["Spec 1"] = "\229\164\169\232\179\1661", -- Needs review
+	["Spec 2"] = "\229\164\169\232\179\1662", -- Needs review
 	Subtlety = "Subtlety", -- Requires localization
 	Survival = "Survival", -- Requires localization
 	Top = "Top", -- Requires localization

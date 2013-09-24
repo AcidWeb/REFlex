@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 9;
-RE.AddonVersion = "v0.9.2";
-RE.AddonVersionCheck = 92;
+RE.AddonVersion = "v0.9.3";
+RE.AddonVersionCheck = 93;
 
 RE.Debug = false;
 
@@ -660,6 +660,8 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_LoadLDB();
 		REFlex_UpdateLDB();
 		REFlex_SettingsReload();
+
+		RegisterAddonMessagePrefix("REFlex");
 		SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
 
 		self:UnregisterEvent("ADDON_LOADED");
