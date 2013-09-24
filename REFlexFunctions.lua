@@ -96,7 +96,7 @@ function REFlex_GUI_ModuleChangeBarOrder(ModuleName, OldOrder, NewOrder)
 end
 
 function REFlex_PVPStatsCompleting()
-	local _, _, REToday = CalendarGetDate();
+	local REToday = date("%d");
 
 	if REToday ~= REFSettings["LastDay"] then
 		REFSettings["LastDay"] = REToday;
@@ -145,6 +145,22 @@ function REFlex_ShortTime(TimeToShort)
 	end
 
 	return TimeMin .. ":" .. TimeSec;
+end
+
+function REFlex_DurationShort(TimeRaw, Mode)
+	local TimeSec = math.floor(TimeRaw % 60);
+	local TimeMin = math.floor(TimeRaw / 60);
+	if TimeSec < 10 then
+		TimeSec = "0" .. TimeSec;
+	end
+
+	if Mode == "M" then
+		return TimeSec;
+	elseif Mode == "S" then
+		return TimeMin;
+	else
+		return TimeMin .. ":" .. TimeSec;	
+	end
 end
 
 function REFlex_NumberClean(Number, Round)
@@ -1019,17 +1035,21 @@ function REFlex_TableClick(TableName, column)
 end
 
 function REFlex_FindTab7Default()
-	_, RE.Tab7Default["T"]["m"], RE.Tab7Default["T"]["d"], RE.Tab7Default["T"]["y"] = CalendarGetDate();
-	_, RE.Tab7Search["T"]["m"], RE.Tab7Search["T"]["d"], RE.Tab7Search["T"]["y"] = CalendarGetDate();
+	RE.Tab7Default["T"]["d"] = tonumber(date("%d"));
+	RE.Tab7Default["T"]["m"] = tonumber(date("%m"));
+	RE.Tab7Default["T"]["y"] = tonumber(date("%Y"));
+	RE.Tab7Search["T"]["d"] = tonumber(date("%d"));
+	RE.Tab7Search["T"]["m"] = tonumber(date("%m"));
+	RE.Tab7Search["T"]["y"] = tonumber(date("%Y"));
 
 	for i=1, #REFDatabase do
 		if (REFSettings["OnlyNew"] == false and REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil) or (REFSettings["OnlyNew"] == true and REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil and REFDatabase[i]["Season"] == RE.CurrentSeason) then
-			RE.Tab7Default["F"]["m"] = tonumber(REFDatabase[i]["TimeMo"]);
-			RE.Tab7Default["F"]["d"] = tonumber(REFDatabase[i]["TimeDa"]);
-			RE.Tab7Default["F"]["y"] = tonumber(REFDatabase[i]["TimeYe"]);
-			RE.Tab7Search["F"]["m"] = tonumber(REFDatabase[i]["TimeMo"]);
-			RE.Tab7Search["F"]["d"] = tonumber(REFDatabase[i]["TimeDa"]);
-			RE.Tab7Search["F"]["y"] = tonumber(REFDatabase[i]["TimeYe"]);
+			RE.Tab7Default["F"]["m"] = tonumber(date("%m", REFDatabase[i]["TimeRaw"]));
+			RE.Tab7Default["F"]["d"] = tonumber(date("%d", REFDatabase[i]["TimeRaw"]));
+			RE.Tab7Default["F"]["y"] = tonumber(date("%Y", REFDatabase[i]["TimeRaw"]));
+			RE.Tab7Search["F"]["m"] = tonumber(date("%m", REFDatabase[i]["TimeRaw"]));
+			RE.Tab7Search["F"]["d"] = tonumber(date("%d", REFDatabase[i]["TimeRaw"]));
+			RE.Tab7Search["F"]["y"] = tonumber(date("%Y", REFDatabase[i]["TimeRaw"]));
 			break;
 		end
 	end
@@ -1499,10 +1519,12 @@ function REFlex_SendStats()
 		REDataString = REPlayerClass .. ";";
 
 		local REBGWin, REBGLoss, REArenaWin, REArenaLoss = 0, 0, 0, 0 ;
-		local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
+		local RETimeDay = tonumber(date("%d"));
+		local RETimeMonth = tonumber(date("%m"));
+		local RETimeYear = tonumber(date("%Y"));
 		local REDatabaseItems, REDatabaseAItems = #REFDatabase, #REFDatabaseA;
 		for i=1, #REFDatabase do
-			if tonumber(REFDatabase[REDatabaseItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabase[REDatabaseItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabase[REDatabaseItems]["TimeYe"]) ~= RETimeYear then
+			if tonumber(date("%d", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeDay or tonumber(date("%m", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeMonth or tonumber(date("%Y", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeYear then
 				break;
 			end
 
@@ -1516,7 +1538,7 @@ function REFlex_SendStats()
 		end
 
 		for i=1, #REFDatabaseA do
-			if tonumber(REFDatabaseA[REDatabaseAItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabaseA[REDatabaseAItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabaseA[REDatabaseAItems]["TimeYe"]) ~= RETimeYear then
+			if tonumber(date("%d", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeDay or tonumber(date("%m", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeMonth or tonumber(date("%Y", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeYear then
 				break;
 			end
 

@@ -131,11 +131,13 @@ end
 
 function REFlex_LDBTooltip(self)
 	local REBGWin, REBGLoss, REArenaWin, REArenaLoss, REKBTotal, REHKTotal, REHealingTotal, REDamageTotal, REKBTop, REHKTop, REHealingTop, REDamageTop = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-	local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
+	local RETimeDay = tonumber(date("%d"));
+	local RETimeMonth = tonumber(date("%m"));
+	local RETimeYear = tonumber(date("%Y"));
 	local REDatabaseItems, REDatabaseAItems = #REFDatabase, #REFDatabaseA;
 
 	for i=1, #REFDatabase do
-		if tonumber(REFDatabase[REDatabaseItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabase[REDatabaseItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabase[REDatabaseItems]["TimeYe"]) ~= RETimeYear then
+		if tonumber(date("%d", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeDay or tonumber(date("%m", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeMonth or tonumber(date("%Y", REFDatabase[REDatabaseItems]["TimeRaw"])) ~= RETimeYear then
 			break;
 		end
 
@@ -165,7 +167,7 @@ function REFlex_LDBTooltip(self)
 	end
 
 	for i=1, #REFDatabaseA do
-		if tonumber(REFDatabaseA[REDatabaseAItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabaseA[REDatabaseAItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabaseA[REDatabaseAItems]["TimeYe"]) ~= RETimeYear then
+		if tonumber(date("%d", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeDay or tonumber(date("%m", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeMonth or tonumber(date("%Y", REFDatabaseA[REDatabaseAItems]["TimeRaw"])) ~= RETimeYear then
 			break;
 		end
 

@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 17;
-RE.AddonVersion = "v0.9.7";
-RE.AddonVersionCheck = 970;
+RE.AddonVersion = "v0.9.7.1";
+RE.AddonVersionCheck = 971;
 
 RE.Debug = 0;
 
@@ -430,9 +430,7 @@ function REFlex_OnEvent(self,Event,...)
 			print("\124cFF74D06C[REFlex]\124r " .. RESender .. " - " .. REMessage);
 		end
 		if tonumber(REMessage) ~= nil then
-			if RESender == "Livarax" or RESender == "Livarax-Karazhan" then
-				print("\124cFF74D06C[REFlex]\124r You played with REFlex author :-) FOR THE HORDE!");
-			elseif tonumber(REMessage) > RE.AddonVersionCheck and RE.FoundNewVersion == false then
+			if tonumber(REMessage) > RE.AddonVersionCheck and RE.FoundNewVersion == false then
 				print("\124cFF74D06C[REFlex]\124r " .. L["New version released!"]);
 				RE.FoundNewVersion = true;
 			end
@@ -693,26 +691,33 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 17 then -- 0.9.7.1	
+			REFlex_Update17();	
 		elseif REFSettings["Version"] == 16 then -- 0.9.6.2
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 15 then -- 0.9.6
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
 			REFlex_Update13();
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
 			REFlex_Update1112();	
 			REFlex_Update13();
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFlex_Update10();	
 			REFlex_Update1112();
@@ -720,6 +725,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
 			REFlex_Update89();
 			REFlex_Update10();
@@ -728,6 +734,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 7 then -- 0.9
 			REFlex_Update7();
 			REFlex_Update89();
@@ -737,6 +744,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
 			REFlex_Update6();	
 			REFlex_Update7();
@@ -747,6 +755,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
 			REFlex_UpdateOld();	
 			REFlex_Update6();
@@ -758,6 +767,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update14();
 			REFlex_Update15();
 			REFlex_Update16();
+			REFlex_Update17();
 		end
 		REFSettings["Version"] = RE.DataVersion;
 		---
@@ -1245,11 +1255,11 @@ end
 function REFlex_ScoreOnClick(Channel)
 	local REBGRated = IsRatedBattleground();
 	if REBGRated then
-		SendChatMessage("[REFlex] - " .. RE.Map .. " - " .. WIN .. ": " .. REWinSide .. " - " .. RE.BGMinutes .. ":" .. RE.BGSeconds .. " - " .. RATING .. ": " .. RE.BGRatingChange, Channel ,nil ,nil);
+		SendChatMessage("[REFlex] - " .. RE.Map .. " - " .. WIN .. ": " .. REWinSide .. " - " .. REFlex_DurationShort(RE.BGTimeRaw) .. " - " .. RATING .. ": " .. RE.BGRatingChange, Channel ,nil ,nil);
 		SendChatMessage("<KB> " .. RE.killingBlows .. " (" .. RE.PlaceKB .. "/" .. RE.BGPlayers .. ") - <HK> " .. RE.honorKills .. " (" .. RE.PlaceHK .. "/" .. RE.BGPlayers .. ")", Channel ,nil ,nil);
 		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(RE.damageDone) .. " (" .. RE.PlaceDamage .. "/" .. RE.BGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(RE.healingDone) .. " (" .. RE.PlaceHealing .. "/" .. RE.BGPlayers .. ")", Channel ,nil ,nil);
 	else
-		SendChatMessage("[REFlex] - " .. RE.Map .. " - " .. WIN .. ": " .. REWinSide .. " - " .. RE.BGMinutes .. ":" .. RE.BGSeconds,Channel ,nil ,nil);
+		SendChatMessage("[REFlex] - " .. RE.Map .. " - " .. WIN .. ": " .. REWinSide .. " - " .. REFlex_DurationShort(RE.BGTimeRaw),Channel ,nil ,nil);
 		SendChatMessage("<KB> " .. RE.killingBlows .. " (" .. RE.PlaceKB .. "/" .. RE.BGPlayers .. ") - <HK> " .. RE.honorKills .. " (" .. RE.PlaceHK .. "/" .. RE.BGPlayers .. ") - <H> " .. RE.honorGained .. " (" .. RE.PlaceHonor .. "/" .. RE.BGPlayers .. ")", Channel ,nil ,nil);
 		SendChatMessage("<" .. DAMAGE .. "> " .. REFlex_NumberClean(RE.damageDone) .. " (" .. RE.PlaceDamage .. "/" .. RE.BGPlayers .. ") - <" .. SHOW_COMBAT_HEALING .. "> " .. REFlex_NumberClean(RE.healingDone) .. " (" .. RE.PlaceHealing .. "/" .. RE.BGPlayers .. ")", Channel ,nil ,nil);
 	end
@@ -1391,7 +1401,7 @@ function REFlex_ExportTabShow()
 		for i=1, #REFDatabase do
 			if RERated == nil then
 				if (REFDatabase[i]["TalentSet"] == RESpec and RESpec ~= nil) or RESpec == nil then
-					RELine =  "\"" .. REFDatabase[i]["TimeHo"] .. ":" .. REFDatabase[i]["TimeMi"] .. "\";\"" .. REFDatabase[i]["TimeDa"] .. "." .. REFDatabase[i]["TimeMo"] .. "." .. REFDatabase[i]["TimeYe"] .. "\";" .. tonumber(REFDatabase[i]["TimeHo"]) .. ";" .. tonumber(REFDatabase[i]["TimeMi"]) .. ";" .. tonumber(REFDatabase[i]["TimeDa"]) .. ";" .. tonumber(REFDatabase[i]["TimeMo"]) .. ";" .. tonumber(REFDatabase[i]["TimeYe"]) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFDatabase[i]["DurationMin"]) .. ";" .. tonumber(REFDatabase[i]["DurationSec"]) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
+					RELine =  "\"" .. date("%H", REFDatabase[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabase[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabase[i]["TimeRaw"]) .. "." .. date("%m", REFDatabase[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabase[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabase[i]["TimeRaw"])) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "M")) .. ";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "S")) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
 					if REFDatabase[i]["MapInfo"] == "AlteracValley" then
 						RELine = RELine .. REFDatabase[i]["SpecialFields"][3] .. ";" .. REFDatabase[i]["SpecialFields"][4] .. ";0;0;" .. REFDatabase[i]["SpecialFields"][1] .. ";" .. REFDatabase[i]["SpecialFields"][2] .. ";";
 					elseif REFDatabase[i]["MapInfo"] == "WarsongGulch" or REFDatabase[i]["MapInfo"] == "TwinPeaks" then
@@ -1439,13 +1449,13 @@ function REFlex_ExportTabShow()
 					else
 						REMMRChange = REFDatabase[i]["MMRChange"];
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. REFDatabase[i]["PlayersNum"] .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. tostring(REFDatabase[i]["IsRated"]) .. "\";\"" .. RERatingChange .. "\";" .. REAllianceRating .. ";" .. REHordeRating .. ";" .. REHordeAverageMMR .. ";" .. REAllianceAverageMMR .. ";" .. REMMR .. ";" .. REMMRChange;
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. tostring(REFDatabase[i]["IsRated"]) .. "\";\"" .. RERatingChange .. "\";" .. REAllianceRating .. ";" .. REHordeRating .. ";" .. REHordeAverageMMR .. ";" .. REAllianceAverageMMR .. ";" .. REMMR .. ";" .. REMMRChange;
 					REExport = REExport .. RELine .. "\n";
 					RELine = "";
 				end
 			elseif REFDatabase[i]["IsRated"] == RERated and RERated == false then
 				if (REFDatabase[i]["TalentSet"] == RESpec and RESpec ~= nil) or RESpec == nil then
-					RELine =  "\"" .. REFDatabase[i]["TimeHo"] .. ":" .. REFDatabase[i]["TimeMi"] .. "\";\"" .. REFDatabase[i]["TimeDa"] .. "." .. REFDatabase[i]["TimeMo"] .. "." .. REFDatabase[i]["TimeYe"] .. "\";" .. tonumber(REFDatabase[i]["TimeHo"]) .. ";" .. tonumber(REFDatabase[i]["TimeMi"]) .. ";" .. tonumber(REFDatabase[i]["TimeDa"]) .. ";" .. tonumber(REFDatabase[i]["TimeMo"]) .. ";" .. tonumber(REFDatabase[i]["TimeYe"]) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFDatabase[i]["DurationMin"]) .. ";" .. tonumber(REFDatabase[i]["DurationSec"]) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
+					RELine =  "\"" .. date("%H", REFDatabase[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabase[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabase[i]["TimeRaw"]) .. "." .. date("%m", REFDatabase[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabase[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabase[i]["TimeRaw"])) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "M")) .. ";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "S")) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
 					if REFDatabase[i]["MapInfo"] == "AlteracValley" then
 						RELine = RELine .. REFDatabase[i]["SpecialFields"][3] .. ";" .. REFDatabase[i]["SpecialFields"][4] .. ";0;0;" .. REFDatabase[i]["SpecialFields"][1].. ";" .. REFDatabase[i]["SpecialFields"][2] .. ";";
 					elseif REFDatabase[i]["MapInfo"] == "WarsongGulch" or REFDatabase[i]["MapInfo"] == "TwinPeaks" then
@@ -1457,13 +1467,13 @@ function REFlex_ExportTabShow()
 					else
 						RELine = RELine .. "0;0;0;0;0;0;";
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. REFDatabase[i]["PlayersNum"] .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"];
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"];
 					REExport = REExport .. RELine .. "\n";
 					RELine = "";
 				end
 			elseif REFDatabase[i]["IsRated"] == RERated and RERated == true then
 				if (REFDatabase[i]["TalentSet"] == RESpec and RESpec ~= nil) or RESpec == nil then
-					RELine =  "\"" .. REFDatabase[i]["TimeHo"] .. ":" .. REFDatabase[i]["TimeMi"] .. "\";\"" .. REFDatabase[i]["TimeDa"] .. "." .. REFDatabase[i]["TimeMo"] .. "." .. REFDatabase[i]["TimeYe"] .. "\";" .. tonumber(REFDatabase[i]["TimeHo"]) .. ";" .. tonumber(REFDatabase[i]["TimeMi"]) .. ";" .. tonumber(REFDatabase[i]["TimeDa"]) .. ";" .. tonumber(REFDatabase[i]["TimeMo"]) .. ";" .. tonumber(REFDatabase[i]["TimeYe"]) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFDatabase[i]["DurationMin"]) .. ";" .. tonumber(REFDatabase[i]["DurationSec"]) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
+					RELine = "\"" .. date("%H", REFDatabase[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabase[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabase[i]["TimeRaw"]) .. "." .. date("%m", REFDatabase[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabase[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabase[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabase[i]["TimeRaw"])) .. ";\"" .. REFDatabase[i]["MapName"] .. "\";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"]), "M") .. ";" .. tonumber(REFlex_DurationShort(REFDatabase[i]["DurationRaw"], "S")) .. ";\"" .. REFDatabase[i]["Winner"] .. "\";" .. REFDatabase[i]["KB"] .. ";" .. REFDatabase[i]["HK"] .. ";" .. REFDatabase[i]["Damage"] .. ";" .. REFDatabase[i]["Healing"] .. ";" .. REFDatabase[i]["Honor"] .. ";" .. REFDatabase[i]["PlaceKB"] .. ";" .. REFDatabase[i]["PlaceHK"] .. ";" .. REFDatabase[i]["PlaceDamage"] .. ";" .. REFDatabase[i]["PlaceHealing"] .. ";" .. REFDatabase[i]["PlaceHonor"] .. ";" .. REFDatabase[i]["PlaceFactionKB"] .. ";" .. REFDatabase[i]["PlaceFactionHK"] .. ";" .. REFDatabase[i]["PlaceFactionDamage"] .. ";" .. REFDatabase[i]["PlaceFactionHealing"] .. ";" .. REFDatabase[i]["PlaceFactionHonor"] .. ";";
 					if REFDatabase[i]["MapInfo"] == "AlteracValley" then
 						RELine = RELine .. REFDatabase[i]["SpecialFields"][3] .. ";" .. REFDatabase[i]["SpecialFields"][4] .. ";0;0;" .. REFDatabase[i]["SpecialFields"][1] .. ";" .. REFDatabase[i]["SpecialFields"][2] .. ";";
 					elseif REFDatabase[i]["MapInfo"] == "WarsongGulch" or REFDatabase[i]["MapInfo"] == "TwinPeaks" then
@@ -1475,7 +1485,7 @@ function REFlex_ExportTabShow()
 					else
 						RELine = RELine .. "0;0;0;0;0;0;";
 					end
-					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. REFDatabase[i]["PlayersNum"] .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. REFDatabase[i]["RatingChange"] .. "\";" .. REFDatabase[i]["AllianceRating"] .. ";" .. REFDatabase[i]["HordeRating"] .. ";";
+					RELine = RELine .. REFDatabase[i]["TalentSet"] .. ";" .. tonumber( REFDatabase[i]["AliianceNum"])+tonumber(REFDatabase[i]["HordeNum"]) .. ";" .. REFDatabase[i]["AliianceNum"] .. ";" .. REFDatabase[i]["HordeNum"] .. ";\"" .. REFDatabase[i]["RatingChange"] .. "\";" .. REFDatabase[i]["AllianceRating"] .. ";" .. REFDatabase[i]["HordeRating"] .. ";";
 					local REHordeAverageMMR, REAllianceAverageMMR, REMMR, REMMRChange;
 					if REFDatabase[i]["HordeMMR"] == nil then
 						REHordeAverageMMR = 0;
@@ -1525,7 +1535,7 @@ function REFlex_ExportTabShow()
 				else
 					REMapName = REFDatabaseA[i]["MapName"];
 				end
-				RELine = "\"" .. REFDatabaseA[i]["TimeHo"] .. ":" .. REFDatabaseA[i]["TimeMi"] .. "\";\"" .. REFDatabaseA[i]["TimeDa"] .. "." .. REFDatabaseA[i]["TimeMo"] .. "." .. REFDatabaseA[i]["TimeYe"] .. "\";" .. tonumber(REFDatabaseA[i]["TimeHo"]) .. ";" .. tonumber(REFDatabaseA[i]["TimeMi"]) .. ";" .. tonumber(REFDatabaseA[i]["TimeDa"]) .. ";" .. tonumber(REFDatabaseA[i]["TimeMo"]) .. ";" .. tonumber(REFDatabaseA[i]["TimeYe"]) .. ";\"" .. REMapName .. "\";" .. tonumber(REFDatabaseA[i]["DurationMin"]) .. ";" .. tonumber(REFDatabaseA[i]["DurationSec"]) .. ";";
+				RELine = "\"" .. date("%H", REFDatabaseA[i]["TimeRaw"]) .. ":" .. date("%M", REFDatabaseA[i]["TimeRaw"]) .. "\";\"" .. date("%d", REFDatabaseA[i]["TimeRaw"]) .. "." .. date("%m", REFDatabaseA[i]["TimeRaw"]) .. "." .. date("%Y", REFDatabaseA[i]["TimeRaw"]) .. "\";" .. tonumber(date("%H", REFDatabaseA[i]["TimeRaw"])) .. ";" .. tonumber(date("%M", REFDatabaseA[i]["TimeRaw"])) .. ";" .. tonumber(date("%d", REFDatabaseA[i]["TimeRaw"])) .. ";" .. tonumber(date("%m", REFDatabaseA[i]["TimeRaw"])) .. ";" .. tonumber(date("%Y", REFDatabaseA[i]["TimeRaw"])) .. ";\"" .. REMapName .. "\";" .. tonumber(REFlex_DurationShort(REFDatabaseA[i]["DurationRaw"], "M")) .. ";" .. tonumber(REFlex_DurationShort(REFDatabaseA[i]["DurationRaw"], "S")) .. ";";
 				if REFDatabaseA[i]["Winner"] == REFDatabaseA[i]["PlayerTeam"] then
 					RELine = RELine .. "true;";
 				else
@@ -2313,7 +2323,7 @@ function REFlex_Tab1Show()
 			local RETempCol = {};
 
 			RETempCol[1] = {
-				["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
+				["value"] = date("%H:%M %d.%m.%Y", REFDatabase[j]["TimeRaw"])
 			}
 			RETempCol[2] = {
 				["value"] = REFDatabase[j]["MapName"],
@@ -2321,7 +2331,7 @@ function REFlex_Tab1Show()
 				["colorargs"] = {REFDatabase[j]["IsRated"],}
 			}
 			RETempCol[3] = {
-				["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+				["value"] = REFlex_DurationShort(REFDatabase[j]["DurationRaw"])
 			}
 			RETempCol[4] = {
 				["value"] = REFDatabase[j]["Winner"],
@@ -2406,13 +2416,13 @@ function REFlex_Tab2Show()
 			if REFDatabase[j]["IsRated"] == false then
 				local RETempCol = {};
 				RETempCol[1] = {
-					["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. REFDatabase[j]["TimeYe"]
+					["value"] = date("%H:%M %d.%m.%Y", REFDatabase[j]["TimeRaw"])
 				}
 				RETempCol[2] = {
 					["value"] = REFDatabase[j]["MapName"]
 				}
 				RETempCol[3] = {
-					["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+					["value"] = REFlex_DurationShort(REFDatabase[j]["DurationRaw"])
 				}
 				RETempCol[4] = {
 					["value"] = REFDatabase[j]["Winner"],
@@ -2493,7 +2503,7 @@ function REFlex_Tab3Show()
 			if REFDatabase[j]["IsRated"] then
 				local RETempCol = {};
 				RETempCol[1] = {
-					["value"] = REFDatabase[j]["TimeHo"] .. ":" .. REFDatabase[j]["TimeMi"] .. " " .. REFDatabase[j]["TimeDa"] .. "." .. REFDatabase[j]["TimeMo"] .. "." .. string.sub(REFDatabase[j]["TimeYe"], 3)
+					["value"] = date("%H:%M %d.%m.%y", REFDatabase[j]["TimeRaw"])
 				}
 				RETempCol[2] = {
 					["value"] = REFlex_ShortMap(REFDatabase[j]["MapName"]),
@@ -2507,7 +2517,7 @@ function REFlex_Tab3Show()
 					["value"] = REFlex_TableRBGRatingMMR("Horde", j)
 				}
 				RETempCol[5] = {
-					["value"] = REFDatabase[j]["DurationMin"] .. ":" .. REFDatabase[j]["DurationSec"]
+					["value"] = REFlex_DurationShort(REFDatabase[j]["DurationRaw"])
 				}
 				RETempCol[6] = {
 					["value"] = REFDatabase[j]["Winner"],
@@ -2607,7 +2617,7 @@ function REFlex_Tab7Show()
 				["value"] = "|cFF" .. RE.ClassColors[RE.Tab7Matrix[RETableI[j]]["Class"]] .. RE.Tab7Matrix[RETableI[j]]["Name"] .. "|r"
 			}
 			RETempCol[2] = {
-				["value"] = REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeDa"] .. "." .. REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeMo"] .. "." .. string.sub(REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeYe"], 3)
+				["value"] = date("%H:%M %d.%m.%y", REFDatabaseA[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeRaw"])
 			}
 			RETempCol[3] = {
 				["value"] = REFlex_Round(((RE.Tab7Matrix[RETableI[j]]["Attendance"]/REBGCount)*100), 0) .. "%  " .. RE.Tab7Matrix[RETableI[j]]["Attendance"] .. " / " .. REBGCount,
@@ -2820,7 +2830,7 @@ function REFlex_Tab5Show()
 		for j=RE.Tab5LastID, #REFDatabaseA do
 			local RETempCol = {};
 			RETempCol[1] = {
-				["value"] = REFDatabaseA[j]["TimeHo"] .. ":" .. REFDatabaseA[j]["TimeMi"] .. " " .. REFDatabaseA[j]["TimeDa"] .. "." .. REFDatabaseA[j]["TimeMo"] .. "." .. string.sub(REFDatabaseA[j]["TimeYe"], 3)
+				["value"] = date("%H:%M %d.%m.%y", REFDatabaseA[j]["TimeRaw"])
 			}
 			RETempCol[2] = {
 				["value"] = REFlex_ShortMap(REFDatabaseA[j]["MapName"]),
@@ -2840,7 +2850,7 @@ function REFlex_Tab5Show()
 				["value"] = REFlex_TableTeamArenaRating(true, j)
 			}
 			RETempCol[7] = {
-				["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
+				["value"] = REFlex_DurationShort(REFDatabaseA[j]["DurationRaw"])
 			}
 			RETempCol[8] = {
 				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
@@ -3466,11 +3476,7 @@ function REFlex_BGEnd()
 		RE.BGPlayers = GetNumBattlefieldScores();
 		local REMyFaction = GetBattlefieldArenaFaction();
 		local REArenaSeason = RE.CurrentSeason;
-		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
-		RE.BGMinutes = math.floor(BGTimeRaw / 60);
-		RE.BGSeconds = math.floor(BGTimeRaw % 60);
-		local RETimeHour, RETimeMinute = GetGameTime();
-		local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
+		RE.BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
 		local RETimeRaw = time();
 		local RESpecialFields = {};
 		local REHordeMMR, REAllianceMMR;
@@ -3491,22 +3497,6 @@ function REFlex_BGEnd()
 				REWinSide = FACTION_HORDE;
 				REWinSidePrint = "\124cFFFF141D" .. FACTION_HORDE;
 			end
-		end
-
-		if RE.BGSeconds < 10 then
-			RE.BGSeconds = "0" .. RE.BGSeconds;
-		end
-		if RETimeHour < 10 then
-			RETimeHour = "0" .. RETimeHour;
-		end
-		if RETimeMinute < 10 then
-			RETimeMinute = "0" .. RETimeMinute;
-		end
-		if RETimeDay < 10 then
-			RETimeDay = "0" .. RETimeDay;
-		end
-		if RETimeMonth < 10 then
-			RETimeMonth = "0" .. RETimeMonth;
 		end
 
 		local REName = "";
@@ -3699,14 +3689,14 @@ function REFlex_BGEnd()
 
 		if REBGRated then
 			print("\n");
-			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. RE.BGMinutes .. ":" .. RE.BGSeconds);
+			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. REFlex_DurationShort(RE.BGTimeRaw));
 			print("\124cFFC5F3BCKB:\124r " .. RE.killingBlows .. " (" .. RE.PlaceKB .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BCH:\124r " .. RE.honorGained);
 			print("\124cFFC5F3BC" .. DAMAGE .. ":\124r " .. REFlex_NumberClean(RE.damageDone) .. " (" .. RE.PlaceDamage .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BC" .. SHOW_COMBAT_HEALING .. ":\124r " .. REFlex_NumberClean(RE.healingDone) .. " (" .. RE.PlaceHealing .. "/" .. RE.BGPlayers .. ")");
 
 			RE.Table9Rdy = nil;
 		else
 			print("\n");
-			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. RE.BGMinutes .. ":" .. RE.BGSeconds);
+			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. REFlex_DurationShort(RE.BGTimeRaw));
 			print("\124cFFC5F3BCKB:\124r " .. RE.killingBlows .. " (" .. RE.PlaceKB .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BCHK:\124r " .. RE.honorKills .. " (" .. RE.PlaceHK .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BCH:\124r " .. RE.honorGained .. " (" .. RE.PlaceHonor .. "/" .. RE.BGPlayers .. ")");
 			print("\124cFFC5F3BC" .. DAMAGE .. ":\124r " .. REFlex_NumberClean(RE.damageDone) .. " (" .. RE.PlaceDamage .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BC" .. SHOW_COMBAT_HEALING .. ":\124r " .. REFlex_NumberClean(RE.healingDone) .. " (" .. RE.PlaceHealing .. "/" .. RE.BGPlayers .. ")");
 		end
@@ -3724,7 +3714,7 @@ function REFlex_BGEnd()
 		end
 		print("\n");
 
-		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, Season=REArenaSeason,MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, PlayersNum=RE.BGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=RE.BGMinutes, DurationSec=RE.BGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
+		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, Season=REArenaSeason,MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationRaw=RE.BGTimeRaw, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
 		table.insert(REFDatabase, REBGData);
 	end
 	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");	
@@ -3743,31 +3733,7 @@ function REFlex_ArenaEnd()
 		local REArenaSeason = RE.CurrentSeason;
 		local REBGPlayers = GetNumBattlefieldScores();
 		local BGTimeRaw = math.floor(GetBattlefieldInstanceRunTime() / 1000);
-		local REBGMinutes = math.floor(BGTimeRaw / 60);
-		local REBGSeconds = math.floor(BGTimeRaw % 60);
-		local RETimeHour, RETimeMinute = GetGameTime();
-		local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
 		local RETimeRaw = time();
-
-		if REBGSeconds < 10 then
-			REBGSeconds = "0" .. REBGSeconds;
-		end
-
-		if RETimeHour < 10 then
-			RETimeHour = "0" .. RETimeHour;
-		end
-
-		if RETimeMinute < 10 then
-			RETimeMinute = "0" .. RETimeMinute;
-		end
-
-		if RETimeDay < 10 then
-			RETimeDay = "0" .. RETimeDay;
-		end
-
-		if RETimeMonth < 10 then
-			RETimeMonth = "0" .. RETimeMonth;
-		end
 
 		local REGreenTeamName, REGreenTeamRating, REGreenNewTeamRating, REGreenMMR = GetBattlefieldTeamInfo(0);
 		local REGoldTeamName, REGoldTeamRating, REGoldNewTeamRating, REGoldMMR = GetBattlefieldTeamInfo(1);
@@ -3814,20 +3780,8 @@ function REFlex_ArenaEnd()
 		RE.SecondTime = true;
 		RE.ArenaReload = true;
 
-		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationMin=REBGMinutes, DurationSec=REBGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
+		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationRaw=BGTimeRaw, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
 		table.insert(REFDatabaseA, REBGData);
-
-		--RE.ArenaReloadAlpha = true;
-		--RE.ArenaLastID = RE.ArenaLastID + 1;
-		--REFlex_ArenaTeamGrid(RE.ArenaLastID);
-		
-		--local REEnemyNames, _, _, _, Team, TeamE = REFlex_ArenaTeamHash(RE.ArenaLastID);
-		--local REEnemyTeamID = table.concat(REEnemyNames);
-		--local FriendTeamName = REFDatabaseA[RE.ArenaLastID][Team .. "TeamName"];
-		--local EnemyTeamName = REFDatabaseA[RE.ArenaLastID][TeamE .. "TeamName"]
-
-		--UIErrorsFrame:AddMessage("|cFF00CC00" .. RE.ArenaTeams[REEnemyTeamID]["Win"] .. "|r - |cFFCC0000" .. RE.ArenaTeams[REEnemyTeamID]["Loss"] .. "|r", 1, 1, 1, 5.0);
-		--UIErrorsFrame:AddMessage("* " .. FriendTeamName .. " VS " .. EnemyTeamName .. "*", 1, 1, 1, 5.0);
 	end
 end
 -- ***

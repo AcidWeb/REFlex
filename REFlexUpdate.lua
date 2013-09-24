@@ -3,6 +3,28 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update17()
+	for i=1, #REFDatabase do
+		REFDatabase[i]["DurationSec"] = nil;
+		REFDatabase[i]["DurationMin"] = nil;
+		REFDatabase[i]["TimeDa"] = nil;
+		REFDatabase[i]["TimeMo"] = nil;
+		REFDatabase[i]["TimeHo"] = nil;
+		REFDatabase[i]["TimeMi"] = nil;
+		REFDatabase[i]["TimeYe"] = nil;
+		REFDatabase[i]["PlayersNum"] = nil;
+	end
+	for i=1, #REFDatabaseA do
+		REFDatabaseA[i]["DurationSec"] = nil;
+		REFDatabaseA[i]["DurationMin"] = nil;
+		REFDatabaseA[i]["TimeDa"] = nil;
+		REFDatabaseA[i]["TimeMo"] = nil;
+		REFDatabaseA[i]["TimeHo"] = nil;
+		REFDatabaseA[i]["TimeMi"] = nil;
+		REFDatabaseA[i]["TimeYe"] = nil;
+	end
+end
+
 function REFlex_Update16()
 	for i=1, #REFDatabase do
 		if REFDatabase[i]["RBGHordeTeam"] ~= nil then

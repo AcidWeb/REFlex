@@ -1,9 +1,9 @@
 if GetLocale() ~= "frFR" then return end
 
---Translation by Gromleuh, Nothingz, Sookhaal and Viny
+--Translation by Gromleuh, Nothingz, Sookhaal, Viny and nillia
 REFlexLocale:CreateLocaleTable({
 	Affliction = "Affliction",
-	["Allow sending daily statistics to other guild members"] = "Autoriser l'envoi des statistiques journali\195\168res aux autres membres de la guilde", -- Needs review
+	["Allow sending daily statistics to other guild members"] = "Autoriser l'envoi des statistiques journali\195\168res aux autres membres de la guilde",
 	["A Rating"] = "Classement A",
 	Arcane = "Arcane",
 	["Arena support"] = "Support Ar\195\168ne",
@@ -29,14 +29,14 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "Feu",
 	Frost = "Givre",
 	Fury = "Furie",
-	["Guild query"] = "Guild query", -- Requires localization
+	["Guild query"] = "Synchro guilde",
 	["Hardest compositions"] = "Compos les plus dures",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Maintenir MAJ dans l'historique de matchs d'ar\195\168ne pour avoir des infobulles d\195\169taill\195\169es",
-	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Hold SHIFT key when browsing rated battleground to see extended tooltips.", -- Requires localization
+	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Garder la touche MAJ appuy\195\169e lors du survol pour voir les informations d\195\169taill\195\169es",
 	Holy = "Sacr\195\169",
 	["Honor Kills"] = "Victoires Honorables",
 	["H Rating"] = "Classement H",
-	["Issue command second time to confirm database wipe"] = "Confirmer l'effacement de la base de donn\195\169es.", -- Needs review
+	["Issue command second time to confirm database wipe"] = "Confirmer l'effacement de la base de donn\195\169es.",
 	["K/D Ratio"] = "K/D Ratio",
 	["Last active"] = "Dernier actif ",
 	Left = "Gauche",
@@ -48,7 +48,7 @@ REFlexLocale:CreateLocaleTable({
 	["New version released!"] = "Nouvelle version !",
 	Old = "Ancien",
 	Place = "Classement",
-	["Player disabled data sharing."] = "Le joueur a d\195\169sactiv\195\169 le partage de donn\195\169es.", -- Needs review
+	["Player disabled data sharing."] = "Le joueur a d\195\169sactiv\195\169 le partage de donn\195\169es.",
 	["Please wait before sending another query."] = "Veuillez attendre avant d'envoyer une autre requ\195\170te.",
 	Protection = "Protection",
 	Rated = "Cot\195\169",
