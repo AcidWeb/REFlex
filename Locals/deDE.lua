@@ -4,12 +4,13 @@ if GetLocale() ~= "deDE" then return end
 REFlexLocale:CreateLocaleTable({
 	["A Rating"] = "A Wertung",
 	Affliction = "Gebrechen",
+	["Allow sending daily statistics to other guild members"] = "Das Senden t\195\164glicher Statistiken zu anderen Gildenmitgliedern zulassen", -- Needs review
 	Arcane = "Arkan",
 	["Are you sure you want to delete this entry?"] = "Bist du sicher, dass du diesen Eintrag l\195\182schen willst?", -- Needs review
 	["Arena support"] = "Arenaunterst\195\188tzung", -- Needs review
 	Arms = "Waffen",
 	Assassination = "Meucheln",
-	Attendance = "Teilnahme", -- Requires review
+	Attendance = "Teilnahme", -- Needs review
 	Balance = "Gleichgewicht",
 	["Bar 1"] = "Bar 1",
 	["Bar 2"] = "Bar 2",
@@ -28,15 +29,14 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "Feuer",
 	Frost = "Frost",
 	Fury = "Furor",
-	["Use only records from current season to calculate statistics"] = "Use only records from current season to calculate statistics", -- Requires localization
 	["H Rating"] = "H Wertung",
 	["Hardest compositions"] = "Schwerste Zusammenstellung",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Halte SHIFT w\195\164hrend des Anschauens von Arenapartien f\195\188r einen erweiterten Tooltip.", -- Needs review
 	Holy = "Heilig",
 	["Honor Kills"] = "Ehrenhafte Todesst\195\182\195\159e",
-	["Issue command second time to confirm database wipe"] = "Kommando wiederholen, um die Datenbank zu l\195\182schen", -- Needs review
+	["Issue command second time to confirm database wipe"] = "Kommando wiederholen, um die Datenbank zu l\195\182schen.", -- Needs review
 	["K/D Ratio"] = "K/D Rate",
-	["Last active"] = "Zuletzt aktiv", -- Requires review
+	["Last active"] = "Zuletzt aktiv", -- Needs review
 	Left = "Links",
 	Map = "Karte",
 	Marksmanship = "Treffsicherheit",
@@ -46,6 +46,8 @@ REFlexLocale:CreateLocaleTable({
 	["New version released!"] = "Neue Version ver\195\182ffentlicht!", -- Needs review
 	Old = "Alt",
 	Place = "Platzierung",
+	["Player disabled data sharing"] = "Spieler hat das Teilen von Daten abgeschaltet.", -- Needs review
+	["Please wait before sending another query."] = "Bitte vor einer erneuten Anfrage warten.", -- Needs review
 	Protection = "Schutz",
 	RECORD = "REKORD",
 	Rated = "Gewertet",
@@ -76,4 +78,5 @@ REFlexLocale:CreateLocaleTable({
 	Unholy = "Unheilig",
 	["Unrated BGs"] = "Ungew Schlachtfelder",
 	["Unrated battlegrounds support"] = "Unterst\195\188tzung Ungew Schlachtfelder", -- Needs review
+	["Use only records from current season to calculate statistics"] = "Nur Daten der aktuellen Saison f\195\188r die Statistik nutzen", -- Needs review
 });

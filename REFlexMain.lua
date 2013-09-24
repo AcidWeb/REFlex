@@ -17,11 +17,11 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 14;
-RE.AddonVersion = "v0.9.5.4";
-RE.AddonVersionCheck = 954;
+RE.DataVersion = 15;
+RE.AddonVersion = "v0.9.6";
+RE.AddonVersionCheck = 960;
 
-RE.Debug = false;
+RE.Debug = 0;
 
 RE.GuildMembers = {};
 RE.ArenaBuilds = {};
@@ -35,6 +35,8 @@ RE.Tab7Search = {["F"] = {["d"] = 1, ["m"] = 1, ["y"] = 2011}, ["T"] = {["d"] = 
 RE.ArenaReload = true;
 RE.BattlegroundReload = true;
 RE.Tab7GuildOnly = false;
+RE.FoundNewVersion = false;
+RE.QueryBlock = false;
 
 RE.Tab1LastID = 0;
 RE.Tab1TableData = {};
@@ -50,7 +52,7 @@ RE.Tab6TableData3 = {};
 RE.Tab7TableData = {};
 RE.ArenaLastID = 0;
 
-RE.Options = {"ShowMinimapButton", "ShowMiniBar", "ShowDetectedBuilds", "ArenaSupport", "RBGSupport", "UNBGSupport", "LDBBGMorph", "LDBCPCap", "LDBHK", "LDBShowPlace", "LDBShowQueues", "LDBShowTotalBG", "LDBShowTotalArena", "OnlyNew"}
+RE.Options = {"ShowMinimapButton", "ShowMiniBar", "ShowDetectedBuilds", "ArenaSupport", "RBGSupport", "UNBGSupport", "LDBBGMorph", "LDBCPCap", "LDBHK", "LDBShowPlace", "LDBShowQueues", "LDBShowTotalBG", "LDBShowTotalArena", "OnlyNew", "AllowQuery"}
 RE.DeleteID = 0;
 RE.PartyArenaCheck = 0;
 RE.MiniBarPluginsCount = 0;
@@ -343,7 +345,7 @@ function REFlex_OnEvent(self,Event,...)
 					RE.ArenaBuilds[REName] = RE.BuildRecognition[RESpellName];
 					local _, RETempClass = UnitClass(REUnitID);
 					if REFSettings["ShowDetectedBuilds"] then
-						UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[RESpellName] .. "\124r", 1, 1, 1, 1.0);
+						UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[RESpellName] .. "\124r", 1, 1, 1, 2.0);
 						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[RESpellName]);
 					end
 				end
@@ -366,7 +368,7 @@ function REFlex_OnEvent(self,Event,...)
 						local _, RETempClass = UnitClass(RECaster);
 						if REFSettings["ShowDetectedBuilds"] then
 							if RE.ClassColors[RETempClass] ~= nil and REName ~= nil and RE.BuildRecognition[REAuraName] ~= nil then 
-								UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[REAuraName] .. "\124r", 1, 1, 1, 1.0);
+								UIErrorsFrame:AddMessage("\124cFF" .. RE.ClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[REAuraName] .. "\124r", 1, 1, 1, 2.0);
 								print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. RE.BuildRecognition[REAuraName]);
 							end
 						end
@@ -407,24 +409,50 @@ function REFlex_OnEvent(self,Event,...)
 		REFlex_UpdateLDB();
 	elseif Event == "CHAT_MSG_ADDON" and ... == "REFlex" then
 		local _, REMessage, _, RESender = ...;
-		if RE.Debug == true then
+		if RE.Debug > 0 then
 			print("\124cFF74D06C[REFlex]\124r " .. RESender .. " - " .. REMessage);
 		end
-		if RESender == "Livarax" or RESender == "Livarax-Karazhan" then
-			print("\124cFF74D06C[REFlex]\124r You played with REFlex author :-) FOR THE HORDE!");
-		elseif tonumber(REMessage) > RE.AddonVersionCheck then
-			REFlex_Frame:UnregisterEvent("CHAT_MSG_ADDON");
-			print("\124cFF74D06C[REFlex]\124r " .. L["New version released!"]);
+		if tonumber(REMessage) ~= nil then
+			if RESender == "Livarax" or RESender == "Livarax-Karazhan" then
+				print("\124cFF74D06C[REFlex]\124r You played with REFlex author :-) FOR THE HORDE!");
+			elseif tonumber(REMessage) > RE.AddonVersionCheck and RE.FoundNewVersion == false then
+				print("\124cFF74D06C[REFlex]\124r " .. L["New version released!"]);
+				RE.FoundNewVersion = true;
+			end
+		else
+			if REMessage == "Query" then
+				SendAddonMessage("REFlex", REFlex_SendStats(), "WHISPER", RESender);
+			else
+				local REMessageEx = {strsplit(";", REMessage)};
+				if REMessageEx[1] == "Block" then
+					print("\124cFF74D06C[REFlex]\124r \124cFF" .. RE.ClassColors[REMessageEx[2]] .. RESender .. "\124r - \124cFFFF0000" .. L["Player disabled data sharing."] .. "\124r");
+				else
+					print("\124cFF74D06C[REFlex]\124r \124cFF" .. RE.ClassColors[REMessageEx[1]] .. RESender .. "\124r - \124cFFC5F3BCA:\124r \124cFF00FF00" .. REMessageEx[2] .. "\124r - \124cFFFF0000" .. REMessageEx[3] .. "\124r \124cFF555555*\124r \124cFFC5F3BCBG:\124r \124cFF00FF00" .. REMessageEx[4] .. "\124r - \124cFFFF0000" .. REMessageEx[5] .. "\124r")
+					print("\124cFF74D06C[REFlex]\124r \124cFF" .. RE.ClassColors[REMessageEx[1]] .. RESender .. "\124r - \124cFFC5F3BCA " .. RATING .. ":\124r " .. REMessageEx[6] .. " (" .. REMessageEx[10] .. ")" .. " / " .. REMessageEx[7] .. " (" .. REMessageEx[11] .. ")" .. " / " .. REMessageEx[8] .. " (" .. REMessageEx[12] .. ")" .. " \124cFF555555*\124r \124cFFC5F3BCBG " .. RATING .. ":\124r " .. REMessageEx[9] .. " (" .. REMessageEx[13] .. ")");
+				end
+			end
 		end
 	elseif Event == "GUILD_ROSTER_UPDATE" and RE.InGuild == 1 then
+		self:UnregisterEvent("GUILD_ROSTER_UPDATE");
 		local REGuildNum = GetNumGuildMembers();
 
 		for i=1, REGuildNum do
-			local REGuildName = GetGuildRosterInfo(i);
-			table.insert(RE.GuildMembers, REGuildName);
+			local Found = false;
+			local REGuildName, _, _, _, _, _, _, _, REOnline = GetGuildRosterInfo(i);
+			for j=1, #RE.GuildMembers do
+				if RE.GuildMembers[j]["Name"] == REGuildName then
+					Found = true;
+					RE.GuildMembers[j]["Online"] = REOnline;
+					break;
+				end
+			end
+
+			if not Found then
+				table.insert(RE.GuildMembers, {["Name"] = REGuildName, ["Online"] = REOnline});
+			end
 		end
 
-		REFlex_Frame:UnregisterEvent("GUILD_ROSTER_UPDATE");
+		self:RegisterEvent("GUILD_ROSTER_UPDATE");
 	elseif Event == "PVP_RATED_STATS_UPDATE" and REZoneType == "none" then
 		if RE.RBGCounter then
 			RE.RBG = GetPersonalRatedBGInfo();
@@ -474,6 +502,8 @@ function REFlex_OnEvent(self,Event,...)
 		RE.InGuild = IsInGuild();
 		if RE.InGuild == 1 then
 			GuildRoster();
+			RE.Tab7GuildOnly = true;
+			REFlex_MainTab_Tab7_Trigger:SetText(GUILD);
 		end
 
 		REFlex_MainTab_Tab7_SearchBoxDT:SetText(RE.Tab7Default["T"]["d"]);
@@ -630,200 +660,75 @@ function REFlex_OnEvent(self,Event,...)
 		end
 
 		if REFSettings == nil then
-			REFSettings = {["Version"] = RE.DataVersion ,["MinimapPos"] = 45, ["ShowDetectedBuilds"] = true, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = false, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["ArenasListFirstTime"] = true, ["LDBBGMorph"] = true, ["LDBShowPlace"] = false, ["LDBShowQueues"] = true, ["LDBCPCap"] = true, ["LDBHK"] = false, ["LDBShowTotalBG"] = false, ["LDBShowTotalArena"] = false, ["ArenaSupport"] = true, ["RBGSupport"] = true, ["UNBGSupport"] = true, ["LastDay"] = 0, ["CurrentMMR"] = 0, ["CurrentMMRBG"] = 0, ["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0}, ["MiniBarOrder"] = {}, ["MiniBarVisible"] = {}, ["OnlyNew"] = false};
+			REFSettings = {["Version"] = RE.DataVersion ,["MinimapPos"] = 45, ["ShowDetectedBuilds"] = true, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = false, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["ArenasListFirstTime"] = true, ["LDBBGMorph"] = true, ["LDBShowPlace"] = false, ["LDBShowQueues"] = true, ["LDBCPCap"] = true, ["LDBHK"] = false, ["LDBShowTotalBG"] = false, ["LDBShowTotalArena"] = false, ["ArenaSupport"] = true, ["RBGSupport"] = true, ["UNBGSupport"] = true, ["LastDay"] = 0, ["CurrentMMR"] = 0, ["CurrentMMRBG"] = 0, ["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0}, ["MiniBarOrder"] = {}, ["MiniBarVisible"] = {}, ["OnlyNew"] = false, ["AllowQuery"] = true};
 			REFSettings["MiniBarVisible"][1] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["MiniBarVisible"][2] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["MiniBarOrder"][1] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
+			REFlex_Update14();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
-			REFSettings["Version"] = RE.DataVersion;
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_Update13();
+			REFlex_Update14();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
-			REFSettings["Version"] = RE.DataVersion;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_Update1112();	
+			REFlex_Update13();
+			REFlex_Update14();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
-			REFSettings["Version"] = RE.DataVersion;
-			if REFSettings["CurrentMMR"] == nil then
-				REFSettings["CurrentMMR"] = 0;
-			end
-			if REFSettings["LastDayStats"]["MMR"] == nil then
-				REFSettings["LastDayStats"]["MMR"] = 0;
-			end
-			REFSettings["CurrentMMRBG"] = 0;
-			REFSettings["LastDayStats"]["MMRBG"] = 0;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
-		elseif REFSettings["Version"] == 9 or REFSettings["Version"] == 8 then -- 0.9.3.1/0.9.1
-			REFSettings["Version"] = RE.DataVersion;
-			REFSettings["CurrentMMR"] = 0;
-			REFSettings["LastDayStats"]["MMR"] = 0;
-			REFSettings["CurrentMMRBG"] = 0;
-			REFSettings["LastDayStats"]["MMRBG"] = 0;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				for k=1, #REFDatabase[i]["SpecialFields"] do
-					local REFixTemp = REFDatabase[i]["SpecialFields"][k][1];
-					REFDatabase[i]["SpecialFields"][k] = REFixTemp;
-				end
-			end
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_Update10();	
+			REFlex_Update1112();
+			REFlex_Update13();
+			REFlex_Update14();
+		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
+			REFlex_Update89();
+			REFlex_Update10();
+			REFlex_Update1112();
+			REFlex_Update13();
+			REFlex_Update14();
 		elseif REFSettings["Version"] == 7 then -- 0.9
-			REFSettings["Version"] = RE.DataVersion;
-			REFSettings["LDBShowPlace"] = false;
-			REFSettings["LDBShowQueues"] = true;
-			REFSettings["LDBShowTotalBG"] = false;
-			REFSettings["LDBShowTotalArena"] = false;
-			REFSettings["CurrentMMR"] = 0;
-			REFSettings["LastDayStats"]["MMR"] = 0;
-			REFSettings["CurrentMMRBG"] = 0;
-			REFSettings["LastDayStats"]["MMRBG"] = 0;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				for k=1, #REFDatabase[i]["SpecialFields"] do
-					local REFixTemp = REFDatabase[i]["SpecialFields"][k][1];
-					REFDatabase[i]["SpecialFields"][k] = REFixTemp;
-				end
-			end
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_Update7();
+			REFlex_Update89();
+			REFlex_Update10();
+			REFlex_Update1112();
+			REFlex_Update13();
+			REFlex_Update14();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
-			REFSettings["Version"] = RE.DataVersion;
-			REFSettings["LDBBGMorph"] = true;
-			REFSettings["LDBCPCap"] = true;
-			REFSettings["LDBHK"] = false;
-			REFSettings["MiniBarVisible"] = {};
-			REFSettings["MiniBarVisible"][1] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}
-			REFSettings["MiniBarVisible"][2] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}
-			REFSettings["MiniBarOrder"] = {};
-			REFSettings["MiniBarOrder"][1] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
-			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
-			REFSettings["LastDay"] = 0;
-			REFSettings["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0};
-			REFSettings["LDBShowPlace"] = false;
-			REFSettings["LDBShowQueues"] = true;
-			REFSettings["LDBShowTotalBG"] = false;
-			REFSettings["LDBShowTotalArena"] = false;
-			REFSettings["CurrentMMR"] = 0;
-			REFSettings["CurrentMMRBG"] = 0;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				for k=1, #REFDatabase[i]["SpecialFields"] do
-					local REFixTemp = REFDatabase[i]["SpecialFields"][k][1];
-					REFDatabase[i]["SpecialFields"][k] = REFixTemp;
-				end
-			end
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_Update6();	
+			REFlex_Update7();
+			REFlex_Update89();
+			REFlex_Update10();
+			REFlex_Update1112();
+			REFlex_Update13();
+			REFlex_Update14();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
-			REFSettings["Version"] = RE.DataVersion;
-			REFSettings["ShowDetectedBuilds"] = true;
-			REFSettings["ArenasListFirstTime"] = true;
-			REFSettings["ArenaSupport"] = true;
-			REFSettings["RBGSupport"] = true;
-			REFSettings["UNBGSupport"] = true;
-			REFSettings["LDBBGMorph"] = true;
-			REFSettings["LDBCPCap"] = true;
-			REFSettings["LDBHK"] = false;
-			REFSettings["MiniBarVisible"] = {};
-			REFSettings["MiniBarVisible"][1] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}
-			REFSettings["MiniBarVisible"][2] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}
-			REFSettings["MiniBarOrder"] = {};
-			REFSettings["MiniBarOrder"][1] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
-			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
-			REFSettings["MiniBarAnchor"] = "CENTER";
-			REFSettings["MiniBarScale"] = 1;
-			REFSettings["LastDay"] = 0;
-			REFSettings["LastDayStats"] = {["Honor"] = 0, ["CP"] = 0, ["2v2"] = 0, ["3v3"] = 0, ["5v5"] = 0, ["RBG"] = 0, ["MMR"] = 0, ["MMRBG"] = 0};
-			REFSettings["LDBShowPlace"] = false;
-			REFSettings["LDBShowQueues"] = true;
-			REFSettings["LDBShowTotalBG"] = false;
-			REFSettings["LDBShowTotalArena"] = false;
-			REFSettings["CurrentMMR"] = 0;
-			REFSettings["CurrentMMRBG"] = 0;
-			REFSettings["OnlyNew"] = false;
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["SpecialFields"] == nil then
-					REFDatabase[i]["DataVersion"] = RE.DataVersion;
-					REFDatabase[i]["SpecialFields"] = {};
-				end
-			end
-			for i=1, #REFDatabase do
-				for k=1, #REFDatabase[i]["SpecialFields"] do
-					local REFixTemp = REFDatabase[i]["SpecialFields"][k][1];
-					REFDatabase[i]["SpecialFields"][k] = REFixTemp;
-				end
-			end
-			for i=1, #REFDatabase do
-				if REFDatabase[i]["Season"] == 0 then
-					REFDatabase[i]["Season"] = 10;
-				end
-			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["Season"] == 0 then
-					REFDatabaseA[i]["Season"] = 10;
-				end
-			end
+			REFlex_UpdateOld();	
+			REFlex_Update6();
+			REFlex_Update7();
+			REFlex_Update89();
+			REFlex_Update10();
+			REFlex_Update1112();
+			REFlex_Update13();
+			REFlex_Update14();
 		end
+		REFSettings["Version"] = RE.DataVersion;
 		---
 
 		RegisterAddonMessagePrefix("REFlex");
 		SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
 		REFlex_LoadLDB();
+
+		if RE.Debug == 2 then
+			RE.CurrentMemoryUsage = 0;
+			RE.CurrentMemoryDiff = 0;
+			RE.CurrentMemoryStart = 0;
+			RE.CurrentMemoryIgnition = 0;
+
+			UpdateAddOnMemoryUsage();
+			RE.CurrentMemoryStart = GetAddOnMemoryUsage("REFlex");
+			RE.ShefkiTimer:ScheduleRepeatingTimer(REFlex_MemoryDebug, 5);
+		end
 
 		self:UnregisterEvent("ADDON_LOADED");
 	end
@@ -865,23 +770,16 @@ function REFlex_DropDownTab5Click(self)
 	UIDropDownMenu_SetSelectedID(REFlex_MainTab_Tab5_DropDown, self:GetID());
 	if REFlex_MainTab_Tab5_DropDown["selectedID"] == 4 then
 		RE.BracketDrop = 5;
-		RE.Tab5LastID = 0;
-		RE.Tab5TableData = {};
 	elseif REFlex_MainTab_Tab5_DropDown["selectedID"] == 3 then
-		RE.BracketDrop = 3;	
-		RE.Tab5LastID = 0;
-		RE.Tab5TableData = {};
+		RE.BracketDrop = 3;
 	elseif REFlex_MainTab_Tab5_DropDown["selectedID"] == 2 then
 		RE.BracketDrop = 2;
-		RE.Tab5LastID = 0;
-		RE.Tab5TableData = {};
 	else
 		RE.BracketDrop = nil;
-		RE.Tab5LastID = 0;
-		RE.Tab5TableData = {};
 	end
 	REFlex_MainTab_Tab5:Hide();
 	REFlex_MainTab_Tab5:Show();
+	RE.MainTable5:SetFilter(REFlex_Tab_Tab5Filter);
 end
 
 function REFlex_DropDownTab5OnLoad(self, level)
@@ -949,6 +847,7 @@ function REFlex_GUIOnLoad(REPanel)
 	REFlex_GUI_ShowMinimapButtonText:SetText(L["Show minimap button"]);
 	REFlex_GUI_ShowMiniBarText:SetText(L["Show MiniBar (Battlegrounds only)"]);
 	REFlex_GUI_OnlyNewText:SetText(L["Use only records from current season to calculate statistics"]);
+	REFlex_GUI_AllowQueryText:SetText(L["Allow sending daily statistics to other guild members"]);
 	REFlex_GUI_SliderScaleText:SetText(L["MiniBar scale"]);
 	REFlex_GUI_LDBBGMorphText:SetText(L["Show LDB MiniBar (Battlegrounds only)"]);
 	REFlex_GUI_LDBShowPlaceText:SetText("|cFFFFFFFF" .. L["Show place instead difference of score"]  .. "|r");
@@ -1066,27 +965,30 @@ end
 
 -- Slash subsection
 function SlashCmdList.REFLEX(RECommand)
-	if RECommand == "RBGWipe" then
+ 	local RECom, REArgs = RECommand:match("^(%S*)%s*(.-)$");
+	if RECom == "RBGWipe" then
 		RESlashBGWipe(true, "Rated");
-	elseif RECommand == "UNRBGWipe" then
+	elseif RECom == "UNRBGWipe" then
 		RESlashBGWipe(false, "Unrated");
-	elseif RECommand == "2v2Wipe" then
+	elseif RECom == "2v2Wipe" then
 		RESlashArenaWipe(2);
-	elseif RECommand == "3v3Wipe" then
+	elseif RECom == "3v3Wipe" then
 		RESlashArenaWipe(3);
-	elseif RECommand == "5v5Wipe" then
+	elseif RECom == "5v5Wipe" then
 		RESlashArenaWipe(5);
-	elseif RECommand == "OldSeasonWipe" then
+	elseif RECom == "OldSeasonWipe" then
 		RESlashArenaSeasonWipe(RE.CurrentSeason);
-	elseif RECommand == "FullWipe" then
+	elseif RECom == "FullWipe" then
 		if RE.SlashTrigger == "FullWipe" then
 			REFDatabase = {};
 			REFDatabaseA = {};
 			ReloadUI();
 		else
 			RE.SlashTrigger = "FullWipe";
-			print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe"]);
+			print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe."]);
 		end
+	elseif RECom == "Query" then
+		REFlex_SendQuery(REArgs);
 	else
 		REFlex_MinimapButtonClick();
 	end
@@ -1110,7 +1012,7 @@ function RESlashBGWipe(IsRated, IsRatedString)
 		ReloadUI();
 	else
 		RE.SlashTrigger = "BGWipe" .. IsRatedString;
-		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe"]);
+		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe."]);
 	end
 end
 
@@ -1132,7 +1034,7 @@ function RESlashArenaWipe(Bracket)
 		ReloadUI();
 	else
 		RE.SlashTrigger = "ArenaWipe" .. Bracket;
-		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe"]);
+		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe."]);
 	end
 end
 
@@ -1168,7 +1070,7 @@ function RESlashArenaSeasonWipe(Season)
 		ReloadUI();
 	else
 		RE.SlashTrigger = "ArenaSeasonWipe" .. Season;
-		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe"]);
+		print("\124cFF74D06C[REFlex]\124r " .. L["Issue command second time to confirm database wipe."]);
 	end
 end
 --
@@ -1204,6 +1106,19 @@ function REFlex_SpecTabClick(Spec)
 	elseif Visible6 == 1 then
 		REFlex_MainTab_Tab6:Hide();
 		REFlex_MainTab_Tab6:Show();
+	end
+
+	if RE.MainTable1 ~= nil then
+		RE.MainTable1:SetFilter(REFlex_Tab_DefaultFilter);
+	end
+	if RE.MainTable2 ~= nil then
+		RE.MainTable2:SetFilter(REFlex_Tab_DefaultFilter);
+	end
+	if RE.MainTable3 ~= nil then
+		RE.MainTable3:SetFilter(REFlex_Tab_DefaultFilter);
+	end
+	if RE.MainTable5 ~= nil then
+		RE.MainTable5:SetFilter(REFlex_Tab_Tab5Filter);
 	end
 end
 
@@ -1316,7 +1231,11 @@ function REFlex_MainOnClick(Channel)
 			REAddidional = " - " .. L["Unrated BGs"];	
 		end
 		SendChatMessage("[REFlex] " .. WINS .. ": " .. RE.Wins .. " - " .. LOSSES .. ": " .. RE.Losses .. REAddidional,Channel ,nil ,nil);
-		SendChatMessage("<KB> " .. L["Total"] .. ": " .. RE.SumKB .. " - " .. L["Top"] .. ": " .. RE.TopKB .. " <HK> " .. L["Total"] .. ": " .. RE.SumHK .. " - " .. L["Top"] .. ": " .. RE.TopHK, Channel ,nil ,nil);
+		if PanelTemplates_GetSelectedTab(REFlex_MainTab) == 3 then
+			SendChatMessage("<KB> " .. L["Total"] .. ": " .. RE.SumKB .. " - " .. L["Top"] .. ": " .. RE.TopKB, Channel ,nil ,nil);
+		else
+			SendChatMessage("<KB> " .. L["Total"] .. ": " .. RE.SumKB .. " - " .. L["Top"] .. ": " .. RE.TopKB .. " <HK> " .. L["Total"] .. ": " .. RE.SumHK .. " - " .. L["Top"] .. ": " .. RE.TopHK, Channel ,nil ,nil);
+		end
 		SendChatMessage("<" .. DAMAGE .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumDamage) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopDamage), Channel ,nil ,nil);
 		SendChatMessage("<" .. SHOW_COMBAT_HEALING .. "> " .. L["Total"] .. ": " .. REFlex_NumberClean(RE.SumHealing) .. " - " .. L["Top"] .. ": " .. REFlex_NumberClean(RE.TopHealing), Channel ,nil ,nil);
 	end
@@ -1331,7 +1250,7 @@ end
 function REFlex_ClearOnClick()
 	REFlex_MainTab_Tab5_SearchBox:SetText(NAME);
 	REFlex_MainTab_Tab5_SearchBox:ClearFocus();
-	RE.MainTable5:SetFilter(REFlex_Tab_DefaultFilter);
+	RE.MainTable5:SetFilter(REFlex_Tab_Tab5Filter);
 	RE.NameSearch = nil;
 end
 
@@ -1375,11 +1294,13 @@ function REFlex_Tab7TriggerOnClick()
 		REFlex_MainTab_Tab7_Trigger:SetText(ALL);
 		REFlex_MainTab_Tab7:Hide();
 		REFlex_MainTab_Tab7:Show();
+		RE.MainTable9:SetFilter(REFlex_Tab_Tab7Filter);
 	else
 		RE.Tab7GuildOnly = true;
 		REFlex_MainTab_Tab7_Trigger:SetText(GUILD);
 		REFlex_MainTab_Tab7:Hide();
 		REFlex_MainTab_Tab7:Show();
+		RE.MainTable9:SetFilter(REFlex_Tab_Tab7Filter);
 	end
 end
 --
@@ -1655,16 +1576,9 @@ function REFlex_ExportTabShow()
 end
 
 function REFlex_MainTabShow()
-	if RE.StartMemoryUsage ~= nil then
+	if RE.Debug == 2 then
 		UpdateAddOnMemoryUsage();
-		RE.CurrentMemoryUsage = GetAddOnMemoryUsage("REFlex");
-		local REDiff = RE.CurrentMemoryUsage - RE.StartMemoryUsage;
-		if RE.Debug == true then
-			print(REDiff);
-		end
-		if REDiff > 1500 then
-			collectgarbage('collect');
-		end
+		RE.CurrentMemoryIgnition = GetAddOnMemoryUsage("REFlex");
 	end
 
 	RequestRatedBattlegroundInfo();
@@ -1869,7 +1783,7 @@ function REFlex_MainTabShow()
 				{
 					["name"] = L["Last active"],
 					["width"] = 102,
-					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[8].value; local RERowB = self.data[rowb].cols[8].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[10].value; local RERowB = self.data[rowb].cols[10].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1881,7 +1795,7 @@ function REFlex_MainTabShow()
 				{
 					["name"] = L["Attendance"],
 					["width"] = 103,
-					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[9].value; local RERowB = self.data[rowb].cols[9].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[11].value; local RERowB = self.data[rowb].cols[11].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				},
 				--{
@@ -1903,7 +1817,7 @@ function REFlex_MainTabShow()
 				--},
 				{
 					["name"] = RATING,
-					["width"] = 186,
+					["width"] = 106,
 					["bgcolor"] = { 
 						["r"] = 0.15, 
 						["g"] = 0.15, 
@@ -1914,8 +1828,36 @@ function REFlex_MainTabShow()
 				},
 				{
 					["name"] = RATING .. " +/-",
-					["width"] = 186,
-					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[11].value; local RERowB = self.data[rowb].cols[11].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+					["width"] = 106,
+					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[12].value; local RERowB = self.data[rowb].cols[12].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
+					["align"] = "CENTER"
+				},
+				{
+					["name"] = WINS,
+					["width"] = 55,
+					["bgcolor"] = { 
+						["r"] = 0.15, 
+						["g"] = 0.15, 
+						["b"] = 0.15, 
+						["a"] = 1.0 
+					},
+					["align"] = "CENTER"
+				},
+				{
+					["name"] = LOSSES,
+					["width"] = 55,
+					["align"] = "CENTER"
+				},
+				{
+					["name"] = GUILD_ONLINE_LABEL,
+					["width"] = 50,
+					["bgcolor"] = { 
+						["r"] = 0.15, 
+						["g"] = 0.15, 
+						["b"] = 0.15, 
+						["a"] = 1.0 
+					},
+					["comparesort"] = function (self, rowa, rowb, sortbycol) local REColumn = self.cols[sortbycol]; local RERowA = self.data[rowa].cols[9].value; local RERowB = self.data[rowb].cols[9].value; local REDirection = REColumn.sort or REColumn.defaultsort or "asc"; if RERowA == RERowB then return false; else if REDirection:lower() == "asc" then if RERowA > RERowB then return true; else return false; end else if RERowA > RERowB then return false; else return true; end end end end,
 					["align"] = "CENTER"
 				}
 			}
@@ -2170,7 +2112,7 @@ function REFlex_MainTabShow()
 			RE.MainTable9:RegisterEvents({
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button, ...)
 					if realrow ~= nil and IsShiftKeyDown() == 1 and Button == "LeftButton" then
-						InviteUnit(data[realrow]["cols"][12]["value"]);
+						InviteUnit(data[realrow]["cols"][13]["value"]);
 					end
 				end,
 			});
@@ -2291,11 +2233,6 @@ function REFlex_MainTabShow()
 		end
 		RE.SecondTimeMainTab = true;
 	end
-
-	if RE.StartMemoryUsage == nil then
-		UpdateAddOnMemoryUsage();
-		RE.StartMemoryUsage = GetAddOnMemoryUsage("REFlex");
-	end
 end	
 
 function REFlex_Tab1Show()
@@ -2354,12 +2291,12 @@ function REFlex_Tab1Show()
 			table.insert(RE.Tab1TableData, RETempRow);
 			RE.Tab1LastID = j;
 		end
+
+		RE.MainTable1:SetData(RE.Tab1TableData);
 	end
 
-	RE.MainTable1:SetData(RE.Tab1TableData);
-	RE.MainTable1:SetFilter(REFlex_Tab_DefaultFilter);
-
 	if RE.Table1Rdy == nil then
+		RE.MainTable1:SetFilter(REFlex_Tab_DefaultFilter);
 		REFlex_TableClick(1, 1);
 		RE.Table1Rdy = true;
 	end
@@ -2445,10 +2382,10 @@ function REFlex_Tab2Show()
 				RE.Tab2LastID = j;
 			end
 		end
+
+		RE.MainTable2:SetData(RE.Tab2TableData);
 	end
 
-	RE.MainTable2:SetData(RE.Tab2TableData);
-	RE.MainTable2:SetFilter(REFlex_Tab_DefaultFilter);
 
 	RE.TopKB, RE.SumKB = REFlex_Find("KB", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
 	RE.TopHK, RE.SumHK = REFlex_Find("HK", false, RE.TalentTab, nil, REFSettings["OnlyNew"]);
@@ -2535,11 +2472,12 @@ function REFlex_Tab3Show()
 				RE.Tab3LastID = j;
 			end
 		end
+
+		RE.MainTable3:SetData(RE.Tab3TableData);
 	end
 
-	RE.MainTable3:SetData(RE.Tab3TableData);
-	RE.MainTable3:SetFilter(REFlex_Tab_DefaultFilter);
 	if RE.Table3Rdy == nil then
+		RE.MainTable3:SetFilter(REFlex_Tab_DefaultFilter);
 		REFlex_TableClick(3, 1);
 		RE.Table3Rdy = true;
 	end
@@ -2584,7 +2522,7 @@ function REFlex_Tab7Show()
 	if RE.Table9Rdy == nil then
 		REBGCount = REFlex_Tab7PlayerGrid(time({["year"] = RE.Tab7Search["F"]["y"], ["month"] = RE.Tab7Search["F"]["m"], ["day"] = RE.Tab7Search["F"]["d"]}), time({["year"] = RE.Tab7Search["T"]["y"], ["month"] = RE.Tab7Search["T"]["m"], ["day"] = RE.Tab7Search["T"]["d"], ["hour"] = 23, ["min"] = 59, ["sec"] = 59}));
 
-		RE.Tab7TableData = {};
+		wipe(RE.Tab7TableData);
 		local RETableCount, RETableI = REFlex_TableCount(RE.Tab7Matrix);
 		RE.AvCount, RE.AvRating, RE.AvMMR = 0, 0, 0;
 		for j=1, RETableCount do
@@ -2620,19 +2558,28 @@ function REFlex_Tab7Show()
 			RETempCol[5] = {
 				["value"] = REFlex_TableTab7Field(RE.Tab7Matrix[RETableI[j]]["DiffRBG"], "DiffRBG")
 			}
+			RETempCol[6] = {
+				["value"] = RE.Tab7Matrix[RETableI[j]]["Wins"]
+			}
+			RETempCol[7] = {
+				["value"] = RE.Tab7Matrix[RETableI[j]]["Losses"]
+			}
 			RETempCol[8] = {
-				["value"] = REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeRaw"]
+				["value"] = REFlex_TableTab7Online(RE.Tab7Matrix[RETableI[j]]["Name"], true)
 			}
 			RETempCol[9] = {
-				["value"] = RE.Tab7Matrix[RETableI[j]]["Attendance"]
+				["value"] = REFlex_TableTab7Online(RE.Tab7Matrix[RETableI[j]]["Name"], false)
 			}
 			RETempCol[10] = {
-				["value"] = REFlex_TableTab7Field(RE.Tab7Matrix[RETableI[j]]["DiffMMR"], "DiffMMRa")
+				["value"] = REFDatabase[RE.Tab7Matrix[RETableI[j]]["Time"]]["TimeRaw"]
 			}
 			RETempCol[11] = {
-				["value"] = REFlex_TableTab7Field(RE.Tab7Matrix[RETableI[j]]["DiffRBG"], "DiffRBGa")
+				["value"] = RE.Tab7Matrix[RETableI[j]]["Attendance"]
 			}
 			RETempCol[12] = {
+				["value"] = REFlex_TableTab7Field(RE.Tab7Matrix[RETableI[j]]["DiffRBG"], "DiffRBGa")
+			}
+			RETempCol[13] = {
 				["value"] = RE.Tab7Matrix[RETableI[j]]["Name"]
 			}
 
@@ -2642,12 +2589,12 @@ function REFlex_Tab7Show()
 
 			table.insert(RE.Tab7TableData, RETempRow);
 		end
+
+		RE.MainTable9:SetData(RE.Tab7TableData);
 	end
 
-	RE.MainTable9:SetData(RE.Tab7TableData);
-	RE.MainTable9:SetFilter(REFlex_Tab_Tab7Filter);
-
 	if RE.Table9Rdy == nil then
+		RE.MainTable9:SetFilter(REFlex_Tab_Tab7Filter);
 		REFlex_TableClick(9, 1);
 		REFlex_TableClick(9, 1);
 		RE.Table9Rdy = true;
@@ -2787,109 +2734,62 @@ function REFlex_Tab5Show()
 	if REFDatabaseA[RE.Tab5LastID + 1] ~= nil then
 		RE.Tab5LastID = RE.Tab5LastID + 1;
 		for j=RE.Tab5LastID, #REFDatabaseA do
-			if RE.BracketDrop ~= nil then
-				if REFDatabaseA[j]["Bracket"] == RE.BracketDrop then
-					local RETempCol = {};
-					RETempCol[1] = {
-						["value"] = REFDatabaseA[j]["TimeHo"] .. ":" .. REFDatabaseA[j]["TimeMi"] .. " " .. REFDatabaseA[j]["TimeDa"] .. "." .. REFDatabaseA[j]["TimeMo"] .. "." .. string.sub(REFDatabaseA[j]["TimeYe"], 3)
-					}
-					RETempCol[2] = {
-						["value"] = REFlex_ShortMap(REFDatabaseA[j]["MapName"]),
-						["color"] = REFlex_TableWinColorArena,
-						["colorargs"] = {j,}
-					}
-					RETempCol[3] = {
-						["value"] = REFlex_TableTeamArena(false, j)
-					}
-					RETempCol[4] = {
-						["value"] = REFlex_TableTeamArenaRating(false, j)
-					}
-					RETempCol[5] = {
-						["value"] = REFlex_TableTeamArena(true, j)
-					}
-					RETempCol[6] = {
-						["value"] = REFlex_TableTeamArenaRating(true, j)
-					}
-					RETempCol[7] = {
-						["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
-					}
-					RETempCol[8] = {
-						["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
-					}
-					RETempCol[9] = {
-						["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"])
-					}
-					RETempCol[10] = {
-						["value"] = REFlex_TableRatingMMRArena(REFDatabaseA[j]["PlayerTeam"], j)
-					}
-					RETempCol[12] = {
-						["value"] = REFDatabaseA[j]["TalentSet"]
-					}
-					RETempCol[13] = {
-						["value"] = j
-					}
+			local RETempCol = {};
+			RETempCol[1] = {
+				["value"] = REFDatabaseA[j]["TimeHo"] .. ":" .. REFDatabaseA[j]["TimeMi"] .. " " .. REFDatabaseA[j]["TimeDa"] .. "." .. REFDatabaseA[j]["TimeMo"] .. "." .. string.sub(REFDatabaseA[j]["TimeYe"], 3)
+			}
+			RETempCol[2] = {
+				["value"] = REFlex_ShortMap(REFDatabaseA[j]["MapName"]),
+				["color"] = REFlex_TableWinColorArena,
+				["colorargs"] = {j,}
+			}
+			RETempCol[3] = {
+				["value"] = REFlex_TableTeamArena(false, j)
+			}
+			RETempCol[4] = {
+				["value"] = REFlex_TableTeamArenaRating(false, j)
+			}
+			RETempCol[5] = {
+				["value"] = REFlex_TableTeamArena(true, j)
+			}
+			RETempCol[6] = {
+				["value"] = REFlex_TableTeamArenaRating(true, j)
+			}
+			RETempCol[7] = {
+				["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
+			}
+			RETempCol[8] = {
+				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
+			}
+			RETempCol[9] = {
+				["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"])
+			}
+			RETempCol[10] = {
+				["value"] = REFlex_TableRatingMMRArena(REFDatabaseA[j]["PlayerTeam"], j)
+			}
+			RETempCol[12] = {
+				["value"] = REFDatabaseA[j]["TalentSet"]
+			}
+			RETempCol[13] = {
+				["value"] = j
+			}
+			RETempCol[14] = {
+				["bracket"] = REFDatabaseA[j]["Bracket"]
+			}
 
-					local RETempRow = {
-						["cols"] = RETempCol
-					}
+			local RETempRow = {
+				["cols"] = RETempCol
+			}
 
-					table.insert(RE.Tab5TableData, RETempRow);
-					RE.Tab5LastID = j;
-				end
-			else
-				local RETempCol = {};
-				RETempCol[1] = {
-					["value"] = REFDatabaseA[j]["TimeHo"] .. ":" .. REFDatabaseA[j]["TimeMi"] .. " " .. REFDatabaseA[j]["TimeDa"] .. "." .. REFDatabaseA[j]["TimeMo"] .. "." .. string.sub(REFDatabaseA[j]["TimeYe"], 3)
-				}
-				RETempCol[2] = {
-					["value"] = REFlex_ShortMap(REFDatabaseA[j]["MapName"]),
-					["color"] = REFlex_TableWinColorArena,
-					["colorargs"] = {j,}
-				}
-				RETempCol[3] = {
-					["value"] = REFlex_TableTeamArena(false, j)
-				}
-				RETempCol[4] = {
-					["value"] = REFlex_TableTeamArenaRating(false, j)
-				}
-				RETempCol[5] = {
-					["value"] = REFlex_TableTeamArena(true, j)
-				}
-				RETempCol[6] = {
-					["value"] = REFlex_TableTeamArenaRating(true, j)
-				}
-				RETempCol[7] = {
-					["value"] = REFDatabaseA[j]["DurationMin"] .. ":" .. REFDatabaseA[j]["DurationSec"]
-				}
-				RETempCol[8] = {
-					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Damage"])
-				}
-				RETempCol[9] = {
-					["value"] = REFlex_NumberClean(REFDatabaseA[j]["Healing"])
-				}
-				RETempCol[10] = {
-					["value"] = REFlex_TableRatingMMRArena(REFDatabaseA[j]["PlayerTeam"], j)
-				}
-				RETempCol[12] = {
-					["value"] = REFDatabaseA[j]["TalentSet"]
-				}
-				RETempCol[13] = {
-					["value"] = j
-				}
-
-				local RETempRow = {
-					["cols"] = RETempCol
-				}
-
-				table.insert(RE.Tab5TableData, RETempRow);
-				RE.Tab5LastID = j;
-			end
+			table.insert(RE.Tab5TableData, RETempRow);
+			RE.Tab5LastID = j;
 		end
+		
+		RE.MainTable5:SetData(RE.Tab5TableData);
 	end
 
-	RE.MainTable5:SetData(RE.Tab5TableData);
-	RE.MainTable5:SetFilter(REFlex_Tab_DefaultFilter);
 	if RE.Table5Rdy == nil then
+		RE.MainTable5:SetFilter(REFlex_Tab_Tab5Filter);
 		REFlex_TableClick(5, 1);
 		RE.Table5Rdy = true;
 	end
@@ -3038,9 +2938,9 @@ function REFlex_Tab6Show()
 	end
 	
 	if RE.ArenaReloadAlpha then
-		RE.Tab6TableData1 = {};
-		RE.Tab6TableData2 = {};
-		RE.Tab6TableData3 = {};
+		wipe(RE.Tab6TableData1);
+		wipe(RE.Tab6TableData2);
+		wipe(RE.Tab6TableData3);
 
 		local RETableCount, RETableI = REFlex_TableCount(RE.ArenaTeamsSpec);
 		for j=1, RETableCount do
@@ -3114,22 +3014,23 @@ function REFlex_Tab6Show()
 				table.insert(RE.Tab6TableData3, RETempRow);
 			end
 		end
+
+		RE.MainTable6:SetData(RE.Tab6TableData1);
+		RE.MainTable7:SetData(RE.Tab6TableData2);
+		RE.MainTable8:SetData(RE.Tab6TableData3);
 		RE.ArenaReloadAlpha = false;
 	end
 
-	RE.MainTable6:SetData(RE.Tab6TableData1);
 	if RE.Table6Rdy == nil then
 		REFlex_TableClick(6, 2);
 		RE.Table6Rdy = true;
 	end
 
-	RE.MainTable7:SetData(RE.Tab6TableData2);
 	if RE.Table7Rdy == nil then
 		REFlex_TableClick(7, 2);
 		RE.Table7Rdy = true;
 	end
 
-	RE.MainTable8:SetData(RE.Tab6TableData3);
 	if RE.Table8Rdy == nil then
 		REFlex_TableClick(8, 2);
 		RE.Table8Rdy = true;
@@ -3577,6 +3478,8 @@ function REFlex_BGEnd()
 			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. RE.BGMinutes .. ":" .. RE.BGSeconds);
 			print("\124cFFC5F3BCKB:\124r " .. RE.killingBlows .. " (" .. RE.PlaceKB .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BCH:\124r " .. RE.honorGained);
 			print("\124cFFC5F3BC" .. DAMAGE .. ":\124r " .. REFlex_NumberClean(RE.damageDone) .. " (" .. RE.PlaceDamage .. "/" .. RE.BGPlayers .. ") \124cFF555555* \124cFFC5F3BC" .. SHOW_COMBAT_HEALING .. ":\124r " .. REFlex_NumberClean(RE.healingDone) .. " (" .. RE.PlaceHealing .. "/" .. RE.BGPlayers .. ")");
+
+			RE.Table9Rdy = nil;
 		else
 			print("\n");
 			print("\124cFF74D06C[REFlex]\124r \124cFF555555-\124r " .. RE.Map .. " \124cFF555555-\124r " .. WIN .. ": " .. REWinSidePrint .. " \124cFF555555-\124r " .. RE.BGMinutes .. ":" .. RE.BGSeconds);
@@ -3598,7 +3501,7 @@ function REFlex_BGEnd()
 		print("\n");
 
 		local REBGData = { DataVersion=RE.DataVersion, SpecialFields=RESpecialFields, RBGHordeTeam=RERBGHorde, RBGAllianceTeam=RERBGAlly, Season=REArenaSeason,MapName=RE.Map, MapInfo=REMapInfo, Damage=RE.damageDone, Healing=RE.healingDone, KB=RE.killingBlows, HK=RE.honorKills, Honor=RE.honorGained, TalentSet=RETalentGroup, HordeMMR=REHordeMMR, AllianceMMR=REAllianceMMR, PreMMR=RE.BGPreMatchMMR, MMRChange=RE.BGMMRChange, Winner=REWinSide, PlayersNum=RE.BGPlayers, HordeNum=REHordeNum, AliianceNum=REAllianceNum, DurationMin=RE.BGMinutes, DurationSec=RE.BGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, IsRated=REBGRated, Rating=RE.BGRating, RatingChange=RE.BGRatingChange, HordeRating=REBGHordeRating, AllianceRating=REBGAllyRating, PlaceKB=RE.PlaceKB, PlaceHK=RE.PlaceHK, PlaceHonor=RE.PlaceHonor, PlaceDamage=RE.PlaceDamage, PlaceHealing=RE.PlaceHealing, PlaceFactionKB=REPlaceKBF, PlaceFactionHK=REPlaceHKF, PlaceFactionHonor=REPlaceHonorF, PlaceFactionDamage=REPlaceDamageF, PlaceFactionHealing=REPlaceHealingF };
-		table.insert(REFDatabase, REBGData);			
+		table.insert(REFDatabase, REBGData);
 	end
 	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");	
 end
@@ -3679,7 +3582,7 @@ function REFlex_ArenaEnd()
 		for i=1, 3 do
 			local teamName, teamSize = GetArenaTeam(i);
 			if (teamName == REGreenTeamName) or (teamName == REGoldTeamName) then
-				REBracket = teamSize
+				REBracket = teamSize;
 				break
 			end
 		end
@@ -3689,6 +3592,18 @@ function REFlex_ArenaEnd()
 
 		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationMin=REBGMinutes, DurationSec=REBGSeconds, DurationRaw=BGTimeRaw, TimeHo=RETimeHour, TimeMi=RETimeMinute, TimeMo=RETimeMonth, TimeDa=RETimeDay, TimeYe=RETimeYear, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
 		table.insert(REFDatabaseA, REBGData);
+
+		--RE.ArenaReloadAlpha = true;
+		--RE.ArenaLastID = RE.ArenaLastID + 1;
+		--REFlex_ArenaTeamGrid(RE.ArenaLastID);
+		
+		--local REEnemyNames, _, _, _, Team, TeamE = REFlex_ArenaTeamHash(RE.ArenaLastID);
+		--local REEnemyTeamID = table.concat(REEnemyNames);
+		--local FriendTeamName = REFDatabaseA[RE.ArenaLastID][Team .. "TeamName"];
+		--local EnemyTeamName = REFDatabaseA[RE.ArenaLastID][TeamE .. "TeamName"]
+
+		--UIErrorsFrame:AddMessage("|cFF00CC00" .. RE.ArenaTeams[REEnemyTeamID]["Win"] .. "|r - |cFFCC0000" .. RE.ArenaTeams[REEnemyTeamID]["Loss"] .. "|r", 1, 1, 1, 5.0);
+		--UIErrorsFrame:AddMessage("* " .. FriendTeamName .. " VS " .. EnemyTeamName .. "*", 1, 1, 1, 5.0);
 	end
 end
 -- ***

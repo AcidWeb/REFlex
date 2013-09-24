@@ -593,11 +593,20 @@ function REFlex_WinLossArena(Bracket, TalentSets, Map, Season)
 end
 
 function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
-	local REEnemyNames = {};
-	local REEnemyID = {};
-	local REFriendNames = {};
-	local REFriendID = {};
-	local REEnemyNamesSpec = {};
+	if RE.ATHEnemyNames == nil then
+		RE.ATHEnemyNames = {};
+		RE.AHTEnemyID = {};
+		RE.AHTFriendNames = {};
+		RE.AHTFriendID = {};
+		RE.AHTEnemyNamesSpec = {};
+	else
+		wipe(RE.ATHEnemyNames);
+		wipe(RE.AHTEnemyID);
+		wipe(RE.AHTFriendNames);
+		wipe(RE.AHTFriendID);
+		wipe(RE.AHTEnemyNamesSpec);
+	end
+
 	local RESeason = REFDatabaseA[DatabaseID]["Season"];
 
 	local Team, TeamE = "", "";
@@ -622,21 +631,21 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 		end
 
 		if REBuildComplete then
-			table.insert(REEnemyNamesSpec, REFDatabaseA[DatabaseID]["TalentSet"] .. "#");
-			table.insert(REEnemyNamesSpec, REFDatabaseA[DatabaseID]["Bracket"] .. "#");
+			table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID]["TalentSet"] .. "#");
+			table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID]["Bracket"] .. "#");
 		end
 		for jj=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
-			table.insert(REEnemyNames, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Name"]);
+			table.insert(RE.ATHEnemyNames, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Name"]);
 			if REBuildComplete then	
-				table.insert(REEnemyNamesSpec, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["ClassToken"] .. "*" .. REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Build"] .. "@");
+				table.insert(RE.AHTEnemyNamesSpec, REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["ClassToken"] .. "*" .. REFDatabaseA[DatabaseID][TeamE .. "Team"][jj]["Build"] .. "@");
 			end
 		end
-		table.sort(REEnemyNames);
-		table.sort(REEnemyNamesSpec);
-		for jj=1, #REEnemyNames do
+		table.sort(RE.ATHEnemyNames);
+		table.sort(RE.AHTEnemyNamesSpec);
+		for jj=1, #RE.ATHEnemyNames do
 			for kk=1, #REFDatabaseA[DatabaseID][TeamE .. "Team"] do
-				if REEnemyNames[jj] == REFDatabaseA[DatabaseID][TeamE .. "Team"][kk]["Name"] then
-					table.insert(REEnemyID, kk);
+				if RE.ATHEnemyNames[jj] == REFDatabaseA[DatabaseID][TeamE .. "Team"][kk]["Name"] then
+					table.insert(RE.AHTEnemyID, kk);
 					break;
 				end
 			end
@@ -645,21 +654,21 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 
 	if isEnemy == false or isEnemy == nil then
 		for jj=1, #REFDatabaseA[DatabaseID][Team .. "Team"] do
-			table.insert(REFriendNames, REFDatabaseA[DatabaseID][Team .. "Team"][jj]["Name"]);
+			table.insert(RE.AHTFriendNames, REFDatabaseA[DatabaseID][Team .. "Team"][jj]["Name"]);
 		end
-		table.sort(REFriendNames);
+		table.sort(RE.AHTFriendNames);
 
-		for jj=1, #REFriendNames do
+		for jj=1, #RE.AHTFriendNames do
 			for kk=1, #REFDatabaseA[DatabaseID][Team .. "Team"] do
-				if REFriendNames[jj] == REFDatabaseA[DatabaseID][Team .. "Team"][kk]["Name"] then
-					table.insert(REFriendID, kk);
+				if RE.AHTFriendNames[jj] == REFDatabaseA[DatabaseID][Team .. "Team"][kk]["Name"] then
+					table.insert(RE.AHTFriendID, kk);
 					break;
 				end
 			end
 		end
 	end
 
-	return REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE, REEnemyNamesSpec, RESeason;
+	return RE.ATHEnemyNames, RE.AHTEnemyID, RE.AHTFriendNames, RE.AHTFriendID, Team, TeamE, RE.AHTEnemyNamesSpec, RESeason;
 end
 
 function REFlex_ArenaTeamGrid(IDTo)
@@ -731,6 +740,21 @@ function REFlex_Tab7PlayerGrid(TimeF, TimeT)
 					RE.Tab7Matrix[REName]["Class"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["classToken"];
 					RE.Tab7Matrix[REName]["Time"] = j;
 					RE.Tab7Matrix[REName]["Attendance"] = 1;
+					RE.Tab7Matrix[REName]["Wins"] = 0;
+					RE.Tab7Matrix[REName]["Losses"] = 0;
+					if RE.Faction == "Horde" then
+						if REFDatabase[j]["Winner"] == FACTION_HORDE then
+							RE.Tab7Matrix[REName]["Wins"] = RE.Tab7Matrix[REName]["Wins"] + 1;
+						else
+							RE.Tab7Matrix[REName]["Losses"] = RE.Tab7Matrix[REName]["Losses"] + 1;
+						end
+					else
+						if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
+							RE.Tab7Matrix[REName]["Wins"] = RE.Tab7Matrix[REName]["Wins"] + 1;
+						else
+							RE.Tab7Matrix[REName]["Losses"] = RE.Tab7Matrix[REName]["Losses"] + 1;
+						end
+					end
 					if REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"] ~= nil then
 						RE.Tab7Matrix[REName]["MMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"];
 						RE.Tab7Matrix[REName]["LastMMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"];
@@ -740,6 +764,19 @@ function REFlex_Tab7PlayerGrid(TimeF, TimeT)
 				else
 					RE.Tab7Matrix[REName]["Time"] = j;
 					RE.Tab7Matrix[REName]["Attendance"] = RE.Tab7Matrix[REName]["Attendance"] + 1;
+					if RE.Faction == "Horde" then
+						if REFDatabase[j]["Winner"] == FACTION_HORDE then
+							RE.Tab7Matrix[REName]["Wins"] = RE.Tab7Matrix[REName]["Wins"] + 1;
+						else
+							RE.Tab7Matrix[REName]["Losses"] = RE.Tab7Matrix[REName]["Losses"] + 1;
+						end
+					else
+						if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
+							RE.Tab7Matrix[REName]["Wins"] = RE.Tab7Matrix[REName]["Wins"] + 1;
+						else
+							RE.Tab7Matrix[REName]["Losses"] = RE.Tab7Matrix[REName]["Losses"] + 1;
+						end
+					end
 					if REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"] ~= nil then
 						RE.Tab7Matrix[REName]["LastMMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"];
 						RE.Tab7Matrix[REName]["LastRBG"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"];
@@ -922,10 +959,38 @@ function REFlex_Tab_DefaultFilter(self, rowdata)
 	end
 end
 
+function REFlex_Tab_Tab5Filter(self, rowdata)
+	if RE.TalentTab ~= nil then
+		if RE.BracketDrop ~= nil then
+			if rowdata["cols"][12]["value"] == RE.TalentTab and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				return true;
+			else
+				return false;
+			end
+		else
+			if rowdata["cols"][12]["value"] == RE.TalentTab then
+				return true;
+			else
+				return false;
+			end
+		end
+	else
+		if RE.BracketDrop ~= nil then
+			if rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				return true;
+			else
+				return false;
+			end
+		else
+			return true;
+		end
+	end
+end
+
 function REFlex_Tab_Tab7Filter(self, rowdata)
 	if RE.Tab7GuildOnly and RE.InGuild == 1 then
 		for i=1, #RE.GuildMembers do
-			if RE.GuildMembers[i] == rowdata["cols"][12]["value"] then
+			if RE.GuildMembers[i]["Name"] == rowdata["cols"][13]["value"] then
 				return true;
 			end
 		end
@@ -939,6 +1004,51 @@ end
 function REFlex_Tab_NameFilter(self, rowdata)
 	if RE.TalentTab ~= nil then
 		if rowdata["cols"][12]["value"] == RE.TalentTab then
+			if RE.BracketDrop ~= nil then
+				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
+				for i=1, #REEnemyNames do
+					if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+						return true;
+					end
+				end
+				for i=1, #REFriendNames do
+					if REFriendNames[i] == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+						return true;
+					end
+				end
+				return false;
+			else
+				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
+				for i=1, #REEnemyNames do
+					if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
+						return true;
+					end
+				end
+				for i=1, #REFriendNames do
+					if REFriendNames[i] == RE.NameSearch then
+						return true;
+					end
+				end
+				return false;
+			end
+		else
+			return false;
+		end
+	else	
+		if RE.BracketDrop ~= nil then
+			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
+			for i=1, #REEnemyNames do
+				if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					return true;
+				end
+			end
+			for i=1, #REFriendNames do
+				if REFriendNames[i] == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					return true;
+				end
+			end
+			return false;
+		else
 			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 			for i=1, #REEnemyNames do
 				if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
@@ -951,22 +1061,7 @@ function REFlex_Tab_NameFilter(self, rowdata)
 				end
 			end
 			return false;
-		else
-			return false;
 		end
-	else
-		local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
-		for i=1, #REEnemyNames do
-			if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
-				return true;
-			end
-		end
-		for i=1, #REFriendNames do
-			if REFriendNames[i] == RE.NameSearch then
-				return true;
-			end
-		end
-		return false;	
 	end
 end
 
@@ -1075,6 +1170,34 @@ function REFlex_TableTab7Field(Value, Field)
 		else
 			return "";
 		end
+	end
+end
+
+function REFlex_TableTab7Online(Name, IsTable)
+	if IsTable then
+		for i=1, #RE.GuildMembers do
+			if RE.GuildMembers[i]["Name"] == Name then
+				if RE.GuildMembers[i]["Online"] ~= nil then
+					return "|cFF00FF00Yes|r";
+				else
+					return "|cFFFF141CNo|r";
+				end
+			end
+		end
+
+		return "-";
+	else
+		for i=1, #RE.GuildMembers do
+			if RE.GuildMembers[i]["Name"] == Name then
+				if RE.GuildMembers[i]["Online"] ~= nil then
+					return "1";
+				else
+					return "0";
+				end
+			end
+		end
+
+		return "-1";
 	end
 end
 
@@ -1229,6 +1352,117 @@ function REFlex_ToolTipRatingColorArena(Rating)
 end
 --
 
+-- Query Subsection
+function REFlex_QueryBlock()
+	RE.QueryBlock = false;
+end
+
+function REFlex_SendQuery(REWho)
+	if RE.QueryBlock == false then
+		if REWho == "" or REWho == nil then
+			SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
+			SendAddonMessage("REFlex", "Query", "GUILD");
+		else
+			for i=1, #RE.GuildMembers do
+				if RE.GuildMembers[i]["Name"] == REWho then
+					SendAddonMessage("REFlex", RE.AddonVersionCheck, "WHISPER", REWho);
+					SendAddonMessage("REFlex", "Query", "WHISPER", REWho);
+					break;
+				end
+			end
+		end
+		RE.QueryBlock = true;
+		RE.ShefkiTimer:ScheduleTimer(REFlex_QueryBlock, 60);
+	else
+		print("\124cFF74D06C[REFlex]\124r " .. L["Please wait before sending another query."]);
+	end
+end
+
+function REFlex_SendStats()
+	local REDataString = "";
+
+	if REFSettings["AllowQuery"] then
+		local _, REPlayerClass = UnitClass("player");
+		REDataString = REPlayerClass .. ";";
+
+		local REBGWin, REBGLoss, REArenaWin, REArenaLoss = 0, 0, 0, 0 ;
+		local _, RETimeMonth, RETimeDay, RETimeYear = CalendarGetDate();
+		local REDatabaseItems, REDatabaseAItems = #REFDatabase, #REFDatabaseA;
+		for i=1, #REFDatabase do
+			if tonumber(REFDatabase[REDatabaseItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabase[REDatabaseItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabase[REDatabaseItems]["TimeYe"]) ~= RETimeYear then
+				break;
+			end
+
+			if RE.Faction == REFDatabase[REDatabaseItems]["Winner"] then
+				REBGWin = REBGWin + 1;
+			else
+				REBGLoss = REBGLoss + 1;
+			end
+
+			REDatabaseItems = REDatabaseItems - 1;
+		end
+
+		for i=1, #REFDatabaseA do
+			if tonumber(REFDatabaseA[REDatabaseAItems]["TimeDa"]) ~= RETimeDay or tonumber(REFDatabaseA[REDatabaseAItems]["TimeMo"]) ~= RETimeMonth or tonumber(REFDatabaseA[REDatabaseAItems]["TimeYe"]) ~= RETimeYear then
+				break;
+			end
+
+			if REFDatabaseA[REDatabaseAItems]["Winner"] == REFDatabaseA[REDatabaseAItems]["PlayerTeam"] then
+				REArenaWin = REArenaWin + 1;
+			else
+				REArenaLoss = REArenaLoss + 1;
+			end
+
+			REDatabaseAItems = REDatabaseAItems - 1;
+		end
+		REDataString = REDataString .. REArenaWin .. ";" .. REArenaLoss .. ";" .. REBGWin .. ";" .. REBGLoss .. ";"
+
+		local team2ID = ArenaTeam_GetTeamSizeID(2);
+		local team3ID = ArenaTeam_GetTeamSizeID(3);
+		local team5ID = ArenaTeam_GetTeamSizeID(5);
+		local player2Rating, player3Rating, player5Rating = nil, nil, nil;
+		if team2ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, player2Rating = GetArenaTeam(team2ID);
+		end
+		if team3ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, player3Rating = GetArenaTeam(team3ID);
+		end
+		if team5ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, player5Rating = GetArenaTeam(team5ID);
+		end
+
+		if player2Rating ~= nil then 
+			REDataString = REDataString .. player2Rating .. ";";
+		else
+			REDataString = REDataString .. "0;";
+		end
+		if player3Rating ~= nil then 
+			REDataString = REDataString .. player3Rating .. ";";
+		else
+			REDataString = REDataString .. "0;";
+		end
+		if player5Rating ~= nil then 
+			REDataString = REDataString .. player5Rating .. ";";
+		else
+			REDataString = REDataString .. "0;";
+		end
+
+		if RE.RBG ~= nil then
+			REDataString = REDataString .. RE.RBG .. ";";
+		else
+			REDataString = REDataString .. "0;";
+		end
+
+		REDataString = REDataString .. REFlex_LDBTooltipFill("2v2") .. ";" .. REFlex_LDBTooltipFill("3v3") .. ";" .. REFlex_LDBTooltipFill("5v5") .. ";" .. REFlex_LDBTooltipFill("RBG");
+	else
+		local _, REPlayerClass = UnitClass("player");
+		REDataString = "Block;" .. REPlayerClass;
+	end
+
+	return REDataString;
+end
+--
+
 function REFlex_ArenaExportSearch(REID)
 	if RE.NameSearch ~= nil then
 		local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(REID);
@@ -1253,5 +1487,15 @@ function REFlex_EntryPopup()
 		REFlex_MainTab:Hide();
 		REFlex_ExportTab:Hide();
 	end
+end
+
+function REFlex_MemoryDebug()
+	UpdateAddOnMemoryUsage();
+	RE.CurrentMemoryUsage = GetAddOnMemoryUsage("REFlex");
+	local REDiff = RE.CurrentMemoryUsage - RE.CurrentMemoryDiff;
+	local REDiff1 = RE.CurrentMemoryUsage - RE.CurrentMemoryStart;
+	local REDiff2 = RE.CurrentMemoryUsage - RE.CurrentMemoryIgnition;
+	print("--- " .. REFlex_Round(REDiff, 3) .. " --- " .. REFlex_Round(REDiff1, 3) .. " --- " .. REFlex_Round(REDiff2, 3) .. " --- ");
+	RE.CurrentMemoryDiff = GetAddOnMemoryUsage("REFlex");
 end
 -- ***

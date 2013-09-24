@@ -4,7 +4,6 @@ local L = {
 	["Total"] = true,
 	["Top"] = true,
 	["Place"] = true,
-	
 	["Date"] = true,
 	["Map"] = true,
 	["A Rating"] = true,
@@ -13,15 +12,12 @@ local L = {
 	["Unrated BGs"] = true,
 	["Rated"] = true,
 	["Attendance"] = true,
-
 	["Most common compositions"] = true,
 	["Easiest compositions"] = true,
 	["Hardest compositions"] = true,
-	
 	["Both Specs"] = true,
 	["Spec 1"] = true,
 	["Spec 2"] = true,
-	
 	["Arena support"] = true,
 	["Rated battlegrounds support"] = true,
 	["Unrated battlegrounds support"] = true,
@@ -46,13 +42,14 @@ local L = {
 	["Last active"] = true,
 	["Honor Kills"] = true,
 	["MiniBar scale"] = true,
-
+	["Please wait before sending another query."] = true,
+	["Allow sending daily statistics to other guild members"] = true,
+	["Player disabled data sharing."] = true,
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = true,
 	["Are you sure you want to delete this entry?"] = true,
 	["Reloaded MiniBar settings"] = true,
 	["New version released!"] = true,
-	["Issue command second time to confirm database wipe"] = true,
-
+	["Issue command second time to confirm database wipe."] = true,
 	["Arms"] = true,
 	["Fury"] = true,
 	["Protection"] = true,

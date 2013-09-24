@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 	<Script file="REFlexMain.lua"/>
+	<Script file="REFlexUpdate.lua"/>
 	<Script file="REFlexFunctions.lua"/>
 	<Script file="REFlexMiniBar.lua"/>
 	<Frame name="REFlex_Frame">
@@ -1652,11 +1653,20 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<CheckButton name="$parent_AllowQuery" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-85"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<CheckButton name="$parent_LDBBGMorph" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-155"></AbsDimension>
+							<AbsDimension x="10" y="-180"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1665,7 +1675,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="25" y="-180"></AbsDimension>
+							<AbsDimension x="25" y="-205"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1674,7 +1684,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-205"></AbsDimension>
+							<AbsDimension x="10" y="-230"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1683,7 +1693,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-230"></AbsDimension>
+							<AbsDimension x="10" y="-255"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1692,7 +1702,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-255"></AbsDimension>
+							<AbsDimension x="10" y="-280"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1701,7 +1711,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-280"></AbsDimension>
+							<AbsDimension x="10" y="-305"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1710,7 +1720,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-305"></AbsDimension>
+							<AbsDimension x="10" y="-330"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1719,7 +1729,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-355"></AbsDimension>
+							<AbsDimension x="10" y="-380"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1728,7 +1738,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="25" y="-380"></AbsDimension>
+							<AbsDimension x="25" y="-405"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1737,7 +1747,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-405"></AbsDimension>
+							<AbsDimension x="10" y="-430"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1746,7 +1756,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-430"></AbsDimension>
+							<AbsDimension x="10" y="-455"></AbsDimension>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1758,7 +1768,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="16" y="-100"/>
+							<AbsDimension x="16" y="-125"/>
 						</Offset>
 					</Anchor>
 				</Anchors>

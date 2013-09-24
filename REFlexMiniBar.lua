@@ -27,7 +27,7 @@ function REFlex_UpdateLDB()
 		local _, REHonor = GetCurrencyInfo(HONOR_CURRENCY);
 		local _, RECP = GetCurrencyInfo(CONQUEST_CURRENCY);
 
-		if REHonor == RE.HonorCap then
+		if REHonor >= RE.HonorCap then
 			RE.LDBBar.text = " |rH: |cFFFF141D" .. REHonor;
 		else
 			RE.LDBBar.text = " |rH: |cFFFFFFFF" .. REHonor;
@@ -438,7 +438,7 @@ function REFlex_UpdateMiniBar()
 			elseif REFSettings["MiniBarOrder"][RE.ActiveTalentGroup][j] == "HonorKills" then
 				if REIsRated then
 					REMiniBarLabel = "";
-					REMiniBarValue = "";
+					REMiniBarLDBValue = "";
 				else
 					if REMHKD > 0 then
 						REMHKD = "|cFF00ff00+" .. REMHKD .. "|r"
@@ -532,7 +532,9 @@ function REFlex_UpdateMiniBar()
 					end
 					RESecondTimeBGLDB = true;
 				else
-					RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |r" .. REMiniBarLabel .. "  " .. REMiniBarLDBValue;
+					if REMiniBarLabel ~= "" and REMiniBarLDBValue ~= "" then
+						RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |r" .. REMiniBarLabel .. "  " .. REMiniBarLDBValue;
+					end
 				end
 			end
 		end
