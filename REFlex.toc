@@ -1,10 +1,11 @@
 ## Interface: 40000
 ## Title: REFlex
 ## Notes: Records statistics of played battlegrounds. 
-## Version: 0.5
+## Version: 0.6
 ## Author: Livarax-Karazhan(EU)
-## SavedVariablesPerCharacter: REFDatabase, REFSettings
+## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
+Locals\deDE.lua
 
 Libs\LibStub\LibStub.lua
 
