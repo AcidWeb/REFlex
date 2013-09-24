@@ -101,15 +101,6 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$Parent_MMR" justifyH="CENTER" inherits="SystemFont_Huge1">
-					<Anchors>
-						<Anchor point="TOP">
-							<Offset>
-								<AbsDimension x="235" y="-44" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
 				<FontString name="$Parent_KB1" justifyH="CENTER" inherits="SystemFont_Shadow_Med2">
 					<Color r="0.8" g="0.5" b="0" a="1"/>
 					<Anchors>
@@ -517,7 +508,7 @@
 			<AbsDimension x="655" y="502"/>
 		</Size>
 		<Scripts>
-			<OnLoad> self:RegisterForDrag("LeftButton"); tinsert(UISpecialFrames,"REFlex_MainTab"); PanelTemplates_SetNumTabs(REFlex_MainTab, 6);</OnLoad>
+			<OnLoad> self:RegisterForDrag("LeftButton"); tinsert(UISpecialFrames,"REFlex_MainTab"); PanelTemplates_SetNumTabs(REFlex_MainTab, 7);</OnLoad>
 			<OnShow> PlaySound("igCharacterInfoOpen"); REFlex_MainTabShow(); </OnShow>
 			<OnHide> PlaySound("igCharacterInfoClose"); </OnHide>
 			<OnDragStart> self:StartMoving(); </OnDragStart>
@@ -638,6 +629,134 @@
 							<Anchor point="RIGHT" />
 						</Anchors>
 					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame name="$parent_Tab7" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Scripts>
+					<OnShow> REFlex_Tab7Show(); </OnShow>
+				</Scripts>
+				<Frames>
+					<Frame name="$parent_Table">
+						<Size>
+							<AbsDimension y="1"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOP">
+								<Offset>
+									<AbsDimension y="-102"/>
+								</Offset>
+							</Anchor>
+							<Anchor point="LEFT" />
+							<Anchor point="RIGHT" />
+						</Anchors>
+					</Frame>
+					<EditBox name="$parent_SearchBoxDF" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="30" y="20"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="23" y="-37"/>
+								</Offset>	
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<EditBox name="$parent_SearchBoxMF" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="30" y="20"/></Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxDF">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<EditBox name="$parent_SearchBoxYF" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="40" y="20"/></Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxMF">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<EditBox name="$parent_SearchBoxDT" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="30" y="20"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="23" y="-62"/>
+								</Offset>	
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<EditBox name="$parent_SearchBoxMT" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="30" y="20"/></Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxDT">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<EditBox name="$parent_SearchBoxYT" inherits="InputBoxTemplate">
+						<Size><AbsDimension x="40" y="20"/></Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxMT">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+					<Button name="$parent_Search" inherits="OptionsButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxYF">
+								<Offset>
+									<AbsDimension x="5" y="-1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick> REFlex_Tab7SearchOnClick(); </OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parent_Trigger" inherits="OptionsButtonTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="TOP" relativeTo="REFlex_MainTab_Tab7_Search">
+								<Offset>
+									<AbsDimension x="0" y="5"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick> REFlex_Tab7TriggerOnClick(); </OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parent_Clear" inherits="OptionsButtonTemplate" >
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="REFlex_MainTab_Tab7_SearchBoxYT">
+								<Offset>
+									<AbsDimension x="5" y="-1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick> REFlex_Tab7ClearOnClick(); </OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 
@@ -1311,6 +1430,7 @@
 						REFlex_MainTab_Tab4:Hide();
 						REFlex_MainTab_Tab5:Hide();
 						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1324,6 +1444,7 @@
 						REFlex_MainTab_Tab4:Hide();
 						REFlex_MainTab_Tab5:Hide();
 						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1337,6 +1458,7 @@
 						REFlex_MainTab_Tab4:Hide();
 						REFlex_MainTab_Tab5:Hide();
 						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1350,6 +1472,7 @@
 						REFlex_MainTab_Tab4:Show();
 						REFlex_MainTab_Tab5:Hide();
 						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1363,6 +1486,7 @@
 						REFlex_MainTab_Tab4:Hide();
 						REFlex_MainTab_Tab5:Show();
 						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1376,6 +1500,22 @@
 						REFlex_MainTab_Tab4:Hide();
 						REFlex_MainTab_Tab5:Hide();
 						REFlex_MainTab_Tab6:Show();
+						REFlex_MainTab_Tab7:Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="$parentTab7" inherits="CharacterFrameTabButtonTemplate" id="7">
+				<Scripts>
+					<OnClick>
+						PanelTemplates_SetTab(REFlex_MainTab, 7);
+						REFlex_MainTab_Tab1:Hide();
+						REFlex_MainTab_Tab2:Hide();
+						REFlex_MainTab_Tab3:Hide();
+						REFlex_MainTab_Tab4:Hide();
+						REFlex_MainTab_Tab5:Hide();
+						REFlex_MainTab_Tab6:Hide();
+						REFlex_MainTab_Tab7:Show();
 					</OnClick>
 				</Scripts>
 			</Button>

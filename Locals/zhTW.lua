@@ -1,6 +1,6 @@
 if GetLocale() ~= "zhTW" then return end
 
---Translation by wushan 
+--Translation by wushan and zhTW 
 REFlexLocale:CreateLocaleTable({
 	["A Rating"] = "\232\129\175\231\155\159\230\150\185\229\136\134\230\149\184", -- Needs review
 	Affliction = "\231\151\155\232\139\166", -- Needs review
@@ -9,6 +9,7 @@ REFlexLocale:CreateLocaleTable({
 	["Arena support"] = "\230\148\175\230\143\180\231\171\182\230\138\128\229\160\180", -- Needs review
 	Arms = "\230\173\166\229\153\168", -- Needs review
 	Assassination = "Assassination", -- Requires localization
+	Attendance = "Attendance", -- Requires localization
 	Balance = "\229\185\179\232\161\161", -- Needs review
 	["Bar 1"] = "Bar 1", -- Requires localization
 	["Bar 2"] = "Bar 2", -- Requires localization
@@ -34,6 +35,7 @@ REFlexLocale:CreateLocaleTable({
 	["Honor Kills"] = "\230\166\174\232\173\189\230\147\138\230\174\186", -- Needs review
 	["Issue command second time to confirm database wipe"] = "Issue command second time to confirm database wipe", -- Requires localization
 	["K/D Ratio"] = "K/D Ratio", -- Requires localization
+	["Last active"] = "Last active", -- Requires localization
 	Left = "Left", -- Requires localization
 	Map = "\229\156\176\229\156\150", -- Needs review
 	Marksmanship = "Marksmanship", -- Requires localization

@@ -22,59 +22,63 @@ function REFlex_LoadLDB()
 end
 
 function REFlex_UpdateLDB()
-	local REhk = GetPVPLifetimeStats();
-	local _, REHonor = GetCurrencyInfo(HONOR_CURRENCY);
-	local _, RECP = GetCurrencyInfo(CONQUEST_CURRENCY);
+	if RE.RBGCounter then
+		local REhk = GetPVPLifetimeStats();
+		local _, REHonor = GetCurrencyInfo(HONOR_CURRENCY);
+		local _, RECP = GetCurrencyInfo(CONQUEST_CURRENCY);
 
-	if REHonor == RE.HonorCap then
-		RE.LDBBar.text = " |rH: |cFFFF141D" .. REHonor;
-	else
-		RE.LDBBar.text = " |rH: |cFFFFFFFF" .. REHonor;
-	end
-
-	if RE.RBGPointsWeek ~= nil then
-		local REColor = "FFFFFFFF";
-		if RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
-			REColor = "FFFF141D";
+		if REHonor == RE.HonorCap then
+			RE.LDBBar.text = " |rH: |cFFFF141D" .. REHonor;
+		else
+			RE.LDBBar.text = " |rH: |cFFFFFFFF" .. REHonor;
 		end
-		if REFSettings["LDBCPCap"] then
-			local RECPToGo = RE.RBGMaxPointsWeek - RE.RBGPointsWeek;
-			if RECPToGo == 0 then
-				RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r";	
+
+		if RE.RBGPointsWeek ~= nil then
+			local REColor = "FFFFFFFF";
+			if RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
+				REColor = "FFFF141D";
+			end
+			if REFSettings["LDBCPCap"] then
+				local RECPToGo = RE.RBGMaxPointsWeek - RE.RBGPointsWeek;
+				if RECPToGo == 0 then
+					RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r";	
+				else
+					RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r (|cFFFFFFFF" .. RECPToGo .. "|r)";
+				end
 			else
-				RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r (|cFFFFFFFF" .. RECPToGo .. "|r)";
+				RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r"
 			end
 		else
-			RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |c" .. REColor .. RECP .. "|r"
+			RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |cFFFFFFFF" .. RECP .. "|r"
 		end
-	else
-		RE.LDBBar.text = RE.LDBBar.text .. "|r  CP: |cFFFFFFFF" .. RECP .. "|r"
-	end
 
-	if REFSettings["LDBHK"] then
-		RE.LDBBar.text = RE.LDBBar.text .. "|r  HK: |cFFFFFFFF" .. REhk .. "|r"
-	end
+		if REFSettings["LDBHK"] then
+			RE.LDBBar.text = RE.LDBBar.text .. "|r  HK: |cFFFFFFFF" .. REhk .. "|r"
+		end
 
-	if REFSettings["LDBShowTotalBG"] then
-		RE.LDBBGWin, RE.LDBBGLoss, RE.LDBBGRatio = REFlex_WinLoss(nil, nil, nil);
-		RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rBG: |cFF00CC00" .. RE.LDBBGWin .. "|r - |cFFCC0000" .. RE.LDBBGLoss .. "|r |cFFFFFFFF(" .. RE.LDBBGRatio .. ")|r";
-	end
-	if REFSettings["LDBShowTotalArena"] then
-		RE.LDBArenaWin, RE.LDBArenaLoss, RE.LDBArenaRatio = REFlex_WinLossArena(nil, nil, nil);
-		RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rA: |cFF00CC00" .. RE.LDBArenaWin .. "|r - |cFFCC0000" .. RE.LDBArenaLoss .. "|r |cFFFFFFFF(" .. RE.LDBArenaRatio .. ")|r";
-	end
+		if REFSettings["LDBShowTotalBG"] then
+			RE.LDBBGWin, RE.LDBBGLoss, RE.LDBBGRatio = REFlex_WinLoss(nil, nil, nil);
+			RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rBG: |cFF00CC00" .. RE.LDBBGWin .. "|r - |cFFCC0000" .. RE.LDBBGLoss .. "|r |cFFFFFFFF(" .. RE.LDBBGRatio .. ")|r";
+		end
+		if REFSettings["LDBShowTotalArena"] then
+			RE.LDBArenaWin, RE.LDBArenaLoss, RE.LDBArenaRatio = REFlex_WinLossArena(nil, nil, nil);
+			RE.LDBBar.text = RE.LDBBar.text .. "|cFF696969  |  |rA: |cFF00CC00" .. RE.LDBArenaWin .. "|r - |cFFCC0000" .. RE.LDBArenaLoss .. "|r |cFFFFFFFF(" .. RE.LDBArenaRatio .. ")|r";
+		end
 
-	if RE.LDBQueue ~= "" then
-		RE.LDBBar.text = RE.LDBBar.text .. RE.LDBQueue;
+		if RE.LDBQueue ~= "" then
+			RE.LDBBar.text = RE.LDBBar.text .. RE.LDBQueue;
+		end
 	end
 end
 
 function REFlex_UpdateLDBQueues(QueueID)
-	local REStatus, REMapName = GetBattlefieldStatus(QueueID);
-	if REStatus == "queued" then
-		local REWaitTime = GetBattlefieldEstimatedWaitTime(QueueID);
-		local RETimeInQueue = GetBattlefieldTimeWaited(QueueID);
-		RE.LDBQueue = RE.LDBQueue .. "|cFF696969  |  |r" .. REFlex_ShortMap(REMapName) .. ": |cFFFFFFFF" .. REFlex_ShortTime(RETimeInQueue) .. "|r / |cFF00CC00" .. REFlex_ShortTime(REWaitTime) .. "|r";
+	if RE.RBGCounter then
+		local REStatus, REMapName = GetBattlefieldStatus(QueueID);
+		if REStatus == "queued" then
+			local REWaitTime = GetBattlefieldEstimatedWaitTime(QueueID);
+			local RETimeInQueue = GetBattlefieldTimeWaited(QueueID);
+			RE.LDBQueue = RE.LDBQueue .. "|cFF696969  |  |r" .. REFlex_ShortMap(REMapName) .. ": |cFFFFFFFF" .. REFlex_ShortTime(RETimeInQueue) .. "|r / |cFF00CC00" .. REFlex_ShortTime(REWaitTime) .. "|r";
+		end
 	end
 end
 
@@ -105,6 +109,8 @@ function REFlex_LDBTooltipFill(Field)
 		end
 	elseif Field == "MMR" then
 		RENew = REFSettings["CurrentMMR"];
+	elseif Field == "MMRBG" then
+		RENew = REFSettings["CurrentMMRBG"];
 	end
 
 	if RENew == nil then
@@ -182,8 +188,6 @@ function REFlex_LDBTooltip(self)
 		REDatabaseAItems = REDatabaseAItems - 1;
 	end
 
-	local REMMRDiff = REFSettings["LastDayStats"]["MMR"] + REFSettings["CurrentMMR"];
-
 	local RETooltip = RE.QTip:Acquire("RELDBToolTip", 3, "RIGHT", "CENTER", "LEFT");
 	local RENormalFont = RETooltip:GetFont();
 	self.tooltip = RETooltip;
@@ -201,8 +205,8 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
 	RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
 	RETooltip:AddLine();
-	RETooltip:AddHeader("", "|cFF74D06C" .. string.gsub(SCORE_TEAM_SKILL, "\n", " ")  .. "|r", "");
-	RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100)|r", "");
+	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. " MMR / RBG MMR|r", "");
+	RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100) / |r" .. REFSettings["CurrentMMRBG"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMRBG") .. "|cFFFFD100)|r", "");
 	RETooltip:SetFont(RENormalFont);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();

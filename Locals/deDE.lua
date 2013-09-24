@@ -9,6 +9,7 @@ REFlexLocale:CreateLocaleTable({
 	["Arena support"] = "Arenaunterst\195\188tzung", -- Needs review
 	Arms = "Waffen",
 	Assassination = "Meucheln",
+	Attendance = "Teilnahme", -- Requires review
 	Balance = "Gleichgewicht",
 	["Bar 1"] = "Bar 1",
 	["Bar 2"] = "Bar 2",
@@ -34,6 +35,7 @@ REFlexLocale:CreateLocaleTable({
 	["Honor Kills"] = "Ehrenhafte Todesst\195\182\195\159e",
 	["Issue command second time to confirm database wipe"] = "Kommando wiederholen, um die Datenbank zu l\195\182schen", -- Needs review
 	["K/D Ratio"] = "K/D Rate",
+	["Last active"] = "Zuletzt aktiv", -- Requires review
 	Left = "Links",
 	Map = "Karte",
 	Marksmanship = "Treffsicherheit",

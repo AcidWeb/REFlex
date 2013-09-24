@@ -12,6 +12,7 @@ local L = {
 	["Rated BGs"] = true,
 	["Unrated BGs"] = true,
 	["Rated"] = true,
+	["Attendance"] = true,
 
 	["Most common compositions"] = true,
 	["Easiest compositions"] = true,
@@ -41,6 +42,7 @@ local L = {
 	["Left"] = true,
 	["Right"] = true,
 	["K/D Ratio"] = true,
+	["Last active"] = true,
 	["Honor Kills"] = true,
 	["MiniBar scale"] = true,
 

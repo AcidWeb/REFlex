@@ -313,23 +313,25 @@ function REFlex_FindArena(FieldName, Bracket, TalentSets, Map)
 	return RE.FTop, RE.FSum;
 end
 
-function REFlex_WinLossI(Faction, j)
-	if Faction == "Horde" then
-		if REFDatabase[j]["Winner"] == FACTION_HORDE then
-			RE.Win = RE.Win + 1;
+function REFlex_WinLossI(Faction, j, TimeF, TimeT)
+	if (TimeF == nil) or (REFDatabase[j]["TimeRaw"] >= TimeF and REFDatabase[j]["TimeRaw"] <= TimeT and REFDatabase[j]["RBG" .. RE.Faction .. "Team"] ~= nil) then
+		if Faction == "Horde" then
+			if REFDatabase[j]["Winner"] == FACTION_HORDE then
+				RE.Win = RE.Win + 1;
+			else
+				RE.Loss = RE.Loss + 1;
+			end
 		else
-			RE.Loss = RE.Loss + 1;
-		end
-	else
-		if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
-			RE.Win = RE.Win + 1;
-		else
-			RE.Loss = RE.Loss + 1;
+			if REFDatabase[j]["Winner"] == FACTION_ALLIANCE then
+				RE.Win = RE.Win + 1;
+			else
+				RE.Loss = RE.Loss + 1;
+			end
 		end
 	end
 end
 
-function REFlex_WinLoss(Rated, TalentSets, Map)
+function REFlex_WinLoss(Rated, TalentSets, Map, TimeF, TimeT)
 	RE.Win = 0;
 	RE.Loss = 0;
 
@@ -338,19 +340,19 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(RE.Faction, j);
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			end
@@ -358,18 +360,18 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
-					REFlex_WinLossI(RE.Faction, j);
+					REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
 				end
 			end
 		end
@@ -378,19 +380,19 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["TalentSet"] == TalentSets and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			end
@@ -398,19 +400,19 @@ function REFlex_WinLoss(Rated, TalentSets, Map)
 			if Rated then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			elseif Rated == false then
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["IsRated"] == false and REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);	
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);	
 					end
 				end
 			else
 				for j=1, #REFDatabase do
 					if REFDatabase[j]["MapName"] == Map then
-						REFlex_WinLossI(RE.Faction, j);
+						REFlex_WinLossI(RE.Faction, j, TimeF, TimeT);
 					end
 				end
 			end
@@ -566,9 +568,13 @@ function REFlex_ArenaTeamHash(DatabaseID, isEnemy)
 	return REEnemyNames, REEnemyID, REFriendNames, REFriendID, Team, TeamE, REEnemyNamesSpec;
 end
 
-function REFlex_ArenaTeamGrid()
-	for j=1, #REFDatabaseA do
-		local REEnemyNames, REEnemyID, _, _, _, _, REEnemyNamesSpec = REFlex_ArenaTeamHash(j, true);
+function REFlex_ArenaTeamGrid(IDTo)
+	for j=IDTo, #REFDatabaseA do
+		if REFDatabaseA[j] == nil then
+			break;
+		end
+
+		local REEnemyNames, _, _, _, _, _, REEnemyNamesSpec = REFlex_ArenaTeamHash(j, true);
 
 		local REEnemyTeamID = table.concat(REEnemyNames);
 		if RE.ArenaTeams[REEnemyTeamID] == nil then
@@ -583,43 +589,97 @@ function REFlex_ArenaTeamGrid()
 		end
 
 		if REEnemyNamesSpec[1] ~= nil then
-			local REEnemyTeamID = table.concat(REEnemyNamesSpec);
-			local RETempBracket = { strsplit("#", REEnemyTeamID) };
-			REEnemyTeamID = RETempBracket[1] .. "#" .. RETempBracket[3];
-			local REEnemyTeamIDNoTalent = RETempBracket[3];
-			if RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID] == nil then
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID] = {};
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Win"] = 0;
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Loss"] = 0;
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Total"] = 0;
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Team"] = REEnemyTeamIDNoTalent;
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["TalentSet"] = REFDatabaseA[j]["TalentSet"];
+			local RETempBracket = { strsplit("#", table.concat(REEnemyNamesSpec)) };
+			local REEnemyTeamID = RETempBracket[3];
+			
+			if RE.ArenaTeamsSpec[REEnemyTeamID] == nil then
+				RE.ArenaTeamsSpec[REEnemyTeamID] = {};
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Win1"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss1"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Total1"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Win2"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss2"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Total2"] = 0;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Team"] = REEnemyTeamID;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Bracket"] = RETempBracket[2];
+				RE.ArenaTeamsSpec[REEnemyTeamID]["TalentSet"] = REFDatabaseA[j]["TalentSet"];
 			end
-			if RE.ArenaTeamsSpec["All"][REEnemyTeamID] == nil then
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID] = {};
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Win"] = 0;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Loss"] = 0;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Total"] = 0;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Team"] = REEnemyTeamIDNoTalent;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["TalentSet"] = REFDatabaseA[j]["TalentSet"];
-			end
+			
 			if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Win"] + 1;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Win"] + 1;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win"] + 1;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Win" .. REFDatabaseA[j]["TalentSet"]] + 1;
 			else
-				RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Loss"] + 1;
-				RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Loss"] + 1;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss"] + 1;
+				RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Loss" .. REFDatabaseA[j]["TalentSet"]] + 1;
 			end
-			RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec[RETempBracket[2]][REEnemyTeamID]["Total"] + 1;
-			RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec["All"][REEnemyTeamID]["Total"] + 1;
+			RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total"] + 1;
+			RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] = RE.ArenaTeamsSpec[REEnemyTeamID]["Total" .. REFDatabaseA[j]["TalentSet"]] + 1;
+		end
+		RE.ArenaLastID = j;
+	end
+end
+
+function REFlex_Tab7PlayerGrid(TimeF, TimeT)
+	RE.Tab7Matrix = {};
+	local REBGCounter = 0;
+	
+ 	for j=1, #REFDatabase do
+		if REFDatabase[j]["IsRated"] and REFDatabase[j]["RBG" .. RE.Faction .. "Team"] ~= nil and REFDatabase[j]["TimeRaw"] >= TimeF and REFDatabase[j]["TimeRaw"] <= TimeT then
+			for k=1, #REFDatabase[j]["RBG" .. RE.Faction .. "Team"] do
+				local REName = REFlex_NameClean(REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["name"]);
+				if RE.Tab7Matrix[REName] == nil then
+					RE.Tab7Matrix[REName] = {};
+					RE.Tab7Matrix[REName]["Name"] = REName;
+					RE.Tab7Matrix[REName]["Class"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["classToken"];
+					RE.Tab7Matrix[REName]["Time"] = j;
+					RE.Tab7Matrix[REName]["Attendance"] = 1;
+					if REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"] ~= nil then
+						RE.Tab7Matrix[REName]["MMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"];
+						RE.Tab7Matrix[REName]["LastMMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"];
+						RE.Tab7Matrix[REName]["RBG"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"];
+						RE.Tab7Matrix[REName]["LastRBG"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"]  + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"];
+					end
+				else
+					RE.Tab7Matrix[REName]["Time"] = j;
+					RE.Tab7Matrix[REName]["Attendance"] = RE.Tab7Matrix[REName]["Attendance"] + 1;
+					if REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"] ~= nil then
+						RE.Tab7Matrix[REName]["LastMMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["MMRChange"];
+						RE.Tab7Matrix[REName]["LastRBG"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] + REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRatingChange"];
+					end
+					if (RE.Tab7Matrix[REName]["MMR"] == nil and RE.Tab7Matrix[REName]["RBG"] == nil) and (REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"] ~= nil and REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"] ~= nil) then
+						RE.Tab7Matrix[REName]["MMR"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["PreMMR"];
+						RE.Tab7Matrix[REName]["RBG"] = REFDatabase[j]["RBG" .. RE.Faction .. "Team"][k]["BGRating"];
+					end
+				end
+			end
+			REBGCounter = REBGCounter + 1;
 		end
 	end
+
+	local RETableCount, RETableI = REFlex_TableCount(RE.Tab7Matrix);
+	for j=1, RETableCount do
+		if RE.Tab7Matrix[RETableI[j]]["MMR"] ~= nil and RE.Tab7Matrix[RETableI[j]]["RBG"] ~= nil then
+			RE.Tab7Matrix[RETableI[j]]["DiffMMR"] = RE.Tab7Matrix[RETableI[j]]["LastMMR"] - RE.Tab7Matrix[RETableI[j]]["MMR"];
+			RE.Tab7Matrix[RETableI[j]]["DiffRBG"] = RE.Tab7Matrix[RETableI[j]]["LastRBG"] - RE.Tab7Matrix[RETableI[j]]["RBG"];
+		end
+	end
+
+	return REBGCounter;
 end
 --
 
 -- Timers subsection
 function REFlex_MiniBarDelay()
 	REFlex_Frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE");
+end
+
+function REFlex_PVPUpdateDelay()
+	RE.RBGCounter = true;
+	RequestRatedBattlegroundInfo();
+	REFlex_UpdateLDB();
 end
 
 function REFlex_ArenaTalentCheck()
@@ -741,6 +801,23 @@ function REFlex_TableClick(TableName, column)
 	RE["MainTable" .. TableName]:SortData();
 end
 
+function REFlex_FindTab7Default()
+	_, RE.Tab7Default["T"]["m"], RE.Tab7Default["T"]["d"], RE.Tab7Default["T"]["y"] = CalendarGetDate();
+	_, RE.Tab7Search["T"]["m"], RE.Tab7Search["T"]["d"], RE.Tab7Search["T"]["y"] = CalendarGetDate();
+
+	for i=1, #REFDatabase do
+		if REFDatabase[i]["IsRated"] and REFDatabase[i]["RBG" .. RE.Faction .. "Team"] ~= nil then
+			RE.Tab7Default["F"]["m"] = tonumber(REFDatabase[i]["TimeMo"]);
+			RE.Tab7Default["F"]["d"] = tonumber(REFDatabase[i]["TimeDa"]);
+			RE.Tab7Default["F"]["y"] = tonumber(REFDatabase[i]["TimeYe"]);
+			RE.Tab7Search["F"]["m"] = tonumber(REFDatabase[i]["TimeMo"]);
+			RE.Tab7Search["F"]["d"] = tonumber(REFDatabase[i]["TimeDa"]);
+			RE.Tab7Search["F"]["y"] = tonumber(REFDatabase[i]["TimeYe"]);
+			break;
+		end
+	end
+end
+
 function REFlex_Tab_DefaultFilter(self, rowdata)
 	if RE.TalentTab ~= nil then
 		if rowdata["cols"][12]["value"] == RE.TalentTab then
@@ -748,6 +825,20 @@ function REFlex_Tab_DefaultFilter(self, rowdata)
 		else
 			return false;
 		end
+	else
+		return true;
+	end
+end
+
+function REFlex_Tab_Tab7Filter(self, rowdata)
+	if RE.Tab7GuildOnly and RE.InGuild == 1 then
+		for i=1, #RE.GuildMembers do
+			if RE.GuildMembers[i] == rowdata["cols"][12]["value"] then
+				return true;
+			end
+		end
+	
+		return false;
 	else
 		return true;
 	end
@@ -840,6 +931,16 @@ function REFlex_TableRBGRatingMMRColor(Rating, j)
 	return Color .. Rating .. "|r" .. MMR;
 end
 
+function REFlex_TableRBGRatingMMR(Faction, j)
+	local RELine = "";
+	
+	if REFDatabase[j][Faction .. "MMR"] ~= nil then
+		RELine = " / " .. REFDatabase[j][Faction .. "MMR"];
+	end
+
+	return REFDatabase[j][Faction .. "Rating"] .. RELine;
+end
+
 function REFlex_TableTeamArenaTab6(TeamString)
 	local RETeamLine = "";
 
@@ -851,6 +952,34 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	end
 
 	return RETeamLine;
+end
+
+function REFlex_TableTab7Field(Value, Field)
+	if Field == "LastMMR" or Field == "LastRBG" then
+		if Value == nil then
+			return "";
+		else
+			return Value;
+		end
+	elseif Field == "DiffMMRa" or Field == "DiffRBGa" then
+		if Value == nil then
+			return -1;
+		else
+			return Value;
+		end
+	elseif Field == "DiffMMR" or Field == "DiffRBG" then
+		if Value ~= nil then
+			if Value > 0 then
+				return "|cFF00FF00+" .. Value.. "|r";
+			elseif Value < 0 then
+				return "|cFFFF141C" .. Value .. "|r";
+			else
+				return Value;
+			end
+		else
+			return "";
+		end
+	end
 end
 
 function REFlex_TableTeamArena(IsEnemy, j)
@@ -959,6 +1088,36 @@ function REFlex_TableCheckRated(Rated)
 			["a"] = 1.0,
 		};
 	end
+end
+
+function REFlex_TableWinError(HordeN, AllyN)
+	if HordeN > 10 or AllyN > 10 then
+		return { 
+			["r"] = 0.9,
+			["g"] = 0.9,
+			["b"] = 0,
+			["a"] = 1.0,
+		};
+	else
+		return { 
+			["r"] = 1,
+			["g"] = 1,
+			["b"] = 1,
+			["a"] = 1.0,
+		};
+	end
+end
+
+function REFlex_TableTab7Attendance(Attendance)
+	local Red = 1 - (Attendance/10*0.1);
+	local Green = Attendance/10*0.1;
+
+	return { 
+		["r"] = Red,
+		["g"] = Green,
+		["b"] = 0,
+		["a"] = 1.0,
+	};
 end
 --
 

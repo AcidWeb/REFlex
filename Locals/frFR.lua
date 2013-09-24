@@ -1,6 +1,6 @@
 if GetLocale() ~= "frFR" then return end
 
---Translation by Gromleuh
+--Translation by Gromleuh and Nothingz
 REFlexLocale:CreateLocaleTable({
 	["A Rating"] = "Classement A",
 	Affliction = "Affliction",
@@ -9,7 +9,8 @@ REFlexLocale:CreateLocaleTable({
 	["Arena support"] = "Support Ar\195\168ne",
 	Arms = "Armes",
 	Assassination = "Assassinat",
-	Balance = "Equilibre",
+	Attendance = "Fr\195\169quentation", -- Needs review
+	Balance = "\195\137quilibre", -- Needs review
 	["Bar 1"] = "Bar 1",
 	["Bar 2"] = "Bar 2",
 	["Beast Mastery"] = "Maitrise des B\195\170tes",
@@ -21,7 +22,7 @@ REFlexLocale:CreateLocaleTable({
 	Destruction = "Destruction",
 	Discipline = "Discipline",
 	["Easiest compositions"] = "Compos les plus faciles",
-	Elemental = "Elementaire",
+	Elemental = "\195\137l\195\169mentaire", -- Needs review
 	Enhancement = "Am\195\169lioration",
 	Feral = "F\195\169ral",
 	Fire = "Feu",
@@ -29,15 +30,16 @@ REFlexLocale:CreateLocaleTable({
 	Fury = "Furie",
 	["H Rating"] = "Classement H",
 	["Hardest compositions"] = "Compos les plus dures",
-	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Maintenir SHIFT dans le parcours de matchs d'ar\195\168ne pour avoir des infobulles d\195\169taill\195\169es",
+	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Maintenir MAJ dans l'historique de matchs d'ar\195\168ne pour avoir des infobulles d\195\169taill\195\169es", -- Needs review
 	Holy = "Sacr\195\169",
 	["Honor Kills"] = "Victoires Honorables",
 	["Issue command second time to confirm database wipe"] = "Confirmer l'effacement de la base de donn\195\169es",
 	["K/D Ratio"] = "K/D Ratio",
+	["Last active"] = "Dernier actif ", -- Needs review
 	Left = "Gauche",
 	Map = "Carte",
 	Marksmanship = "Pr\195\169cision",
-	["MiniBar modules"] = "Module MiniBar",
+	["MiniBar modules"] = "Modules MiniBar", -- Needs review
 	["MiniBar scale"] = "Echelle MiniBar",
 	["Most common compositions"] = "Compos les plus communes",
 	["New version released!"] = "Nouvelle version !",
@@ -47,22 +49,23 @@ REFlexLocale:CreateLocaleTable({
 	RECORD = "RECORD",
 	Rated = "Cot\195\169", -- Needs review
 	["Rated BGs"] = "BGs cot\195\169s", -- Needs review
-	["Rated battlegrounds support"] = "Support des BGs cot\195\169s", -- Needs review
-	["Reloaded MiniBar settings"] = "Reglages MiniBar Recharg\195\169s",
+	["Rated battlegrounds support"] = "Support des BGs cot\195\169s",
+	["Reloaded MiniBar settings"] = "R\195\169glages MiniBar Recharg\195\169s", -- Needs review
 	Restoration = "Restauration",
 	Retribution = "Vindicte",
 	Right = "Droite",
 	Shadow = "Ombre",
 	["Show Arena totals"] = "Afficher les totaux d'Ar\195\168ne",
-	["Show Battleground totals"] = "Afficher les totaux de BGs",
+	["Show Battleground totals"] = "Afficher les BGs Totaux", -- Needs review
 	["Show Honorable Kills"] = "Afficher les victoires honorables",
 	["Show LDB MiniBar (Battlegrounds only)"] = "Afficher la LDB Minibar (Seulement en BGs)",
 	["Show MiniBar (Battlegrounds only)"] = "Afficher la Minibar (Seulement en BGs)",
-	["Show amount of CPs to cap"] = "Afficher la limite de points de conqu\195\170te",
+	["Show amount of CPs to cap"] = "Afficher la limite de points de conqu\195\170te\
+Afficher points de conqu\195\170te pour atteindre le cap /// this traduction is the command is actual Cap - actual CP on cap ///", -- Needs review
 	["Show detected builds"] = "Afficher les builds d\195\169tect\195\169s",
 	["Show main window"] = "Afficher fen\195\170tre principale",
 	["Show minimap button"] = "Afficher le bouton Minimap",
-	["Show place instead difference of score"] = "Afficher le classement a la place de la difference de score",
+	["Show place instead difference of score"] = "Afficher le classement a la place de la diff\195\169rence de score", -- Needs review
 	["Show queues"] = "Afficher les files d'attente",
 	["Spec 1"] = "Spec 1",
 	["Spec 2"] = "Spec 2",
@@ -72,5 +75,5 @@ REFlexLocale:CreateLocaleTable({
 	Total = "Total",
 	Unholy = "Impie",
 	["Unrated BGs"] = "BGs non-cot\195\169s", -- Needs review
-	["Unrated battlegrounds support"] = "Support des BGs non-cot\195\169s", -- Needs review
+	["Unrated battlegrounds support"] = "Support des BGs non-cot\195\169s",
 });
