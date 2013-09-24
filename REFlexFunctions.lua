@@ -30,6 +30,7 @@ function REFlex_SettingsReload()
 	RE.SecondTimeMiniBar = false;
 	RE.MiniBarSecondLineRdy = false;
 	RequestRatedBattlegroundInfo();
+	RequestPVPRewards();
 	REFlex_UpdateLDB();
 	
 	if RE.NeedReload then
@@ -90,6 +91,34 @@ function REFlex_GUI_ModuleChangeBarOrder(ModuleName, OldOrder, NewOrder)
 
 	REFlex_GUIModulesOnShow();
 	REFlex_SettingsReload();
+end
+
+function REFlex_PVPStatsCompleting()
+	local _, _, REToday = CalendarGetDate();
+
+	if REToday ~= REFSettings["LastDay"] then
+		REFSettings["LastDay"] = REToday;
+		_, REFSettings["LastDayStats"]["Honor"] = GetCurrencyInfo(HONOR_CURRENCY);
+		_, REFSettings["LastDayStats"]["CP"] = GetCurrencyInfo(CONQUEST_CURRENCY);
+		local team2ID = ArenaTeam_GetTeamSizeID(2);
+		local team3ID = ArenaTeam_GetTeamSizeID(3);
+		local team5ID = ArenaTeam_GetTeamSizeID(5);
+		REFSettings["LastDayStats"]["2v2"], REFSettings["LastDayStats"]["3v3"], REFSettings["LastDayStats"]["5v5"] = 0, 0, 0;
+		if team2ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["2v2"] = GetArenaTeam(team2ID);
+		end
+		if team3ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["3v3"] = GetArenaTeam(team3ID);
+		end
+		if team5ID ~= nil then
+			_, _, _, _, _, _, _, _, _, _, REFSettings["LastDayStats"]["5v5"] = GetArenaTeam(team5ID);
+		end
+
+		REFSettings["LastDayStats"]["RBG"] = RE.RBG;
+		REFSettings["LastDayStats"]["MMR"] = REFSettings["CurrentMMR"];
+		REFSettings["LastDayStats"]["MMRBG"] = REFSettings["CurrentMMRBG"];
+	end
+	REFlex_UpdateLDB();
 end
 --
 
@@ -605,7 +634,6 @@ function REFlex_ArenaTeamGrid(IDTo)
 				RE.ArenaTeamsSpec[REEnemyTeamID]["Total2"] = 0;
 				RE.ArenaTeamsSpec[REEnemyTeamID]["Team"] = REEnemyTeamID;
 				RE.ArenaTeamsSpec[REEnemyTeamID]["Bracket"] = RETempBracket[2];
-				RE.ArenaTeamsSpec[REEnemyTeamID]["TalentSet"] = REFDatabaseA[j]["TalentSet"];
 			end
 			
 			if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
@@ -675,6 +703,7 @@ end
 function REFlex_PVPUpdateDelay()
 	RE.RBGCounter = true;
 	RequestRatedBattlegroundInfo();
+	RequestPVPRewards();
 	REFlex_UpdateLDB();
 end
 
@@ -878,7 +907,7 @@ function REFlex_TableRatingMMRArena(PlayerTeam, j)
 	local Rating = 0;
 	local MMR = REFDatabaseA[j]["MMRChange"];
 
-	if MMR ~= nil then
+	if MMR ~= nil and REFDatabaseA[j]["Season"] < 10 then
 		if MMR > 0 then
 			MMR = " / |cFF00FF00+" .. MMR.. "|r";
 		elseif MMR == 0 then
@@ -916,7 +945,7 @@ function REFlex_TableRBGRatingMMRColor(Rating, j)
 
 	local MMR = REFDatabase[j]["MMRChange"];
 
-	if MMR ~= nil then
+	if MMR ~= nil and REFDatabase[j]["DataVersion"] < 12 then
 		if MMR > 0 then
 			MMR = " / |cFF00FF00+" .. MMR.. "|r";
 		elseif MMR == 0 then
@@ -934,7 +963,7 @@ end
 function REFlex_TableRBGRatingMMR(Faction, j)
 	local RELine = "";
 	
-	if REFDatabase[j][Faction .. "MMR"] ~= nil then
+	if REFDatabase[j][Faction .. "MMR"] ~= nil and REFDatabase[j]["DataVersion"] < 12 then
 		RELine = " / " .. REFDatabase[j][Faction .. "MMR"];
 	end
 

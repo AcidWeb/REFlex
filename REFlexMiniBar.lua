@@ -35,7 +35,9 @@ function REFlex_UpdateLDB()
 
 		if RE.RBGPointsWeek ~= nil then
 			local REColor = "FFFFFFFF";
-			if RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
+			if RE.RBGPointsWeek >= RE.RBGSoftMaxPointsWeek then
+				REColor = "FFFFFF33";
+			elseif RE.RBGPointsWeek == RE.RBGMaxPointsWeek then
 				REColor = "FFFF141D";
 			end
 			if REFSettings["LDBCPCap"] then
@@ -204,9 +206,9 @@ function REFlex_LDBTooltip(self)
 	RETooltip:AddLine();
 	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. "|r", "");
 	RETooltip:AddLine("|cFF00CC00" .. REArenaWin .. "|r", "-", "|cFFCC0000" .. REArenaLoss .. "|r");
-	RETooltip:AddLine();
-	RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. " MMR / RBG MMR|r", "");
-	RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100) / |r" .. REFSettings["CurrentMMRBG"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMRBG") .. "|cFFFFD100)|r", "");
+	--RETooltip:AddLine();
+	--RETooltip:AddHeader("", "|cFF74D06C" .. ARENA .. " MMR / RBG MMR|r", "");
+	--RETooltip:AddLine("", REFSettings["CurrentMMR"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMR") .. "|cFFFFD100) / |r" .. REFSettings["CurrentMMRBG"] .. " |cFFFFD100(|r" .. REFlex_LDBTooltipFill("MMRBG") .. "|cFFFFD100)|r", "");
 	RETooltip:SetFont(RENormalFont);
 	RETooltip:AddLine();
 	RETooltip:AddSeparator();
