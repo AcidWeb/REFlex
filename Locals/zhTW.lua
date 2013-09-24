@@ -2,12 +2,12 @@ if GetLocale() ~= "zhTW" then return end
 
 --Translation by wushan and zhTW 
 REFlexLocale:CreateLocaleTable({
-	["A Rating"] = "\232\129\175\231\155\159\230\150\185\229\136\134\230\149\184", -- Needs review
 	Affliction = "\231\151\155\232\139\166", -- Needs review
 	["Allow sending daily statistics to other guild members"] = "Allow sending daily statistics to other guild members", -- Requires localization
+	["A Rating"] = "\232\129\175\231\155\159\230\150\185\229\136\134\230\149\184", -- Needs review
 	Arcane = "\231\165\149\230\179\149", -- Needs review
-	["Are you sure you want to delete this entry?"] = "\231\162\186\229\174\154\232\166\129\229\136\170\233\153\164\230\173\164\233\160\133\232\168\152\233\140\132\229\151\142\239\188\159", -- Needs review
 	["Arena support"] = "\230\148\175\230\143\180\231\171\182\230\138\128\229\160\180", -- Needs review
+	["Are you sure you want to delete this entry?"] = "\231\162\186\229\174\154\232\166\129\229\136\170\233\153\164\230\173\164\233\160\133\232\168\152\233\140\132\229\151\142\239\188\159", -- Needs review
 	Arms = "\230\173\166\229\153\168", -- Needs review
 	Assassination = "Assassination", -- Requires localization
 	Attendance = "Attendance", -- Requires localization
@@ -29,12 +29,14 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "\231\129\171\231\132\176", -- Needs review
 	Frost = "\229\134\176\233\156\156", -- Needs review
 	Fury = "\231\139\130\230\128\146", -- Needs review
-	["H Rating"] = "\233\131\168\232\144\189\230\150\185\229\136\134\230\149\184", -- Needs review
+	["Guild query"] = "Guild query", -- Requires localization
 	["Hardest compositions"] = "Hardest compositions", -- Requires localization
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Hold SHIFT key when browsing arena matches to see extended tooltips.", -- Requires localization
+	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Hold SHIFT key when browsing rated battleground to see extended tooltips.", -- Requires localization
 	Holy = "\231\165\158\232\129\150", -- Needs review
 	["Honor Kills"] = "\230\166\174\232\173\189\230\147\138\230\174\186", -- Needs review
-	["Issue command second time to confirm database wipe"] = "Issue command second time to confirm database wipe.", -- Requires localization
+	["H Rating"] = "\233\131\168\232\144\189\230\150\185\229\136\134\230\149\184", -- Needs review
+	["Issue command second time to confirm database wipe"] = "Issue command second time to confirm database wipe", -- Requires localization
 	["K/D Ratio"] = "K/D Ratio", -- Requires localization
 	["Last active"] = "Last active", -- Requires localization
 	Left = "Left", -- Requires localization
@@ -46,26 +48,26 @@ REFlexLocale:CreateLocaleTable({
 	["New version released!"] = "New version released!", -- Requires localization
 	Old = "Old", -- Requires localization
 	Place = "Place", -- Requires localization
-	["Player disabled data sharing"] = "Player disabled data sharing.", -- Requires localization
+	["Player disabled data sharing."] = "Player disabled data sharing.", -- Requires localization
 	["Please wait before sending another query."] = "Please wait before sending another query.", -- Requires localization
 	Protection = "\233\152\178\232\173\183", -- Needs review
-	RECORD = "RECORD", -- Requires localization
 	Rated = "Rated", -- Requires localization
-	["Rated BGs"] = "Rated BGs", -- Requires localization
 	["Rated battlegrounds support"] = "\230\148\175\230\143\180\231\169\141\229\136\134\230\136\176\229\160\180", -- Needs review
+	["Rated BGs"] = "Rated BGs", -- Requires localization
+	RECORD = "RECORD", -- Requires localization
 	["Reloaded MiniBar settings"] = "Reloaded MiniBar settings", -- Requires localization
 	Restoration = "\230\129\162\229\190\169", -- Needs review
 	Retribution = "\230\135\178\230\136\146", -- Needs review
 	Right = "Right", -- Requires localization
 	Shadow = "\230\154\151\229\189\177", -- Needs review
+	["Show amount of CPs to cap"] = "Show amount of CPs to cap", -- Requires localization
 	["Show Arena totals"] = "Show Arena totals", -- Requires localization
 	["Show Battleground totals"] = "Show Battleground totals", -- Requires localization
+	["Show detected builds"] = "Show detected builds", -- Requires localization
 	["Show Honorable Kills"] = "Show Honorable Kills", -- Requires localization
 	["Show LDB MiniBar (Battlegrounds only)"] = "Show LDB MiniBar (Battlegrounds only)", -- Requires localization
-	["Show MiniBar (Battlegrounds only)"] = "Show MiniBar (Battlegrounds only)", -- Requires localization
-	["Show amount of CPs to cap"] = "Show amount of CPs to cap", -- Requires localization
-	["Show detected builds"] = "Show detected builds", -- Requires localization
 	["Show main window"] = "\233\161\175\231\164\186\228\184\187\232\166\150\231\170\151", -- Needs review
+	["Show MiniBar (Battlegrounds only)"] = "Show MiniBar (Battlegrounds only)", -- Requires localization
 	["Show minimap button"] = "\233\161\175\231\164\186\229\176\143\229\156\176\229\156\150\230\140\137\233\136\149", -- Needs review
 	["Show place instead difference of score"] = "Show place instead difference of score", -- Requires localization
 	["Show queues"] = "Show queues", -- Requires localization
@@ -76,7 +78,7 @@ REFlexLocale:CreateLocaleTable({
 	Top = "Top", -- Requires localization
 	Total = "Total", -- Requires localization
 	Unholy = "Unholy", -- Requires localization
-	["Unrated BGs"] = "Unrated BGs", -- Requires localization
 	["Unrated battlegrounds support"] = "\230\148\175\230\143\180\233\157\158\231\169\141\229\136\134\230\136\176\229\160\180", -- Needs review
+	["Unrated BGs"] = "Unrated BGs", -- Requires localization
 	["Use only records from current season to calculate statistics"] = "Use only records from current season to calculate statistics", -- Requires localization
 });

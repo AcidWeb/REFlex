@@ -3,6 +3,34 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update16()
+	for i=1, #REFDatabase do
+		if REFDatabase[i]["RBGHordeTeam"] ~= nil then
+			for k=1, #REFDatabase[i]["RBGHordeTeam"] do
+				REFDatabase[i]["RBGHordeTeam"][k]["class"] = nil;
+			end
+		end
+		if REFDatabase[i]["RBGAllianceTeam"] ~= nil then
+			for k=1, #REFDatabase[i]["RBGAllianceTeam"] do
+				REFDatabase[i]["RBGAllianceTeam"][k]["class"] = nil;
+			end
+		end
+	end
+	for i=1, #REFDatabaseA do
+		if REFDatabaseA[i]["GreenTeam"] ~= nil then
+			for k=1, #REFDatabaseA[i]["GreenTeam"] do
+				REFDatabaseA[i]["GreenTeam"][k]["Class"] = nil;
+			end
+		end
+		if REFDatabaseA[i]["GoldTeam"] ~= nil then
+			for k=1, #REFDatabaseA[i]["GoldTeam"] do
+				REFDatabaseA[i]["GoldTeam"][k]["Class"] = nil;
+			end
+		end
+	end
+	REFSettings["RBGListFirstTime"] = true;
+end
+
 function REFlex_Update15()
 	local RETempLocalClasses, RELocalClasses = {}, {};
 	FillLocalizedClassList(RETempLocalClasses, false)

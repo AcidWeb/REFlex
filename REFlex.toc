@@ -1,7 +1,7 @@
 ## Interface: 40300
 ## Title: REFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds. 
-## Version: 0.9.6.2
+## Version: 0.9.7
 ## Author: Livarax-Karazhan(EU)
 ## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
 Locals\enUS.lua
@@ -9,6 +9,7 @@ Locals\deDE.lua
 Locals\ruRU.lua
 Locals\frFR.lua
 Locals\zhTW.lua
+Locals\koKR.lua
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua

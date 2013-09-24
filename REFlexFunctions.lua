@@ -29,7 +29,9 @@ function REFlex_SettingsReload()
 	REFlex_GUI_SliderScale:SetValue(REFSettings["MiniBarScale"]);
 	RE.SecondTimeMiniBar = false;
 	RE.MiniBarSecondLineRdy = false;
-	RequestRatedBattlegroundInfo();
+	if UnitLevel("player") > 9 then
+		RequestRatedBattlegroundInfo();
+	end
 	RequestPVPRewards();
 	REFlex_UpdateLDB();
 	
@@ -801,12 +803,26 @@ function REFlex_Tab7PlayerGrid(TimeF, TimeT)
 
 	return REBGCounter;
 end
+
+function REFlex_ArenaGetEnemyName(DatabaseID)
+	local TeamE = "";
+	
+	if REFDatabaseA[DatabaseID]["PlayerTeam"] == 0 then
+		TeamE = "Gold";
+	else
+		TeamE = "Green";
+	end
+
+	return REFDatabaseA[DatabaseID][TeamE .. "TeamName"];
+end
 --
 
 -- Timers subsection
 function REFlex_PVPUpdateDelay()
 	RE.RBGCounter = true;
-	RequestRatedBattlegroundInfo();
+	if UnitLevel("player") > 9 then
+		RequestRatedBattlegroundInfo();
+	end
 	RequestPVPRewards();
 	REFlex_UpdateLDB();
 end
@@ -856,7 +872,7 @@ function REFlex_ShortMap(MapName)
 	local MapNameTemp = { strsplit(" ", MapName) };
 	local ShortMapName = "";
 	for j=1, #MapNameTemp do
-		ShortMapName = ShortMapName .. string.sub(MapNameTemp[j], 0, 1)
+		ShortMapName = ShortMapName .. REFlex_UTF8sub(MapNameTemp[j], 0, 1)
 	end
 	return ShortMapName;
 end
@@ -864,6 +880,78 @@ end
 function REFlex_NameClean(Name)
 	local RENameOnly = { strsplit("-", Name) };
 	return RENameOnly[1];
+end
+
+function REFlex_GetEnemyRealmName(j, arena)
+	if arena then
+		if j ~= nil then
+			if j[1] ~= nil then
+				local RERealName = { strsplit("-", j[1]["Name"]) };
+				if RERealName[2] ~= nil then
+					return RERealName[2];
+				else
+					return GetRealmName();
+				end
+			else
+				return UNKNOWN;
+			end
+		else
+			return UNKNOWN;
+		end
+	else
+		local REEnemy = "";
+		if RE.Faction == "Horde" then
+			REEnemy = "RBGAllianceTeam";
+		else
+			REEnemy = "RBGHordeTeam";
+		end
+		if REFDatabase[j][REEnemy] ~= nil then
+			if REFDatabase[j][REEnemy][1] ~= nil then
+				local RERealName = { strsplit("-", REFDatabase[j][REEnemy][1]["name"]) };
+				if RERealName[2] ~= nil then
+					return RERealName[2];
+				else
+					return GetRealmName();
+				end
+			else
+				return UNKNOWN;
+			end
+		else
+			return UNKNOWN;
+		end
+	end
+end
+
+function REFlex_chsize(char)
+	if not char then
+		return 0
+	elseif char > 240 then
+		return 4
+	elseif char > 225 then
+		return 3
+	elseif char > 192 then
+		return 2
+	else
+		return 1
+	end
+end
+
+function REFlex_UTF8sub(str, startChar, numChars)
+	local startIndex = 1
+	while startChar > 1 do
+		local char = string.byte(str, startIndex)
+		startIndex = startIndex + REFlex_chsize(char)
+		startChar = startChar - 1
+	end
+
+	local currentIndex = startIndex
+
+	while numChars > 0 and currentIndex <= #str do
+		local char = string.byte(str, currentIndex)
+		currentIndex = currentIndex + REFlex_chsize(char)
+		numChars = numChars -1
+	end
+	return str:sub(startIndex, currentIndex - 1)
 end
 --
 
@@ -990,7 +1078,7 @@ end
 function REFlex_Tab_Tab7Filter(self, rowdata)
 	if RE.Tab7GuildOnly and RE.InGuild == 1 then
 		for i=1, #RE.GuildMembers do
-			if RE.GuildMembers[i]["Name"] == rowdata["cols"][13]["value"] then
+			if RE.GuildMembers[i]["Name"] == rowdata["cols"][14]["value"] then
 				return true;
 			end
 		end
@@ -1002,30 +1090,38 @@ function REFlex_Tab_Tab7Filter(self, rowdata)
 end
 
 function REFlex_Tab_NameFilter(self, rowdata)
+	RE.NameSearch = string.upper(RE.NameSearch);
+	
 	if RE.TalentTab ~= nil then
 		if rowdata["cols"][12]["value"] == RE.TalentTab then
 			if RE.BracketDrop ~= nil then
+				if string.find(string.upper(rowdata["cols"][15]["value"]), RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					return true;
+				end
 				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 				for i=1, #REEnemyNames do
-					if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 						return true;
 					end
 				end
 				for i=1, #REFriendNames do
-					if REFriendNames[i] == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					if string.upper(REFriendNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 						return true;
 					end
 				end
 				return false;
 			else
+				if string.find(string.upper(rowdata["cols"][15]["value"]), RE.NameSearch) ~= nil then
+					return true;
+				end
 				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 				for i=1, #REEnemyNames do
-					if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
+					if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch then
 						return true;
 					end
 				end
 				for i=1, #REFriendNames do
-					if REFriendNames[i] == RE.NameSearch then
+					if string.upper(REFriendNames[i]) == RE.NameSearch then
 						return true;
 					end
 				end
@@ -1036,27 +1132,33 @@ function REFlex_Tab_NameFilter(self, rowdata)
 		end
 	else	
 		if RE.BracketDrop ~= nil then
+			if string.find(string.upper(rowdata["cols"][15]["value"]), RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					return true;
+			end
 			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 			for i=1, #REEnemyNames do
-				if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 					return true;
 				end
 			end
 			for i=1, #REFriendNames do
-				if REFriendNames[i] == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				if string.upper(REFriendNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 					return true;
 				end
 			end
 			return false;
 		else
+			if string.find(string.upper(rowdata["cols"][15]["value"]), RE.NameSearch) ~= nil then
+					return true;
+			end
 			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 			for i=1, #REEnemyNames do
-				if REFlex_NameClean(REEnemyNames[i]) == RE.NameSearch then
+				if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch then
 					return true;
 				end
 			end
 			for i=1, #REFriendNames do
-				if REFriendNames[i] == RE.NameSearch then
+				if string.upper(REFriendNames[i]) == RE.NameSearch then
 					return true;
 				end
 			end
@@ -1143,7 +1245,7 @@ function REFlex_TableTeamArenaTab6(TeamString)
 	for i=1, (#RETeam - 1) do
 		local REMember = { strsplit("*", RETeam[i]) };
 
-		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. string.sub(REMember[2], 1, 2) .. "|r  ";
+		RETeamLine = RETeamLine .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" .. RE.ClassIconCoords[REMember[1]][1]*256 .. ":" .. RE.ClassIconCoords[REMember[1]][2]*256 .. ":".. RE.ClassIconCoords[REMember[1]][3]*256 ..":" .. RE.ClassIconCoords[REMember[1]][4]*256 .."|t |cFF" .. RE.ClassColors[REMember[1]] .. REFlex_UTF8sub(REMember[2], 1, 2) .. "|r  ";
 	end
 
 	return RETeamLine;
@@ -1260,7 +1362,14 @@ function REFlex_TableTeamArenaRating(IsEnemy, j)
 end
 
 function REFlex_TableWinColorArena(j)
-	if  REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
+	if REFDatabaseA[j]["Winner"] == 255 then
+		return { 
+			["r"] = 1,
+			["g"] = 1,
+			["b"] = 0,
+			["a"] = 1.0,
+		};
+	elseif REFDatabaseA[j]["Winner"] == REFDatabaseA[j]["PlayerTeam"] then
 		return { 
 			["r"] = 0,
 			["g"] = 1,

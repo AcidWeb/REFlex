@@ -2,12 +2,12 @@ if GetLocale() ~= "deDE" then return end
 
 --Translation by Gixx
 REFlexLocale:CreateLocaleTable({
-	["A Rating"] = "A Wertung",
 	Affliction = "Gebrechen",
 	["Allow sending daily statistics to other guild members"] = "Das Senden t\195\164glicher Statistiken zu anderen Gildenmitgliedern zulassen", -- Needs review
+	["A Rating"] = "A Wertung",
 	Arcane = "Arkan",
-	["Are you sure you want to delete this entry?"] = "Bist du sicher, dass du diesen Eintrag l\195\182schen willst?", -- Needs review
 	["Arena support"] = "Arenaunterst\195\188tzung", -- Needs review
+	["Are you sure you want to delete this entry?"] = "Bist du sicher, dass du diesen Eintrag l\195\182schen willst?", -- Needs review
 	Arms = "Waffen",
 	Assassination = "Meucheln",
 	Attendance = "Teilnahme", -- Needs review
@@ -29,11 +29,13 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "Feuer",
 	Frost = "Frost",
 	Fury = "Furor",
-	["H Rating"] = "H Wertung",
+	["Guild query"] = "Guild query", -- Requires localization
 	["Hardest compositions"] = "Schwerste Zusammenstellung",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Halte SHIFT w\195\164hrend des Anschauens von Arenapartien f\195\188r einen erweiterten Tooltip.", -- Needs review
+	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Hold SHIFT key when browsing rated battleground to see extended tooltips.", -- Requires localization
 	Holy = "Heilig",
 	["Honor Kills"] = "Ehrenhafte Todesst\195\182\195\159e",
+	["H Rating"] = "H Wertung",
 	["Issue command second time to confirm database wipe"] = "Kommando wiederholen, um die Datenbank zu l\195\182schen.", -- Needs review
 	["K/D Ratio"] = "K/D Rate",
 	["Last active"] = "Zuletzt aktiv", -- Needs review
@@ -46,26 +48,26 @@ REFlexLocale:CreateLocaleTable({
 	["New version released!"] = "Neue Version ver\195\182ffentlicht!", -- Needs review
 	Old = "Alt",
 	Place = "Platzierung",
-	["Player disabled data sharing"] = "Spieler hat das Teilen von Daten abgeschaltet.", -- Needs review
+	["Player disabled data sharing."] = "Spieler hat das Teilen von Daten abgeschaltet.", -- Needs review
 	["Please wait before sending another query."] = "Bitte vor einer erneuten Anfrage warten.", -- Needs review
 	Protection = "Schutz",
-	RECORD = "REKORD",
 	Rated = "Gewertet",
-	["Rated BGs"] = "Gew Schlachtfelder",
 	["Rated battlegrounds support"] = "Unterst\195\188tzung Gew Schlachtfelder", -- Needs review
+	["Rated BGs"] = "Gew Schlachtfelder",
+	RECORD = "REKORD",
 	["Reloaded MiniBar settings"] = "MiniBar Einstellungen neu geladen", -- Needs review
 	Restoration = "Wiederherstellung",
 	Retribution = "Vergeltung",
 	Right = "Rechts",
 	Shadow = "Schattenmagie",
+	["Show amount of CPs to cap"] = "LDB - Zeige verbleibendes CP Limit", -- Needs review
 	["Show Arena totals"] = "Zeige die Summe aller Arenen", -- Needs review
 	["Show Battleground totals"] = "Zeige die Summe aller Schlachtfelder", -- Needs review
+	["Show detected builds"] = "Zeige entdeckte Spezialisierungen",
 	["Show Honorable Kills"] = "LDB - Zeige ehrenhafte Todesst\195\182\195\159e", -- Needs review
 	["Show LDB MiniBar (Battlegrounds only)"] = "Zeige LDB MiniBar (nur in Schlachtfeldern)", -- Needs review
-	["Show MiniBar (Battlegrounds only)"] = "Zeige MiniBar (nur in Schlachtfeldern)",
-	["Show amount of CPs to cap"] = "LDB - Zeige verbleibendes CP Limit", -- Needs review
-	["Show detected builds"] = "Zeige entdeckte Spezialisierungen",
 	["Show main window"] = "Zeige Hauptfenster",
+	["Show MiniBar (Battlegrounds only)"] = "Zeige MiniBar (nur in Schlachtfeldern)",
 	["Show minimap button"] = "Zeige MiniMap Knopf",
 	["Show place instead difference of score"] = "Zeige den Platz anstelle der Punktedifferenz", -- Needs review
 	["Show queues"] = "Zeige Warteschlangen", -- Needs review
@@ -76,7 +78,7 @@ REFlexLocale:CreateLocaleTable({
 	Top = "Bestes",
 	Total = "Gesamt",
 	Unholy = "Unheilig",
-	["Unrated BGs"] = "Ungew Schlachtfelder",
 	["Unrated battlegrounds support"] = "Unterst\195\188tzung Ungew Schlachtfelder", -- Needs review
+	["Unrated BGs"] = "Ungew Schlachtfelder",
 	["Use only records from current season to calculate statistics"] = "Nur Daten der aktuellen Saison f\195\188r die Statistik nutzen", -- Needs review
 });

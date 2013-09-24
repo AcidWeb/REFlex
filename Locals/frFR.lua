@@ -1,13 +1,13 @@
 if GetLocale() ~= "frFR" then return end
 
---Translation by Gromleuh, Nothingz and Viny
+--Translation by Gromleuh, Nothingz, Sookhaal and Viny
 REFlexLocale:CreateLocaleTable({
-	["A Rating"] = "Classement A",
 	Affliction = "Affliction",
-	["Allow sending daily statistics to other guild members"] = "Autoriser d'envoyer les statistiques journali\195\168res aux autres membres de la guilde", -- Needs review
+	["Allow sending daily statistics to other guild members"] = "Autoriser l'envoi des statistiques journali\195\168res aux autres membres de la guilde", -- Needs review
+	["A Rating"] = "Classement A",
 	Arcane = "Arcane",
-	["Are you sure you want to delete this entry?"] = "Etes-vous s\195\187r d'effacer cette entr\195\169e ?",
 	["Arena support"] = "Support Ar\195\168ne",
+	["Are you sure you want to delete this entry?"] = "Etes-vous s\195\187r d'effacer cette entr\195\169e ?",
 	Arms = "Armes",
 	Assassination = "Assassinat",
 	Attendance = "Fr\195\169quentation",
@@ -29,11 +29,13 @@ REFlexLocale:CreateLocaleTable({
 	Fire = "Feu",
 	Frost = "Givre",
 	Fury = "Furie",
-	["H Rating"] = "Classement H",
+	["Guild query"] = "Guild query", -- Requires localization
 	["Hardest compositions"] = "Compos les plus dures",
 	["Hold SHIFT key when browsing arena matches to see extended tooltips."] = "Maintenir MAJ dans l'historique de matchs d'ar\195\168ne pour avoir des infobulles d\195\169taill\195\169es",
+	["Hold SHIFT key when browsing rated battleground to see extended tooltips."] = "Hold SHIFT key when browsing rated battleground to see extended tooltips.", -- Requires localization
 	Holy = "Sacr\195\169",
 	["Honor Kills"] = "Victoires Honorables",
+	["H Rating"] = "Classement H",
 	["Issue command second time to confirm database wipe"] = "Confirmer l'effacement de la base de donn\195\169es.", -- Needs review
 	["K/D Ratio"] = "K/D Ratio",
 	["Last active"] = "Dernier actif ",
@@ -46,26 +48,26 @@ REFlexLocale:CreateLocaleTable({
 	["New version released!"] = "Nouvelle version !",
 	Old = "Ancien",
 	Place = "Classement",
-	["Player disabled data sharing"] = "Le joueur a d\195\169sactiv\195\169 le partage de donn\195\169es.", -- Needs review
-	["Please wait before sending another query."] = "Veuillez attendre avant d'envoyer une autre requ\195\170te.", -- Needs review
+	["Player disabled data sharing."] = "Le joueur a d\195\169sactiv\195\169 le partage de donn\195\169es.", -- Needs review
+	["Please wait before sending another query."] = "Veuillez attendre avant d'envoyer une autre requ\195\170te.",
 	Protection = "Protection",
-	RECORD = "RECORD",
 	Rated = "Cot\195\169",
-	["Rated BGs"] = "BGs cot\195\169s",
 	["Rated battlegrounds support"] = "Support des BGs cot\195\169s",
+	["Rated BGs"] = "BGs cot\195\169s",
+	RECORD = "RECORD",
 	["Reloaded MiniBar settings"] = "R\195\169glages MiniBar Recharg\195\169s",
 	Restoration = "Restauration",
 	Retribution = "Vindicte",
 	Right = "Droite",
 	Shadow = "Ombre",
+	["Show amount of CPs to cap"] = "Afficher le nombre de PC n\195\169cessaire pour atteindre le cap",
 	["Show Arena totals"] = "Afficher les totaux d'Ar\195\168ne",
 	["Show Battleground totals"] = "Afficher les BGs Totaux",
+	["Show detected builds"] = "Afficher les builds d\195\169tect\195\169s",
 	["Show Honorable Kills"] = "Afficher les victoires honorables",
 	["Show LDB MiniBar (Battlegrounds only)"] = "Afficher la LDB Minibar (Seulement en BGs)",
-	["Show MiniBar (Battlegrounds only)"] = "Afficher la Minibar (Seulement en BGs)",
-	["Show amount of CPs to cap"] = "Afficher le nombre de PC n\195\169cessaire pour atteindre le cap", -- Needs review
-	["Show detected builds"] = "Afficher les builds d\195\169tect\195\169s",
 	["Show main window"] = "Afficher fen\195\170tre principale",
+	["Show MiniBar (Battlegrounds only)"] = "Afficher la Minibar (Seulement en BGs)",
 	["Show minimap button"] = "Afficher le bouton Minimap",
 	["Show place instead difference of score"] = "Afficher le classement a la place de la diff\195\169rence de score",
 	["Show queues"] = "Afficher les files d'attente",
@@ -76,7 +78,7 @@ REFlexLocale:CreateLocaleTable({
 	Top = "Top",
 	Total = "Total",
 	Unholy = "Impie",
-	["Unrated BGs"] = "BGs non-cot\195\169s",
 	["Unrated battlegrounds support"] = "Support des BGs non-cot\195\169s",
-	["Use only records from current season to calculate statistics"] = "Utiliser uniquement les donn\195\169es de la saison actuelle pour calculer les statistiques", -- Needs review
+	["Unrated BGs"] = "BGs non-cot\195\169s",
+	["Use only records from current season to calculate statistics"] = "Utiliser uniquement les donn\195\169es de la saison actuelle pour calculer les statistiques",
 });
