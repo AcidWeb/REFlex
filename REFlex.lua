@@ -23,7 +23,7 @@ function REFlex_OnEvent(self,event,...)
 	local REAddonName = ...;
 	local _, REZoneType = IsInInstance();
 	if event == "UPDATE_BATTLEFIELD_SCORE" then
-		if RESecondTimeMiniBarTimer ~= true then
+		if RESecondTimeMiniBarTimer ~= true and then
 			REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
 			REShefkiTimer:ScheduleTimer(REFlex_MiniBarDelay, 30);
 			RESecondTimeMiniBarTimer = true;
@@ -41,6 +41,8 @@ function REFlex_OnEvent(self,event,...)
 		REFlex_MiniBar:Hide();
 
 		RequestRatedBattlegroundInfo();
+	elseif event == "ZONE_CHANGED_NEW_AREA" and RESecondTimeMiniBarTimer == true then
+	        RESecondTimeMiniBarTimer = false;
 	elseif event == "ADDON_LOADED" and REAddonName == "REFlex" then
 		REFlex_ScoreTab_MsgGuild:SetText(GUILD); 
 		REFlex_ScoreTab_MsgParty:SetText(PARTY);
