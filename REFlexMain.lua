@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 16;
-RE.AddonVersion = "v0.9.6.1";
-RE.AddonVersionCheck = 961;
+RE.AddonVersion = "v0.9.6.2";
+RE.AddonVersionCheck = 962;
 
 RE.Debug = 0;
 
@@ -332,7 +332,7 @@ function REFlex_OnEvent(self,Event,...)
 		end
 	elseif Event == "UPDATE_BATTLEFIELD_STATUS" and REFSettings["LDBShowQueues"] and ((REZoneType ~= "pvp" and REZoneType ~= "arena") or REFSettings["LDBBGMorph"] == false) then
 		RE.LDBQueue = "";
-		for j=1, MAX_BATTLEFIELD_QUEUES do
+		for j=1, GetMaxBattlefieldID() do
 			REFlex_UpdateLDBQueues(j);
 		end
 		REFlex_UpdateLDB();

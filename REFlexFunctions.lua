@@ -1129,7 +1129,11 @@ function REFlex_TableRBGRatingMMR(Faction, j)
 		RELine = " / " .. REFDatabase[j][Faction .. "MMR"];
 	end
 
-	return REFDatabase[j][Faction .. "Rating"] .. RELine;
+	if REFDatabase[j][Faction .. "Rating"] ~= nil then
+		return REFDatabase[j][Faction .. "Rating"] .. RELine;
+	else
+		return "- / -";
+	end
 end
 
 function REFlex_TableTeamArenaTab6(TeamString)
