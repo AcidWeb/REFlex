@@ -96,7 +96,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString inherits="GameFontNormal" text="REFlex v0.2">
+				<FontString inherits="GameFontNormal" text="REFlex v0.2.1">
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
