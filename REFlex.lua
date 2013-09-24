@@ -13,8 +13,10 @@ local REModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-local REDataVersion = 4;
-local REAddonVersion = "v0.8.1";
+local REDataVersion = 5;
+local REAddonVersion = "v0.8.5";
+local REAddonVersionCheck = 85;
+
 local REArenaBuilds = {};
 local REArenaTeams = {};
 local REArenaRaces = {};
@@ -241,6 +243,7 @@ function REFlex_OnLoad(self)
 	self:RegisterEvent("UNIT_SPELLCAST_START");
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 	self:RegisterEvent("UNIT_AURA");
+	self:RegisterEvent("CHAT_MSG_ADDON");
 
 	WorldStateScoreFrame:HookScript("OnShow", REFlex_BGEnd);
 	WorldStateScoreFrame:HookScript("OnHide", function(self) REFlex_ScoreTab:Hide() end);
@@ -270,7 +273,11 @@ function REFlex_OnEvent(self,Event,...)
 				if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
 					_, REArenaRaces[REName] = UnitRace(REUnitID);
 					REArenaBuilds[REName] = REBuildRecognition[RESpellName];
-					print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[RESpellName]);
+					local _, RETempClass = UnitClass(REUnitID);
+					if REFSettings["ShowDetectedBuilds"] then
+						UIErrorsFrame:AddMessage("\124cFF" .. REClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[RESpellName] .. "\124r", 1, 1, 1, 1.0);
+						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[RESpellName]);
+					end
 				end
 			end
 		end
@@ -278,7 +285,7 @@ function REFlex_OnEvent(self,Event,...)
 		local REUnitID = ...;
 
 		if REUnitID == "arena1" or REUnitID == "arena2" or REUnitID == "arena3" or REUnitID == "arena4" or REUnitID == "arena5" then
-			local REId = 1
+			local REId = 1;
 			while true do
 				local  REAuraName, _, _, _, _, _, _, RECaster = UnitAura(REUnitID, REId, "HELPFUL")
 				if not REAuraName then 
@@ -290,11 +297,15 @@ function REFlex_OnEvent(self,Event,...)
 					if REArenaBuilds[REName] == nil and REName ~= UNKNOWN then
 						_, REArenaRaces[REName] = UnitRace(RECaster); 
 						REArenaBuilds[REName] = REBuildRecognition[REAuraName];
-						print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[REAuraName]);
+						local _, RETempClass = UnitClass(RECaster);
+						if REFSettings["ShowDetectedBuilds"] then
+							UIErrorsFrame:AddMessage("\124cFF" .. REClassColors[RETempClass] .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[REAuraName] .. "\124r", 1, 1, 1, 1.0);
+							print("\124cFF74D06C[REFlex]\124r " .. REFlex_NameClean(REName) .. " - " .. REBuildRecognition[REAuraName]);
+						end
 					end
 				end
 
-				REId = REId + 1
+				REId = REId + 1;
 			end
 		end
 	elseif Event == "ARENA_OPPONENT_UPDATE" and REZoneType == "arena" then
@@ -326,6 +337,14 @@ function REFlex_OnEvent(self,Event,...)
 			REPartyArenaCheck = REPartyArenaCheck + 1;
 		end
 		REFlex_ArenaTalentCheck();
+	elseif Event == "CHAT_MSG_ADDON" and ... == "REFlex" then
+		--local _, REMessage, _, RESender = ...;
+		--print("\124cFF74D06C[REFlex]\124r " .. RESender .. " - " .. REMessage);
+		local _, REMessage = ...;
+		if tonumber(REMessage) > REAddonVersionCheck then
+			REFlex_Frame:UnregisterEvent("CHAT_MSG_ADDON");
+			print("\124cFF74D06C[REFlex]\124r New version released!");
+		end
 	elseif Event == "PVP_RATED_STATS_UPDATE" then
 		RERBG, _, RERBGPointsWeek, RERBGMaxPointsWeek = GetPersonalRatedBGInfo();
 		REFlex_MainTab_Tab4_ScoreHolderSpecial_BarCP_I:SetMinMaxValues(0, RERBGMaxPointsWeek);
@@ -448,9 +467,13 @@ function REFlex_OnEvent(self,Event,...)
 		end
 
 		if REFSettings == nil then
-			REFSettings = {["Version"] = REDataVersion ,["MinimapPos"] = 45, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"}, ["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}};
+			REFSettings = {["Version"] = REDataVersion ,["MinimapPos"] = 45, ["ShowDetectedBuilds"] = true, ["ShowMinimapButton"] = true, ["ShowMiniBar"] = true, ["MiniBarX"] = 0, ["MiniBarY"] = 0, ["MiniBarAnchor"] = "CENTER", ["MiniBarScale"] = 1, ["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"}, ["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil}};
+		elseif REFSettings["Version"] == 4 then -- 0.8.1
+			REFSettings["Version"] = REDataVersion;
+			REFSettings["ShowDetectedBuilds"] = true;
 		elseif REFSettings["Version"] == 3 then -- 0.7
 			REFSettings["Version"] = REDataVersion;
+			REFSettings["ShowDetectedBuilds"] = true;
 
 			for i=1, #REFDatabase do
 				if REFDatabase[i]["DataVersion"] < 4 then
@@ -458,20 +481,17 @@ function REFlex_OnEvent(self,Event,...)
 					REFDatabase[i]["SpecialFields"] = {};
 				end
 			end
-			for i=1, #REFDatabaseA do
-				if REFDatabaseA[i]["DataVersion"] < 4 then
-					REFDatabaseA[i]["DataVersion"] = REDataVersion;
-				end
-			end
 		elseif REFSettings["Version"] == 2 then -- 0.6
 			REFSettings["Version"] = REDataVersion;
 			REFSettings["MiniBarAnchor"] = "CENTER";
+			REFSettings["ShowDetectedBuilds"] = true;
 		elseif REFSettings["Version"] == nil then -- 0.5
 			REFSettings["MiniBarOrder"] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 			REFSettings["MiniBarVisible"] = {["KillingBlows"] = 1, ["HonorKills"] = 1, ["Damage"] = 2, ["Healing"] = 2, ["Deaths"] = nil, ["KDRatio"] = nil, ["Honor"] = nil};
 			REFSettings["Version"] = REDataVersion;
 			REFSettings["MiniBarScale"] = 1;
 			REFSettings["MiniBarAnchor"] = "CENTER";
+			REFSettings["ShowDetectedBuilds"] = true;
 
 			for i=1, #REFDatabase do
 				if REFDatabase[i]["DataVersion"] == nil then
@@ -482,6 +502,7 @@ function REFlex_OnEvent(self,Event,...)
 		-- ***
 
 		REFlex_SettingsReload();
+		SendAddonMessage("REFlex", REAddonVersionCheck, "GUILD");
 
 		self:UnregisterEvent("ADDON_LOADED");
 	end
@@ -592,6 +613,7 @@ function REFlex_GUIOnLoad(REPanel)
 	REFlex_GUI_MinimapButtonText:SetText(L["Show minimap button"]);
 	REFlex_GUI_MiniBarText:SetText(L["Show MiniBar (Battlegrounds only)"]);
 	REFlex_GUI_SliderScaleText:SetText(L["MiniBar scale"]);
+	REFlex_GUI_SpecDetectionText:SetText(L["Show detected builds"]);
 	REFlex_GUI_SliderScaleLow:SetText("0.1");
 	REFlex_GUI_SliderScaleHigh:SetText("2.0");
 
@@ -748,6 +770,12 @@ function REFlex_SettingsReload()
 		REFlex_Frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE");
 	end
 
+	if REFSettings["ShowDetectedBuilds"] then
+		REFlex_GUI_SpecDetection:SetChecked(true);
+	else
+		REFlex_GUI_SpecDetection:SetChecked(false);
+	end
+
 	REFlex_GUI_SliderScale:SetValue(REFSettings["MiniBarScale"]);
 	RESecondTimeMiniBar = false;
 	REMiniBarSecondLineRdy = false;
@@ -766,6 +794,13 @@ function REFlex_GUISave()
 		REFSettings["ShowMiniBar"] = true;
 	else
 		REFSettings["ShowMiniBar"] = false;
+	end
+
+	REButtonCheck = REFlex_GUI_SpecDetection:GetChecked();
+	if REButtonCheck == 1 then
+		REFSettings["ShowDetectedBuilds"] = true;
+	else
+		REFSettings["ShowDetectedBuilds"] = false;
 	end
 
 	REFSettings["MiniBarScale"] = REFlex_Round(REFlex_GUI_SliderScale:GetValue(),2);
@@ -1450,7 +1485,7 @@ function REFlex_TableTeamArena(IsEnemy, j)
 
 		for jj=1, #REEnemyID do
 			local ClassToken = REFDatabaseA[j][TeamE .. "Team"][REEnemyID[jj]]["ClassToken"];
-			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t  "
+			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t "
 		end
 		if REFDatabaseA[j][TeamE .. "TeamRating"] >= 0 then
 			Line = Line .. "[" .. REFDatabaseA[j][TeamE .. "TeamRating"] .. "]";
@@ -1462,7 +1497,7 @@ function REFlex_TableTeamArena(IsEnemy, j)
 
 		for jj=1, #REFriendID do
 			local ClassToken = REFDatabaseA[j][Team .. "Team"][REFriendID[jj]]["ClassToken"];
-			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t  "
+			Line = Line .. "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t "
 		end
 		if REFDatabaseA[j][Team .. "TeamRating"] >= 0 then
 			Line = Line .. "[" .. REFDatabaseA[j][Team .. "TeamRating"] .. "]";
@@ -2813,14 +2848,19 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 	end
 	RETooltip:SetHeaderFont(GameTooltipHeader);
 	RETooltip:AddHeader("", "[|cFF" .. REFlex_ToolTipRatingColorArena(FriendRatingChange) .. FriendRatingChange .. "|r]", "", "", "", "[|cFF" .. REFlex_ToolTipRatingColorArena(EnemyRatingChange) .. EnemyRatingChange .. "|r]","");
+	RETooltip:AddLine();
 	RETooltip:AddSeparator(3);
+	RETooltip:AddLine();
 
 	for i=1, REFDatabaseA[DatabaseID]["Bracket"] do
 		local RaceClassCell, NameCell, BuildCell, EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell = "", "", "", "", "", "";
 
 		if REFriendID[i] ~= nil then
 			local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
-			local RaceToken = string.upper(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] .. "_MALE");
+			local RaceToken = nil;
+			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] ~= nil then
+				RaceToken = string.upper(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Race"] .. "_MALE");
+			end
 			if RERaceIconCoords[RaceToken] ~= nil then
 				RaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
 			else
@@ -2838,7 +2878,10 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 
 		if REEnemyID[i] ~= nil then
 			local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
-			local RaceToken = string.upper(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] .. "_MALE");
+			local RaceToken = nil;
+			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] ~= nil then
+				RaceToken = string.upper(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Race"] .. "_MALE");
+			end
 			if RERaceIconCoords[RaceToken] ~= nil then
 				EnemyRaceClassCell = "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:40:40:0:0:512:256:" .. RERaceIconCoords[RaceToken][1]*512 .. ":" .. RERaceIconCoords[RaceToken][2]*512 .. ":".. RERaceIconCoords[RaceToken][3]*256 ..":" .. RERaceIconCoords[RaceToken][4]*256 .. "|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:40:40:0:0:256:256:" .. REClassIconCoords[ClassToken][1]*256 .. ":" .. REClassIconCoords[ClassToken][2]*256 .. ":".. REClassIconCoords[ClassToken][3]*256 ..":" .. REClassIconCoords[ClassToken][4]*256 .."|t"
 			else
@@ -2857,6 +2900,32 @@ function REFlex_ShowArenaDetails_OnEnter(self, DatabaseID)
 		RETooltip:AddLine(RaceClassCell, NameCell, BuildCell, "", EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell);	
 	end
 
+	if IsShiftKeyDown() == 1 then
+		RETooltip:AddLine();
+		RETooltip:AddSeparator(3);
+		RETooltip:AddLine();
+		RETooltip:AddHeader("", DAMAGE, SHOW_COMBAT_HEALING, "", "", DAMAGE, SHOW_COMBAT_HEALING);
+		for i=1, REFDatabaseA[DatabaseID]["Bracket"] do
+			local NameCell, DamageCell, HealingCell, EnemyNameCell, EnemyDamageCell, EnemyHealingCell = "", "", "", "", "", "";
+
+			if REFriendID[i] ~= nil then
+				local ClassToken = REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["ClassToken"];
+				NameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
+				DamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Damage"], 0);
+				HealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Healing"], 0);
+			end
+
+			if REEnemyID[i] ~= nil then
+				local ClassToken = REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["ClassToken"];
+				EnemyNameCell = "|cFF" .. REClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
+				EnemyDamageCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Damage"], 0);
+				EnemyHealingCell = REFlex_NumberClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Healing"], 0);
+			end
+
+			RETooltip:AddLine(NameCell, DamageCell, HealingCell, "", EnemyNameCell, EnemyDamageCell, EnemyHealingCell);
+		end
+	end
+
 	RETooltip:SmartAnchorTo(self);
 	RETooltip:Show();
 end
@@ -2871,6 +2940,8 @@ function REFlex_BGEnd()
 	local REWinner = GetBattlefieldWinner();
 	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
 	if REWinner ~= nil and RESecondTime ~= true and REArena == nil then
+		SendAddonMessage("REFlex", REAddonVersionCheck, "BATTLEGROUND");
+		
 		if REWinner == 1 then
 			REWinSide = FACTION_ALLIANCE;
 			REWinSidePrint = "\124cFF00A9FF" .. FACTION_ALLIANCE;
@@ -3351,7 +3422,6 @@ function REFlex_UpdateMiniBar()
 end
 
 function SlashCmdList.REFLEX(msg)
-	--TODO
 	REFlex_MinimapButtonClick();
 end
 -- ***

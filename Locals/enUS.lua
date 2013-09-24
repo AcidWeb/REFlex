@@ -24,6 +24,7 @@ local L = {
 	["Show minimap button"] = true,
 	["Show main window"] = true,
 	["Show MiniBar (Battlegrounds only)"] = true,
+	["Show detected builds"] = true,
 	["MiniBar modules"] = true,
 	["Bar 1"] = true,
 	["Bar 2"] = true,

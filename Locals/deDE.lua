@@ -47,6 +47,7 @@ REFlexLocale:CreateLocaleTable({
 	Right = "Rechts",
 	Shadow = "Schattenmagie",
 	["Show MiniBar (Battlegrounds only)"] = "Zeige MiniBar (nur in Schlachtfeldern)",
+	["Show detected builds"] = "Show detected builds", -- Requires localization
 	["Show main window"] = "Zeige Hauptfenster",
 	["Show minimap button"] = "Zeige MiniMap Knopf",
 	["Spec 1"] = "Spez 1",

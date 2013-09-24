@@ -1388,6 +1388,15 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<CheckButton name="$parent_SpecDetection" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-60"></AbsDimension>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<Slider name="$parent_SliderScale" inherits="OptionsSliderTemplate" minValue="0.1" maxValue="2" orientation="HORIZONTAL">
 				<Size>
 					<AbsDimension x="200" y="16"/>
@@ -1395,7 +1404,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="16" y="-75"/>
+							<AbsDimension x="16" y="-100"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
