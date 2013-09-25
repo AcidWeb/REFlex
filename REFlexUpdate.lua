@@ -3,6 +3,18 @@ local L = REFlexLocale;
 
 -- *** Database and settings patches
 
+function REFlex_Update20()
+	for i=1, #REFDatabaseA do
+		if REFDatabaseA[i]["Season"] == 14 and REFDatabaseA[i]["Bracket"] == 0 then
+			local REGreenTeamSize = table.getn(REFDatabaseA[i]["GreenTeam"]);
+			local REGoldTeamSize = table.getn(REFDatabaseA[i]["GoldTeam"]);
+			if REGreenTeamSize == REGoldTeamSize then
+				REFDatabaseA[i]["Bracket"] = REGreenTeamSize;
+			end
+		end
+	end
+end
+
 function REFlex_Update19()
 	for i=1, #REFDatabase do
 		if REFDatabase[i]["MapInfo"] == "TempleofKotmogu" then

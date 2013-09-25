@@ -17,9 +17,9 @@ RE.ModuleTranslation = {
 	["Honor"] = HONOR 
 };
 
-RE.DataVersion = 20;
-RE.AddonVersion = "v0.9.8.5";
-RE.AddonVersionCheck = 985;
+RE.DataVersion = 21;
+RE.AddonVersion = "v0.9.8.6";
+RE.AddonVersionCheck = 986;
 
 RE.Debug = 1;
 
@@ -585,26 +585,33 @@ function REFlex_OnEvent(self,Event,...)
 			REFSettings["MiniBarOrder"][2] = {"KillingBlows", "HonorKills", "Damage", "Healing", "Deaths", "KDRatio", "Honor"};
 		elseif REFSettings["Version"] == RE.DataVersion then
 			-- NOTHING :-)
+		elseif REFSettings["Version"] == 20 then -- 0.9.8.5
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 19 then -- 0.9.8.3
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 18 then -- 0.9.8
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 17 then -- 0.9.7.1	
 			REFlex_Update17();	
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 16 then -- 0.9.6.2
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 15 then -- 0.9.6
 			REFlex_Update15();
 			REFlex_Update16();
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 14 then -- 0.9.5.5
 			REFlex_Update14();
 			REFlex_Update15();
@@ -612,6 +619,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 13 then -- 0.9.5.3
 			REFlex_Update13();
 			REFlex_Update14();
@@ -620,6 +628,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 11 or REFSettings["Version"] == 12 then -- 0.9.5.1/0.9.5.2
 			REFlex_Update1112();	
 			REFlex_Update13();
@@ -629,6 +638,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 10 then -- 0.9.4
 			REFlex_Update10();	
 			REFlex_Update1112();
@@ -639,6 +649,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 8 or REFSettings["Version"] == 9 then -- 0.9.3.1/0.9.1
 			REFlex_Update89();
 			REFlex_Update10();
@@ -650,6 +661,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 7 then -- 0.9
 			REFlex_Update7();
 			REFlex_Update89();
@@ -662,6 +674,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] == 6 then -- 0.8.8
 			REFlex_Update6();	
 			REFlex_Update7();
@@ -675,6 +688,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		elseif REFSettings["Version"] ~= RE.DataVersion then -- 0.8.7 and older
 			REFlex_UpdateOld();	
 			REFlex_Update6();
@@ -689,6 +703,7 @@ function REFlex_OnEvent(self,Event,...)
 			REFlex_Update17();
 			REFlex_Update18();
 			REFlex_Update19();
+			REFlex_Update20();
 		end
 		REFSettings["Version"] = RE.DataVersion;
 		---
@@ -3276,7 +3291,9 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 		EnemyRatingChange = 0;
 	end
 	RETooltip:SetHeaderFont(GameTooltipHeader);
-	RETooltip:AddHeader("", "[|cFF" .. REFlex_ToolTipRatingColorArena(FriendRatingChange) .. FriendRatingChange .. "|r]", "", "", "", "[|cFF" .. REFlex_ToolTipRatingColorArena(EnemyRatingChange) .. EnemyRatingChange .. "|r]","");
+	if REFDatabaseA[DatabaseID]["Season"] < 14 then
+		RETooltip:AddHeader("", "[|cFF" .. REFlex_ToolTipRatingColorArena(FriendRatingChange) .. FriendRatingChange .. "|r]", "", "", "", "[|cFF" .. REFlex_ToolTipRatingColorArena(EnemyRatingChange) .. EnemyRatingChange .. "|r]","");
+	end
 	RETooltip:AddLine();
 	RETooltip:AddHeader("", "|cFFFFD100- " .. FriendTeamName .. " -|r", "", "", "", "|cFFFFD100- " .. EnemyTeamName .. " -|r", "");
 	if IsShiftKeyDown() == 1 and IsControlKeyDown() ~= 1 then
@@ -3757,19 +3774,19 @@ function REFlex_ArenaEnd()
 		end
 
 		local REBracket = 0;
-		for i=1, GetMaxBattlefieldID() do
-			local status, _, teamSize = GetBattlefieldStatus(i);
-			if status == "active" then
-				REBracket = teamSize;
-				break;
-			end
+		local REGreenTeamSize = table.getn(RETeamGreen);
+		local REGoldTeamSize = table.getn(RETeamGold);
+		if REGreenTeamSize == REGoldTeamSize then
+			REBracket = REGreenTeamSize;
 		end
 
 		RE.SecondTime = true;
 		RE.ArenaReload = true;
 
 		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationRaw=BGTimeRaw, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
-		table.insert(REFDatabaseA, REBGData);
+		if REBracket == 2 or REBracket == 3 or REBracket == 5 then
+			table.insert(REFDatabaseA, REBGData);
+		end
 	end
 end
 -- ***

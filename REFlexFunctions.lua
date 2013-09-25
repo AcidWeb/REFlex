@@ -1265,10 +1265,14 @@ function REFlex_TableRatingMMRArena(PlayerTeam, j)
 		Rating = REFDatabaseA[j]["GoldTeamRatingChange"];
 	end
 
-	if Rating > 0 then
-		Rating = "|cFF00FF00+" .. Rating.. "|r";
-	elseif Rating < 0 then
-		Rating = "|cFFFF141C" .. Rating.. "|r";
+	if REFDatabaseA[j]["Season"] < 14 then
+		if Rating > 0 then
+			Rating = "|cFF00FF00+" .. Rating.. "|r";
+		elseif Rating < 0 then
+			Rating = "|cFFFF141C" .. Rating.. "|r";
+		end
+	else
+		Rating = "-";
 	end
 
 	return Rating .. MMR;
@@ -1411,8 +1415,10 @@ function REFlex_TableTeamArenaRating(IsEnemy, j)
 	if IsEnemy then
 		local _, _, _, _, _, TeamE = REFlex_ArenaTeamHash(j, true);
 
-		if REFDatabaseA[j][TeamE .. "TeamRating"] >= 0 then
-			if REFDatabaseA[j][TeamE .. "TeamMMR"] ~= nil then
+		if REFDatabaseA[j][TeamE .. "TeamRating"] >= 0 or REFDatabaseA[j]["Season"] > 13 then
+			if REFDatabaseA[j]["Season"] > 13 then
+				Line = "- / " .. REFDatabaseA[j][TeamE .. "TeamMMR"];
+			elseif REFDatabaseA[j][TeamE .. "TeamMMR"] ~= nil then
 				Line = REFDatabaseA[j][TeamE .. "TeamRating"] .. " / " .. REFDatabaseA[j][TeamE .. "TeamMMR"];
 			else
 				Line = REFDatabaseA[j][TeamE .. "TeamRating"];
@@ -1423,8 +1429,10 @@ function REFlex_TableTeamArenaRating(IsEnemy, j)
 	else
 		local _, _, _, _, Team = REFlex_ArenaTeamHash(j, false);
 
-		if REFDatabaseA[j][Team .. "TeamRating"] >= 0 then
-			if REFDatabaseA[j][Team .. "TeamMMR"] ~= nil then
+		if REFDatabaseA[j][Team .. "TeamRating"] >= 0 or REFDatabaseA[j]["Season"] > 13 then
+			if REFDatabaseA[j]["Season"] > 13 then
+				Line = "- / " .. REFDatabaseA[j][Team .. "TeamMMR"];
+			elseif REFDatabaseA[j][Team .. "TeamMMR"] ~= nil then
 				Line = REFDatabaseA[j][Team .. "TeamRating"] .. " / " .. REFDatabaseA[j][Team .. "TeamMMR"];
 			else
 				Line = REFDatabaseA[j][Team .. "TeamRating"];
