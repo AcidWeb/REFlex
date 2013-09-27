@@ -1272,7 +1272,16 @@ function REFlex_TableRatingMMRArena(PlayerTeam, j)
 			Rating = "|cFFFF141C" .. Rating.. "|r";
 		end
 	else
-		Rating = "-";
+		if REFDatabaseA[j]["PersonalRating"] ~= nil then
+			Rating = REFDatabaseA[j]["PersonalRatingChange"]
+			if Rating > 0 then
+				Rating = "|cFF00FF00+" .. Rating.. "|r";
+			elseif Rating < 0 then
+				Rating = "|cFFFF141C" .. Rating.. "|r";
+			end
+		else
+			Rating = "-";
+		end
 	end
 
 	return Rating .. MMR;

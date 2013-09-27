@@ -18,8 +18,8 @@ RE.ModuleTranslation = {
 };
 
 RE.DataVersion = 21;
-RE.AddonVersion = "v0.9.8.6";
-RE.AddonVersionCheck = 986;
+RE.AddonVersion = "v0.9.8.7";
+RE.AddonVersionCheck = 987;
 
 RE.Debug = 1;
 
@@ -3318,7 +3318,11 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 				RaceClassCell = "   |TInterface\\Icons\\INV_Misc_QuestionMark:30:30|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t"
 			end
 
-			NameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
+			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Rating"] ~= nil then
+				NameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r\n[" .. REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Rating"] .. "] [|cFF" .. REFlex_ToolTipRatingColorArena(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["RatingChange"]) .. REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["RatingChange"] .. "|r]";
+			else
+				NameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Name"]) .. "|r";
+			end
 
 			if REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"] ~= nil then
 				BuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_SpecTranslate(ClassToken, REFDatabaseA[DatabaseID][Team .. "Team"][REFriendID[i]]["Build"]) .. "|r";
@@ -3339,7 +3343,11 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 				EnemyRaceClassCell = "|TInterface\\Icons\\INV_Misc_QuestionMark:30:30|t  |TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:30:30:0:0:256:256:" .. RE.ClassIconCoords[ClassToken][1]*256 .. ":" .. RE.ClassIconCoords[ClassToken][2]*256 .. ":".. RE.ClassIconCoords[ClassToken][3]*256 ..":" .. RE.ClassIconCoords[ClassToken][4]*256 .."|t"
 			end
 
-			EnemyNameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
+			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Rating"] ~= nil then
+				EnemyNameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r\n[" .. REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Rating"] .. "] [|cFF" .. REFlex_ToolTipRatingColorArena(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["RatingChange"]) .. REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["RatingChange"] .. "|r]";
+			else
+				EnemyNameCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_NameClean(REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Name"]) .. "|r";
+			end
 
 			if REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"] ~= nil then
 				EnemyBuildCell = "|cFF" .. RE.ClassColors[ClassToken] .. REFlex_SpecTranslate(ClassToken, REFDatabaseA[DatabaseID][TeamE .. "Team"][REEnemyID[i]]["Build"]) .. "|r";
@@ -3745,7 +3753,7 @@ function REFlex_ArenaEnd()
 		
 		for j=1, REBGPlayers do
 			local REPlayerTemp = {};
-			local REPName, REKillingBlows, _, _, _, REFaction, _, _, REClassToken, REDamageDone, REHealingDone, _, _, REpreMatchMmr, REmmrChange, REBuild = GetBattlefieldScore(j);
+			local REPName, REKillingBlows, _, _, _, REFaction, _, _, REClassToken, REDamageDone, REHealingDone, REPersonalRating, REPersonalRatingChange, REpreMatchMmr, REmmrChange, REBuild = GetBattlefieldScore(j);
 			if REClassToken == nil or REClassToken == "" then
 				_, _, _, _, _, _, _, _, REClassToken = GetBattlefieldScore(j);
 			end
@@ -3754,7 +3762,7 @@ function REFlex_ArenaEnd()
 			end
 			REBuild = REFlex_SpecTranslate(REClassToken, REBuild);
 			local RERace = REArenaRaces[REPName]; 
-			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, classToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone, PreMMR=REpreMatchMmr, MMRChange=REmmrChange};
+			REPLayerTemp = {Name=REPName, KB=REKillingBlows, Race=RERace, classToken=REClassToken, Build=REBuild, Damage=REDamageDone, Healing=REHealingDone, PreMMR=REpreMatchMmr, MMRChange=REmmrChange, Rating=REPersonalRating, RatingChange=REPersonalRatingChange};
 
 			if REPName == REPlayerName then
 				REPlayerTeam = REFaction;
@@ -3763,6 +3771,8 @@ function REFlex_ArenaEnd()
 				RELocalKB = REKillingBlows;
 				RELocalPreMMR = REpreMatchMmr;
 				RELocalMMRChange = REmmrChange;
+				RELocalRating = REPersonalRating;
+				RELocalRatingChange = REPersonalRatingChange; 
 				REFSettings["CurrentMMR"] = RELocalPreMMR + RELocalMMRChange;
 			end
 
@@ -3783,7 +3793,7 @@ function REFlex_ArenaEnd()
 		RE.SecondTime = true;
 		RE.ArenaReload = true;
 
-		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationRaw=BGTimeRaw, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
+		local REBGData = { DataVersion=RE.DataVersion, MapName=REMap, TalentSet=RETalentGroup, Winner=REWinSide, Damage=RELocalDamage, Healing=RELocalHealing, KB=RELocalKB, PreMMR=RELocalPreMMR, MMRChange=RELocalMMRChange, DurationRaw=BGTimeRaw, TimeRaw=RETimeRaw, Season=REArenaSeason, Bracket=REBracket, PlayerTeam=REPlayerTeam, GreenTeamName=REGreenTeamName, GreenTeamMMR=REGreenMMR, GreenTeamRating=REGreenNewTeamRating, GreenTeamRatingChange=(REGreenNewTeamRating - REGreenTeamRating), GoldTeamName=REGoldTeamName, GoldTeamMMR=REGoldMMR, GoldTeamRating=REGoldNewTeamRating, GoldTeamRatingChange=(REGoldNewTeamRating - REGoldTeamRating), PersonalRating=RELocalRating, PersonalRatingChange=RELocalRatingChange, GreenTeam=RETeamGreen, GoldTeam=RETeamGold};
 		if REBracket == 2 or REBracket == 3 or REBracket == 5 then
 			table.insert(REFDatabaseA, REBGData);
 		end
