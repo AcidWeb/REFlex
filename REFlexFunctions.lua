@@ -42,7 +42,7 @@ end
 
 function REFlex_GUISaveInternal(Field)
 	local REButtonCheck = _G["REFlex_GUI_" .. Field]:GetChecked();
-	if REButtonCheck == 1 then
+	if REButtonCheck == true then
 		if REFSettings[Field] == false and (Field == "ArenaSupport" or Field == "RBGSupport" or Field == "UNBGSupport" or Field == "OnlyNew") then
 			RE.NeedReload = true;
 		end
@@ -905,7 +905,8 @@ end
 -- Timers subsection
 function REFlex_PVPUpdateDelay()
 	RE.RBGCounter = true;
-	PVP_LoadUI();
+	-- PVP_LoadUI();
+    UIParentLoadAddOn("Blizzard_PVPUI");
 	PVPUIFrame:Show();
 	PVPUIFrame:Hide();
 	if UnitLevel("player") > 9 then
@@ -1035,13 +1036,13 @@ function REFlex_DeleteEntry(DatabaseID)
 	local Visible3 = REFlex_MainTab_Tab3:IsVisible();
 	local Visible5 = REFlex_MainTab_Tab5:IsVisible();
 
-	if Visible1 == 1 then
+	if Visible1 then
 		Visible = 1;
-	elseif Visible2 == 1 then
+	elseif Visible2 then
 		Visible = 2;
-	elseif Visible3 == 1 then
+	elseif Visible3 then
 		Visible = 3;
-	elseif Visible5 == 1 then
+	elseif Visible5 then
 		IsArena = true;
 		Visible = 5;
 	end
@@ -1152,7 +1153,7 @@ function REFlex_Tab_Tab5Filter(self, rowdata)
 end
 
 function REFlex_Tab_Tab7Filter(self, rowdata)
-	if RE.Tab7GuildOnly and RE.InGuild == 1 then
+	if RE.Tab7GuildOnly and RE.InGuild then
 		for i=1, #RE.GuildMembers do
 			if RE.GuildMembers[i]["Name"] == rowdata["cols"][14]["value"] then
 				return true;
@@ -1176,12 +1177,12 @@ function REFlex_Tab_NameFilter(self, rowdata)
 				end
 				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 				for i=1, #REEnemyNames do
-					if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					if string.find(string.upper(REFlex_NameClean(REEnemyNames[i])),  RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 						return true;
 					end
 				end
 				for i=1, #REFriendNames do
-					if string.upper(REFriendNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+					if string.find(string.upper(REFriendNames[i]), RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 						return true;
 					end
 				end
@@ -1192,12 +1193,12 @@ function REFlex_Tab_NameFilter(self, rowdata)
 				end
 				local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 				for i=1, #REEnemyNames do
-					if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch then
+					if string.find(string.upper(REFlex_NameClean(REEnemyNames[i])),  RE.NameSearch) ~= nil then
 						return true;
 					end
 				end
 				for i=1, #REFriendNames do
-					if string.upper(REFriendNames[i]) == RE.NameSearch then
+					if string.find(string.upper(REFriendNames[i]), RE.NameSearch) ~= nil then
 						return true;
 					end
 				end
@@ -1213,12 +1214,12 @@ function REFlex_Tab_NameFilter(self, rowdata)
 			end
 			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 			for i=1, #REEnemyNames do
-				if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				if string.find(string.upper(REFlex_NameClean(REEnemyNames[i])),  RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 					return true;
 				end
 			end
 			for i=1, #REFriendNames do
-				if string.upper(REFriendNames[i]) == RE.NameSearch and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
+				if string.find(string.upper(REFriendNames[i]), RE.NameSearch) ~= nil and rowdata["cols"][14]["bracket"] == RE.BracketDrop then
 					return true;
 				end
 			end
@@ -1229,12 +1230,12 @@ function REFlex_Tab_NameFilter(self, rowdata)
 			end
 			local REEnemyNames, _, REFriendNames = REFlex_ArenaTeamHash(rowdata["cols"][13]["value"]);
 			for i=1, #REEnemyNames do
-				if string.upper(REFlex_NameClean(REEnemyNames[i])) == RE.NameSearch then
+				if string.find(string.upper(REFlex_NameClean(REEnemyNames[i])),  RE.NameSearch) ~= nil then
 					return true;
 				end
 			end
 			for i=1, #REFriendNames do
-				if string.upper(REFriendNames[i]) == RE.NameSearch then
+				if string.find(string.upper(REFriendNames[i]), RE.NameSearch) ~= nil then
 					return true;
 				end
 			end

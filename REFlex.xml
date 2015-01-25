@@ -10,7 +10,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="REFlex_ScoreTab" hidden="true" resizable="false" movable="false" parent="WorldStateScoreFrame">
+	<Frame name="REFlex_ScoreTab" hidden="true" resizable="true" movable="false" parent="WorldStateScoreFrame">
 		<Size>
 			<AbsDimension x="200" y="37"/>
 		</Size>

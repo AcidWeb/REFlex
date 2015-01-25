@@ -330,7 +330,7 @@ function REFlex_OnEvent(self,Event,...)
 				end
 			end
 		end
-	elseif Event == "GUILD_ROSTER_UPDATE" and RE.InGuild == 1 and RE.GuildRosterUpdate then
+	elseif Event == "GUILD_ROSTER_UPDATE" and RE.InGuild and RE.GuildRosterUpdate then
 		RE.GuildRosterUpdate = false;
 		local REGuildNum = GetNumGuildMembers();
 
@@ -395,7 +395,7 @@ function REFlex_OnEvent(self,Event,...)
 
 		REFlex_FindTab7Default();
 		RE.InGuild = IsInGuild();
-		if RE.InGuild == 1 then
+		if RE.InGuild then
 			RE.GuildRosterUpdate = true;
 			GuildRoster();
 			RE.Tab7GuildOnly = true;
@@ -709,7 +709,7 @@ function REFlex_OnEvent(self,Event,...)
 		---
 
 		RegisterAddonMessagePrefix("REFlex");
-		if IsInGuild() == 1 then
+		if IsInGuild() then
 			SendAddonMessage("REFlex", RE.AddonVersionCheck, "GUILD");
 		end
 
@@ -946,7 +946,7 @@ function REFlex_MinimapButtonClick(Button)
 	if Button == "LeftButton" or Button == nil then
 		local Visible = REFlex_MainTab:IsVisible();
 
-		if Visible ~= 1 then
+		if not Visible then
 			REFlex_MainTab:Show();
 		else
 			REFlex_MainTab:Hide();
@@ -1082,22 +1082,22 @@ function REFlex_SpecTabClick(Spec)
 	local Visible5 = REFlex_MainTab_Tab5:IsVisible();
 	local Visible6 = REFlex_MainTab_Tab6:IsVisible();
 
-	if Visible1 == 1 then
+	if Visible1 then
 		REFlex_MainTab_Tab1:Hide();
 		REFlex_MainTab_Tab1:Show();
-	elseif Visible2 == 1 then
+	elseif Visible2 then
 		REFlex_MainTab_Tab2:Hide();
 		REFlex_MainTab_Tab2:Show();
-	elseif Visible3 == 1 then
+	elseif Visible3 then
 		REFlex_MainTab_Tab3:Hide();
 		REFlex_MainTab_Tab3:Show();
-	elseif Visible4 == 1 then
+	elseif Visible4 then
 		REFlex_MainTab_Tab4:Hide();
 		REFlex_MainTab_Tab4:Show();
-	elseif Visible5 == 1 then
+	elseif Visible5 then
 		REFlex_MainTab_Tab5:Hide();
 		REFlex_MainTab_Tab5:Show();
-	elseif Visible6 == 1 then
+	elseif Visible6 then
 		REFlex_MainTab_Tab6:Hide();
 		REFlex_MainTab_Tab6:Show();
 	end
@@ -1203,7 +1203,7 @@ end
 
 function REFlex_MainOnClick(Channel)
 	local IsArena = REFlex_MainTab_Tab5:IsVisible();
-	if IsArena == 1 then
+	if IsArena then
 		local REAddidional = "";
 		if RE.BracketDrop == 2 then
 			REAddidional = " - 2v2";
@@ -1309,16 +1309,16 @@ function REFlex_ExportTabShow()
 	local REExport = "";
 	local RESpec = RE.TalentTab;
 
-	if Visible1 == 1 then
+	if Visible1 then
 		REDataType = "Battleground";
 		RERated = nil; 
-	elseif Visible2 == 1 then
+	elseif Visible2 then
 		REDataType = "Battleground";
 		RERated = false; 
-	elseif Visible3 == 1 then
+	elseif Visible3 then
 		REDataType = "Battleground";
 		RERated = true; 
-	elseif Visible5 == 1 then
+	elseif Visible5 then
 		REDataType = "Arena";
 		REBracket = RE.BracketDrop;
 	end
@@ -2076,12 +2076,12 @@ function REFlex_MainTabShow()
 			_G[RE.MainTable1["frame"]:GetName()]:SetPoint("TOP");
 			RE.MainTable1:RegisterEvents({
 				["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
-					if realrow ~= nil and IsAltKeyDown() == nil then
+					if realrow ~= nil and not IsAltKeyDown() then
 						RE.TooltipTimer = RE.ShefkiTimer:ScheduleTimer(REFlex_ShowBGDetails_OnEnter, 0.5, {cellFrame, data[realrow]["cols"][13]["value"]});
 					end
 				end,
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button, ...)
-					if realrow ~= nil and IsAltKeyDown() == 1 and IsControlKeyDown() == 1 and IsShiftKeyDown() == 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and Button == "LeftButton" then
 						RE.DeleteID = data[realrow]["cols"][13]["value"];
 						StaticPopup_Show("REFLEX_CONFIRMDELETE");
 					end
@@ -2099,12 +2099,12 @@ function REFlex_MainTabShow()
 			_G[RE.MainTable2["frame"]:GetName()]:SetPoint("TOP");
 			RE.MainTable2:RegisterEvents({
 				["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
-					if realrow ~= nil and IsAltKeyDown() == nil then
+					if realrow ~= nil and not IsAltKeyDown() then
 						RE.TooltipTimer = RE.ShefkiTimer:ScheduleTimer(REFlex_ShowBGDetails_OnEnter, 0.5, {cellFrame, data[realrow]["cols"][13]["value"]});    
 					end
 				end,
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button, ...)
-					if realrow ~= nil and IsAltKeyDown() == 1 and IsControlKeyDown() == 1 and IsShiftKeyDown() == 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and Button == "LeftButton" then
 						RE.DeleteID = data[realrow]["cols"][13]["value"];
 						StaticPopup_Show("REFLEX_CONFIRMDELETE");
 					end
@@ -2122,12 +2122,12 @@ function REFlex_MainTabShow()
 			_G[RE.MainTable3["frame"]:GetName()]:SetPoint("TOP");
 			RE.MainTable3:RegisterEvents({
 				["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
-					if realrow ~= nil and IsAltKeyDown() == nil then
+					if realrow ~= nil and not IsAltKeyDown() then
 						RE.TooltipTimer = RE.ShefkiTimer:ScheduleTimer(REFlex_ShowBGDetails_OnEnter, 0.5, {cellFrame, data[realrow]["cols"][13]["value"], "REMainTable3"});
 					end
 				end,
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button, ...)
-					if realrow ~= nil and IsAltKeyDown() == 1 and IsControlKeyDown() == 1 and IsShiftKeyDown() == 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and Button == "LeftButton" then
 						RE.DeleteID = data[realrow]["cols"][13]["value"];
 						StaticPopup_Show("REFLEX_CONFIRMDELETE");
 					end
@@ -2142,10 +2142,10 @@ function REFlex_MainTabShow()
 			RE.MainTable9 = RE.ScrollingTable:CreateST(RE.DataStructure9, 25, nil, nil, REFlex_MainTab_Tab7_Table)
 			RE.MainTable9:RegisterEvents({
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button, ...)
-					if realrow ~= nil and IsShiftKeyDown() == 1 and IsControlKeyDown() ~= 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsShiftKeyDown() and not IsControlKeyDown() and Button == "LeftButton" then
 						InviteUnit(data[realrow]["cols"][14]["value"]);
 					end
-					if realrow ~= nil and IsControlKeyDown() == 1 and IsShiftKeyDown() ~= 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsControlKeyDown() and not IsShiftKeyDown() and Button == "LeftButton" then
 						if data[realrow]["cols"][10]["value"] == "1" then
 							REFlex_SendQuery(data[realrow]["cols"][14]["value"]);
 						end
@@ -2159,7 +2159,7 @@ function REFlex_MainTabShow()
 			_G[RE.MainTable5["frame"]:GetName()]:SetPoint("TOP");
 			RE.MainTable5:RegisterEvents({
 				["OnClick"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, Button ,...)
-					if realrow ~= nil and IsAltKeyDown() == 1 and IsControlKeyDown() == 1 and IsShiftKeyDown() == 1 and Button == "LeftButton" then
+					if realrow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and Button == "LeftButton" then
 						RE.DeleteID = data[realrow]["cols"][13]["value"];
 						StaticPopup_Show("REFLEX_CONFIRMDELETE");
 					elseif realrow == nil and (column == 3 or column == 5) then
@@ -2167,7 +2167,7 @@ function REFlex_MainTabShow()
 					end
 				end,
 				["OnEnter"] = function (rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
-					if realrow ~= nil and IsAltKeyDown() == nil then
+					if realrow ~= nil and not IsAltKeyDown() then
 						RE.TooltipTimer = RE.ShefkiTimer:ScheduleTimer(REFlex_ShowArenaDetails_OnEnter, 0.5, {cellFrame, data[realrow]["cols"][13]["value"]}); 
 					end
 				end,
@@ -2559,7 +2559,7 @@ function REFlex_Tab7Show()
 	REFlex_MainTab_CSVExport:Hide();
 	REFlex_MainTab_Query:Show();
 
-	if RE.InGuild ~= 1 then
+	if not RE.InGuild then
 		REFlex_MainTab_Tab7_Trigger:Disable();
 	else
 		RE.GuildRosterUpdate = true;
@@ -3156,7 +3156,7 @@ function REFlex_ShowBGDetails_OnEnter(OptionArray)
 	RETooltip:SmartAnchorTo(Me);
 	RETooltip:Show();
 
-	if IsShiftKeyDown() == 1 and IsControlKeyDown() ~= 1 and Table == "REMainTable3" then
+	if IsShiftKeyDown() and not IsControlKeyDown() and Table == "REMainTable3" then
 		local Me = OptionArray[1];
 		local DatabaseID = OptionArray[2];
 		local RETooltipF = RE.QTip:Acquire("RERBGRosterToolTipFriend", 5, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER");
@@ -3296,7 +3296,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 	end
 	RETooltip:AddLine();
 	RETooltip:AddHeader("", "|cFFFFD100- " .. FriendTeamName .. " -|r", "", "", "", "|cFFFFD100- " .. EnemyTeamName .. " -|r", "");
-	if IsShiftKeyDown() == 1 and IsControlKeyDown() ~= 1 then
+	if IsShiftKeyDown() and not IsControlKeyDown() then
 		RETooltip:AddHeader("", "|cFFFFD100- " .. GetRealmName() .. " -|r", "", "", "", "|cFFFFD100- " .. REFlex_GetEnemyRealmName(REFDatabaseA[DatabaseID][TeamE .. "Team"], true) .. " -|r", "");
 	end
 	RETooltip:AddLine();
@@ -3359,7 +3359,7 @@ function REFlex_ShowArenaDetails_OnEnter(OptionArray)
 		RETooltip:AddLine(RaceClassCell, NameCell, BuildCell, "", EnemyRaceClassCell, EnemyNameCell, EnemyBuildCell);	
 	end
 
-	if IsShiftKeyDown() == 1 and IsControlKeyDown() ~= 1 then
+	if IsShiftKeyDown() and not IsControlKeyDown() then
 		local RETotalDamage, RETotalHealing, RETotalDamageEnemy, RETotalHealingEnemy = 0, 0, 0, 0;
 
 		RETooltip:AddLine();
@@ -3440,7 +3440,7 @@ function REFlex_BGEnd()
 	local REArena = IsActiveBattlefieldArena();
 	local _, REZoneType = IsInInstance();
 	local REBGRated = IsRatedBattleground();
-	if REWinner ~= nil and RE.SecondTime ~= true and REArena == nil and REZoneType == "pvp" and ((REFSettings["UNBGSupport"] and REBGRated ~= true) or (REFSettings["RBGSupport"] and REBGRated)) then
+	if REWinner ~= nil and RE.SecondTime ~= true and REArena ~= true and REZoneType == "pvp" and ((REFSettings["UNBGSupport"] and REBGRated ~= true) or (REFSettings["RBGSupport"] and REBGRated)) then
 		SendAddonMessage("REFlex", RE.AddonVersionCheck, "INSTANCE_CHAT");
 
 		SetMapToCurrentZone();
@@ -3714,7 +3714,7 @@ function REFlex_ArenaEnd()
 	local REWinner = GetBattlefieldWinner();
 	local REArena, REArenaRegistered = IsActiveBattlefieldArena();
 	local _, REZoneType = IsInInstance();
-	if REWinner ~= nil and RE.SecondTime ~= true and REArena == 1 and REArenaRegistered == 1 and REZoneType == "arena" and REFSettings["ArenaSupport"] then
+	if REWinner ~= nil and RE.SecondTime ~= true and REArena and REArenaRegistered and REZoneType == "arena" and REFSettings["ArenaSupport"] then
 		RE.CurrentSeason = GetCurrentArenaSeason();
 		local REWinSide = REWinner;
 		local REMap = GetRealZoneText();
