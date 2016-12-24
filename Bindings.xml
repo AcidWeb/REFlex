@@ -1,5 +1,0 @@
-<Bindings>
-  <Binding name="REFLEXSHOW" header="REFLEXB">
-    REFlex_MinimapButtonClick();
-  </Binding>
-</Bindings>

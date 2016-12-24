@@ -1,23 +1,10 @@
-## Interface: 60000
-## Title: REFlex
-## Notes: Collect statistics of played arena matches and battlegrounds. 
-## Version: 0.9.8.8
+## Interface: 70100
+## Title: |cFF74D06CRE|rFlex
+## Notes: Collect statistics of played arena matches and battlegrounds.
+## Version: 2.0
 ## Author: AcidWeb
-## SavedVariablesPerCharacter: REFDatabase, REFSettings, REFDatabaseA
-Locals\enUS.lua
-Locals\deDE.lua
-Locals\ruRU.lua
-Locals\frFR.lua
-Locals\zhCN.lua
-Locals\koKR.lua
-Locals\zhTW.lua
-Locals\esES.lua
+## SavedVariablesPerCharacter: REFlexSettings
 
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-Libs\LibDataBroker-1-1\LibDataBroker-1.1.lua
-Libs\LibSt\lib-st.lua
-Libs\LibShefkiTimer-1.0\LibShefkiTimer-1.0.lua
-libs\LibQTip-1.0\LibQTip-1.0.lua
-
-REFlex.xml
+Embeds.xml
+Locale\Locale.xml
+REPorter.xml
