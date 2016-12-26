@@ -1,10 +1,10 @@
 ## Interface: 70100
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 2.0
+## Version: 2.0.0
 ## Author: AcidWeb
-## SavedVariablesPerCharacter: REFlexSettings
+## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase
 
 Embeds.xml
 Locale\Locale.xml
-REPorter.xml
+REFlex.xml
