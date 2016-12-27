@@ -101,7 +101,8 @@ RE.AceConfig = {
 			get = function(_) return RES.MiniMapButtonSettings.hide end
 		},
 		toasts = {
-			name = L["Enable toasts"],
+			name = L["Enable battleground summary"],
+			desc = L["Display toast with battleground summary after completed match."],
 			type = "toggle",
 			width = "full",
 			order = 2,
@@ -110,11 +111,30 @@ RE.AceConfig = {
 		},
 		servername = {
 			name = L["Display server names"],
+			desc = L["Show player server name in match detail tooltip."],
 			type = "toggle",
 			width = "full",
 			order = 3,
 			set = function(_, val) RES.ShowServerName = val end,
 			get = function(_) return RES.ShowServerName end
+		},
+		deletebase = {
+			name = L["Purge database"],
+			desc = L["WARNING! This operation is not reversible!"],
+			type = "execute",
+			width = "normal",
+			confirm = true,
+			order = 4,
+			func = function() RED = {}; ReloadUI() end
+		},
+		deleteoldseason = {
+			name = L["Purge previous seasons"],
+			desc = L["WARNING! This operation is not reversible!"],
+			type = "execute",
+			width = "normal",
+			confirm = true,
+			order = 5,
+			func = function() RE:SeasonPurge(); ReloadUI() end
 		}
 	}
 }
@@ -183,9 +203,9 @@ function RE:OnEvent(self, event, ...)
 		RED = REFlexDatabase
 		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
-		RegisterAddonMessagePrefix("REFlex");
-		BINDING_HEADER_REFLEXB = "REFlex";
-		BINDING_NAME_REFLEXOPEN = L["Show main window"];
+		RegisterAddonMessagePrefix("REFlex")
+		BINDING_HEADER_REFLEXB = "REFlex"
+		BINDING_NAME_REFLEXOPEN = L["Show main window"]
 		RequestRatedInfo()
 
 		TOAST:Register("REFlexToast", function(toast, ...)
@@ -219,7 +239,8 @@ function RE:OnEvent(self, event, ...)
 						REFlexGUI:Hide()
 					end
 				elseif button == "RightButton" then
-					InterfaceOptionsFrame_OpenToCategory(RE.OptionsMenu)
+					InterfaceOptionsFrame:Show()
+					InterfaceOptionsFrame_OpenToCategory(REFlexNamespace.OptionsMenu)
 				end
 			end})
 		LDBI:Register("REFlex", RE.LDB, REFlexSettings.MiniMapButtonSettings)
@@ -227,19 +248,19 @@ function RE:OnEvent(self, event, ...)
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
-		local _, message, _ = ...;
-		local messageEx = {strsplit(";", message)};
+		local _, message, _ = ...
+		local messageEx = {strsplit(";", message)}
 		if messageEx[1] == "Version" then
 			if not RE.FoundNewVersion and tonumber(messageEx[2]) > RE.Version then
 				TOAST:Spawn("REFlexToastInfo", L["New version released!"])
-				RE.FoundNewVersion = true;
+				RE.FoundNewVersion = true
 			end
 		end
   elseif event == "ZONE_CHANGED_NEW_AREA" then
     RE.DataSaved = false
-		SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT");
+		SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT")
 		if IsInGuild() then
-			SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD");
+			SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 		end
   elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		RE:PVPEnd()
@@ -301,14 +322,14 @@ function RE:UpdateGUI()
 		REFlexGUI_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
 		REFlexGUI_ScoreHolder_Wins:SetText(won)
 		REFlexGUI_ScoreHolder_Lose:SetText(lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..topHK)
-		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..hk)
-		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..topKB)
-		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..kb)
-		REFlexGUI_ScoreHolder_Damage2:SetText(L["Top"]..": "..RE:NumberClean(topDamage))
-		REFlexGUI_ScoreHolder_Damage3:SetText(L["Total"]..": "..RE:NumberClean(damage))
-		REFlexGUI_ScoreHolder_Healing2:SetText(L["Top"]..": "..RE:NumberClean(topHealing))
-		REFlexGUI_ScoreHolder_Healing3:SetText(L["Total"]..": "..RE:NumberClean(healing))
+		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..topHK)
+		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
+		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..topKB)
+		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
+		REFlexGUI_ScoreHolder_Damage2:SetText(BEST..": "..RE:NumberClean(topDamage))
+		REFlexGUI_ScoreHolder_Damage3:SetText(TOTAL..": "..RE:NumberClean(damage))
+		REFlexGUI_ScoreHolder_Healing2:SetText(BEST..": "..RE:NumberClean(topHealing))
+		REFlexGUI_ScoreHolder_Healing3:SetText(TOTAL..": "..RE:NumberClean(healing))
 		RE:HKBarUpdate()
 	elseif PanelTemplates_GetSelectedTab(REFlexGUI) > 3 then
 		RE.TableArena.frame:Show()
@@ -342,10 +363,10 @@ function RE:UpdateGUI()
 		REFlexGUI_ScoreHolder_Healing1:SetText("")
 		REFlexGUI_ScoreHolder_Wins:SetText(won)
 		REFlexGUI_ScoreHolder_Lose:SetText(lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..RE:NumberClean(topHealing))
-		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..RE:NumberClean(healing))
-		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..RE:NumberClean(topDamage))
-		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..RE:NumberClean(damage))
+		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..RE:NumberClean(topHealing))
+		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..RE:NumberClean(healing))
+		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..RE:NumberClean(topDamage))
+		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..RE:NumberClean(damage))
 		REFlexGUI_ScoreHolder_Damage2:SetText("")
 		REFlexGUI_ScoreHolder_Damage3:SetText("")
 		REFlexGUI_ScoreHolder_Healing2:SetText("")
@@ -429,7 +450,7 @@ function RE:PVPEnd()
     RE.MatchData.Winner = GetBattlefieldWinner()
     RE.MatchData.PlayerSide = GetBattlefieldArenaFaction()
     RE.MatchData.isArena = IsActiveBattlefieldArena()
-    RE.MatchData.CurrentSeason = GetCurrentArenaSeason()
+    RE.MatchData.Season = GetCurrentArenaSeason()
     RE.MatchData.PlayersNum = GetNumBattlefieldScores()
     RE.MatchData.StatsNum = GetNumBattlefieldStats()
     RE.MatchData.Duration = math.floor(GetBattlefieldInstanceRunTime() / 1000)

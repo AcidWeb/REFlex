@@ -9,8 +9,8 @@ RE.BGStructure = {
     ["align"] = "CENTER"
   },
   {
-    ["name"] = L["Map"],
-    ["width"] = 65,
+    ["name"] = BATTLEGROUND,
+    ["width"] = 75,
     ["color"] = RE.GetMapColor,
     ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
     ["bgcolor"] = {
@@ -40,12 +40,12 @@ RE.BGStructure = {
   },
   {
     ["name"] = "KB",
-    ["width"] = 55,
+    ["width"] = 50,
     ["align"] = "CENTER"
   },
   {
     ["name"] = "HK",
-    ["width"] = 55,
+    ["width"] = 50,
     ["bgcolor"] = {
       ["r"] = 0.15,
       ["g"] = 0.15,
@@ -104,7 +104,7 @@ RE.ArenaStructure = {
     ["align"] = "CENTER"
   },
   {
-    ["name"] = L["Map"],
+    ["name"] = ARENA,
     ["width"] = 60,
     ["color"] = RE.GetMapColorArena,
     ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,

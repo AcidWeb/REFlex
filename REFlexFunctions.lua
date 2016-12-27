@@ -364,3 +364,19 @@ end
 
 function RE:CloseToast()
 end
+
+function RE:SeasonPurge()
+	local currentSeason = GetCurrentArenaSeason()
+	local toWipe = {}
+	for i=1, table.getn(REFlexDatabase) do
+		if REFlexDatabase[i].Season ~= currentSeason then
+			table.insert(toWipe, i)
+		end
+	end
+	local wipeI = 0
+	for j=1, table.getn(toWipe) do
+		local wipeID = toWipe[j] - wipeI
+		table.remove(REFlexDatabase, wipeID)
+		wipeI = wipeI + 1
+	end
+end
