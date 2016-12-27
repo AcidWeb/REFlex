@@ -2,11 +2,7 @@ local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
 function RE:GetPlayerData(databaseID)
-	for i=1, table.getn(REFlexDatabase[databaseID].Players) do
-	   if REFlexDatabase[databaseID].Players[i][1] == RE.PlayerName then
-	      return REFlexDatabase[databaseID].Players[i]
-	   end
-	end
+	return REFlexDatabase[databaseID].Players[REFlexDatabase[databaseID].PlayerNum]
 end
 
 function RE:GetPlayerWin(databaseID, icon)

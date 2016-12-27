@@ -478,7 +478,11 @@ function RE:PVPEnd()
 
     RE.MatchData.Players = {}
     for i=1, RE.MatchData.PlayersNum do
-      table.insert(RE.MatchData.Players, {GetBattlefieldScore(i)})
+			local data = {GetBattlefieldScore(i)}
+			if data[1] == RE.PlayerName then
+				RE.MatchData.PlayerNum = i
+			end
+      table.insert(RE.MatchData.Players, data)
     end
 
     if RE.MatchData.isRated then
