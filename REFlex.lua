@@ -34,31 +34,6 @@ RE.DefaultConfig = {
 	["ShowServerName"] = false,
 	["ConfigVersion"] = RE.Version,
 }
-RE.MapList = {
-	[30] = "AV",
-	[529] = "AB",
-	[1105] = "DG",
-	[566] = "EotS",
-	[968] = "EotS",
-	[628] = "IoC",
-	[727] = "SM",
-	[607] = "SotA",
-	[998] = "ToK",
-	[1035] = "ToK",
-	[761] = "TBfG",
-	[726] = "TP",
-	[489] = "WSG",
-	[1552] = "AF",
-	[1504] = "BRH",
-	[562] = "BE",
-	[1672] = "BE",
-	[617] = "DS",
-	[559] = "NA",
-	[1505] = "NA",
-	[572] = "RoL",
-	[1134] = "TP",
-	[980] = "TV"
-}
 RE.MapListLongBG = {
 	[1] = ALL,
 	[30] = GetRealZoneText(30),
@@ -146,6 +121,32 @@ function RE:OnLoad(self)
   self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	tinsert(UISpecialFrames,"REFlexGUI")
+
+	RE.MapList = {
+		[30] = GetRealZoneText(30),
+		[529] = GetRealZoneText(529),
+		[1105] = GetRealZoneText(1105),
+		[566] = GetRealZoneText(566),
+		[968] = GetRealZoneText(566),
+		[628] = GetRealZoneText(628),
+		[727] = GetRealZoneText(727),
+		[607] = GetRealZoneText(607),
+		[998] = GetRealZoneText(998),
+		[1035] = GetRealZoneText(998),
+		[761] = GetRealZoneText(761),
+		[726] = GetRealZoneText(726),
+		[489] = GetRealZoneText(489),
+		[1552] = RE:GetShortMapName(GetRealZoneText(1552)),
+		[1504] = RE:GetShortMapName(GetRealZoneText(1504)),
+		[562] = RE:GetShortMapName(GetRealZoneText(562)),
+		[1672] = RE:GetShortMapName(GetRealZoneText(562)),
+		[617] = RE:GetShortMapName(GetRealZoneText(617)),
+		[559] = RE:GetShortMapName(GetRealZoneText(559)),
+		[1505] = RE:GetShortMapName(GetRealZoneText(559)),
+		[572] = RE:GetShortMapName(GetRealZoneText(572)),
+		[1134] = RE:GetShortMapName(GetRealZoneText(1134)),
+		[980] = RE:GetShortMapName(GetRealZoneText(980))
+	}
 end
 
 function RE:OnLoadGUI(self)

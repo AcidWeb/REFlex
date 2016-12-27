@@ -168,6 +168,15 @@ function RE:GetMapName(mapID)
 	end
 end
 
+function RE:GetShortMapName(mapName)
+   local mapNameTemp = {strsplit(" ", mapName)}
+   local mapShortName = ""
+   for i=1, table.getn(mapNameTemp) do
+      mapShortName = mapShortName..RE:StrSub(mapNameTemp[i],0,1)
+   end
+   return mapShortName
+end
+
 function RE:GetMapColor(_, realrow, _, table)
   local isRated = REFlexDatabase[table.data[realrow][11]].isRated
   if isRated then
@@ -364,4 +373,34 @@ function RE:SeasonPurge()
 		table.remove(REFlexDatabase, wipeID)
 		wipeI = wipeI + 1
 	end
+end
+
+function RE:CSize(char)
+   if not char then
+      return 0
+   elseif char > 240 then
+      return 4
+   elseif char > 225 then
+      return 3
+   elseif char > 192 then
+      return 2
+   else
+      return 1
+   end
+end
+
+function RE:StrSub(str, startChar, numChars)
+   local startIndex = 1
+   while startChar > 1 do
+      local char = string.byte(str, startIndex)
+      startIndex = startIndex + RE:CSize(char)
+      startChar = startChar - 1
+   end
+   local currentIndex = startIndex
+   while numChars > 0 and currentIndex <= #str do
+      local char = string.byte(str, currentIndex)
+      currentIndex = currentIndex + RE:CSize(char)
+      numChars = numChars -1
+   end
+   return str:sub(startIndex, currentIndex - 1)
 end

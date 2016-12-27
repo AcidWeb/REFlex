@@ -10,7 +10,7 @@ RE.BGStructure = {
   },
   {
     ["name"] = BATTLEGROUND,
-    ["width"] = 75,
+    ["width"] = 130,
     ["color"] = RE.GetMapColor,
     ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
     ["bgcolor"] = {
@@ -29,7 +29,7 @@ RE.BGStructure = {
   },
   {
     ["name"] = WIN,
-    ["width"] = 55,
+    ["width"] = 50,
     ["bgcolor"] = {
       ["r"] = 0.15,
       ["g"] = 0.15,
@@ -56,13 +56,13 @@ RE.BGStructure = {
   },
   {
     ["name"] = DAMAGE,
-    ["width"] = 90,
+    ["width"] = 65,
     ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
     ["align"] = "CENTER"
   },
   {
     ["name"] = SHOW_COMBAT_HEALING,
-    ["width"] = 90,
+    ["width"] = 65,
     ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
     ["bgcolor"] = {
       ["r"] = 0.15,
