@@ -8,6 +8,7 @@ local GUI = LibStub("AceGUI-3.0")
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBI = LibStub("LibDBIcon-1.0")
 local TOAST = LibStub("LibToast-1.0")
+local QTIP = LibStub("LibQTip-1.0")
 
 RE.Version = 200
 RE.VersionStr = "2.0.0"
