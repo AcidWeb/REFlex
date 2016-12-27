@@ -225,17 +225,6 @@ function RE:TimeClean(timeRaw)
 	return timeMin..":"..timeSec
 end
 
-function RE:NumberClean(number)
-  if number >= 1000000000 then
-    number = RE:Round((number / 1000000000), 2).." B"
-	elseif number >= 1000000 then
-		number = RE:Round((number / 1000000), 2).." M"
-	elseif number >= 1000 then
-		number = RE:Round((number / 1000), 0).." K"
-	end
-	return number
-end
-
 function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
   local column = obj.cols[sortbycol]
   local direction = column.sort or column.defaultsort or "asc"
@@ -350,7 +339,7 @@ end
 
 function RE:InsideToast(label, value, databaseID, place, top)
 	local toast = {}
-	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:NumberClean(value).." - "..place.."/"..REFlexDatabase[databaseID].PlayersNum.."|r")
+	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..AbbreviateNumbers(value).." - "..place.."/"..REFlexDatabase[databaseID].PlayersNum.."|r")
 	if value > top then
 		table.insert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
 	end

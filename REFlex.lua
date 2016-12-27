@@ -327,10 +327,10 @@ function RE:UpdateGUI()
 		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
 		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..topKB)
 		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
-		REFlexGUI_ScoreHolder_Damage2:SetText(BEST..": "..RE:NumberClean(topDamage))
-		REFlexGUI_ScoreHolder_Damage3:SetText(TOTAL..": "..RE:NumberClean(damage))
-		REFlexGUI_ScoreHolder_Healing2:SetText(BEST..": "..RE:NumberClean(topHealing))
-		REFlexGUI_ScoreHolder_Healing3:SetText(TOTAL..": "..RE:NumberClean(healing))
+		REFlexGUI_ScoreHolder_Damage2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
+		REFlexGUI_ScoreHolder_Damage3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
+		REFlexGUI_ScoreHolder_Healing2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
+		REFlexGUI_ScoreHolder_Healing3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
 		RE:HKBarUpdate()
 	elseif PanelTemplates_GetSelectedTab(REFlexGUI) > 3 then
 		RE.TableArena.frame:Show()
@@ -364,10 +364,10 @@ function RE:UpdateGUI()
 		REFlexGUI_ScoreHolder_Healing1:SetText("")
 		REFlexGUI_ScoreHolder_Wins:SetText(won)
 		REFlexGUI_ScoreHolder_Lose:SetText(lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..RE:NumberClean(topHealing))
-		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..RE:NumberClean(healing))
-		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..RE:NumberClean(topDamage))
-		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..RE:NumberClean(damage))
+		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
+		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
+		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
+		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
 		REFlexGUI_ScoreHolder_Damage2:SetText("")
 		REFlexGUI_ScoreHolder_Damage3:SetText("")
 		REFlexGUI_ScoreHolder_Healing2:SetText("")
@@ -392,8 +392,8 @@ function RE:UpdateBGData(all)
 												RE:GetPlayerWin(i, true),
 												playeData[2],
 												playeData[3],
-												RE:NumberClean(playeData[10]),
-												RE:NumberClean(playeData[11]),
+												AbbreviateNumbers(playeData[10]),
+												AbbreviateNumbers(playeData[11]),
 												playeData[5],
 												RE:RatingChangeClean(playeData[13]),
 												i,
@@ -422,8 +422,8 @@ function RE:UpdateArenaData(all)
 												RE:GetArenaTeam(i, false),
 												RE:GetArenaMMR(i, false),
 												RE:TimeClean(RED[i].Duration),
-												RE:NumberClean(playeData[10]),
-												RE:NumberClean(playeData[11]),
+												AbbreviateNumbers(playeData[10]),
+												AbbreviateNumbers(playeData[11]),
 												RE:RatingChangeClean(playeData[13]),
 												i,
 												playeData[10],
