@@ -189,7 +189,7 @@ function RE:OnEvent(self, event, ...)
 		RequestRatedInfo()
 
 		TOAST:Register("REFlexToast", function(toast, ...)
-	    toast:SetFormattedTitle("|cFF74D06CRE|rFlex")
+	    toast:SetFormattedTitle("|cFF74D06CRE|r|cFFFFFFFFFlex|r")
 	    toast:SetFormattedText(...)
 	    toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
 			toast:MakePersistent()
@@ -202,7 +202,7 @@ function RE:OnEvent(self, event, ...)
 			end
 		end)
 		TOAST:Register("REFlexToastInfo", function(toast, ...)
-			toast:SetFormattedTitle("|cFF74D06CRE|rFlex")
+	    toast:SetFormattedTitle("|cFF74D06CRE|r|cFFFFFFFFFlex|r")
 			toast:SetFormattedText(...)
 			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
 		end)
@@ -227,21 +227,19 @@ function RE:OnEvent(self, event, ...)
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
-		local _, Message, _ = ...;
-		local MessageEx = {strsplit(";", Message)};
-		if MessageEx[1] == "Version" then
-			if not RE.FoundNewVersion and tonumber(MessageEx[2]) > RE.Version then
-				if RES.Toasts then
-					TOAST:Spawn("REFlexToastInfo", L["New version released!"])
-				end
+		local _, message, _ = ...;
+		local messageEx = {strsplit(";", message)};
+		if messageEx[1] == "Version" then
+			if not RE.FoundNewVersion and tonumber(messageEx[2]) > RE.Version then
+				TOAST:Spawn("REFlexToastInfo", L["New version released!"])
 				RE.FoundNewVersion = true;
 			end
 		end
   elseif event == "ZONE_CHANGED_NEW_AREA" then
     RE.DataSaved = false
-		SendAddonMessage("REFlex", "Version;"..RE.AddonVersionCheck, "INSTANCE_CHAT");
+		SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT");
 		if IsInGuild() then
-			SendAddonMessage("REFlex", "Version;"..RE.AddonVersionCheck, "GUILD");
+			SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD");
 		end
   elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		RE:PVPEnd()
@@ -295,22 +293,22 @@ function RE:UpdateGUI()
 			RE.TableBG:SetFilter(RE.FilterRated)
 			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
 		end
-		local Won, Lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI), false)
-		local Damage, TopDamage, KB, TopKB, HK, TopHK, Healing, TopHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI), false)
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI), false)
+		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI), false, false)
 		REFlexGUI_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
 		REFlexGUI_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
 		REFlexGUI_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
 		REFlexGUI_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlexGUI_ScoreHolder_Wins:SetText(Won)
-		REFlexGUI_ScoreHolder_Lose:SetText(Lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..TopHK)
-		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..HK)
-		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..TopKB)
-		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..KB)
-		REFlexGUI_ScoreHolder_Damage2:SetText(L["Top"]..": "..RE:NumberClean(TopDamage))
-		REFlexGUI_ScoreHolder_Damage3:SetText(L["Total"]..": "..RE:NumberClean(Damage))
-		REFlexGUI_ScoreHolder_Healing2:SetText(L["Top"]..": "..RE:NumberClean(TopHealing))
-		REFlexGUI_ScoreHolder_Healing3:SetText(L["Total"]..": "..RE:NumberClean(Healing))
+		REFlexGUI_ScoreHolder_Wins:SetText(won)
+		REFlexGUI_ScoreHolder_Lose:SetText(lost)
+		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..topHK)
+		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..hk)
+		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..topKB)
+		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..kb)
+		REFlexGUI_ScoreHolder_Damage2:SetText(L["Top"]..": "..RE:NumberClean(topDamage))
+		REFlexGUI_ScoreHolder_Damage3:SetText(L["Total"]..": "..RE:NumberClean(damage))
+		REFlexGUI_ScoreHolder_Healing2:SetText(L["Top"]..": "..RE:NumberClean(topHealing))
+		REFlexGUI_ScoreHolder_Healing3:SetText(L["Total"]..": "..RE:NumberClean(healing))
 		RE:HKBarUpdate()
 	elseif PanelTemplates_GetSelectedTab(REFlexGUI) > 3 then
 		RE.TableArena.frame:Show()
@@ -336,18 +334,18 @@ function RE:UpdateGUI()
 			RE.TableArena:SetFilter(RE.FilterRated)
 			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		end
-		local Won, Lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true)
-		local Damage, TopDamage, _, _, _, _, Healing, TopHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true)
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true)
+		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true, false)
 		REFlexGUI_ScoreHolder_HK1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
 		REFlexGUI_ScoreHolder_KB1:SetText("|cFFFFD100"..DAMAGE.."|r")
 		REFlexGUI_ScoreHolder_Damage1:SetText("")
 		REFlexGUI_ScoreHolder_Healing1:SetText("")
-		REFlexGUI_ScoreHolder_Wins:SetText(Won)
-		REFlexGUI_ScoreHolder_Lose:SetText(Lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..RE:NumberClean(TopHealing))
-		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..RE:NumberClean(Healing))
-		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..RE:NumberClean(TopDamage))
-		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..RE:NumberClean(Damage))
+		REFlexGUI_ScoreHolder_Wins:SetText(won)
+		REFlexGUI_ScoreHolder_Lose:SetText(lost)
+		REFlexGUI_ScoreHolder_HK2:SetText(L["Top"]..": "..RE:NumberClean(topHealing))
+		REFlexGUI_ScoreHolder_HK3:SetText(L["Total"]..": "..RE:NumberClean(healing))
+		REFlexGUI_ScoreHolder_KB2:SetText(L["Top"]..": "..RE:NumberClean(topDamage))
+		REFlexGUI_ScoreHolder_KB3:SetText(L["Total"]..": "..RE:NumberClean(damage))
 		REFlexGUI_ScoreHolder_Damage2:SetText("")
 		REFlexGUI_ScoreHolder_Damage3:SetText("")
 		REFlexGUI_ScoreHolder_Healing2:SetText("")
@@ -484,7 +482,7 @@ function RE:PVPEnd()
 		else
 			RE:UpdateBGData(false)
 			if RES.Toasts then
-				TOAST:Spawn("REFlexToastInfo", RE:GetBGToast(RE.MatchData))
+				TOAST:Spawn("REFlexToast", RE:GetBGToast(table.getn(RED)))
 			end
 		end
   end

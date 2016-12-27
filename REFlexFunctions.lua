@@ -64,58 +64,103 @@ function RE:GetArenaTeam(databaseID, player)
 end
 
 function RE:GetWinNumber(filter, arena)
-  local Won, Lost = 0, 0
+  local won, lost = 0, 0
   for i=1, table.getn(REFlexDatabase) do
 		if REFlexDatabase[i].isArena == arena then
-      local PlayerData = RE:GetPlayerData(i)
-      if RE:FilterStats(i, PlayerData) then
+      local playerData = RE:GetPlayerData(i)
+      if RE:FilterStats(i, playerData) then
         if RE:GetPlayerWin(i, false) then
           if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
-            Won = Won + 1
+            won = won + 1
           end
         else
           if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
-            Lost = Lost + 1
+            lost = lost + 1
           end
         end
       end
     end
   end
-  return Won, Lost
+  return won, lost
 end
 
-function RE:GetStats(filter, arena)
-  local Damage, TopDamage, KB, TopKB, HK, TopHK, Healing, TopHealing = 0, 0, 0, 0, 0, 0, 0, 0
-  for i=1, table.getn(REFlexDatabase) do
+function RE:GetStats(filter, arena, skipLatest)
+	local ili = table.getn(REFlexDatabase)
+  local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	if skipLatest then
+		ili = ili - 1
+	end
+  for i=1, ili do
 		if REFlexDatabase[i].isArena == arena then
       if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
-        local PlayerData = RE:GetPlayerData(i)
-        if RE:FilterStats(i, PlayerData) then
-          Damage = Damage + PlayerData[10]
-          KB = KB + PlayerData[2]
-          HK = HK + PlayerData[3]
-          Healing = Healing + PlayerData[11]
-          if PlayerData[10] > TopDamage then
-            TopDamage = PlayerData[10]
+        local playerData = RE:GetPlayerData(i)
+        if RE:FilterStats(i, playerData) then
+          kb = kb + playerData[2]
+          hk = hk + playerData[3]
+					honor = honor + playerData[10]
+					damage = damage + playerData[10]
+          healing = healing + playerData[11]
+          if playerData[2] > topKB then
+            topKB = playerData[2]
           end
-          if PlayerData[2] > TopKB then
-            TopKB = PlayerData[2]
+          if playerData[3] > topHK then
+            topHK = playerData[3]
           end
-          if PlayerData[3] > TopHK then
-            TopHK = PlayerData[3]
-          end
-          if PlayerData[11] > TopHealing then
-            TopHealing = PlayerData[11]
+					if playerData[5] > topHonor then
+						topHonor = playerData[5]
+					end
+					if playerData[10] > topDamage then
+						topDamage = playerData[10]
+					end
+          if playerData[11] > topHealing then
+            topHealing = playerData[11]
           end
         end
       end
     end
   end
-  return Damage, TopDamage, KB, TopKB, HK, TopHK, Healing, TopHealing
+  return kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing
 end
 
-function RE:GetBGToast(data)
-	return ""
+function RE:GetBGPlace(databaseID)
+	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = 1, 1, 1, 1, 1
+	local playerData = RE:GetPlayerData(databaseID)
+	for i=1, table.getn(REFlexDatabase[databaseID].Players) do
+	   if REFlexDatabase[databaseID].Players[i][1] ~= RE.PlayerName then
+	      if playerData[2] < REFlexDatabase[databaseID].Players[i][2] then
+					placeKB = placeKB + 1
+				end
+				if playerData[3] < REFlexDatabase[databaseID].Players[i][3] then
+					placeHK = placeHK + 1
+				end
+				if playerData[5] < REFlexDatabase[databaseID].Players[i][5] then
+					placeHonor = placeHonor + 1
+				end
+				if playerData[10] < REFlexDatabase[databaseID].Players[i][10] then
+					placeDamage = placeDamage + 1
+				end
+				if playerData[11] < REFlexDatabase[databaseID].Players[i][11] then
+					placeHealing = placeHealing + 1
+				end
+	   end
+	end
+	return placeKB, placeHK, placeHonor, placeDamage, placeHealing
+end
+
+function RE:GetBGToast(databaseID)
+	local toast = {}
+	local savedFilter = RE.MapFilterVal
+	RE.MapFilterVal = REFlexDatabase[databaseID].Map
+	local playerData = RE:GetPlayerData(databaseID)
+	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID)
+	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
+	RE.MapFilterVal = savedFilter
+	table.insert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
+	table.insert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
+	table.insert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
+	table.insert(toast, RE:InsideToast(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
+	table.insert(toast, RE:InsideToast(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
+	return table.concat(toast, "")
 end
 
 function RE:GetMapName(mapID)
@@ -275,9 +320,6 @@ function RE:Round(num, idp)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-function RE:CloseToast()
-end
-
 function RE:HKBarUpdate()
   local hk = select(4, GetAchievementCriteriaInfo(5363, 1))
   local hkMax = 0
@@ -308,4 +350,17 @@ function RE:HKBarUpdate()
 		REFlexGUI_HKBar_I:SetMinMaxValues(0, hk)
 	end
 	REFlexGUI_HKBar_I:SetValue(hk)
+end
+
+function RE:InsideToast(label, value, databaseID, place, top)
+	local toast = {}
+	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:NumberClean(value).." - "..place.."/"..REFlexDatabase[databaseID].PlayersNum.."|r")
+	if value > top then
+		table.insert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
+	end
+	table.insert(toast, "|n")
+	return table.concat(toast, "")
+end
+
+function RE:CloseToast()
 end
