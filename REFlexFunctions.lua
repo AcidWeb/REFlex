@@ -2,11 +2,11 @@ local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
 function RE:GetPlayerData(databaseID)
-	return REFlexDatabase[databaseID].Players[REFlexDatabase[databaseID].PlayerNum]
+	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
 end
 
 function RE:GetPlayerWin(databaseID, icon)
-  if REFlexDatabase[databaseID].PlayerSide == REFlexDatabase[databaseID].Winner then
+  if RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
     if icon then
       return "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14:0:0|t"
     else
@@ -24,12 +24,12 @@ end
 function RE:GetArenaMMR(databaseID, player)
 	local faction
 	if player then
-		faction = REFlexDatabase[databaseID].PlayerSide + 1
+		faction = RE.Database[databaseID].PlayerSide + 1
 	else
-		faction = (1 - REFlexDatabase[databaseID].PlayerSide) + 1
+		faction = (1 - RE.Database[databaseID].PlayerSide) + 1
 	end
-	if REFlexDatabase[databaseID].isRated then
-		return REFlexDatabase[databaseID].TeamData[faction][4]
+	if RE.Database[databaseID].isRated then
+		return RE.Database[databaseID].TeamData[faction][4]
 	else
 		return "-"
 	end
@@ -38,14 +38,14 @@ end
 function RE:GetArenaTeam(databaseID, player)
 	local faction
 	if player then
-		faction = REFlexDatabase[databaseID].PlayerSide
+		faction = RE.Database[databaseID].PlayerSide
 	else
-		faction = (1 - REFlexDatabase[databaseID].PlayerSide)
+		faction = (1 - RE.Database[databaseID].PlayerSide)
 	end
 	local teamRaw, team = {}, {}
-	for i=1, table.getn(REFlexDatabase[databaseID].Players) do
-		if REFlexDatabase[databaseID].Players[i][6] == faction then
-			table.insert(teamRaw, REFlexDatabase[databaseID].Players[i][9])
+	for i=1, table.getn(RE.Database[databaseID].Players) do
+		if RE.Database[databaseID].Players[i][6] == faction then
+			table.insert(teamRaw, RE.Database[databaseID].Players[i][9])
 		end
 	end
 	table.sort(teamRaw)
@@ -61,16 +61,16 @@ end
 
 function RE:GetWinNumber(filter, arena)
   local won, lost = 0, 0
-  for i=1, table.getn(REFlexDatabase) do
-		if REFlexDatabase[i].isArena == arena then
+  for i=1, table.getn(RE.Database) do
+		if RE.Database[i].isArena == arena then
       local playerData = RE:GetPlayerData(i)
       if RE:FilterStats(i, playerData) then
         if RE:GetPlayerWin(i, false) then
-          if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
+          if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
             won = won + 1
           end
         else
-          if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
+          if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
             lost = lost + 1
           end
         end
@@ -81,14 +81,14 @@ function RE:GetWinNumber(filter, arena)
 end
 
 function RE:GetStats(filter, arena, skipLatest)
-	local ili = table.getn(REFlexDatabase)
+	local ili = table.getn(RE.Database)
   local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	if skipLatest then
 		ili = ili - 1
 	end
   for i=1, ili do
-		if REFlexDatabase[i].isArena == arena then
-      if filter == 1 or (filter == 2 and not REFlexDatabase[i].isRated) or (filter == 3 and REFlexDatabase[i].isRated) then
+		if RE.Database[i].isArena == arena then
+      if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
         local playerData = RE:GetPlayerData(i)
         if RE:FilterStats(i, playerData) then
           kb = kb + playerData[2]
@@ -146,7 +146,7 @@ end
 function RE:GetBGToast(databaseID)
 	local toast = {}
 	local savedFilter = RE.MapFilterVal
-	RE.MapFilterVal = REFlexDatabase[databaseID].Map
+	RE.MapFilterVal = RE.Database[databaseID].Map
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
@@ -178,7 +178,7 @@ function RE:GetShortMapName(mapName)
 end
 
 function RE:GetMapColor(_, realrow, _, table)
-  local isRated = REFlexDatabase[table.data[realrow][11]].isRated
+  local isRated = RE.Database[table.data[realrow][11]].isRated
   if isRated then
     return {["r"] = 1.0,
             ["g"] = 0,
@@ -242,8 +242,8 @@ function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
     rowA = obj.data[rowa][inside]
     rowB = obj.data[rowb][inside]
   else
-    rowA = REFlexDatabase[obj.data[rowa][11]][field]
-    rowB = REFlexDatabase[obj.data[rowb][11]][field]
+    rowA = RE.Database[obj.data[rowa][11]][field]
+    rowB = RE.Database[obj.data[rowb][11]][field]
   end
   if rowA == rowB then
     return false
@@ -270,7 +270,7 @@ end
 
 function RE:MapFilter(rowdata)
   if RE.MapFilterVal ~= 1 then
-    if REFlexDatabase[rowdata[11]].Map == RE.MapFilterVal then
+    if RE.Database[rowdata[11]].Map == RE.MapFilterVal then
       return true
     else
       return false
@@ -281,8 +281,8 @@ function RE:MapFilter(rowdata)
 end
 
 function RE:BracketFilter(rowdata)
-  if REFlexDatabase[rowdata[11]].isArena and RE.BracketFilterVal ~= 1 then
-    if REFlexDatabase[rowdata[11]].PlayersNum == RE.BracketFilterVal then
+  if RE.Database[rowdata[11]].isArena and RE.BracketFilterVal ~= 1 then
+    if RE.Database[rowdata[11]].PlayersNum == RE.BracketFilterVal then
       return true
     else
       return false
@@ -297,11 +297,11 @@ function RE:FilterDefault(rowdata)
 end
 
 function RE:FilterCasual(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and not REFlexDatabase[rowdata[11]].isRated
+  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and not RE.Database[rowdata[11]].isRated
 end
 
 function RE:FilterRated(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and REFlexDatabase[rowdata[11]].isRated
+  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE.Database[rowdata[11]].isRated
 end
 
 function RE:FilterStats(id, playerdata)
@@ -337,18 +337,18 @@ function RE:HKBarUpdate()
 		hkMax = 250000
 	end
 	if hkMax ~= 0 then
-		REFlexGUI_HKBar_Text:SetText(hk.." / "..hkMax)
-		REFlexGUI_HKBar_I:SetMinMaxValues(0, hkMax)
+		REFlex_HKBar_Text:SetText(hk.." / "..hkMax)
+		REFlex_HKBar_I:SetMinMaxValues(0, hkMax)
 	else
-		REFlexGUI_HKBar_Text:SetText(hk)
-		REFlexGUI_HKBar_I:SetMinMaxValues(0, hk)
+		REFlex_HKBar_Text:SetText(hk)
+		REFlex_HKBar_I:SetMinMaxValues(0, hk)
 	end
-	REFlexGUI_HKBar_I:SetValue(hk)
+	REFlex_HKBar_I:SetValue(hk)
 end
 
 function RE:InsideToast(label, value, databaseID, place, top)
 	local toast = {}
-	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..AbbreviateNumbers(value).." - "..place.."/"..REFlexDatabase[databaseID].PlayersNum.."|r")
+	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
 	if value > top then
 		table.insert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
 	end
@@ -362,15 +362,15 @@ end
 function RE:SeasonPurge()
 	local currentSeason = GetCurrentArenaSeason()
 	local toWipe = {}
-	for i=1, table.getn(REFlexDatabase) do
-		if REFlexDatabase[i].Season ~= currentSeason then
+	for i=1, table.getn(RE.Database) do
+		if RE.Database[i].Season ~= currentSeason then
 			table.insert(toWipe, i)
 		end
 	end
 	local wipeI = 0
 	for j=1, table.getn(toWipe) do
 		local wipeID = toWipe[j] - wipeI
-		table.remove(REFlexDatabase, wipeID)
+		table.remove(RE.Database, wipeID)
 		wipeI = wipeI + 1
 	end
 end

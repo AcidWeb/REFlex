@@ -1,7 +1,5 @@
-REFlexNamespace = {}
+REFlexNamespace = {["Settings"] = {}, ["Database"] = {}}
 local RE = REFlexNamespace
-local RES = REFlexSettings
-local RED = REFlexDatabase
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local ST = LibStub("ScrollingTable")
 local GUI = LibStub("AceGUI-3.0")
@@ -28,167 +26,51 @@ RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
 RE.PlayerZone = GetCVar("portal")
 
-RE.DefaultConfig = {
-	["MiniMapButtonSettings"] = {["hide"] = false},
-	["Toasts"] = true,
-	["ShowServerName"] = false,
-	["ConfigVersion"] = RE.Version,
-}
-RE.MapListLongBG = {
-	[1] = ALL,
-	[30] = GetRealZoneText(30),
-	[529] = GetRealZoneText(529),
-	[1105] = GetRealZoneText(1105),
-	[566] = GetRealZoneText(566),
-	[628] = GetRealZoneText(628),
-	[727] = GetRealZoneText(727),
-	[607] = GetRealZoneText(607),
-	[998] = GetRealZoneText(998),
-	[761] = GetRealZoneText(761),
-	[726] = GetRealZoneText(726),
-	[489] = GetRealZoneText(489)
-}
-RE.MapListLongArena = {
-	[1] = ALL,
-	[1552] = GetRealZoneText(1552),
-	[1504] = GetRealZoneText(1504),
-	[562] = GetRealZoneText(562),
-	[617] = GetRealZoneText(617),
-	[559] = GetRealZoneText(559),
-	[572] = GetRealZoneText(572),
-	[1134] = GetRealZoneText(1134),
-	[980] = GetRealZoneText(980)
-}
-RE.MapListLongOrderBG = {
-	1, 30, 529, 1105, 566, 628, 727, 607, 998, 761, 726, 489
-}
-RE.MapListLongOrderArena = {
-	1, 1552, 1504, 562, 617, 559, 572, 1134, 980
-}
-RE.AceConfig = {
-	type = "group",
-	args = {
-		minimap = {
-			name = L["Hide minimap button"],
-			type = "toggle",
-			width = "full",
-			order = 1,
-			set = function(_, val) RES.MiniMapButtonSettings.hide = val; RE:UpdateConfig() end,
-			get = function(_) return RES.MiniMapButtonSettings.hide end
-		},
-		toasts = {
-			name = L["Enable battleground summary"],
-			desc = L["Display toast with battleground summary after completed match."],
-			type = "toggle",
-			width = "full",
-			order = 2,
-			set = function(_, val) RES.Toasts = val end,
-			get = function(_) return RES.Toasts end
-		},
-		servername = {
-			name = L["Display server names"],
-			desc = L["Show player server name in match detail tooltip."],
-			type = "toggle",
-			width = "full",
-			order = 3,
-			set = function(_, val) RES.ShowServerName = val end,
-			get = function(_) return RES.ShowServerName end
-		},
-		deletebase = {
-			name = L["Purge database"],
-			desc = L["WARNING! This operation is not reversible!"],
-			type = "execute",
-			width = "normal",
-			confirm = true,
-			order = 4,
-			func = function() RED = {}; ReloadUI() end
-		},
-		deleteoldseason = {
-			name = L["Purge previous seasons"],
-			desc = L["WARNING! This operation is not reversible!"],
-			type = "execute",
-			width = "normal",
-			confirm = true,
-			order = 5,
-			func = function() RE:SeasonPurge(); ReloadUI() end
-		}
-	}
-}
-
 function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
-  self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-  self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
-	tinsert(UISpecialFrames,"REFlexGUI")
-
-	RE.MapList = {
-		[30] = GetRealZoneText(30),
-		[529] = GetRealZoneText(529),
-		[1105] = GetRealZoneText(1105),
-		[566] = GetRealZoneText(566),
-		[968] = GetRealZoneText(566),
-		[628] = GetRealZoneText(628),
-		[727] = GetRealZoneText(727),
-		[607] = GetRealZoneText(607),
-		[998] = GetRealZoneText(998),
-		[1035] = GetRealZoneText(998),
-		[761] = GetRealZoneText(761),
-		[726] = GetRealZoneText(726),
-		[489] = GetRealZoneText(489),
-		[1552] = RE:GetShortMapName(GetRealZoneText(1552)),
-		[1504] = RE:GetShortMapName(GetRealZoneText(1504)),
-		[562] = RE:GetShortMapName(GetRealZoneText(562)),
-		[1672] = RE:GetShortMapName(GetRealZoneText(562)),
-		[617] = RE:GetShortMapName(GetRealZoneText(617)),
-		[559] = RE:GetShortMapName(GetRealZoneText(559)),
-		[1505] = RE:GetShortMapName(GetRealZoneText(559)),
-		[572] = RE:GetShortMapName(GetRealZoneText(572)),
-		[1134] = RE:GetShortMapName(GetRealZoneText(1134)),
-		[980] = RE:GetShortMapName(GetRealZoneText(980))
-	}
-end
-
-function RE:OnLoadGUI(self)
 	self:RegisterForDrag("LeftButton")
-	PanelTemplates_SetNumTabs(REFlexGUI, 6)
-	PanelTemplates_SetTab(REFlexGUI, 1)
+	tinsert(UISpecialFrames,"REFlex")
+	PanelTemplates_SetNumTabs(REFlex, 6)
+	PanelTemplates_SetTab(REFlex, 1)
 
-	REFlexGUI_Title:SetText("REFlex "..RE.VersionStr)
-	REFlexGUITab1:SetText(ALL)
-	REFlexGUITab2:SetText(PVP_TAB_HONOR)
-	REFlexGUITab3:SetText(PVP_TAB_CONQUEST)
-	REFlexGUITab4:SetText(ALL)
-	REFlexGUITab5:SetText(PVP_TAB_HONOR)
-	REFlexGUITab6:SetText(PVP_TAB_CONQUEST)
+	REFlexTab1:SetText(ALL)
+	REFlexTab2:SetText(PVP_TAB_HONOR)
+	REFlexTab3:SetText(PVP_TAB_CONQUEST)
+	REFlexTab4:SetText(ALL)
+	REFlexTab5:SetText(PVP_TAB_HONOR)
+	REFlexTab6:SetText(PVP_TAB_CONQUEST)
 
-	REFlexGUI_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	REFlexGUI_HKBar_I:SetStatusBarColor(0, 0.9, 0)
+	REFlex_Title:SetText("REFlex "..RE.VersionStr)
+	REFlex_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	REFlex_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
-	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlexGUI)
-	RE.TableBG.frame:SetPoint("TOP", REFlexGUI_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlex)
+	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
-	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, REFlexGUI)
-	RE.TableArena.frame:SetPoint("TOP", REFlexGUI_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, REFlex)
+	RE.TableArena.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 
 	RE.SpecDropDown = GUI:Create("Dropdown")
-	RE.SpecDropDown.frame:SetParent(REFlexGUI)
-	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", REFlexGUI, "BOTTOMLEFT", 15, 18)
+	RE.SpecDropDown.frame:SetParent(REFlex)
+	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", REFlex, "BOTTOMLEFT", 15, 18)
 	RE.SpecDropDown:SetWidth(150)
 	RE.SpecDropDown:SetList({[ALL] = ALL})
 	RE.SpecDropDown:SetValue(ALL)
 	RE.SpecDropDown:SetCallback("OnValueChanged", RE.OnSpecChange)
 	RE.BracketDropDown = GUI:Create("Dropdown")
-	RE.BracketDropDown.frame:SetParent(REFlexGUI)
-	RE.BracketDropDown.frame:SetPoint("BOTTOM", REFlexGUI, "BOTTOM", 0, 18)
+	RE.BracketDropDown.frame:SetParent(REFlex)
+	RE.BracketDropDown.frame:SetPoint("BOTTOM", REFlex, "BOTTOM", 0, 18)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
 	RE.BracketDropDown:SetList({[1] = ALL, [4] = "2v2", [6] = "3v3"})
 	RE.BracketDropDown:SetValue(1)
 	RE.MapDropDown = GUI:Create("Dropdown")
-	RE.MapDropDown.frame:SetParent(REFlexGUI)
-	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlexGUI, "BOTTOMRIGHT", -19, 18)
+	RE.MapDropDown.frame:SetParent(REFlex)
+	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlex, "BOTTOMRIGHT", -19, 18)
 	RE.MapDropDown:SetWidth(150)
 	RE.MapDropDown:SetCallback("OnValueChanged", RE.OnMapChange)
 end
@@ -201,8 +83,8 @@ function RE:OnEvent(self, event, ...)
     if not REFlexDatabase then
       REFlexDatabase = {}
     end
-		RES = REFlexSettings
-		RED = REFlexDatabase
+		RE.Settings = REFlexSettings
+		RE.Database = REFlexDatabase
 		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
@@ -233,19 +115,19 @@ function RE:OnEvent(self, event, ...)
 			type = "launcher",
 			text = "REPorter",
 			icon = "Interface\\PvPRankBadges\\PvPRank09",
-			OnClick = function(self, button, down)
+			OnClick = function(self, button, _)
 				if button == "LeftButton" then
-					if not REFlexGUI:IsVisible() then
-						REFlexGUI:Show()
+					if not REFlex:IsVisible() then
+						REFlex:Show()
 					else
-						REFlexGUI:Hide()
+						REFlex:Hide()
 					end
 				elseif button == "RightButton" then
 					InterfaceOptionsFrame:Show()
 					InterfaceOptionsFrame_OpenToCategory(REFlexNamespace.OptionsMenu)
 				end
 			end})
-		LDBI:Register("REFlex", RE.LDB, REFlexSettings.MiniMapButtonSettings)
+		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
@@ -292,11 +174,11 @@ function RE:UpdateGUI()
 			RE.SpecDropDown:AddItem(Spec, Spec)
 		end
 	end
-	if PanelTemplates_GetSelectedTab(REFlexGUI) < 4 then
+	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
 		RE.TableBG.frame:Show()
 		RE.TableArena.frame:Hide()
 		RE.BracketDropDown.frame:Hide()
-		REFlexGUI_HKBar:Show()
+		REFlex_HKBar:Show()
 		if RE.LastTab > 3 or RE.LastTab == 0 then
 			RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
 			RE.MapDropDown:SetValue(1)
@@ -306,38 +188,38 @@ function RE:UpdateGUI()
 			RE.TableBG.cols[1].sort = "asc"
 		end
 		RE.TableBG:SetData(RE.BGData, true)
-		if PanelTemplates_GetSelectedTab(REFlexGUI) == 1 then
+		if PanelTemplates_GetSelectedTab(REFlex) == 1 then
 			RE.TableBG:SetFilter(RE.FilterDefault)
-			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
-		elseif PanelTemplates_GetSelectedTab(REFlexGUI) == 2 then
+			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+		elseif PanelTemplates_GetSelectedTab(REFlex) == 2 then
 			RE.TableBG:SetFilter(RE.FilterCasual)
-			REFlexGUI_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(REFlexGUI) == 3 then
+			REFlex_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(REFlex) == 3 then
 			RE.TableBG:SetFilter(RE.FilterRated)
-			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI), false)
-		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI), false, false)
-		REFlexGUI_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
-		REFlexGUI_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
-		REFlexGUI_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
-		REFlexGUI_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlexGUI_ScoreHolder_Wins:SetText(won)
-		REFlexGUI_ScoreHolder_Lose:SetText(lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..topHK)
-		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
-		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..topKB)
-		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
-		REFlexGUI_ScoreHolder_Damage2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
-		REFlexGUI_ScoreHolder_Damage3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
-		REFlexGUI_ScoreHolder_Healing2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
-		REFlexGUI_ScoreHolder_Healing3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlex), false)
+		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlex), false, false)
+		REFlex_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
+		REFlex_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
+		REFlex_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
+		REFlex_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
+		REFlex_ScoreHolder_Wins:SetText(won)
+		REFlex_ScoreHolder_Lose:SetText(lost)
+		REFlex_ScoreHolder_HK2:SetText(BEST..": "..topHK)
+		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
+		REFlex_ScoreHolder_KB2:SetText(BEST..": "..topKB)
+		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
+		REFlex_ScoreHolder_Damage2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
+		REFlex_ScoreHolder_Damage3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
+		REFlex_ScoreHolder_Healing2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
+		REFlex_ScoreHolder_Healing3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
 		RE:HKBarUpdate()
-	elseif PanelTemplates_GetSelectedTab(REFlexGUI) > 3 then
+	elseif PanelTemplates_GetSelectedTab(REFlex) > 3 then
 		RE.TableArena.frame:Show()
 		RE.TableBG.frame:Hide()
 		RE.BracketDropDown.frame:Show()
-		REFlexGUI_HKBar:Hide()
+		REFlex_HKBar:Hide()
 		if RE.LastTab < 4 then
 			RE.MapDropDown:SetList(RE.MapListLongArena, RE.MapListLongOrderArena)
 			RE.MapDropDown:SetValue(1)
@@ -347,34 +229,34 @@ function RE:UpdateGUI()
 			RE.TableArena.cols[1].sort = "asc"
 		end
 		RE.TableArena:SetData(RE.ArenaData, true)
-		if PanelTemplates_GetSelectedTab(REFlexGUI) == 4 then
+		if PanelTemplates_GetSelectedTab(REFlex) == 4 then
 			RE.TableArena:SetFilter(RE.FilterDefault)
-			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
-		elseif PanelTemplates_GetSelectedTab(REFlexGUI) == 5 then
+			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+		elseif PanelTemplates_GetSelectedTab(REFlex) == 5 then
 			RE.TableArena:SetFilter(RE.FilterCasual)
-			REFlexGUI_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(REFlexGUI) == 6 then
+			REFlex_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(REFlex) == 6 then
 			RE.TableArena:SetFilter(RE.FilterRated)
-			REFlexGUI_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true)
-		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexGUI) - 3, true, false)
-		REFlexGUI_ScoreHolder_HK1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlexGUI_ScoreHolder_KB1:SetText("|cFFFFD100"..DAMAGE.."|r")
-		REFlexGUI_ScoreHolder_Damage1:SetText("")
-		REFlexGUI_ScoreHolder_Healing1:SetText("")
-		REFlexGUI_ScoreHolder_Wins:SetText(won)
-		REFlexGUI_ScoreHolder_Lose:SetText(lost)
-		REFlexGUI_ScoreHolder_HK2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
-		REFlexGUI_ScoreHolder_HK3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
-		REFlexGUI_ScoreHolder_KB2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
-		REFlexGUI_ScoreHolder_KB3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
-		REFlexGUI_ScoreHolder_Damage2:SetText("")
-		REFlexGUI_ScoreHolder_Damage3:SetText("")
-		REFlexGUI_ScoreHolder_Healing2:SetText("")
-		REFlexGUI_ScoreHolder_Healing3:SetText("")
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlex) - 3, true)
+		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlex) - 3, true, false)
+		REFlex_ScoreHolder_HK1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
+		REFlex_ScoreHolder_KB1:SetText("|cFFFFD100"..DAMAGE.."|r")
+		REFlex_ScoreHolder_Damage1:SetText("")
+		REFlex_ScoreHolder_Healing1:SetText("")
+		REFlex_ScoreHolder_Wins:SetText(won)
+		REFlex_ScoreHolder_Lose:SetText(lost)
+		REFlex_ScoreHolder_HK2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
+		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
+		REFlex_ScoreHolder_KB2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
+		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
+		REFlex_ScoreHolder_Damage2:SetText("")
+		REFlex_ScoreHolder_Damage3:SetText("")
+		REFlex_ScoreHolder_Healing2:SetText("")
+		REFlex_ScoreHolder_Healing3:SetText("")
 	end
-	RE.LastTab = PanelTemplates_GetSelectedTab(REFlexGUI)
+	RE.LastTab = PanelTemplates_GetSelectedTab(REFlex)
 end
 
 function RE:UpdateBGData(all)
@@ -382,14 +264,14 @@ function RE:UpdateBGData(all)
 	if all then
 		ili = 1
 	else
-		ili = table.getn(RED)
+		ili = table.getn(RE.Database)
 	end
-	for i=ili, table.getn(RED) do
-		if not RED[i].isArena then
+	for i=ili, table.getn(RE.Database) do
+		if not RE.Database[i].isArena then
 			local playeData = RE:GetPlayerData(i)
-			local tempData = {RE:DateClean(RED[i].Time),
-												RE:GetMapName(RED[i].Map),
-												RE:TimeClean(RED[i].Duration),
+			local tempData = {RE:DateClean(RE.Database[i].Time),
+												RE:GetMapName(RE.Database[i].Map),
+												RE:TimeClean(RE.Database[i].Duration),
 												RE:GetPlayerWin(i, true),
 												playeData[2],
 												playeData[3],
@@ -411,18 +293,18 @@ function RE:UpdateArenaData(all)
 	if all then
 		ili = 1
 	else
-		ili = table.getn(RED)
+		ili = table.getn(RE.Database)
 	end
-	for i=ili, table.getn(RED) do
-		if RED[i].isArena then
+	for i=ili, table.getn(RE.Database) do
+		if RE.Database[i].isArena then
 			local playeData = RE:GetPlayerData(i)
-			local tempData = {RE:DateClean(RED[i].Time),
-												RE:GetMapName(RED[i].Map),
+			local tempData = {RE:DateClean(RE.Database[i].Time),
+												RE:GetMapName(RE.Database[i].Map),
 												RE:GetArenaTeam(i, true),
 												RE:GetArenaMMR(i, true),
 												RE:GetArenaTeam(i, false),
 												RE:GetArenaMMR(i, false),
-												RE:TimeClean(RED[i].Duration),
+												RE:TimeClean(RE.Database[i].Duration),
 												AbbreviateNumbers(playeData[10]),
 												AbbreviateNumbers(playeData[11]),
 												RE:RatingChangeClean(playeData[13]),
@@ -436,7 +318,7 @@ function RE:UpdateArenaData(all)
 end
 
 function RE:UpdateConfig()
-	if RES.MiniMapButtonSettings.hide then
+	if RE.Settings.MiniMapButtonSettings.hide then
 			LDBI:Hide("REFlex")
 	else
 			LDBI:Show("REFlex")
@@ -503,13 +385,13 @@ function RE:PVPEnd()
       end
     end
 
-    table.insert(RED, RE.MatchData)
+    table.insert(RE.Database, RE.MatchData)
 		if RE.MatchData.isArena then
 			RE:UpdateArenaData(false)
 		else
 			RE:UpdateBGData(false)
-			if RES.Toasts then
-				TOAST:Spawn("REFlexToast", RE:GetBGToast(table.getn(RED)))
+			if RE.Settings.Toasts then
+				TOAST:Spawn("REFlexToast", RE:GetBGToast(table.getn(RE.Database)))
 			end
 		end
   end

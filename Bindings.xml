@@ -1,9 +1,9 @@
 <Bindings>
   <Binding name="REFLEXOPEN" header="REFLEXB">
-    if not REFlexGUI:IsVisible() then
-      REFlexGUI:Show()
+    if not REFlex:IsVisible() then
+      REFlex:Show()
     else
-      REFlexGUI:Hide()
+      REFlex:Hide()
     end
   </Binding>
 </Bindings>
