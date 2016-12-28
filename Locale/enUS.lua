@@ -1,6 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("REFlex", "enUS", true)
 
 L["Date"] = true
+L["Place"] = true
 
 L["Hide minimap button"] = true
 L["Enable battleground summary"] = true
@@ -13,3 +14,4 @@ L["WARNING! This operation is not reversible!"] = true
 
 L["Show main window"] = true
 L["New version released!"] = true
+L["Hold SHIFT key to display tooltips with additional data."] = true

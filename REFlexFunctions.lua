@@ -5,6 +5,10 @@ function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
 end
 
+function RE:GetPlayerStatsData(databaseID)
+	return RE.Database[databaseID].PlayersStats[RE.Database[databaseID].PlayerNum]
+end
+
 function RE:GetPlayerWin(databaseID, icon)
   if RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
     if icon then
@@ -19,6 +23,15 @@ function RE:GetPlayerWin(databaseID, icon)
       return false
     end
   end
+end
+
+function RE:GetPlayerKD(databaseID)
+	local playerData = RE:GetPlayerData(databaseID)
+	local deaths = playerData[4]
+	if deaths == 0 then
+		deaths = 1
+	end
+	return RE:Round(playerData[3]/deaths, 2)
 end
 
 function RE:GetArenaMMR(databaseID, player)
@@ -118,27 +131,27 @@ function RE:GetStats(filter, arena, skipLatest)
   return kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing
 end
 
-function RE:GetBGPlace(databaseID)
+function RE:GetBGPlace(databaseID, onlyFaction)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = 1, 1, 1, 1, 1
 	local playerData = RE:GetPlayerData(databaseID)
-	for i=1, table.getn(REFlexDatabase[databaseID].Players) do
-	   if REFlexDatabase[databaseID].Players[i][1] ~= RE.PlayerName then
-	      if playerData[2] < REFlexDatabase[databaseID].Players[i][2] then
-					placeKB = placeKB + 1
-				end
-				if playerData[3] < REFlexDatabase[databaseID].Players[i][3] then
-					placeHK = placeHK + 1
-				end
-				if playerData[5] < REFlexDatabase[databaseID].Players[i][5] then
-					placeHonor = placeHonor + 1
-				end
-				if playerData[10] < REFlexDatabase[databaseID].Players[i][10] then
-					placeDamage = placeDamage + 1
-				end
-				if playerData[11] < REFlexDatabase[databaseID].Players[i][11] then
-					placeHealing = placeHealing + 1
-				end
-	   end
+	for i=1, table.getn(RE.Database[databaseID].Players) do
+		if RE.Database[databaseID].Players[i][1] ~= RE.PlayerName and (not onlyFaction or (onlyFaction and RE.Database[databaseID].Players[i][6] == RE.Database[databaseID].PlayerSide)) then
+			if playerData[2] < RE.Database[databaseID].Players[i][2] then
+				placeKB = placeKB + 1
+			end
+			if playerData[3] < RE.Database[databaseID].Players[i][3] then
+				placeHK = placeHK + 1
+			end
+			if playerData[5] < RE.Database[databaseID].Players[i][5] then
+				placeHonor = placeHonor + 1
+			end
+			if playerData[10] < RE.Database[databaseID].Players[i][10] then
+				placeDamage = placeDamage + 1
+			end
+			if playerData[11] < RE.Database[databaseID].Players[i][11] then
+				placeHealing = placeHealing + 1
+			end
+		end
 	end
 	return placeKB, placeHK, placeHonor, placeDamage, placeHealing
 end
@@ -148,7 +161,7 @@ function RE:GetBGToast(databaseID)
 	local savedFilter = RE.MapFilterVal
 	RE.MapFilterVal = RE.Database[databaseID].Map
 	local playerData = RE:GetPlayerData(databaseID)
-	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID)
+	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.MapFilterVal = savedFilter
 	table.insert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))

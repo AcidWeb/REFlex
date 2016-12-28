@@ -50,9 +50,33 @@ function RE:OnLoad(self)
 	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlex)
 	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
+	RE.TableBG:RegisterEvents({
+		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
+			if realRow ~= nil and IsShiftKeyDown() then
+				RE:OnEnterTooltip(cellFrame, data[realRow][11])
+			end
+		end,
+		["OnLeave"] = function (_, _, _, _, _, realRow, ...)
+			if realRow ~= nil then
+				RE:OnLeaveTooltip()
+			end
+		end,
+	})
 	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, REFlex)
 	RE.TableArena.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
+	RE.TableArena:RegisterEvents({
+		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
+			if realRow ~= nil and IsShiftKeyDown() then
+				RE:OnEnterTooltip(cellFrame, data[realRow][11])
+			end
+		end,
+		["OnLeave"] = function (_, _, _, _, _, realRow, ...)
+			if realRow ~= nil then
+				RE:OnLeaveTooltip()
+			end
+		end,
+	})
 
 	RE.SpecDropDown = GUI:Create("Dropdown")
 	RE.SpecDropDown.frame:SetParent(REFlex)
@@ -129,6 +153,15 @@ function RE:OnEvent(self, event, ...)
 			end})
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
+		StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
+			text = L["Hold SHIFT key to display tooltips with additional data."],
+			button1 = OKAY,
+			OnAccept = function() RE.Settings.FirstTime = false end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = false,
+		}
+
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
@@ -151,6 +184,61 @@ function RE:OnEvent(self, event, ...)
   end
 end
 
+function RE:OnEnterTooltip(cellFrame, databaseID)
+	if RE.Database[databaseID].isArena then
+		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 6, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+		--TODO
+	else
+		local playerData = RE:GetPlayerData(databaseID)
+		local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
+		local placeFKB, placeFHK, placeFHonor, placeFDamage, placeFHealing = RE:GetBGPlace(databaseID, true)
+		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
+		RE.Tooltip:AddLine("", "", "")
+		RE.Tooltip:SetCell(1, 1, "|cFF74D06CHK/D|r|n"..RE:GetPlayerKD(databaseID), nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:SetCell(1, 2, "", nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:SetCell(1, 3, "|cFF74D06C"..DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:AddSeparator()
+		RE.Tooltip:AddLine("", "|cFF74D06C"..L["Place"].."|r", "")
+		RE.Tooltip:SetColumnLayout(3, "LEFT", "CENTER", "CENTER")
+		RE.Tooltip:AddLine("", FACTION, ALL)
+		RE.Tooltip:AddLine("KB", placeFKB, placeKB)
+		RE.Tooltip:AddLine("HK", placeFHK, placeHK)
+		RE.Tooltip:AddLine(HONOR, placeFHonor, placeHonor)
+		RE.Tooltip:AddLine(DAMAGE, placeFDamage, placeDamage)
+		RE.Tooltip:AddLine(SHOW_COMBAT_HEALING, placeFHealing, placeHealing)
+		RE.Tooltip:SetLineColor(5, 1, 1, 1, 0.5)
+		RE.Tooltip:SetLineColor(7, 1, 1, 1, 0.5)
+		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
+		if RE.Database[databaseID].StatsNum > 0 then
+			RE.Tooltip:SetColumnLayout(3, "CENTER", "CENTER", "CENTER")
+			RE.Tooltip:AddSeparator()
+			local faction = ""
+			local playerStatsData = RE:GetPlayerStatsData(databaseID)
+			if RE.MapListStat[RE.Database[databaseID].Map][1] then
+				if RE.PlayerFaction == "Horde" then
+					faction = 0
+				else
+					faction = 1
+				end
+			end
+			if RE.Database[databaseID].StatsNum == 1 then
+				RE.Tooltip:AddLine("", "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "")
+			else
+				RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "", "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1])
+				if RE.Database[databaseID].StatsNum > 2 then
+					RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][4]..faction..":16:16:0:0|t: "..playerStatsData[3][1], "", "|T"..RE.MapListStat[RE.Database[databaseID].Map][5]..faction..":16:16:0:0|t: "..playerStatsData[4][1])
+				end
+			end
+		end
+	end
+	RE.Tooltip:SmartAnchorTo(cellFrame)
+	RE.Tooltip:Show()
+end
+
+function RE:OnLeaveTooltip()
+	QTIP:Release(RE.Tooltip)
+end
+
 function RE:OnSpecChange(_, spec)
 	RE.SpecFilterVal = spec
 	RE:UpdateGUI()
@@ -167,8 +255,12 @@ function RE:OnBracketChange(_, bracket)
 end
 
 function RE:UpdateGUI()
+	if RE.Settings.FirstTime then
+		StaticPopup_Show("REFLEX_FIRSTTIME")
+	end
 	if RE.PrepareGUI then
 		RE.PrepareGUI = false
+		RequestRatedInfo()
 		for i=1, GetNumSpecializations() do
 			local Spec = select(2, GetSpecializationInfo(i))
 			RE.SpecDropDown:AddItem(Spec, Spec)
