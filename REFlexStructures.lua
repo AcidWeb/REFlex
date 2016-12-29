@@ -9,6 +9,11 @@ RE.DefaultConfig = {
 	["FirstTime"] = true
 }
 
+RE.TooltipBackdrop = {
+	["bgFile"] = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+	["tileSize"] = 0
+}
+
 RE.MapList = {
   [30] = GetRealZoneText(30),
   [529] = GetRealZoneText(529),
@@ -82,6 +87,22 @@ RE.MapListStat = {
 	[30] = {true, "Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture", "Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[628] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[607] = {false, "Interface\\MINIMAP\\Vehicle-AllianceCart", "Interface\\MINIMAP\\Suramar_Door_Icon"}
+}
+
+RE.RaceIcons = {
+	["Human"]	= {0, 0.125, 0, 0.25},
+	["Dwarf"]	= {0.125, 0.25, 0, 0.25},
+	["Gnome"]	= {0.25, 0.375, 0, 0.25},
+	["Night Elf"]	= {0.375, 0.5, 0, 0.25},
+	["Tauren"]	= {0, 0.125, 0.25, 0.5},
+	["Undead"]	= {0.125, 0.25, 0.25, 0.5},
+	["Troll"]	= {0.25, 0.375, 0.25, 0.5},
+	["Orc"]	= {0.375, 0.5, 0.25, 0.5},
+	["Blood Elf"]	= {0.5, 0.625, 0.25, 0.5},
+	["Draenei"]	= {0.5, 0.625, 0, 0.25},
+	["Goblin"]	= {0.629, 0.750, 0.25, 0.5},
+	["Worgen"]	= {0.629, 0.750, 0, 0.25},
+	["Pandaren"]	= {0.756, 0.881, 0, 0.25}
 }
 
 RE.AceConfig = {

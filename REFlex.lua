@@ -192,21 +192,44 @@ end
 
 function RE:OnEnterTooltip(cellFrame, databaseID)
 	if RE.Database[databaseID].isArena then
-		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 6, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
-		--TODO
+		local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
+		local teamEnemy, damageSumEnemy, healingSumEnemy = RE:GetArenaTeamDetails(databaseID, false)
+		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+		RE.Tooltip:AddLine()
+		for i=1, 7 do
+			if i == 4 then
+				RE.Tooltip:SetCell(1, 4, "", nil, nil, nil, nil, nil, nil, nil, 50)
+			else
+				RE.Tooltip:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
+			end
+		end
+		for i=1, 3 do
+			RE.Tooltip:AddLine(team[i][1], team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][2], teamEnemy[i][3])
+		end
+		RE.Tooltip:AddSeparator(3)
+		RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+		for i=1, 3 do
+			RE.Tooltip:AddLine(team[i][2].."|n["..team[i][6].."]", team[i][4], team[i][5], nil, teamEnemy[i][2].."|n["..teamEnemy[i][6].."]", teamEnemy[i][4], teamEnemy[i][5])
+		end
+		RE.Tooltip:AddSeparator(3)
+		RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r", nil, nil, "|cFFFF141D"..damageSumEnemy.."|r", "|cFF00ff00"..healingSumEnemy.."|r")
 	else
 		local playerData = RE:GetPlayerData(databaseID)
 		local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 		local placeFKB, placeFHK, placeFHonor, placeFDamage, placeFHealing = RE:GetBGPlace(databaseID, true)
+		local mmrLine = nil
 		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
-		RE.Tooltip:AddLine("", "", "")
+		if RE.Database[databaseID].isRated then
+			mmrLine = "|cFF74D06CMMR|r|n"..RE:GetMMR(databaseID, true).."|n"..RE:GetMMR(databaseID, false)
+		end
+		RE.Tooltip:AddLine()
 		RE.Tooltip:SetCell(1, 1, "|cFF74D06CHK/D|r|n"..RE:GetPlayerKD(databaseID), nil, nil, nil, nil, nil, nil, nil, 50)
-		RE.Tooltip:SetCell(1, 2, "", nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:SetCell(1, 2, mmrLine, nil, nil, nil, nil, nil, nil, nil, 50)
 		RE.Tooltip:SetCell(1, 3, "|cFF74D06C"..DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
-		RE.Tooltip:AddSeparator()
-		RE.Tooltip:AddLine("", "|cFF74D06C"..L["Place"].."|r", "")
+		RE.Tooltip:AddSeparator(3)
+		RE.Tooltip:AddLine(nil, "|cFF74D06C"..L["Place"].."|r", nil)
 		RE.Tooltip:SetColumnLayout(3, "LEFT", "CENTER", "CENTER")
-		RE.Tooltip:AddLine("", FACTION, ALL)
+		RE.Tooltip:AddLine(nil, FACTION, ALL)
 		RE.Tooltip:AddLine("KB", placeFKB, placeKB)
 		RE.Tooltip:AddLine("HK", placeFHK, placeHK)
 		RE.Tooltip:AddLine(HONOR, placeFHonor, placeHonor)
@@ -217,7 +240,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
 		if RE.Database[databaseID].StatsNum > 0 then
 			RE.Tooltip:SetColumnLayout(3, "CENTER", "CENTER", "CENTER")
-			RE.Tooltip:AddSeparator()
+			RE.Tooltip:AddSeparator(3)
 			local faction = ""
 			local playerStatsData = RE:GetPlayerStatsData(databaseID)
 			if RE.MapListStat[RE.Database[databaseID].Map][1] then
@@ -228,15 +251,16 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				end
 			end
 			if RE.Database[databaseID].StatsNum == 1 then
-				RE.Tooltip:AddLine("", "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "")
+				RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil)
 			else
-				RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "", "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1])
+				RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1])
 				if RE.Database[databaseID].StatsNum > 2 then
-					RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][4]..faction..":16:16:0:0|t: "..playerStatsData[3][1], "", "|T"..RE.MapListStat[RE.Database[databaseID].Map][5]..faction..":16:16:0:0|t: "..playerStatsData[4][1])
+					RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][4]..faction..":16:16:0:0|t: "..playerStatsData[3][1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][5]..faction..":16:16:0:0|t: "..playerStatsData[4][1])
 				end
 			end
 		end
 	end
+	RE.Tooltip:SetBackdrop(RE.TooltipBackdrop)
 	RE.Tooltip:SmartAnchorTo(cellFrame)
 	RE.Tooltip:Show()
 end
@@ -398,10 +422,10 @@ function RE:UpdateArenaData(all)
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
 												RE:GetMapName(RE.Database[i].Map),
-												RE:GetArenaTeam(i, true),
-												RE:GetArenaMMR(i, true),
-												RE:GetArenaTeam(i, false),
-												RE:GetArenaMMR(i, false),
+												RE:GetArenaTeamIcons(i, true),
+												RE:GetMMR(i, true),
+												RE:GetArenaTeamIcons(i, false),
+												RE:GetMMR(i, false),
 												RE:TimeClean(RE.Database[i].Duration),
 												AbbreviateNumbers(playeData[10]),
 												AbbreviateNumbers(playeData[11]),

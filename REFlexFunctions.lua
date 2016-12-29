@@ -1,5 +1,6 @@
 local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
+local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -34,7 +35,7 @@ function RE:GetPlayerKD(databaseID)
 	return RE:Round(playerData[3]/deaths, 2)
 end
 
-function RE:GetArenaMMR(databaseID, player)
+function RE:GetMMR(databaseID, player)
 	local faction
 	if player then
 		faction = RE.Database[databaseID].PlayerSide + 1
@@ -48,7 +49,7 @@ function RE:GetArenaMMR(databaseID, player)
 	end
 end
 
-function RE:GetArenaTeam(databaseID, player)
+function RE:GetArenaTeamIcons(databaseID, player)
 	local faction
 	if player then
 		faction = RE.Database[databaseID].PlayerSide
@@ -63,13 +64,35 @@ function RE:GetArenaTeam(databaseID, player)
 	end
 	table.sort(teamRaw)
 	for i=1, #teamRaw do
-		table.insert(team, "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" ..
-								CLASS_ICON_TCOORDS[teamRaw[i]][1]*256+5 ..
-								":"..CLASS_ICON_TCOORDS[teamRaw[i]][2]*256-5 ..
-								":" .. CLASS_ICON_TCOORDS[teamRaw[i]][3]*256+5 ..
-								":" .. CLASS_ICON_TCOORDS[teamRaw[i]][4]*256-5 .. "|t")
+		table.insert(team, RE:GetClassIcon(teamRaw[i], 20))
 	end
 	return table.concat(team, " ")
+end
+
+function RE:GetArenaTeamDetails(databaseID, player)
+	local faction
+	if player then
+		faction = RE.Database[databaseID].PlayerSide
+	else
+		faction = (1 - RE.Database[databaseID].PlayerSide)
+	end
+	local team, damageSum, healingSum = {}, 0, 0
+	for i=1, #RE.Database[databaseID].Players do
+		if RE.Database[databaseID].Players[i][6] == faction then
+			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
+			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
+			table.insert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
+													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+													AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+													AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+													RE:RatingChangeClean(RE.Database[databaseID].Players[i][13])})
+		end
+	end
+	while #team < 3 do
+		table.insert(team, {"", "", "", "", "", ""})
+	end
+	return team, AbbreviateNumbers(damageSum), AbbreviateNumbers(healingSum)
 end
 
 function RE:GetWinNumber(filter, arena)
@@ -217,6 +240,35 @@ function RE:GetMapColorArena(_, realrow, _, table)
             ["b"] = 0,
             ["a"] = 1}
   end
+end
+
+function RE:GetClassIcon(token, size)
+	return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:"..size..":"..size..":0:0:256:256:" ..
+				 CLASS_ICON_TCOORDS[token][1]*256+5 ..
+				 ":"..CLASS_ICON_TCOORDS[token][2]*256-5 ..
+				 ":" .. CLASS_ICON_TCOORDS[token][3]*256+5 ..
+				 ":" .. CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
+end
+
+function RE:GetRaceIcon(token, size)
+	if BR[token] == nil then
+		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
+	else
+		token = string.gsub(token, "_PL", "")
+		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
+					 RE.RaceIcons[token][1]*256+5 ..
+					 ":"..RE.RaceIcons[token][2]*256-5 ..
+					 ":" .. RE.RaceIcons[token][3]*256+5 ..
+					 ":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
+	end
+end
+
+function RE:NameClean(name)
+	if RE.Settings.ShowServerName then
+		return name
+	else
+		return strsplit("-", name)
+	end
 end
 
 function RE:RatingChangeClean(change)
