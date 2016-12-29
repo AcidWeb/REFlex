@@ -56,13 +56,13 @@ function RE:GetArenaTeam(databaseID, player)
 		faction = (1 - RE.Database[databaseID].PlayerSide)
 	end
 	local teamRaw, team = {}, {}
-	for i=1, table.getn(RE.Database[databaseID].Players) do
+	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
 			table.insert(teamRaw, RE.Database[databaseID].Players[i][9])
 		end
 	end
 	table.sort(teamRaw)
-	for i=1, table.getn(teamRaw) do
+	for i=1, #teamRaw do
 		table.insert(team, "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:20:20:0:0:256:256:" ..
 								CLASS_ICON_TCOORDS[teamRaw[i]][1]*256+5 ..
 								":"..CLASS_ICON_TCOORDS[teamRaw[i]][2]*256-5 ..
@@ -74,7 +74,7 @@ end
 
 function RE:GetWinNumber(filter, arena)
   local won, lost = 0, 0
-  for i=1, table.getn(RE.Database) do
+  for i=1, #RE.Database do
 		if RE.Database[i].isArena == arena then
       local playerData = RE:GetPlayerData(i)
       if RE:FilterStats(i, playerData) then
@@ -94,7 +94,7 @@ function RE:GetWinNumber(filter, arena)
 end
 
 function RE:GetStats(filter, arena, skipLatest)
-	local ili = table.getn(RE.Database)
+	local ili = #RE.Database
   local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	if skipLatest then
 		ili = ili - 1
@@ -134,7 +134,7 @@ end
 function RE:GetBGPlace(databaseID, onlyFaction)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = 1, 1, 1, 1, 1
 	local playerData = RE:GetPlayerData(databaseID)
-	for i=1, table.getn(RE.Database[databaseID].Players) do
+	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][1] ~= RE.PlayerName and (not onlyFaction or (onlyFaction and RE.Database[databaseID].Players[i][6] == RE.Database[databaseID].PlayerSide)) then
 			if playerData[2] < RE.Database[databaseID].Players[i][2] then
 				placeKB = placeKB + 1
@@ -184,7 +184,7 @@ end
 function RE:GetShortMapName(mapName)
    local mapNameTemp = {strsplit(" ", mapName)}
    local mapShortName = ""
-   for i=1, table.getn(mapNameTemp) do
+   for i=1, #mapNameTemp do
       mapShortName = mapShortName..RE:StrSub(mapNameTemp[i],0,1)
    end
    return mapShortName
@@ -375,13 +375,13 @@ end
 function RE:SeasonPurge()
 	local currentSeason = GetCurrentArenaSeason()
 	local toWipe = {}
-	for i=1, table.getn(RE.Database) do
+	for i=1, #RE.Database do
 		if RE.Database[i].Season ~= currentSeason then
 			table.insert(toWipe, i)
 		end
 	end
 	local wipeI = 0
-	for j=1, table.getn(toWipe) do
+	for j=1, #toWipe do
 		local wipeID = toWipe[j] - wipeI
 		table.remove(RE.Database, wipeID)
 		wipeI = wipeI + 1

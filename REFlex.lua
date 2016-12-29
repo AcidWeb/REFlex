@@ -48,6 +48,12 @@ function RE:OnLoad(self)
 	REFlex_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
 	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlex)
+	RE.TableBG.head:SetHeight(25)
+	for _, i in pairs({1,3,5,7,9}) do
+		local _, parent = REFlexNamespace.TableBG.frame["col"..i.."bg"]:GetPoint(1)
+		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -8)
+		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -8)
+	end
 	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
@@ -276,7 +282,7 @@ function RE:UpdateGUI()
 			RE.MapDropDown:SetValue(1)
 			RE.MapFilterVal = 1
 		end
-		if table.getn(RE.TableBG.data) == 0 then
+		if #RE.TableBG.data == 0 then
 			RE.TableBG.cols[1].sort = "asc"
 		end
 		RE.TableBG:SetData(RE.BGData, true)
@@ -317,7 +323,7 @@ function RE:UpdateGUI()
 			RE.MapDropDown:SetValue(1)
 			RE.MapFilterVal = 1
 		end
-		if table.getn(RE.TableArena.data) == 0 then
+		if #RE.TableArena.data == 0 then
 			RE.TableArena.cols[1].sort = "asc"
 		end
 		RE.TableArena:SetData(RE.ArenaData, true)
@@ -356,9 +362,9 @@ function RE:UpdateBGData(all)
 	if all then
 		ili = 1
 	else
-		ili = table.getn(RE.Database)
+		ili = #RE.Database
 	end
-	for i=ili, table.getn(RE.Database) do
+	for i=ili, #RE.Database do
 		if not RE.Database[i].isArena then
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
@@ -385,9 +391,9 @@ function RE:UpdateArenaData(all)
 	if all then
 		ili = 1
 	else
-		ili = table.getn(RE.Database)
+		ili = #RE.Database
 	end
-	for i=ili, table.getn(RE.Database) do
+	for i=ili, #RE.Database do
 		if RE.Database[i].isArena then
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
@@ -483,7 +489,7 @@ function RE:PVPEnd()
 		else
 			RE:UpdateBGData(false)
 			if RE.Settings.Toasts then
-				TOAST:Spawn("REFlexToast", RE:GetBGToast(table.getn(RE.Database)))
+				TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
 			end
 		end
   end

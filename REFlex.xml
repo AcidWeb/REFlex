@@ -241,12 +241,12 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="-170" y="-37"/>
+										<AbsDimension x="-170" y="-35"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_KB2" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
@@ -255,11 +255,11 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_KB3" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="-170" y="-70"/>
+										<AbsDimension x="-170" y="-72"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -268,12 +268,12 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="170" y="-37"/>
+										<AbsDimension x="170" y="-35"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_HK2" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
@@ -282,11 +282,11 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_HK3" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="170" y="-70"/>
+										<AbsDimension x="170" y="-72"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -295,12 +295,12 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="-290" y="-37"/>
+										<AbsDimension x="-290" y="-35"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_Damage2" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
@@ -309,11 +309,11 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_Damage3" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="-290" y="-70"/>
+										<AbsDimension x="-290" y="-72"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -322,12 +322,12 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="290" y="-37"/>
+										<AbsDimension x="290" y="-35"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_Healing2" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
@@ -336,11 +336,11 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_InverseShadow_Small">
+						<FontString name="$Parent_Healing3" justifyH="CENTER" inherits="SystemFont_Shadow_Med1">
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="290" y="-70"/>
+										<AbsDimension x="290" y="-72"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
