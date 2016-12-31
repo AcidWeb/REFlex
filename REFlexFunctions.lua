@@ -84,15 +84,15 @@ function RE:GetArenaTeamDetails(databaseID, player)
 			table.insert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
 													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
 													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-													AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-													AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-													RE:RatingChangeClean(RE.Database[databaseID].Players[i][13])})
+													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
 		end
 	end
 	while #team < 3 do
 		table.insert(team, {"", "", "", "", "", ""})
 	end
-	return team, AbbreviateNumbers(damageSum), AbbreviateNumbers(healingSum)
+	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum)
 end
 
 function RE:GetWinNumber(filter, arena)
@@ -129,7 +129,7 @@ function RE:GetStats(filter, arena, skipLatest)
         if RE:FilterStats(i, playerData) then
           kb = kb + playerData[2]
           hk = hk + playerData[3]
-					honor = honor + playerData[10]
+					honor = honor + playerData[5]
 					damage = damage + playerData[10]
           healing = healing + playerData[11]
           if playerData[2] > topKB then
@@ -198,7 +198,7 @@ end
 function RE:GetMapName(mapID)
 	local map = RE.MapList[mapID]
 	if map then
-  	return RE.MapList[mapID]
+  	return map
 	else
 		return "E"..mapID
 	end
@@ -216,9 +216,9 @@ end
 function RE:GetMapColor(_, realrow, _, table)
   local isRated = RE.Database[table.data[realrow][11]].isRated
   if isRated then
-    return {["r"] = 1.0,
-            ["g"] = 0,
-            ["b"] = 0,
+    return {["r"] = 0,
+            ["g"] = 0.8,
+            ["b"] = 1.0,
             ["a"] = 1.0}
   else
     return {["r"] = 1.0,
@@ -271,13 +271,17 @@ function RE:NameClean(name)
 	end
 end
 
-function RE:RatingChangeClean(change)
+function RE:RatingChangeClean(change, databaseID)
 	if change > 0 then
 		return "|cFF00FF00+"..change.."|r"
 	elseif change < 0 then
 		return "|cFFFF141C"..change.."|r"
 	else
-		return "0"
+		if RE.Database[databaseID].isRated then
+			return "0"
+		else
+			return "-"
+		end
 	end
 end
 
@@ -374,11 +378,6 @@ function RE:FilterStats(id, playerdata)
   return RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data)
 end
 
-function RE:Round(num, idp)
-	local mult = 10^(idp or 0)
-	return math.floor(num * mult + 0.5) / mult
-end
-
 function RE:HKBarUpdate()
   local hk = select(4, GetAchievementCriteriaInfo(5363, 1))
   local hkMax = 0
@@ -413,7 +412,7 @@ end
 
 function RE:InsideToast(label, value, databaseID, place, top)
 	local toast = {}
-	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
+	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
 	if value > top then
 		table.insert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
 	end
@@ -438,6 +437,26 @@ function RE:SeasonPurge()
 		table.remove(RE.Database, wipeID)
 		wipeI = wipeI + 1
 	end
+end
+
+function RE:Round(num, idp)
+	local mult = 10^(idp or 0)
+	return math.floor(num * mult + 0.5) / mult
+end
+
+function RE:AbbreviateNumbers(value)
+	if value >= 10000000000 then
+		value = RE:Round(value / 1000000000, 1).."B"
+	elseif value >= 1000000000 then
+		value = RE:Round(value / 1000000000, 2).."B"
+	elseif value >= 100000000 then
+		value = RE:Round(value / 1000000, 0).."M"
+	elseif value >= 1000000 then
+		value = RE:Round(value / 1000000, 1).."M"
+	elseif value >= 1000 then
+		value = RE:Round(value / 1000, 0).."K"
+	end
+	return value;
 end
 
 function RE:CSize(char)

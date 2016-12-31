@@ -143,7 +143,7 @@ function RE:OnEvent(self, event, ...)
 
 		RE.LDB = LDB:NewDataObject("REFlex", {
 			type = "launcher",
-			text = "REPorter",
+			text = "REFlex",
 			icon = "Interface\\PvPRankBadges\\PvPRank09",
 			OnClick = function(self, button, _)
 				if button == "LeftButton" then
@@ -180,10 +180,13 @@ function RE:OnEvent(self, event, ...)
 			end
 		end
   elseif event == "ZONE_CHANGED_NEW_AREA" then
+		local _, instanceType = IsInInstance()
     RE.DataSaved = false
-		SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT")
-		if IsInGuild() then
-			SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
+		if instanceType == "pvp" or instanceType == "arena" then
+			SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT")
+			if IsInGuild() then
+				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
+			end
 		end
   elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		RE:PVPEnd()
@@ -204,12 +207,16 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 		end
 		for i=1, 3 do
-			RE.Tooltip:AddLine(team[i][1], team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][2], teamEnemy[i][3])
+			if team[i][2] ~= "" and teamEnemy[i][2] ~= "" then
+				RE.Tooltip:AddLine(team[i][1], team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][2], teamEnemy[i][3])
+			end
 		end
 		RE.Tooltip:AddSeparator(3)
 		RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 		for i=1, 3 do
-			RE.Tooltip:AddLine(team[i][2].."|n["..team[i][6].."]", team[i][4], team[i][5], nil, teamEnemy[i][2].."|n["..teamEnemy[i][6].."]", teamEnemy[i][4], teamEnemy[i][5])
+			if team[i][2] ~= "" and teamEnemy[i][2] ~= "" then
+				RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
+			end
 		end
 		RE.Tooltip:AddSeparator(3)
 		RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r", nil, nil, "|cFFFF141D"..damageSumEnemy.."|r", "|cFF00ff00"..healingSumEnemy.."|r")
@@ -332,10 +339,10 @@ function RE:UpdateGUI()
 		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
 		REFlex_ScoreHolder_KB2:SetText(BEST..": "..topKB)
 		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
-		REFlex_ScoreHolder_Damage2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
-		REFlex_ScoreHolder_Damage3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
-		REFlex_ScoreHolder_Healing2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
-		REFlex_ScoreHolder_Healing3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
+		REFlex_ScoreHolder_Damage2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
+		REFlex_ScoreHolder_Damage3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
+		REFlex_ScoreHolder_Healing2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
+		REFlex_ScoreHolder_Healing3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
 		RE:HKBarUpdate()
 	elseif PanelTemplates_GetSelectedTab(REFlex) > 3 then
 		RE.TableArena.frame:Show()
@@ -369,10 +376,10 @@ function RE:UpdateGUI()
 		REFlex_ScoreHolder_Healing1:SetText("")
 		REFlex_ScoreHolder_Wins:SetText(won)
 		REFlex_ScoreHolder_Lose:SetText(lost)
-		REFlex_ScoreHolder_HK2:SetText(BEST..": "..AbbreviateNumbers(topHealing))
-		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..AbbreviateNumbers(healing))
-		REFlex_ScoreHolder_KB2:SetText(BEST..": "..AbbreviateNumbers(topDamage))
-		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..AbbreviateNumbers(damage))
+		REFlex_ScoreHolder_HK2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
+		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
+		REFlex_ScoreHolder_KB2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
+		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
 		REFlex_ScoreHolder_Damage2:SetText("")
 		REFlex_ScoreHolder_Damage3:SetText("")
 		REFlex_ScoreHolder_Healing2:SetText("")
@@ -397,10 +404,10 @@ function RE:UpdateBGData(all)
 												RE:GetPlayerWin(i, true),
 												playeData[2],
 												playeData[3],
-												AbbreviateNumbers(playeData[10]),
-												AbbreviateNumbers(playeData[11]),
+												RE:AbbreviateNumbers(playeData[10]),
+												RE:AbbreviateNumbers(playeData[11]),
 												playeData[5],
-												RE:RatingChangeClean(playeData[13]),
+												RE:RatingChangeClean(playeData[13], i),
 												i,
 												playeData[10],
 												playeData[11],
@@ -427,9 +434,9 @@ function RE:UpdateArenaData(all)
 												RE:GetArenaTeamIcons(i, false),
 												RE:GetMMR(i, false),
 												RE:TimeClean(RE.Database[i].Duration),
-												AbbreviateNumbers(playeData[10]),
-												AbbreviateNumbers(playeData[11]),
-												RE:RatingChangeClean(playeData[13]),
+												RE:AbbreviateNumbers(playeData[10]),
+												RE:AbbreviateNumbers(playeData[11]),
+												RE:RatingChangeClean(playeData[13], i),
 												i,
 												playeData[10],
 												playeData[11],

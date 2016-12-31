@@ -141,7 +141,7 @@ RE.AceConfig = {
 			width = "normal",
 			confirm = true,
 			order = 4,
-			func = function() RE.Database = {}; ReloadUI() end
+			func = function() REFlexDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
 			name = L["Purge previous seasons"],
