@@ -288,9 +288,9 @@ end
 function RE:DateClean(timeRaw)
 	-- Barbarian friendly
 	if RE.PlayerZone == "US" then
-		return date("%I:%M %p %m/%d/%y", timeRaw)
+		return date("%I:%M %p %m/%d/%y", timeRaw + RE.PlayerTimezone)
 	else
-		return date("%H:%M %d.%m.%y", timeRaw)
+		return date("%H:%M %d.%m.%y", timeRaw + RE.PlayerTimezone)
 	end
 end
 

@@ -25,6 +25,7 @@ RE.BracketFilterVal = 1
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
 RE.PlayerZone = GetCVar("portal")
+RE.PlayerTimezone = time() - time(date('!*t', GetServerTime()))
 
 function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
@@ -467,7 +468,7 @@ function RE:PVPEnd()
     RE.MatchData.PlayersNum = GetNumBattlefieldScores()
     RE.MatchData.StatsNum = GetNumBattlefieldStats()
     RE.MatchData.Duration = math.floor(GetBattlefieldInstanceRunTime() / 1000)
-  	RE.MatchData.Time = GetServerTime()
+		RE.MatchData.Time = time(date('!*t', GetServerTime()))
     RE.MatchData.Version = RE.Version
 
 		if RE.MatchData.Map == 968 then
