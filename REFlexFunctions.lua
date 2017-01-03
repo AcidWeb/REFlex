@@ -246,7 +246,7 @@ end
 function RE:GetClassIcon(token, size)
 	return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:"..size..":"..size..":0:0:256:256:" ..
 				 CLASS_ICON_TCOORDS[token][1]*256+5 ..
-				 ":"..CLASS_ICON_TCOORDS[token][2]*256-5 ..
+				 ":" .. CLASS_ICON_TCOORDS[token][2]*256-5 ..
 				 ":" .. CLASS_ICON_TCOORDS[token][3]*256+5 ..
 				 ":" .. CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
 end
@@ -258,7 +258,7 @@ function RE:GetRaceIcon(token, size)
 		token = string.gsub(token, "_PL", "")
 		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
 					 RE.RaceIcons[token][1]*256+5 ..
-					 ":"..RE.RaceIcons[token][2]*256-5 ..
+					 ":" .. RE.RaceIcons[token][2]*256-5 ..
 					 ":" .. RE.RaceIcons[token][3]*256+5 ..
 					 ":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
 	end

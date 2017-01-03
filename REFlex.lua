@@ -52,8 +52,8 @@ function RE:OnLoad(self)
 	RE.TableBG.head:SetHeight(25)
 	for _, i in pairs({1,3,5,7,9}) do
 		local _, parent = REFlexNamespace.TableBG.frame["col"..i.."bg"]:GetPoint(1)
-		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -8)
-		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -8)
+		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -9)
+		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -9)
 	end
 	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
@@ -215,7 +215,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:AddSeparator(3)
 		RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 		for i=1, 3 do
-			if team[i][2] ~= "" and teamEnemy[i][2] ~= "" then
+			if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
 				RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
 			end
 		end
@@ -228,7 +228,11 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		local mmrLine = nil
 		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
 		if RE.Database[databaseID].isRated then
-			mmrLine = "|cFF74D06CMMR|r|n"..RE:GetMMR(databaseID, true).."|n"..RE:GetMMR(databaseID, false)
+			if RE.PlayerFaction == "Horde" then
+				mmrLine = "|cFF74D06CMMR|r|n|cFFFF141D"..RE:GetMMR(databaseID, true).."|r|n|cFF00A9FF"..RE:GetMMR(databaseID, false).."|r"
+			else
+				mmrLine = "|cFF74D06CMMR|r|n|cFF00A9FF"..RE:GetMMR(databaseID, true).."|r|n|cFFFF141D"..RE:GetMMR(databaseID, false).."|r"
+			end
 		end
 		RE.Tooltip:AddLine()
 		RE.Tooltip:SetCell(1, 1, "|cFF74D06CHK/D|r|n"..RE:GetPlayerKD(databaseID), nil, nil, nil, nil, nil, nil, nil, 50)
