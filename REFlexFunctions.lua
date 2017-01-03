@@ -86,11 +86,12 @@ function RE:GetArenaTeamDetails(databaseID, player)
 													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
 													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
 													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
+													RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16)})
 		end
 	end
 	while #team < 3 do
-		table.insert(team, {"", "", "", "", "", ""})
+		table.insert(team, {"", "", "", "", "", "", ""})
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum)
 end
@@ -260,6 +261,20 @@ function RE:GetRaceIcon(token, size)
 					 ":"..RE.RaceIcons[token][2]*256-5 ..
 					 ":" .. RE.RaceIcons[token][3]*256+5 ..
 					 ":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
+	end
+end
+
+function RE:GetPrestigeIcon(level, size)
+	local sufix = ""
+	if level > 0 and level < 5 then
+		sufix = level
+	elseif level > 4 and level < 9 then
+		sufix = "2-"..level - 4
+	end
+	if sufix ~= "" then
+		return "|TInterface\\PVPFrame\\Icons\\prestige-icon-"..sufix..":"..size..":"..size..":0:0|t"
+	else
+		return ""
 	end
 end
 

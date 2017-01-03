@@ -208,8 +208,8 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 		end
 		for i=1, 3 do
-			if team[i][2] ~= "" and teamEnemy[i][2] ~= "" then
-				RE.Tooltip:AddLine(team[i][1], team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][2], teamEnemy[i][3])
+			if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
+				RE.Tooltip:AddLine(team[i][1], team[i][7].." "..team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][7].." "..teamEnemy[i][2], teamEnemy[i][3])
 			end
 		end
 		RE.Tooltip:AddSeparator(3)
