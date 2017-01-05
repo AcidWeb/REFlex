@@ -255,7 +255,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.Tooltip:AddSeparator(3)
 			local faction = ""
 			local playerStatsData = RE:GetPlayerStatsData(databaseID)
-			if RE.MapListStat[RE.Database[databaseID].Map][1] then
+			if RE.MapListStat[RE.Database[databaseID].Map][1] or RE.Database[databaseID].StatsNum == 3 then
 				if RE.PlayerFaction == "Horde" then
 					faction = 0
 				else
@@ -264,6 +264,8 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 			if RE.Database[databaseID].StatsNum == 1 then
 				RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil)
+			elseif RE.Database[databaseID].StatsNum == 3 then
+				RE.Tooltip:AddLine("|T"..RE.MapListStat[567][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "|T"..RE.MapListStat[567][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1], "|T"..RE.MapListStat[567][4]..":16:16:0:0|t: "..playerStatsData[3][1])
 			else
 				RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1])
 				if RE.Database[databaseID].StatsNum > 2 then
