@@ -14,4 +14,5 @@ L["WARNING! This operation is not reversible!"] = true
 
 L["Show main window"] = true
 L["New version released!"] = true
-L["Hold SHIFT key to display tooltips with additional data."] = true
+L["Hold SHIFT to display tooltips."] = true
+L["Hold SHIFT and ALT to display extended tooltips."] = true

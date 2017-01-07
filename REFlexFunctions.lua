@@ -96,6 +96,32 @@ function RE:GetArenaTeamDetails(databaseID, player)
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum)
 end
 
+function RE:GetRGBTeamDetails(databaseID, player)
+	local faction
+	if player then
+		faction = RE.Database[databaseID].PlayerSide
+	else
+		faction = (1 - RE.Database[databaseID].PlayerSide)
+	end
+	local team, damageSum, healingSum, kbSum = {}, 0, 0, 0
+	for i=1, #RE.Database[databaseID].Players do
+		if RE.Database[databaseID].Players[i][6] == faction then
+			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
+			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
+			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
+			table.insert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
+													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+													RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
+													RE.Database[databaseID].Players[i][2],
+													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+		end
+	end
+	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum), kbSum
+end
+
 function RE:GetWinNumber(filter, arena)
   local won, lost = 0, 0
   for i=1, #RE.Database do

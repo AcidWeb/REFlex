@@ -161,7 +161,7 @@ function RE:OnEvent(self, event, ...)
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
 		StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
-			text = L["Hold SHIFT key to display tooltips with additional data."],
+			text = L["Hold SHIFT to display tooltips."].."|n|n"..L["Hold SHIFT and ALT to display extended tooltips."],
 			button1 = OKAY,
 			OnAccept = function() RE.Settings.FirstTime = false end,
 			timeout = 0,
@@ -273,6 +273,54 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				end
 			end
 		end
+		if IsAltKeyDown() and RE.Database[databaseID].isRated then
+			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, true)
+			RE.TooltipRGB1 = QTIP:Acquire("REFlexTooltipRGB1", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE.TooltipRGB1:AddLine()
+			for i=1, 7 do
+				if i == 2 then
+					RE.TooltipRGB1:SetCell(1, 2, "", nil, nil, nil, nil, nil, nil, nil, 10)
+				elseif i == 5 then
+					RE.TooltipRGB1:SetCell(1, 5, "", nil, nil, nil, nil, nil, nil, nil, 40)
+				else
+					RE.TooltipRGB1:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
+				end
+			end
+			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+			for i=1, #team do
+				RE.TooltipRGB1:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
+			end
+			RE.TooltipRGB1:AddSeparator(3)
+			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cff00ccff"..kbSum.."|r", "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r")
+			RE.TooltipRGB1:SetBackdrop(RE.TooltipBackdrop)
+			RE.TooltipRGB1:ClearAllPoints()
+			RE.TooltipRGB1:SetClampedToScreen(true)
+			RE.TooltipRGB1:SetPoint("RIGHT", RE.Tooltip, "LEFT", -5, 0)
+			RE.TooltipRGB1:Show()
+			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
+			RE.TooltipRGB2 = QTIP:Acquire("REFlexTooltipRGB2", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE.TooltipRGB2:AddLine()
+			for i=1, 7 do
+				if i == 2 then
+					RE.TooltipRGB2:SetCell(1, 2, "", nil, nil, nil, nil, nil, nil, nil, 10)
+				elseif i == 5 then
+					RE.TooltipRGB2:SetCell(1, 5, "", nil, nil, nil, nil, nil, nil, nil, 40)
+				else
+					RE.TooltipRGB2:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
+				end
+			end
+			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+			for i=1, #team do
+				RE.TooltipRGB2:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
+			end
+			RE.TooltipRGB2:AddSeparator(3)
+			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cff00ccff"..kbSum.."|r", "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r")
+			RE.TooltipRGB2:SetBackdrop(RE.TooltipBackdrop)
+			RE.TooltipRGB2:ClearAllPoints()
+			RE.TooltipRGB2:SetClampedToScreen(true)
+			RE.TooltipRGB2:SetPoint("LEFT", RE.Tooltip, "RIGHT", 5, 0)
+			RE.TooltipRGB2:Show()
+		end
 	end
 	RE.Tooltip:SetBackdrop(RE.TooltipBackdrop)
 	RE.Tooltip:SmartAnchorTo(cellFrame)
@@ -281,6 +329,8 @@ end
 
 function RE:OnLeaveTooltip()
 	QTIP:Release(RE.Tooltip)
+	QTIP:Release(RE.TooltipRGB1)
+	QTIP:Release(RE.TooltipRGB2)
 end
 
 function RE:OnSpecChange(_, spec)
