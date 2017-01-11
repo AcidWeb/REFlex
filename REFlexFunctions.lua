@@ -294,7 +294,7 @@ function RE:GetPrestigeIcon(level, size)
 	local sufix = ""
 	if level > 0 and level < 5 then
 		sufix = level
-	elseif level > 4 and level < 9 then
+	elseif level > 4 and level < 10 then
 		sufix = "2-"..level - 4
 	end
 	if sufix ~= "" then
