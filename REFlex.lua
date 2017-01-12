@@ -248,8 +248,17 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:SetLineColor(5, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(7, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
+		RE.Tooltip:SetColumnLayout(3, "CENTER", "CENTER", "CENTER")
+		RE.Tooltip:AddSeparator(3)
+		local tank, healer, dps = RE:GetBGComposition(databaseID, true)
+		local tankE, healerE, dpsE = RE:GetBGComposition(databaseID, false)
+		RE.Tooltip:AddLine("|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t")
+		if RE.PlayerFaction == "Horde" then
+			RE.Tooltip:AddLine("|cFFFF141D"..tank.."|r - |cFF00A9FF"..tankE.."|r", "|cFFFF141D"..healer.."|r - |cFF00A9FF"..healerE.."|r", "|cFFFF141D"..dps.."|r - |cFF00A9FF"..dpsE.."|r")
+		else
+			RE.Tooltip:AddLine("|cFF00A9FF"..tank.."|r - |cFFFF141D"..tankE.."|r", "|cFF00A9FF"..healer.."|r - |cFFFF141D"..healerE.."|r", "|cFF00A9FF"..dps.."|r - |cFFFF141D"..dpsE.."|r")
+		end
 		if RE.Database[databaseID].StatsNum > 0 then
-			RE.Tooltip:SetColumnLayout(3, "CENTER", "CENTER", "CENTER")
 			RE.Tooltip:AddSeparator(3)
 			local faction = ""
 			local playerStatsData = RE:GetPlayerStatsData(databaseID)

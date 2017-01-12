@@ -108,6 +108,17 @@ RE.RaceIcons = {
 	["Pandaren"]	= {0.756, 0.881, 0, 0.25}
 }
 
+RE.Roles = {}
+for classID=1, MAX_CLASSES do
+	local _, classTag = GetClassInfoByID(classID)
+	local specNum = GetNumSpecializationsForClassID(classID)
+	RE.Roles[classTag] = {}
+	for i=1, specNum do
+		local _, name, _, _, role = GetSpecializationInfoForClassID(classID, i)
+		RE.Roles[classTag][name] = role
+	end
+end
+
 RE.AceConfig = {
 	type = "group",
 	args = {

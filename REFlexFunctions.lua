@@ -186,6 +186,24 @@ function RE:GetBGPlace(databaseID, onlyFaction)
 	return placeKB, placeHK, placeHonor, placeDamage, placeHealing
 end
 
+function RE:GetBGComposition(databaseID, player)
+	local tank, healer, dps = 0, 0, 0
+	local faction = RE:GetFactionID(databaseID, player)
+	for i=1, #RE.Database[databaseID].Players do
+		if RE.Database[databaseID].Players[i][6] == faction and RE.Database[databaseID].Players[i][9] ~= nil then
+			local role = RE.Roles[RE.Database[databaseID].Players[i][9]][RE.Database[databaseID].Players[i][16]]
+			if role == "TANK" then
+				tank = tank + 1
+			elseif role == "HEALER" then
+				healer = healer + 1
+			else
+				dps = dps + 1
+			end
+		end
+	end
+	return tank, healer, dps
+end
+
 function RE:GetBGToast(databaseID)
 	local toast = {}
 	local savedFilter = RE.Settings.Filters.Map
