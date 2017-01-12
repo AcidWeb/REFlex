@@ -36,12 +36,7 @@ function RE:GetPlayerKD(databaseID)
 end
 
 function RE:GetMMR(databaseID, player)
-	local faction
-	if player then
-		faction = RE.Database[databaseID].PlayerSide + 1
-	else
-		faction = (1 - RE.Database[databaseID].PlayerSide) + 1
-	end
+	local faction = RE:GetFactionID(databaseID, player) + 1
 	if RE.Database[databaseID].isRated then
 		return RE.Database[databaseID].TeamData[faction][4]
 	else
@@ -50,12 +45,7 @@ function RE:GetMMR(databaseID, player)
 end
 
 function RE:GetArenaTeamIcons(databaseID, player)
-	local faction
-	if player then
-		faction = RE.Database[databaseID].PlayerSide
-	else
-		faction = (1 - RE.Database[databaseID].PlayerSide)
-	end
+	local faction = RE:GetFactionID(databaseID, player)
 	local teamRaw, team = {}, {}
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
@@ -70,12 +60,7 @@ function RE:GetArenaTeamIcons(databaseID, player)
 end
 
 function RE:GetArenaTeamDetails(databaseID, player)
-	local faction
-	if player then
-		faction = RE.Database[databaseID].PlayerSide
-	else
-		faction = (1 - RE.Database[databaseID].PlayerSide)
-	end
+	local faction = RE:GetFactionID(databaseID, player)
 	local team, damageSum, healingSum = {}, 0, 0
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
@@ -97,12 +82,7 @@ function RE:GetArenaTeamDetails(databaseID, player)
 end
 
 function RE:GetRGBTeamDetails(databaseID, player)
-	local faction
-	if player then
-		faction = RE.Database[databaseID].PlayerSide
-	else
-		faction = (1 - RE.Database[databaseID].PlayerSide)
-	end
+	local faction = RE:GetFactionID(databaseID, player)
 	local team, damageSum, healingSum, kbSum = {}, 0, 0, 0
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
@@ -220,6 +200,14 @@ function RE:GetBGToast(databaseID)
 	table.insert(toast, RE:InsideToast(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
 	table.insert(toast, RE:InsideToast(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
 	return table.concat(toast, "")
+end
+
+function RE:GetFactionID(databaseID, player)
+	if player then
+		return RE.Database[databaseID].PlayerSide
+	else
+		return 1 - RE.Database[databaseID].PlayerSide
+	end
 end
 
 function RE:GetMapName(mapID)
