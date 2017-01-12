@@ -116,6 +116,9 @@ function RE:OnEvent(self, event, ...)
     end
 		RE.Settings = REFlexSettings
 		RE.Database = REFlexDatabase
+		RE:UpdateSettings()
+		RE:UpdateDatabase()
+		
 		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")

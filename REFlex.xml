@@ -3,6 +3,7 @@
 	<Script file="REFlex.lua"/>
 	<Script file="REFlexFunctions.lua"/>
 	<Script file="REFlexStructures.lua"/>
+	<Script file="REFlexUpdater.lua"/>
 
 	<Frame name="REFlex" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Scripts>
