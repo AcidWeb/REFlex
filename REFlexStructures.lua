@@ -5,8 +5,10 @@ RE.DefaultConfig = {
 	["MiniMapButtonSettings"] = {["hide"] = false},
 	["Toasts"] = true,
 	["ShowServerName"] = false,
-	["ConfigVersion"] = RE.Version,
-	["FirstTime"] = true
+	["CurrentTab"] = 1,
+	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}},
+	["FirstTime"] = true,
+	["ConfigVersion"] = RE.Version
 }
 
 RE.TooltipBackdrop = {

@@ -17,10 +17,6 @@ RE.MatchData = {}
 RE.BGData = {}
 RE.ArenaData = {}
 RE.PrepareGUI = true
-RE.LastTab = 0
-RE.SpecFilterVal = ALL
-RE.MapFilterVal = 1
-RE.BracketFilterVal = 1
 
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
@@ -34,8 +30,6 @@ function RE:OnLoad(self)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterForDrag("LeftButton")
 	tinsert(UISpecialFrames,"REFlex")
-	PanelTemplates_SetNumTabs(REFlex, 6)
-	PanelTemplates_SetTab(REFlex, 1)
 
 	REFlexTab1:SetText(ALL)
 	REFlexTab2:SetText(PVP_TAB_HONOR)
@@ -90,7 +84,6 @@ function RE:OnLoad(self)
 	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", REFlex, "BOTTOMLEFT", 15, 18)
 	RE.SpecDropDown:SetWidth(150)
 	RE.SpecDropDown:SetList({[ALL] = ALL})
-	RE.SpecDropDown:SetValue(ALL)
 	RE.SpecDropDown:SetCallback("OnValueChanged", RE.OnSpecChange)
 	RE.BracketDropDown = GUI:Create("Dropdown")
 	RE.BracketDropDown.frame:SetParent(REFlex)
@@ -98,7 +91,6 @@ function RE:OnLoad(self)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
 	RE.BracketDropDown:SetList({[1] = ALL, [4] = "2v2", [6] = "3v3"})
-	RE.BracketDropDown:SetValue(1)
 	RE.MapDropDown = GUI:Create("Dropdown")
 	RE.MapDropDown.frame:SetParent(REFlex)
 	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlex, "BOTTOMRIGHT", -19, 18)
@@ -118,7 +110,10 @@ function RE:OnEvent(self, event, ...)
 		RE.Database = REFlexDatabase
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
-		
+
+		PanelTemplates_SetNumTabs(REFlex, 6)
+		PanelTemplates_SetTab(REFlex, RE.Settings.CurrentTab)
+
 		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
@@ -337,17 +332,17 @@ function RE:OnLeaveTooltip()
 end
 
 function RE:OnSpecChange(_, spec)
-	RE.SpecFilterVal = spec
+	RE.Settings.Filters.Spec = spec
 	RE:UpdateGUI()
 end
 
 function RE:OnMapChange(_, map)
-	RE.MapFilterVal = map
+	RE.Settings.Filters.Map = map
 	RE:UpdateGUI()
 end
 
 function RE:OnBracketChange(_, bracket)
-	RE.BracketFilterVal = bracket
+	RE.Settings.Filters.Bracket = bracket
 	RE:UpdateGUI()
 end
 
@@ -356,22 +351,28 @@ function RE:UpdateGUI()
 		StaticPopup_Show("REFLEX_FIRSTTIME")
 	end
 	if RE.PrepareGUI then
-		RE.PrepareGUI = false
 		RequestRatedInfo()
 		for i=1, GetNumSpecializations() do
 			local Spec = select(2, GetSpecializationInfo(i))
 			RE.SpecDropDown:AddItem(Spec, Spec)
 		end
+		RE.SpecDropDown:SetValue(RE.Settings.Filters.Spec)
+		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
 	end
 	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
 		RE.TableBG.frame:Show()
 		RE.TableArena.frame:Hide()
 		RE.BracketDropDown.frame:Hide()
 		REFlex_HKBar:Show()
-		if RE.LastTab > 3 or RE.LastTab == 0 then
+		if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
-			RE.MapDropDown:SetValue(1)
-			RE.MapFilterVal = 1
+			if RE.PrepareGUI then
+				RE.PrepareGUI = false
+				RE.MapDropDown:SetValue(RE.Settings.Filters.Map)
+			else
+				RE.MapDropDown:SetValue(1)
+				RE.Settings.Filters.Map = 1
+			end
 		end
 		if #RE.TableBG.data == 0 then
 			RE.TableBG.cols[1].sort = "asc"
@@ -409,10 +410,15 @@ function RE:UpdateGUI()
 		RE.TableBG.frame:Hide()
 		RE.BracketDropDown.frame:Show()
 		REFlex_HKBar:Hide()
-		if RE.LastTab < 4 then
+		if RE.Settings.CurrentTab < 4 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongArena, RE.MapListLongOrderArena)
-			RE.MapDropDown:SetValue(1)
-			RE.MapFilterVal = 1
+			if RE.PrepareGUI then
+				RE.PrepareGUI = false
+				RE.MapDropDown:SetValue(RE.Settings.Filters.Map)
+			else
+				RE.MapDropDown:SetValue(1)
+				RE.Settings.Filters.Map = 1
+			end
 		end
 		if #RE.TableArena.data == 0 then
 			RE.TableArena.cols[1].sort = "asc"
@@ -445,7 +451,7 @@ function RE:UpdateGUI()
 		REFlex_ScoreHolder_Healing2:SetText("")
 		REFlex_ScoreHolder_Healing3:SetText("")
 	end
-	RE.LastTab = PanelTemplates_GetSelectedTab(REFlex)
+	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(REFlex)
 end
 
 function RE:UpdateBGData(all)

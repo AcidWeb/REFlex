@@ -208,12 +208,12 @@ end
 
 function RE:GetBGToast(databaseID)
 	local toast = {}
-	local savedFilter = RE.MapFilterVal
-	RE.MapFilterVal = RE.Database[databaseID].Map
+	local savedFilter = RE.Settings.Filters.Map
+	RE.Settings.Filters.Map = RE.Database[databaseID].Map
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
-	RE.MapFilterVal = savedFilter
+	RE.Settings.Filters.Map = savedFilter
 	table.insert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
 	table.insert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
 	table.insert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
@@ -367,8 +367,8 @@ function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
 end
 
 function RE:SpecFilter(rowdata)
-  if RE.SpecFilterVal ~= ALL then
-    if rowdata[14] == RE.SpecFilterVal then
+  if RE.Settings.Filters.Spec ~= ALL then
+    if rowdata[14] == RE.Settings.Filters.Spec then
       return true
     else
       return false
@@ -379,8 +379,8 @@ function RE:SpecFilter(rowdata)
 end
 
 function RE:MapFilter(rowdata)
-  if RE.MapFilterVal ~= 1 then
-    if RE.Database[rowdata[11]].Map == RE.MapFilterVal then
+  if RE.Settings.Filters.Map ~= 1 then
+    if RE.Database[rowdata[11]].Map == RE.Settings.Filters.Map then
       return true
     else
       return false
@@ -391,8 +391,8 @@ function RE:MapFilter(rowdata)
 end
 
 function RE:BracketFilter(rowdata)
-  if RE.Database[rowdata[11]].isArena and RE.BracketFilterVal ~= 1 then
-    if RE.Database[rowdata[11]].PlayersNum == RE.BracketFilterVal then
+  if RE.Database[rowdata[11]].isArena and RE.Settings.Filters.Bracket ~= 1 then
+    if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
       return true
     else
       return false
