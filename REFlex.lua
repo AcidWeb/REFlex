@@ -531,7 +531,8 @@ function RE:UpdateBGData(all)
 												i,
 												playeData[10],
 												playeData[11],
-												playeData[16]}
+												playeData[16],
+												playeData[13]}
 			table.insert(RE.BGData, tempData)
 		end
 	end
@@ -560,7 +561,8 @@ function RE:UpdateArenaData(all)
 												i,
 												playeData[10],
 												playeData[11],
-												playeData[16]}
+												playeData[16],
+												playeData[13]}
 			table.insert(RE.ArenaData, tempData)
 		end
 	end

@@ -435,7 +435,7 @@ function RE:FilterRated(rowdata)
 end
 
 function RE:FilterStats(id, playerdata)
-  local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16]}
+  local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16], 0}
   return RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
 end
 

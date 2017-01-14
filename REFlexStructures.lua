@@ -260,6 +260,7 @@ RE.BGStructure = {
   {
     ["name"] = RATING,
     ["width"] = 65,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
     ["align"] = "CENTER"
   }
 }
@@ -349,6 +350,7 @@ RE.ArenaStructure = {
   {
     ["name"] = RATING,
     ["width"] = 50,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
     ["align"] = "CENTER"
   }
 }
