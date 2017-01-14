@@ -17,6 +17,7 @@ RE.MatchData = {}
 RE.BGData = {}
 RE.ArenaData = {}
 RE.PrepareGUI = true
+RE.CalendarMode = 0
 
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
@@ -87,7 +88,7 @@ function RE:OnLoad(self)
 	RE.SpecDropDown:SetCallback("OnValueChanged", RE.OnSpecChange)
 	RE.BracketDropDown = GUI:Create("Dropdown")
 	RE.BracketDropDown.frame:SetParent(REFlex)
-	RE.BracketDropDown.frame:SetPoint("BOTTOM", REFlex, "BOTTOM", 0, 18)
+	RE.BracketDropDown.frame:SetPoint("LEFT", RE.SpecDropDown.frame, "RIGHT", 5, 0)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
 	RE.BracketDropDown:SetList({[1] = ALL, [4] = "2v2", [6] = "3v3"})
@@ -96,6 +97,12 @@ function RE:OnLoad(self)
 	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlex, "BOTTOMRIGHT", -19, 18)
 	RE.MapDropDown:SetWidth(150)
 	RE.MapDropDown:SetCallback("OnValueChanged", RE.OnMapChange)
+	RE.DateDropDown = GUI:Create("Dropdown")
+	RE.DateDropDown.frame:SetParent(REFlex)
+	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
+	RE.DateDropDown:SetWidth(100)
+	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
+	RE.DateDropDown:SetList({[1] = ALL, [2] = HONOR_TODAY, [3] = HONOR_YESTERDAY, [4] = GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = CUSTOM})
 end
 
 function RE:OnEvent(self, event, ...)
@@ -164,11 +171,20 @@ function RE:OnEvent(self, event, ...)
 			OnAccept = function() RE.Settings.FirstTime = false end,
 			timeout = 0,
 			whileDead = true,
-			hideOnEscape = false,
+			hideOnEscape = false
+		}
+		StaticPopupDialogs["REFLEX_CUSTOMDATE"] = {
+			text = L["Select start and end date by clicking it."],
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = false
 		}
 
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
+	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
+		hooksecurefunc("CalendarDayButton_Click", RE.CalendarParser)
+		CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
 		local _, message, _ = ...
 		local messageEx = {strsplit(";", message)}
@@ -355,6 +371,36 @@ function RE:OnBracketChange(_, bracket)
 	RE:UpdateGUI()
 end
 
+function RE:OnDateChange(_, mode)
+	local weekdayR, monthR, dayR, yearR = CalendarGetDate()
+	local t = {day = dayR, month = monthR, year = yearR, hour = 0}
+	RE.Settings.Filters.DateMode = mode
+	if mode == 1 then
+		RE.Settings.Filters.Date = {0, 0}
+	elseif mode == 2 then
+		RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
+	elseif mode == 3 then
+		RE.Settings.Filters.Date = {time(t) - 86400 - RE.PlayerTimezone, time(t) - RE.PlayerTimezone}
+	elseif mode == 4 then
+		if weekdayR == 1 then
+			weekdayR = 6
+		else
+			weekdayR = weekdayR - 2
+		end
+		RE.Settings.Filters.Date = {time(t) - (weekdayR * 86400) - RE.PlayerTimezone, 0}
+	elseif mode == 5 then
+		t = {day = 1, month = monthR, year = yearR, hour = 0}
+		RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
+	else
+		RE.CalendarMode = 1
+		StaticPopup_Show("REFLEX_CUSTOMDATE")
+		UIParentLoadAddOn("Blizzard_Calendar")
+		CalendarFrame:Show()
+		return
+	end
+	RE:UpdateGUI()
+end
+
 function RE:UpdateGUI()
 	if RE.Settings.FirstTime then
 		StaticPopup_Show("REFLEX_FIRSTTIME")
@@ -367,12 +413,12 @@ function RE:UpdateGUI()
 		end
 		RE.SpecDropDown:SetValue(RE.Settings.Filters.Spec)
 		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
+		RE.DateDropDown:SetValue(RE.Settings.Filters.DateMode)
 	end
 	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
 		RE.TableBG.frame:Show()
 		RE.TableArena.frame:Hide()
-		RE.BracketDropDown.frame:Hide()
-		REFlex_HKBar:Show()
+		RE.BracketDropDown:SetDisabled(true)
 		if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
 			if RE.PrepareGUI then
@@ -417,8 +463,7 @@ function RE:UpdateGUI()
 	elseif PanelTemplates_GetSelectedTab(REFlex) > 3 then
 		RE.TableArena.frame:Show()
 		RE.TableBG.frame:Hide()
-		RE.BracketDropDown.frame:Show()
-		REFlex_HKBar:Hide()
+		RE.BracketDropDown:SetDisabled(false)
 		if RE.Settings.CurrentTab < 4 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongArena, RE.MapListLongOrderArena)
 			if RE.PrepareGUI then

@@ -408,21 +408,55 @@ function RE:BracketFilter(rowdata)
   end
 end
 
+function RE:DateFilter(rowdata)
+	local from = RE.Settings.Filters.Date[1]
+	local to = RE.Settings.Filters.Date[2]
+	if from > 0 or to > 0 then
+    if RE.Database[rowdata[11]].Time >= from and (to == 0 or RE.Database[rowdata[11]].Time <= to) then
+      return true
+    else
+      return false
+    end
+  else
+    return true
+  end
+end
+
 function RE:FilterDefault(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata)
+  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterCasual(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and not RE.Database[rowdata[11]].isRated
+  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata) and not RE.Database[rowdata[11]].isRated
 end
 
 function RE:FilterRated(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE.Database[rowdata[11]].isRated
+  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata) and RE.Database[rowdata[11]].isRated
 end
 
 function RE:FilterStats(id, playerdata)
   local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16]}
-  return RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data)
+  return RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
+end
+
+function RE:CalendarParser()
+	if RE.CalendarMode == 1 then
+		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 0}
+		PlaySound("GAMEGENERICBUTTONPRESS")
+		RE.Settings.Filters.Date[1] = time(t) - RE.PlayerTimezone
+		RE.CalendarMode = 2
+	elseif RE.CalendarMode == 2 then
+		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 24, min = 59, sec = 59}
+		PlaySound("GAMEGENERICBUTTONPRESS")
+		RE.Settings.Filters.Date[2] = time(t) - RE.PlayerTimezone
+		CalendarFrame:Hide()
+		RE:UpdateGUI()
+	end
+end
+
+function RE:CalendarCleanup()
+	RE.CalendarMode = 0
+	StaticPopup_Hide("REFLEX_CUSTOMDATE")
 end
 
 function RE:HKBarUpdate()

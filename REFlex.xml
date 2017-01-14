@@ -139,7 +139,7 @@
 			</Button>
 			<Frame name="$Parent_HKBar">
 				<Size>
-					<AbsDimension x="440" y="25"/>
+					<AbsDimension x="240" y="25"/>
 				</Size>
 				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize>

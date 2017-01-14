@@ -5,7 +5,7 @@ function RE:UpdateSettings()
   if RE.Settings.ConfigVersion ~= RE.Version then
     if RE.Settings.ConfigVersion < 220 then
       RE.Settings.CurrentTab = 1
-      RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}}
+      RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["DateMode"] = 1, ["Date"] = {0, 0}}
       RE.Settings.ConfigVersion = 220
     end
   end
