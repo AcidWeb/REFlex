@@ -206,12 +206,12 @@ end
 
 function RE:GetBGToast(databaseID)
 	local toast = {}
-	local savedFilter = RE.Settings.Filters.Map
-	RE.Settings.Filters.Map = RE.Database[databaseID].Map
+	local savedFilters = RE.Settings.Filters
+	RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}}
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
-	RE.Settings.Filters.Map = savedFilter
+	RE.Settings.Filters = savedFilters
 	table.insert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
 	table.insert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
 	table.insert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
