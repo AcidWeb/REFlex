@@ -8,8 +8,8 @@ local LDBI = LibStub("LibDBIcon-1.0")
 local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 
-RE.Version = 220
-RE.VersionStr = "2.2.0"
+RE.Version = 221
+RE.VersionStr = "2.2.1"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
