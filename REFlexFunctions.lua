@@ -287,7 +287,7 @@ function RE:GetRaceIcon(token, size)
 	if BR[token] == nil then
 		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
 	else
-		token = string.gsub(token, "_PL", "")
+		token = string.gsub(BR[token], "_PL", "")
 		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
 					 RE.RaceIcons[token][1]*256+5 ..
 					 ":" .. RE.RaceIcons[token][2]*256-5 ..
