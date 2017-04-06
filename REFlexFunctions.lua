@@ -302,6 +302,10 @@ function RE:GetPrestigeIcon(level, size)
 		sufix = level
 	elseif level > 4 and level < 10 then
 		sufix = "2-"..level - 4
+	elseif level > 9 and level < 15 then
+		sufix = "3-"..level - 9
+	elseif level > 14 and level < 20 then
+		sufix = "4-"..level - 14
 	end
 	if sufix ~= "" then
 		return "|TInterface\\PVPFrame\\Icons\\prestige-icon-"..sufix..":"..size..":"..size..":0:0|t"

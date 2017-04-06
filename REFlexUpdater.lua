@@ -12,4 +12,15 @@ function RE:UpdateSettings()
 end
 
 function RE:UpdateDatabase()
+  for i=1, #RE.Database do
+    if RE.Database[i].Version < 224 then
+      if RE.Database[i].Map == 1681 then
+        RE.Database[i].Map = 529
+        RE.Database[i].isBrawl = true
+      else
+        RE.Database[i].isBrawl = false
+      end
+      RE.Database[i].Version = 224
+    end
+  end
 end

@@ -8,8 +8,8 @@ local LDBI = LibStub("LibDBIcon-1.0")
 local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 
-RE.Version = 223
-RE.VersionStr = "2.2.3"
+RE.Version = 224
+RE.VersionStr = "2.2.4"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -590,6 +590,7 @@ function RE:PVPEnd()
     RE.MatchData.StatsNum = GetNumBattlefieldStats()
     RE.MatchData.Duration = math.floor(GetBattlefieldInstanceRunTime() / 1000)
 		RE.MatchData.Time = time(date('!*t', GetServerTime()))
+		RE.MatchData.isBrawl = C_PvP.IsInBrawl()
     RE.MatchData.Version = RE.Version
 
 		if RE.MatchData.Map == 968 then
@@ -603,6 +604,9 @@ function RE:PVPEnd()
 		end
 		if RE.MatchData.Map == 1505 then
 			RE.MatchData.Map = 559
+		end
+		if RE.MatchData.Map == 1681 then
+			RE.MatchData.Map = 529
 		end
 
     if (IsRatedBattleground() and not IsWargame()) or (RE.MatchData.isArena and not IsArenaSkirmish()) then
