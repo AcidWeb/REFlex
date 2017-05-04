@@ -8,8 +8,8 @@ local LDBI = LibStub("LibDBIcon-1.0")
 local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 
-RE.Version = 224
-RE.VersionStr = "2.2.4"
+RE.Version = 225
+RE.VersionStr = "2.2.5"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -598,12 +598,6 @@ function RE:PVPEnd()
 		end
 		if RE.MatchData.Map == 1035 then
 			RE.MatchData.Map = 998
-		end
-		if RE.MatchData.Map == 1672 then
-			RE.MatchData.Map = 562
-		end
-		if RE.MatchData.Map == 1505 then
-			RE.MatchData.Map = 559
 		end
 		if RE.MatchData.Map == 1681 then
 			RE.MatchData.Map = 529
