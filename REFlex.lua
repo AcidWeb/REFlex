@@ -634,13 +634,16 @@ function RE:PVPEnd()
       end
     end
 
-    table.insert(RE.Database, RE.MatchData)
-		if RE.MatchData.isArena then
-			RE:UpdateArenaData(false)
-		else
-			RE:UpdateBGData(false)
-			if RE.Settings.Toasts then
-				TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
+		-- Silently drop corrupted records
+		if RE.MatchData.PlayerNum ~= nil then
+	    table.insert(RE.Database, RE.MatchData)
+			if RE.MatchData.isArena then
+				RE:UpdateArenaData(false)
+			else
+				RE:UpdateBGData(false)
+				if RE.Settings.Toasts then
+					TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
+				end
 			end
 		end
   end
