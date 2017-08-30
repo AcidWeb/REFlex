@@ -9,8 +9,8 @@
 		<Scripts>
 			<OnLoad>REFlexNamespace:OnLoad(self)</OnLoad>
 			<OnEvent>REFlexNamespace:OnEvent(self, event, ...)</OnEvent>
-			<OnShow>PlaySound("igCharacterInfoOpen"); REFlexNamespace:UpdateGUI()</OnShow>
-			<OnHide>PlaySound("igCharacterInfoClose")</OnHide>
+			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); REFlexNamespace:UpdateGUI()</OnShow>
+			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
 			<OnDragStart>self:StartMoving()</OnDragStart>
 			<OnDragStop>self:StopMovingOrSizing()</OnDragStop>
 		</Scripts>

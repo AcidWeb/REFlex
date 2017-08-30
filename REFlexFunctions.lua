@@ -306,6 +306,14 @@ function RE:GetPrestigeIcon(level, size)
 		sufix = "3-"..level - 9
 	elseif level > 14 and level < 20 then
 		sufix = "4-"..level - 14
+	elseif level > 19 and level < 25 then
+		sufix = "5-"..level - 19
+	elseif level > 24 and level < 30 then
+		sufix = "6-"..level - 24
+	elseif level > 29 and level < 35 then
+		sufix = "7-"..level - 29
+	elseif level > 34 and level < 40 then
+		sufix = "8-"..level - 34
 	end
 	if sufix ~= "" then
 		return "|TInterface\\PVPFrame\\Icons\\prestige-icon-"..sufix..":"..size..":"..size..":0:0|t"
@@ -446,12 +454,12 @@ end
 function RE:CalendarParser()
 	if RE.CalendarMode == 1 then
 		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 0}
-		PlaySound("GAMEGENERICBUTTONPRESS")
+		PlaySound(624)
 		RE.Settings.Filters.Date[1] = time(t) - RE.PlayerTimezone
 		RE.CalendarMode = 2
 	elseif RE.CalendarMode == 2 then
 		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 24, min = 59, sec = 59}
-		PlaySound("GAMEGENERICBUTTONPRESS")
+		PlaySound(624)
 		RE.Settings.Filters.Date[2] = time(t) - RE.PlayerTimezone
 		CalendarFrame:Hide()
 		RE:UpdateGUI()
