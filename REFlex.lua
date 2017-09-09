@@ -516,7 +516,7 @@ function RE:UpdateBGData(all)
 		ili = #RE.Database
 	end
 	for i=ili, #RE.Database do
-		if not RE.Database[i].isArena then
+		if not RE.Database[i].isArena and not RE.Database[i].Hidden then
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
 												RE:GetMapName(RE.Database[i].Map),
@@ -546,7 +546,7 @@ function RE:UpdateArenaData(all)
 		ili = #RE.Database
 	end
 	for i=ili, #RE.Database do
-		if RE.Database[i].isArena then
+		if RE.Database[i].isArena and not RE.Database[i].Hidden then
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
 												RE:GetMapName(RE.Database[i].Map),
@@ -634,9 +634,15 @@ function RE:PVPEnd()
       end
     end
 
-		-- Silently drop corrupted records
-		if RE.MatchData.PlayerNum ~= nil then
-	    table.insert(RE.Database, RE.MatchData)
+		-- Hide corrupted records
+		if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 then
+			RE.MatchData.Hidden = true
+		else
+			RE.MatchData.Hidden = false
+		end
+
+	  table.insert(RE.Database, RE.MatchData)
+		if not RE.MatchData.Hidden then
 			if RE.MatchData.isArena then
 				RE:UpdateArenaData(false)
 			else
@@ -645,6 +651,8 @@ function RE:PVPEnd()
 					TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
 				end
 			end
+		else
+			print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
 		end
   end
 end

@@ -105,7 +105,7 @@ end
 function RE:GetWinNumber(filter, arena)
   local won, lost = 0, 0
   for i=1, #RE.Database do
-		if RE.Database[i].isArena == arena then
+		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
       local playerData = RE:GetPlayerData(i)
       if RE:FilterStats(i, playerData) then
         if RE:GetPlayerWin(i, false) then
@@ -130,7 +130,7 @@ function RE:GetStats(filter, arena, skipLatest)
 		ili = ili - 1
 	end
   for i=1, ili do
-		if RE.Database[i].isArena == arena then
+		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
       if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
         local playerData = RE:GetPlayerData(i)
         if RE:FilterStats(i, playerData) then
@@ -435,20 +435,20 @@ function RE:DateFilter(rowdata)
 end
 
 function RE:FilterDefault(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+  return not RE.Database[rowdata[11]].Hidden and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterCasual(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata) and not RE.Database[rowdata[11]].isRated
+  return not RE.Database[rowdata[11]].Hidden and not RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterRated(rowdata)
-  return RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata) and RE.Database[rowdata[11]].isRated
+  return not RE.Database[rowdata[11]].Hidden and RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterStats(id, playerdata)
   local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16], 0}
-  return RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
+  return not RE.Database[data[11]].Hidden and RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
 end
 
 function RE:CalendarParser()

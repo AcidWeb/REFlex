@@ -32,12 +32,14 @@ function RE:UpdateDatabase()
       end
       RE.Database[i].Version = 225
     end
-    
-    if RE.Database[i].Version < 227 then
-      if RE.Database[i].PlayerNum == nil then
-        RE.Database[i].PlayerNum = 1
+
+    if RE.Database[i].Version < 230 then
+      if not RE.Database[i].PlayerNum or RE.Database[i].Map == 1170 then
+        RE.Database[i].Hidden = true
+      else
+        RE.Database[i].Hidden = false
       end
-      RE.Database[i].Version = 227
+      RE.Database[i].Version = 230
     end
   end
 end
