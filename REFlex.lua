@@ -9,8 +9,8 @@ local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
-RE.Version = 228
-RE.VersionStr = "2.2.8"
+RE.Version = 230
+RE.VersionStr = "2.3.0"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
