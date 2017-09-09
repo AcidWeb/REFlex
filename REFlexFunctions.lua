@@ -516,6 +516,11 @@ end
 function RE:CloseToast()
 end
 
+function RE:HideEntry(databaseID)
+	RE.Database[databaseID].Hidden = true
+	RE:UpdateGUI()
+end
+
 function RE:SeasonPurge()
 	local currentSeason = GetCurrentArenaSeason()
 	local toWipe = {}

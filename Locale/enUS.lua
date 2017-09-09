@@ -19,3 +19,4 @@ L["Hold SHIFT to display tooltips."] = true
 L["Hold SHIFT and ALT to display extended tooltips."] = true
 L["Select start and end date by clicking it."] = true
 L["API returned corrupted data. Match will not be recorded."] = true
+L["Are you sure you want to hide this entry?"] = true

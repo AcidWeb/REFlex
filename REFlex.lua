@@ -18,6 +18,7 @@ RE.BGData = {}
 RE.ArenaData = {}
 RE.PrepareGUI = true
 RE.CalendarMode = 0
+RE.HideID = 0
 
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
@@ -53,6 +54,12 @@ function RE:OnLoad(self)
 	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
+		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, ...)
+			if realRow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and button == "LeftButton" then
+				RE.HideID = data[realRow][11]
+				StaticPopup_Show("REFLEX_CONFIRMDELETE")
+			end
+		end,
 		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
 			if realRow ~= nil and IsShiftKeyDown() then
 				RE:OnEnterTooltip(cellFrame, data[realRow][11])
@@ -68,6 +75,12 @@ function RE:OnLoad(self)
 	RE.TableArena.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 	RE.TableArena:RegisterEvents({
+		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, ...)
+			if realRow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and button == "LeftButton" then
+				RE.HideID = data[realRow][11]
+				StaticPopup_Show("REFLEX_CONFIRMDELETE")
+			end
+		end,
 		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
 			if realRow ~= nil and IsShiftKeyDown() then
 				RE:OnEnterTooltip(cellFrame, data[realRow][11])
@@ -178,6 +191,15 @@ function RE:OnEvent(self, event, ...)
 			timeout = 0,
 			whileDead = true,
 			hideOnEscape = false
+		}
+		StaticPopupDialogs["REFLEX_CONFIRMDELETE"] = {
+			text = L["Are you sure you want to hide this entry?"],
+			button1 = YES,
+			button2 = NO,
+			OnAccept = function() RE:HideEntry(RE.HideID) end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
 		}
 
 		RE:UpdateBGData(true)
