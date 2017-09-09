@@ -35,12 +35,16 @@ function RE:GetPlayerKD(databaseID)
 	return RE:Round(playerData[3]/deaths, 2)
 end
 
-function RE:GetMMR(databaseID, player)
+function RE:GetMMR(databaseID, player, csv)
 	local faction = RE:GetFactionID(databaseID, player) + 1
 	if RE.Database[databaseID].isRated then
 		return RE.Database[databaseID].TeamData[faction][4]
 	else
-		return "-"
+		if csv then
+			return 0
+		else
+			return "-"
+		end
 	end
 end
 
@@ -79,6 +83,18 @@ function RE:GetArenaTeamDetails(databaseID, player)
 		table.insert(team, {"", "", "", "", "", "", ""})
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum)
+end
+
+function RE:GetArenaTeamCSV(databaseID, player)
+	local faction = RE:GetFactionID(databaseID, player)
+	local team = {}
+	for i=1, #RE.Database[databaseID].Players do
+		if RE.Database[databaseID].Players[i][6] == faction then
+			table.insert(team, RE.Database[databaseID].Players[i][9].."-"..RE.Database[databaseID].Players[i][16])
+		end
+	end
+	table.sort(team)
+	return table.concat(team, ",")
 end
 
 function RE:GetRGBTeamDetails(databaseID, player)
@@ -537,6 +553,32 @@ function RE:SeasonPurge()
 	end
 end
 
+function RE:DumpCSV()
+	local id, d, s
+	if not REFlex:IsShown() then
+		return
+	end
+	RE.DumpFrame:Clear()
+	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
+		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl")
+		for i=1, #RE.TableBG.filtered do
+			id = RE.TableBG.data[RE.TableBG.filtered[i]][11]
+			d = RE.Database[id]
+			s = RE:GetPlayerData(id)
+			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.Duration)..";"..tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[3])..";"..tostring(s[4])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(s[17])..";"..tostring(d.isRated)..";"..tostring(d.isBrawl))
+		end
+	else
+		RE.DumpFrame:AddLine("Timestamp;Map;PlayersNumber;TeamComposition;EnemyComposition;Duration;Victory;KillingBlows;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;isRated")
+		for i=1, #RE.TableArena.filtered do
+			id = RE.TableArena.data[RE.TableArena.filtered[i]][11]
+			d = RE.Database[id]
+			s = RE:GetPlayerData(id)
+			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.PlayersNum)..";"..RE:GetArenaTeamCSV(id, true)..";"..RE:GetArenaTeamCSV(id, false)..";"..tostring(d.Duration)..";"..tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(d.isRated))
+		end
+	end
+	RE.DumpFrame:Display()
+end
+
 function RE:Round(num, idp)
 	local mult = 10^(idp or 0)
 	return math.floor(num * mult + 0.5) / mult
@@ -554,7 +596,7 @@ function RE:AbbreviateNumbers(value)
 	elseif value >= 1000 then
 		value = RE:Round(value / 1000, 0).."K"
 	end
-	return value;
+	return value
 end
 
 function RE:CSize(char)

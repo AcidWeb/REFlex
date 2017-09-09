@@ -7,6 +7,7 @@ local LDB = LibStub("LibDataBroker-1.1")
 local LDBI = LibStub("LibDBIcon-1.0")
 local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
+local DUMP = LibStub("LibTextDump-1.0")
 
 RE.Version = 228
 RE.VersionStr = "2.2.8"
@@ -201,6 +202,8 @@ function RE:OnEvent(self, event, ...)
 			whileDead = true,
 			hideOnEscape = true,
 		}
+
+		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)

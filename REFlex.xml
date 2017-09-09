@@ -65,6 +65,17 @@
 					</Anchor>
 				</Anchors>
 			</Button>
+			<Button name="$parent_DumpButton" text="D" inherits="UIPanelButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parent_CloseButton" relativePoint="LEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>REFlexNamespace:DumpCSV()</OnClick>
+				</Scripts>
+			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="BOTTOMLEFT">
