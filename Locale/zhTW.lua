@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("REFlex", "zhTW")
 if not L then return end
 
+L["API returned corrupted data. Match will not be recorded."] = "API 傳回的資料損毀，將不會記錄此次對戰結果。"
+L["Are you sure you want to hide this entry?"] = "是否確定要隱藏這個項目?"
 L["Date"] = "日期"
 L["Display server names"] = "顯示伺服器名稱"
 L["Display toast with battleground summary after completed match."] = "完全配對後顯示戰場總結的彈出式訊息。"
