@@ -2,6 +2,14 @@ local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
+local tinsert, tsort, tconcat, tremove = table.insert, table.sort, table.concat, table.remove
+local mfloor = math.floor
+local sgsub, sbyte = string.gsub, string.byte
+local strsplit, date, select = strsplit, date, select
+local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
+local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
+
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
 end
@@ -53,14 +61,14 @@ function RE:GetArenaTeamIcons(databaseID, player)
 	local teamRaw, team = {}, {}
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
-			table.insert(teamRaw, RE.Database[databaseID].Players[i][9])
+			tinsert(teamRaw, RE.Database[databaseID].Players[i][9])
 		end
 	end
-	table.sort(teamRaw)
+	tsort(teamRaw)
 	for i=1, #teamRaw do
-		table.insert(team, RE:GetClassIcon(teamRaw[i], 20))
+		tinsert(team, RE:GetClassIcon(teamRaw[i], 20))
 	end
-	return table.concat(team, " ")
+	return tconcat(team, " ")
 end
 
 function RE:GetArenaTeamDetails(databaseID, player)
@@ -70,17 +78,17 @@ function RE:GetArenaTeamDetails(databaseID, player)
 		if RE.Database[databaseID].Players[i][6] == faction then
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
-			table.insert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
-													RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16)})
+			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
+										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+										"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
+										RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16)})
 		end
 	end
 	while #team < 3 do
-		table.insert(team, {"", "", "", "", "", "", ""})
+		tinsert(team, {"", "", "", "", "", "", ""})
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum)
 end
@@ -90,11 +98,11 @@ function RE:GetArenaTeamCSV(databaseID, player)
 	local team = {}
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
-			table.insert(team, RE.Database[databaseID].Players[i][9].."-"..RE.Database[databaseID].Players[i][16])
+			tinsert(team, RE.Database[databaseID].Players[i][9].."-"..RE.Database[databaseID].Players[i][16])
 		end
 	end
-	table.sort(team)
-	return table.concat(team, ",")
+	tsort(team)
+	return tconcat(team, ",")
 end
 
 function RE:GetRGBTeamDetails(databaseID, player)
@@ -105,14 +113,14 @@ function RE:GetRGBTeamDetails(databaseID, player)
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
-			table.insert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-													"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-													RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
-													RE.Database[databaseID].Players[i][2],
-													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-													RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-													"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
+										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+										RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
+										RE.Database[databaseID].Players[i][2],
+										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+										"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
 		end
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum), kbSum
@@ -228,12 +236,12 @@ function RE:GetBGToast(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.Settings.Filters = savedFilters
-	table.insert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
-	table.insert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
-	table.insert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
-	table.insert(toast, RE:InsideToast(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
-	table.insert(toast, RE:InsideToast(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
-	return table.concat(toast, "")
+	tinsert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
+	tinsert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
+	tinsert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
+	tinsert(toast, RE:InsideToast(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
+	tinsert(toast, RE:InsideToast(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
+	return tconcat(toast, "")
 end
 
 function RE:GetFactionID(databaseID, player)
@@ -303,7 +311,7 @@ function RE:GetRaceIcon(token, size)
 	if BR[token] == nil then
 		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
 	else
-		token = string.gsub(BR[token], "_PL", "")
+		token = sgsub(BR[token], "_PL", "")
 		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
 					 RE.RaceIcons[token][1]*256+5 ..
 					 ":" .. RE.RaceIcons[token][2]*256-5 ..
@@ -370,8 +378,8 @@ function RE:DateClean(timeRaw)
 end
 
 function RE:TimeClean(timeRaw)
-	local timeSec = math.floor(timeRaw % 60)
-	local timeMin = math.floor(timeRaw / 60)
+	local timeSec = mfloor(timeRaw % 60)
+	local timeMin = mfloor(timeRaw / 60)
 	if timeSec < 10 then
 		timeSec = "0"..timeSec
 	end
@@ -521,12 +529,12 @@ end
 
 function RE:InsideToast(label, value, databaseID, place, top)
 	local toast = {}
-	table.insert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
+	tinsert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
 	if value > top then
-		table.insert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
+		tinsert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
 	end
-	table.insert(toast, "|n")
-	return table.concat(toast, "")
+	tinsert(toast, "|n")
+	return tconcat(toast, "")
 end
 
 function RE:CloseToast()
@@ -542,13 +550,13 @@ function RE:SeasonPurge()
 	local toWipe = {}
 	for i=1, #RE.Database do
 		if RE.Database[i].Season ~= currentSeason then
-			table.insert(toWipe, i)
+			tinsert(toWipe, i)
 		end
 	end
 	local wipeI = 0
 	for j=1, #toWipe do
 		local wipeID = toWipe[j] - wipeI
-		table.remove(RE.Database, wipeID)
+		tremove(RE.Database, wipeID)
 		wipeI = wipeI + 1
 	end
 end
@@ -581,7 +589,7 @@ end
 
 function RE:Round(num, idp)
 	local mult = 10^(idp or 0)
-	return math.floor(num * mult + 0.5) / mult
+	return mfloor(num * mult + 0.5) / mult
 end
 
 function RE:AbbreviateNumbers(value)
@@ -616,13 +624,13 @@ end
 function RE:StrSub(str, startChar, numChars)
    local startIndex = 1
    while startChar > 1 do
-      local char = string.byte(str, startIndex)
+      local char = sbyte(str, startIndex)
       startIndex = startIndex + RE:CSize(char)
       startChar = startChar - 1
    end
    local currentIndex = startIndex
    while numChars > 0 and currentIndex <= #str do
-      local char = string.byte(str, currentIndex)
+      local char = sbyte(str, currentIndex)
       currentIndex = currentIndex + RE:CSize(char)
       numChars = numChars -1
    end

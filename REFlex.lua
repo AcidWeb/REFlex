@@ -9,6 +9,23 @@ local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
+local tinsert = table.insert
+local mfloor = math.floor
+local time, date, pairs, select = time, date, pairs, select
+local IsAltKeyDown = IsAltKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsShiftKeyDown = IsShiftKeyDown
+local IsInInstance = IsInInstance
+local GetNumSpecializations = GetNumSpecializations
+local GetSpecializationInfo = GetSpecializationInfo
+local GetPersonalRatedInfo = GetPersonalRatedInfo
+local GetBattlefieldWinner = GetBattlefieldWinner
+local GetBattlefieldScore = GetBattlefieldScore
+local GetBattlefieldTeamInfo = GetBattlefieldTeamInfo
+local GetBattlefieldStatData = GetBattlefieldStatData
+local CalendarGetDate = CalendarGetDate
+local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
+
 RE.Version = 230
 RE.VersionStr = "2.3.0"
 RE.FoundNewVersion = false
@@ -558,7 +575,7 @@ function RE:UpdateBGData(all)
 												playeData[11],
 												playeData[16],
 												playeData[13]}
-			table.insert(RE.BGData, tempData)
+			tinsert(RE.BGData, tempData)
 		end
 	end
 end
@@ -588,7 +605,7 @@ function RE:UpdateArenaData(all)
 												playeData[11],
 												playeData[16],
 												playeData[13]}
-			table.insert(RE.ArenaData, tempData)
+			tinsert(RE.ArenaData, tempData)
 		end
 	end
 end
@@ -613,7 +630,7 @@ function RE:PVPEnd()
     RE.MatchData.Season = GetCurrentArenaSeason()
     RE.MatchData.PlayersNum = GetNumBattlefieldScores()
     RE.MatchData.StatsNum = GetNumBattlefieldStats()
-    RE.MatchData.Duration = math.floor(GetBattlefieldInstanceRunTime() / 1000)
+    RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
 		RE.MatchData.Time = time(date('!*t', GetServerTime()))
 		RE.MatchData.isBrawl = C_PvP.IsInBrawl()
     RE.MatchData.Version = RE.Version
@@ -640,7 +657,7 @@ function RE:PVPEnd()
 			if data[1] == RE.PlayerName then
 				RE.MatchData.PlayerNum = i
 			end
-      table.insert(RE.MatchData.Players, data)
+      tinsert(RE.MatchData.Players, data)
     end
 
     if RE.MatchData.isRated then
@@ -654,7 +671,7 @@ function RE:PVPEnd()
       for i=1, RE.MatchData.PlayersNum do
         RE.MatchData.PlayersStats[i] = {}
         for j=1, RE.MatchData.StatsNum do
-          table.insert(RE.MatchData.PlayersStats[i], {GetBattlefieldStatData(i, j)})
+          tinsert(RE.MatchData.PlayersStats[i], {GetBattlefieldStatData(i, j)})
         end
       end
     end
@@ -666,7 +683,7 @@ function RE:PVPEnd()
 			RE.MatchData.Hidden = false
 		end
 
-	  table.insert(RE.Database, RE.MatchData)
+	  tinsert(RE.Database, RE.MatchData)
 		if not RE.MatchData.Hidden then
 			if RE.MatchData.isArena then
 				RE:UpdateArenaData(false)

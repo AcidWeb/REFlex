@@ -1,6 +1,9 @@
 local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
+local GetRealZoneText = GetRealZoneText
+local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
+
 RE.DefaultConfig = {
 	["MiniMapButtonSettings"] = {["hide"] = false},
 	["Toasts"] = true,
