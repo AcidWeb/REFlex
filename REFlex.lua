@@ -26,8 +26,8 @@ local GetBattlefieldStatData = GetBattlefieldStatData
 local CalendarGetDate = CalendarGetDate
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
 
-RE.Version = 230
-RE.VersionStr = "2.3.0"
+RE.Version = 231
+RE.VersionStr = "2.3.1"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
