@@ -1,13 +1,15 @@
 local RE = REFlexNamespace
-local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
 local tinsert, tsort, tconcat, tremove = table.insert, table.sort, table.concat, table.remove
 local mfloor = math.floor
 local sgsub, sbyte = string.gsub, string.byte
-local strsplit, date, select = strsplit, date, select
+local strsplit, date, select, tostring, PlaySound, time = strsplit, date, select, tostring, PlaySound, time
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local GetCurrentArenaSeason = GetCurrentArenaSeason
+local GetServerTime = GetServerTime
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
+local StaticPopup_Hide = StaticPopup_Hide
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
 function RE:GetPlayerData(databaseID)

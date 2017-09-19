@@ -11,11 +11,19 @@ local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert = table.insert
 local mfloor = math.floor
-local time, date, pairs, select = time, date, pairs, select
+local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit = time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit
+local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs
+local StaticPopup_Show = StaticPopup_Show
 local IsAltKeyDown = IsAltKeyDown
 local IsControlKeyDown = IsControlKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
 local IsInInstance = IsInInstance
+local IsInGuild = IsInGuild
+local IsActiveBattlefieldArena = IsActiveBattlefieldArena
+local IsInBrawl = C_PvP.IsInBrawl
+local IsWargame = IsWargame
+local IsArenaSkirmish = IsArenaSkirmish
+local IsRatedBattleground = IsRatedBattleground
 local GetNumSpecializations = GetNumSpecializations
 local GetSpecializationInfo = GetSpecializationInfo
 local GetPersonalRatedInfo = GetPersonalRatedInfo
@@ -23,11 +31,25 @@ local GetBattlefieldWinner = GetBattlefieldWinner
 local GetBattlefieldScore = GetBattlefieldScore
 local GetBattlefieldTeamInfo = GetBattlefieldTeamInfo
 local GetBattlefieldStatData = GetBattlefieldStatData
+local GetInstanceInfo = GetInstanceInfo
+local GetBattlefieldArenaFaction = GetBattlefieldArenaFaction
+local GetNumBattlefieldScores = GetNumBattlefieldScores
+local GetNumBattlefieldStats = GetNumBattlefieldStats
+local GetBattlefieldInstanceRunTime = GetBattlefieldInstanceRunTime
+local GetCurrentArenaSeason = GetCurrentArenaSeason
+local GetServerTime = GetServerTime
+local GetCVar = GetCVar
+local UnitName = UnitName
+local UnitFactionGroup = UnitFactionGroup
 local CalendarGetDate = CalendarGetDate
-local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
+local UIParentLoadAddOn = UIParentLoadAddOn
+local RegisterAddonMessagePrefix = RegisterAddonMessagePrefix
+local SendAddonMessage = SendAddonMessage
+local RequestRatedInfo = RequestRatedInfo
+local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 
-RE.Version = 231
-RE.VersionStr = "2.3.1"
+RE.Version = 232
+RE.VersionStr = "2.3.2"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -72,18 +94,18 @@ function RE:OnLoad(self)
 	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
-		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, ...)
+		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
 			if realRow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and button == "LeftButton" then
 				RE.HideID = data[realRow][11]
 				StaticPopup_Show("REFLEX_CONFIRMDELETE")
 			end
 		end,
-		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
+		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, _)
 			if realRow ~= nil and IsShiftKeyDown() then
 				RE:OnEnterTooltip(cellFrame, data[realRow][11])
 			end
 		end,
-		["OnLeave"] = function (_, _, _, _, _, realRow, ...)
+		["OnLeave"] = function (_, _, _, _, _, realRow, _)
 			if realRow ~= nil then
 				RE:OnLeaveTooltip()
 			end
@@ -93,18 +115,18 @@ function RE:OnLoad(self)
 	RE.TableArena.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 	RE.TableArena:RegisterEvents({
-		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, ...)
+		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
 			if realRow ~= nil and IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown() and button == "LeftButton" then
 				RE.HideID = data[realRow][11]
 				StaticPopup_Show("REFLEX_CONFIRMDELETE")
 			end
 		end,
-		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, ...)
+		["OnEnter"] = function (_, cellFrame, data, _, _, realRow, _)
 			if realRow ~= nil and IsShiftKeyDown() then
 				RE:OnEnterTooltip(cellFrame, data[realRow][11])
 			end
 		end,
-		["OnLeave"] = function (_, _, _, _, _, realRow, ...)
+		["OnLeave"] = function (_, _, _, _, _, realRow, _)
 			if realRow ~= nil then
 				RE:OnLeaveTooltip()
 			end
@@ -136,7 +158,7 @@ function RE:OnLoad(self)
 	RE.DateDropDown:SetList({[1] = ALL, [2] = HONOR_TODAY, [3] = HONOR_YESTERDAY, [4] = GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = CUSTOM})
 end
 
-function RE:OnEvent(self, event, ...)
+function RE:OnEvent(_, event, ...)
 	if event == "ADDON_LOADED" and ... == "REFlex" then
     if not REFlexSettings then
   		REFlexSettings = RE.DefaultConfig
@@ -183,7 +205,7 @@ function RE:OnEvent(self, event, ...)
 			type = "launcher",
 			text = "REFlex",
 			icon = "Interface\\PvPRankBadges\\PvPRank09",
-			OnClick = function(self, button, _)
+			OnClick = function(_, button, _)
 				if button == "LeftButton" then
 					if not REFlex:IsVisible() then
 						REFlex:Show()
@@ -633,7 +655,7 @@ function RE:PVPEnd()
     RE.MatchData.StatsNum = GetNumBattlefieldStats()
     RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
 		RE.MatchData.Time = time(date('!*t', GetServerTime()))
-		RE.MatchData.isBrawl = C_PvP.IsInBrawl()
+		RE.MatchData.isBrawl = IsInBrawl()
     RE.MatchData.Version = RE.Version
 
 		if RE.MatchData.Map == 968 then
