@@ -148,6 +148,7 @@ function RE:OnEvent(self, event, ...)
 		RE.Database = REFlexDatabase
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
+		RE:HiddenPurge()
 
 		PanelTemplates_SetNumTabs(REFlex, 6)
 		PanelTemplates_SetTab(REFlex, RE.Settings.CurrentTab)

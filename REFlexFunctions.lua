@@ -553,9 +553,24 @@ function RE:SeasonPurge()
 			tinsert(toWipe, i)
 		end
 	end
+	RE:DatabasePurge(toWipe)
+end
+
+function RE:HiddenPurge()
+	local currentTime = time(date('!*t', GetServerTime()))
+	local toWipe = {}
+	for i=1, #RE.Database do
+		if RE.Database[i].Hidden and currentTime - RE.Database[i].Time > 604800 then
+			tinsert(toWipe, i)
+		end
+	end
+	RE:DatabasePurge(toWipe)
+end
+
+function RE:DatabasePurge(idTable)
 	local wipeI = 0
-	for j=1, #toWipe do
-		local wipeID = toWipe[j] - wipeI
+	for i=1, #idTable do
+		local wipeID = idTable[i] - wipeI
 		tremove(RE.Database, wipeID)
 		wipeI = wipeI + 1
 	end
