@@ -6,7 +6,6 @@ local mfloor = math.floor
 local sgsub, sbyte = string.gsub, string.byte
 local strsplit, date, select, tostring, PlaySound, time = strsplit, date, select, tostring, PlaySound, time
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
-local GetCurrentArenaSeason = GetCurrentArenaSeason
 local GetServerTime = GetServerTime
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = StaticPopup_Hide
@@ -456,7 +455,15 @@ function RE:DateFilter(rowdata)
       return false
     end
   else
-    return true
+		if RE.Settings.Filters.DateMode == 6 then
+			if RE.Database[rowdata[11]].Season == RE.Season then
+				return true
+			else
+				return false
+			end
+		else
+			return true
+		end
   end
 end
 
@@ -548,10 +555,10 @@ function RE:HideEntry(databaseID)
 end
 
 function RE:SeasonPurge()
-	local currentSeason = GetCurrentArenaSeason()
+	if RE.Season < 1 then return end
 	local toWipe = {}
 	for i=1, #RE.Database do
-		if RE.Database[i].Season ~= currentSeason then
+		if RE.Database[i].Season ~= RE.Season then
 			tinsert(toWipe, i)
 		end
 	end

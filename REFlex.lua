@@ -48,8 +48,8 @@ local SendAddonMessage = SendAddonMessage
 local RequestRatedInfo = RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 
-RE.Version = 232
-RE.VersionStr = "2.3.2"
+RE.Version = 233
+RE.VersionStr = "2.3.3"
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -59,6 +59,7 @@ RE.ArenaData = {}
 RE.PrepareGUI = true
 RE.CalendarMode = 0
 RE.HideID = 0
+RE.Season = 0
 
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER")
@@ -70,6 +71,7 @@ function RE:OnLoad(self)
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
+	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
 	self:RegisterForDrag("LeftButton")
 	tinsert(UISpecialFrames,"REFlex")
 
@@ -155,7 +157,7 @@ function RE:OnLoad(self)
 	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
 	RE.DateDropDown:SetWidth(100)
 	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
-	RE.DateDropDown:SetList({[1] = ALL, [2] = HONOR_TODAY, [3] = HONOR_YESTERDAY, [4] = GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = CUSTOM})
+	RE.DateDropDown:SetList({[1] = ALL, [2] = HONOR_TODAY, [3] = HONOR_YESTERDAY, [4] = GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = ARENA_THIS_SEASON, [7] = CUSTOM})
 end
 
 function RE:OnEvent(_, event, ...)
@@ -270,6 +272,8 @@ function RE:OnEvent(_, event, ...)
 		end
   elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		RE:PVPEnd()
+  elseif event == "PVP_RATED_STATS_UPDATE" then
+		RE.Season = GetCurrentArenaSeason()
   end
 end
 
@@ -456,6 +460,8 @@ function RE:OnDateChange(_, mode)
 	elseif mode == 5 then
 		t = {day = 1, month = monthR, year = yearR, hour = 0}
 		RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
+	elseif mode == 6 then
+		RE.Settings.Filters.Date = {0, 0}
 	else
 		RE.CalendarMode = 1
 		StaticPopup_Show("REFLEX_CUSTOMDATE")
