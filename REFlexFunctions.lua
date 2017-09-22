@@ -272,14 +272,18 @@ function RE:GetShortMapName(mapName)
 end
 
 function RE:GetMapColor(_, realrow, _, table)
-  local isRated = RE.Database[table.data[realrow][11]].isRated
-  if isRated then
-    return {["r"] = 0,
-            ["g"] = 0.8,
-            ["b"] = 1.0,
+  if RE.Database[table.data[realrow][11]].isRated then
+    return {["r"] = 0.52,
+            ["g"] = 1.0,
+            ["b"] = 0.52,
             ["a"] = 1.0}
-  else
+  elseif RE.Database[table.data[realrow][11]].isBrawl then
     return {["r"] = 1.0,
+            ["g"] = 0.98,
+            ["b"] = 0.72,
+            ["a"] = 1}
+	else
+		return {["r"] = 1.0,
             ["g"] = 1.0,
             ["b"] = 1.0,
             ["a"] = 1}
