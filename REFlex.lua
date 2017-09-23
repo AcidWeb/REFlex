@@ -1,4 +1,6 @@
-REFlexNamespace = {["Settings"] = {}, ["Database"] = {}}
+local _G = _G
+_G.REFlexNamespace = {["Settings"] = {}, ["Database"] = {}}
+
 local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local ST = LibStub("ScrollingTable")
@@ -74,27 +76,27 @@ function RE:OnLoad(self)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
 	self:RegisterForDrag("LeftButton")
-	tinsert(UISpecialFrames,"REFlex")
+	tinsert(_G.UISpecialFrames,"REFlex")
 
-	REFlexTab1:SetText(ALL)
-	REFlexTab2:SetText(PVP_TAB_HONOR)
-	REFlexTab3:SetText(PVP_TAB_CONQUEST)
-	REFlexTab4:SetText(ALL)
-	REFlexTab5:SetText(PVP_TAB_HONOR)
-	REFlexTab6:SetText(PVP_TAB_CONQUEST)
+	_G.REFlexTab1:SetText(_G.ALL)
+	_G.REFlexTab2:SetText(_G.PVP_TAB_HONOR)
+	_G.REFlexTab3:SetText(_G.PVP_TAB_CONQUEST)
+	_G.REFlexTab4:SetText(_G.ALL)
+	_G.REFlexTab5:SetText(_G.PVP_TAB_HONOR)
+	_G.REFlexTab6:SetText(_G.PVP_TAB_CONQUEST)
 
-	REFlex_Title:SetText("REFlex "..RE.VersionStr)
-	REFlex_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	REFlex_HKBar_I:SetStatusBarColor(0, 0.9, 0)
+	_G.REFlex_Title:SetText("REFlex "..RE.VersionStr)
+	_G.REFlex_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	_G.REFlex_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
-	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlex)
+	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, _G.REFlex)
 	RE.TableBG.head:SetHeight(25)
 	for _, i in pairs({1,3,5,7,9}) do
-		local _, parent = REFlexNamespace.TableBG.frame["col"..i.."bg"]:GetPoint(1)
-		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -9)
-		REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -9)
+		local _, parent = _G.REFlexNamespace.TableBG.frame["col"..i.."bg"]:GetPoint(1)
+		_G.REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -9)
+		_G.REFlexNamespace.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -9)
 	end
-	RE.TableBG.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableBG.frame:SetPoint("TOP", _G.REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
 		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
@@ -114,8 +116,8 @@ function RE:OnLoad(self)
 			end
 		end,
 	})
-	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, REFlex)
-	RE.TableArena.frame:SetPoint("TOP", REFlex_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, _G.REFlex)
+	RE.TableArena.frame:SetPoint("TOP", _G.REFlex_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 	RE.TableArena:RegisterEvents({
 		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
@@ -137,52 +139,52 @@ function RE:OnLoad(self)
 	})
 
 	RE.SpecDropDown = GUI:Create("Dropdown")
-	RE.SpecDropDown.frame:SetParent(REFlex)
-	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", REFlex, "BOTTOMLEFT", 15, 18)
+	RE.SpecDropDown.frame:SetParent(_G.REFlex)
+	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", _G.REFlex, "BOTTOMLEFT", 15, 18)
 	RE.SpecDropDown:SetWidth(150)
-	RE.SpecDropDown:SetList({[ALL] = ALL})
+	RE.SpecDropDown:SetList({[_G.ALL] = _G.ALL})
 	RE.SpecDropDown:SetCallback("OnValueChanged", RE.OnSpecChange)
 	RE.BracketDropDown = GUI:Create("Dropdown")
-	RE.BracketDropDown.frame:SetParent(REFlex)
+	RE.BracketDropDown.frame:SetParent(_G.REFlex)
 	RE.BracketDropDown.frame:SetPoint("LEFT", RE.SpecDropDown.frame, "RIGHT", 5, 0)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
-	RE.BracketDropDown:SetList({[1] = ALL, [4] = "2v2", [6] = "3v3"})
+	RE.BracketDropDown:SetList({[1] = _G.ALL, [4] = "2v2", [6] = "3v3"})
 	RE.MapDropDown = GUI:Create("Dropdown")
-	RE.MapDropDown.frame:SetParent(REFlex)
-	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlex, "BOTTOMRIGHT", -19, 18)
+	RE.MapDropDown.frame:SetParent(_G.REFlex)
+	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", _G.REFlex, "BOTTOMRIGHT", -19, 18)
 	RE.MapDropDown:SetWidth(150)
 	RE.MapDropDown:SetCallback("OnValueChanged", RE.OnMapChange)
 	RE.DateDropDown = GUI:Create("Dropdown")
-	RE.DateDropDown.frame:SetParent(REFlex)
+	RE.DateDropDown.frame:SetParent(_G.REFlex)
 	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
 	RE.DateDropDown:SetWidth(100)
 	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
-	RE.DateDropDown:SetList({[1] = ALL, [2] = HONOR_TODAY, [3] = HONOR_YESTERDAY, [4] = GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = ARENA_THIS_SEASON, [7] = CUSTOM})
+	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = _G.HONOR_TODAY, [3] = _G.HONOR_YESTERDAY, [4] = _G.GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = _G.ARENA_THIS_SEASON, [7] = _G.CUSTOM})
 end
 
 function RE:OnEvent(_, event, ...)
 	if event == "ADDON_LOADED" and ... == "REFlex" then
-    if not REFlexSettings then
-  		REFlexSettings = RE.DefaultConfig
+    if not _G.REFlexSettings then
+  		_G.REFlexSettings = RE.DefaultConfig
   	end
-    if not REFlexDatabase then
-      REFlexDatabase = {}
+    if not _G.REFlexDatabase then
+      _G.REFlexDatabase = {}
     end
-		RE.Settings = REFlexSettings
-		RE.Database = REFlexDatabase
+		RE.Settings = _G.REFlexSettings
+		RE.Database = _G.REFlexDatabase
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
 		RE:HiddenPurge()
 
-		PanelTemplates_SetNumTabs(REFlex, 6)
-		PanelTemplates_SetTab(REFlex, RE.Settings.CurrentTab)
+		PanelTemplates_SetNumTabs(_G.REFlex, 6)
+		PanelTemplates_SetTab(_G.REFlex, RE.Settings.CurrentTab)
 
-		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
-		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
+		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
+		RE.OptionsMenu = _G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
-		BINDING_HEADER_REFLEXB = "REFlex"
-		BINDING_NAME_REFLEXOPEN = L["Show main window"]
+		_G.BINDING_HEADER_REFLEXB = "REFlex"
+		_G.BINDING_NAME_REFLEXOPEN = L["Show main window"]
 		RequestRatedInfo()
 
 		TOAST:Register("REFlexToast", function(toast, ...)
@@ -192,10 +194,10 @@ function RE:OnEvent(_, event, ...)
 			toast:MakePersistent()
 			if RE.PlayerFaction == "Horde" then
 	      toast:SetSoundFile([[Sound\Doodad\BellTollHorde.ogg]])
-	      toast:SetPrimaryCallback(HORDE_CHEER, RE.CloseToast)
+	      toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
 			else
 				toast:SetSoundFile([[Sound\Doodad\BellTollAlliance.ogg]])
-	      toast:SetPrimaryCallback(ALLIANCE_CHEER, RE.CloseToast)
+	      toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
 			end
 		end)
 		TOAST:Register("REFlexToastInfo", function(toast, ...)
@@ -210,36 +212,36 @@ function RE:OnEvent(_, event, ...)
 			icon = "Interface\\PvPRankBadges\\PvPRank09",
 			OnClick = function(_, button, _)
 				if button == "LeftButton" then
-					if not REFlex:IsVisible() then
-						REFlex:Show()
+					if not _G.REFlex:IsVisible() then
+						_G.REFlex:Show()
 					else
-						REFlex:Hide()
+						_G.REFlex:Hide()
 					end
 				elseif button == "RightButton" then
-					InterfaceOptionsFrame:Show()
-					InterfaceOptionsFrame_OpenToCategory(REFlexNamespace.OptionsMenu)
+					_G.InterfaceOptionsFrame:Show()
+					InterfaceOptionsFrame_OpenToCategory(_G.REFlexNamespace.OptionsMenu)
 				end
 			end})
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
-		StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
+		_G.StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
 			text = L["Hold SHIFT to display tooltips."].."|n|n"..L["Hold SHIFT and ALT to display extended tooltips."],
-			button1 = OKAY,
+			button1 = _G.OKAY,
 			OnAccept = function() RE.Settings.FirstTime = false end,
 			timeout = 0,
 			whileDead = true,
 			hideOnEscape = false
 		}
-		StaticPopupDialogs["REFLEX_CUSTOMDATE"] = {
+		_G.StaticPopupDialogs["REFLEX_CUSTOMDATE"] = {
 			text = L["Select start and end date by clicking it."],
 			timeout = 0,
 			whileDead = true,
 			hideOnEscape = false
 		}
-		StaticPopupDialogs["REFLEX_CONFIRMDELETE"] = {
+		_G.StaticPopupDialogs["REFLEX_CONFIRMDELETE"] = {
 			text = L["Are you sure you want to hide this entry?"],
-			button1 = YES,
-			button2 = NO,
+			button1 = _G.YES,
+			button2 = _G.NO,
 			OnAccept = function() RE:HideEntry(RE.HideID) end,
 			timeout = 0,
 			whileDead = true,
@@ -252,7 +254,7 @@ function RE:OnEvent(_, event, ...)
 		RE:UpdateArenaData(true)
 	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
 		hooksecurefunc("CalendarDayButton_Click", RE.CalendarParser)
-		CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
+		_G.CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
 		local _, message, _ = ...
 		local messageEx = {strsplit(";", message)}
@@ -271,7 +273,7 @@ function RE:OnEvent(_, event, ...)
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
 		end
-  elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and WorldStateScoreFrame:IsVisible() then
+  elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and _G.WorldStateScoreFrame:IsVisible() then
 		RE.DataSaved = true
 		TimerAfter(1, RE.PVPEnd)
   elseif event == "PVP_RATED_STATS_UPDATE" then
@@ -298,7 +300,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 		end
 		RE.Tooltip:AddSeparator(3)
-		RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+		RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
 		for i=1, 3 do
 			if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
 				RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
@@ -322,16 +324,16 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:AddLine()
 		RE.Tooltip:SetCell(1, 1, "|cFF74D06CHK/D|r|n"..RE:GetPlayerKD(databaseID), nil, nil, nil, nil, nil, nil, nil, 50)
 		RE.Tooltip:SetCell(1, 2, mmrLine, nil, nil, nil, nil, nil, nil, nil, 50)
-		RE.Tooltip:SetCell(1, 3, "|cFF74D06C"..DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:SetCell(1, 3, "|cFF74D06C".._G.DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
 		RE.Tooltip:AddSeparator(3)
 		RE.Tooltip:AddLine(nil, "|cFF74D06C"..L["Place"].."|r", nil)
 		RE.Tooltip:SetColumnLayout(3, "LEFT", "CENTER", "CENTER")
-		RE.Tooltip:AddLine(nil, FACTION, ALL)
+		RE.Tooltip:AddLine(nil, _G.FACTION, _G.ALL)
 		RE.Tooltip:AddLine("KB", placeFKB, placeKB)
 		RE.Tooltip:AddLine("HK", placeFHK, placeHK)
-		RE.Tooltip:AddLine(HONOR, placeFHonor, placeHonor)
-		RE.Tooltip:AddLine(DAMAGE, placeFDamage, placeDamage)
-		RE.Tooltip:AddLine(SHOW_COMBAT_HEALING, placeFHealing, placeHealing)
+		RE.Tooltip:AddLine(_G.HONOR, placeFHonor, placeHonor)
+		RE.Tooltip:AddLine(_G.DAMAGE, placeFDamage, placeDamage)
+		RE.Tooltip:AddLine(_G.SHOW_COMBAT_HEALING, placeFHealing, placeHealing)
 		RE.Tooltip:SetLineColor(5, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(7, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
@@ -380,7 +382,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 					RE.TooltipRGB1:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
 				end
 			end
-			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
 			for i=1, #team do
 				RE.TooltipRGB1:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
 			end
@@ -403,7 +405,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 					RE.TooltipRGB2:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
 				end
 			end
-			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
+			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
 			for i=1, #team do
 				RE.TooltipRGB2:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
 			end
@@ -468,7 +470,7 @@ function RE:OnDateChange(_, mode)
 		RE.CalendarMode = 1
 		StaticPopup_Show("REFLEX_CUSTOMDATE")
 		UIParentLoadAddOn("Blizzard_Calendar")
-		CalendarFrame:Show()
+		_G.CalendarFrame:Show()
 		return
 	end
 	RE:UpdateGUI()
@@ -488,7 +490,7 @@ function RE:UpdateGUI()
 		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
 		RE.DateDropDown:SetValue(RE.Settings.Filters.DateMode)
 	end
-	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
+	if PanelTemplates_GetSelectedTab(_G.REFlex) < 4 then
 		RE.TableBG.frame:Show()
 		RE.TableArena.frame:Hide()
 		RE.BracketDropDown:SetDisabled(true)
@@ -506,34 +508,34 @@ function RE:UpdateGUI()
 			RE.TableBG.cols[1].sort = "asc"
 		end
 		RE.TableBG:SetData(RE.BGData, true)
-		if PanelTemplates_GetSelectedTab(REFlex) == 1 then
+		if PanelTemplates_GetSelectedTab(_G.REFlex) == 1 then
 			RE.TableBG:SetFilter(RE.FilterDefault)
-			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
-		elseif PanelTemplates_GetSelectedTab(REFlex) == 2 then
+			_G.REFlex_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+		elseif PanelTemplates_GetSelectedTab(_G.REFlex) == 2 then
 			RE.TableBG:SetFilter(RE.FilterCasual)
-			REFlex_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(REFlex) == 3 then
+			_G.REFlex_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(_G.REFlex) == 3 then
 			RE.TableBG:SetFilter(RE.FilterRated)
-			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			_G.REFlex_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlex), false)
-		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlex), false, false)
-		REFlex_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
-		REFlex_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
-		REFlex_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
-		REFlex_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlex_ScoreHolder_Wins:SetText(won)
-		REFlex_ScoreHolder_Lose:SetText(lost)
-		REFlex_ScoreHolder_HK2:SetText(BEST..": "..topHK)
-		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
-		REFlex_ScoreHolder_KB2:SetText(BEST..": "..topKB)
-		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
-		REFlex_ScoreHolder_Damage2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
-		REFlex_ScoreHolder_Damage3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
-		REFlex_ScoreHolder_Healing2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
-		REFlex_ScoreHolder_Healing3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(_G.REFlex), false)
+		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(_G.REFlex), false, false)
+		_G.REFlex_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
+		_G.REFlex_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
+		_G.REFlex_ScoreHolder_Damage1:SetText("|cFFFFD100".._G.DAMAGE.."|r")
+		_G.REFlex_ScoreHolder_Healing1:SetText("|cFFFFD100".._G.SHOW_COMBAT_HEALING.."|r")
+		_G.REFlex_ScoreHolder_Wins:SetText(won)
+		_G.REFlex_ScoreHolder_Lose:SetText(lost)
+		_G.REFlex_ScoreHolder_HK2:SetText(_G.BEST..": "..topHK)
+		_G.REFlex_ScoreHolder_HK3:SetText(_G.TOTAL..": "..hk)
+		_G.REFlex_ScoreHolder_KB2:SetText(_G.BEST..": "..topKB)
+		_G.REFlex_ScoreHolder_KB3:SetText(_G.TOTAL..": "..kb)
+		_G.REFlex_ScoreHolder_Damage2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topDamage))
+		_G.REFlex_ScoreHolder_Damage3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(damage))
+		_G.REFlex_ScoreHolder_Healing2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topHealing))
+		_G.REFlex_ScoreHolder_Healing3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(healing))
 		RE:HKBarUpdate()
-	elseif PanelTemplates_GetSelectedTab(REFlex) > 3 then
+	elseif PanelTemplates_GetSelectedTab(_G.REFlex) > 3 then
 		RE.TableArena.frame:Show()
 		RE.TableBG.frame:Hide()
 		RE.BracketDropDown:SetDisabled(false)
@@ -551,34 +553,34 @@ function RE:UpdateGUI()
 			RE.TableArena.cols[1].sort = "asc"
 		end
 		RE.TableArena:SetData(RE.ArenaData, true)
-		if PanelTemplates_GetSelectedTab(REFlex) == 4 then
+		if PanelTemplates_GetSelectedTab(_G.REFlex) == 4 then
 			RE.TableArena:SetFilter(RE.FilterDefault)
-			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
-		elseif PanelTemplates_GetSelectedTab(REFlex) == 5 then
+			_G.REFlex_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+		elseif PanelTemplates_GetSelectedTab(_G.REFlex) == 5 then
 			RE.TableArena:SetFilter(RE.FilterCasual)
-			REFlex_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(REFlex) == 6 then
+			_G.REFlex_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(_G.REFlex) == 6 then
 			RE.TableArena:SetFilter(RE.FilterRated)
-			REFlex_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+			_G.REFlex_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlex) - 3, true)
-		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlex) - 3, true, false)
-		REFlex_ScoreHolder_HK1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlex_ScoreHolder_KB1:SetText("|cFFFFD100"..DAMAGE.."|r")
-		REFlex_ScoreHolder_Damage1:SetText("")
-		REFlex_ScoreHolder_Healing1:SetText("")
-		REFlex_ScoreHolder_Wins:SetText(won)
-		REFlex_ScoreHolder_Lose:SetText(lost)
-		REFlex_ScoreHolder_HK2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
-		REFlex_ScoreHolder_HK3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
-		REFlex_ScoreHolder_KB2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
-		REFlex_ScoreHolder_KB3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
-		REFlex_ScoreHolder_Damage2:SetText("")
-		REFlex_ScoreHolder_Damage3:SetText("")
-		REFlex_ScoreHolder_Healing2:SetText("")
-		REFlex_ScoreHolder_Healing3:SetText("")
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(_G.REFlex) - 3, true)
+		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(_G.REFlex) - 3, true, false)
+		_G.REFlex_ScoreHolder_HK1:SetText("|cFFFFD100".._G.SHOW_COMBAT_HEALING.."|r")
+		_G.REFlex_ScoreHolder_KB1:SetText("|cFFFFD100".._G.DAMAGE.."|r")
+		_G.REFlex_ScoreHolder_Damage1:SetText("")
+		_G.REFlex_ScoreHolder_Healing1:SetText("")
+		_G.REFlex_ScoreHolder_Wins:SetText(won)
+		_G.REFlex_ScoreHolder_Lose:SetText(lost)
+		_G.REFlex_ScoreHolder_HK2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topHealing))
+		_G.REFlex_ScoreHolder_HK3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(healing))
+		_G.REFlex_ScoreHolder_KB2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topDamage))
+		_G.REFlex_ScoreHolder_KB3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(damage))
+		_G.REFlex_ScoreHolder_Damage2:SetText("")
+		_G.REFlex_ScoreHolder_Damage3:SetText("")
+		_G.REFlex_ScoreHolder_Healing2:SetText("")
+		_G.REFlex_ScoreHolder_Healing3:SetText("")
 	end
-	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(REFlex)
+	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(_G.REFlex)
 end
 
 function RE:UpdateBGData(all)

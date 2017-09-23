@@ -1,3 +1,4 @@
+local _G = _G
 local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
@@ -163,7 +164,7 @@ RE.AceConfig = {
 			width = "normal",
 			confirm = true,
 			order = 4,
-			func = function() REFlexDatabase = {}; ReloadUI() end
+			func = function() _G.REFlexDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
 			name = L["Purge previous seasons"],

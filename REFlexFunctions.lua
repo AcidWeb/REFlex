@@ -1,3 +1,4 @@
+local _G = _G
 local RE = REFlexNamespace
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
@@ -9,7 +10,7 @@ local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
 local GetServerTime = GetServerTime
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = StaticPopup_Hide
-local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
+local CLASS_ICON_TCOORDS, RAID_CLASS_COLORS = CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -232,16 +233,16 @@ end
 function RE:GetBGToast(databaseID)
 	local toast = {}
 	local savedFilters = RE.Settings.Filters
-	RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}}
+	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}}
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.Settings.Filters = savedFilters
 	tinsert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
 	tinsert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
-	tinsert(toast, RE:InsideToast(HONOR, playerData[5], databaseID, placeHonor, topHonor))
-	tinsert(toast, RE:InsideToast(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
-	tinsert(toast, RE:InsideToast(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
+	tinsert(toast, RE:InsideToast(_G.HONOR, playerData[5], databaseID, placeHonor, topHonor))
+	tinsert(toast, RE:InsideToast(_G.DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
+	tinsert(toast, RE:InsideToast(_G.SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
 	return tconcat(toast, "")
 end
 
@@ -414,7 +415,7 @@ function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
 end
 
 function RE:SpecFilter(rowdata)
-  if RE.Settings.Filters.Spec ~= ALL then
+  if RE.Settings.Filters.Spec ~= _G.ALL then
     if rowdata[14] == RE.Settings.Filters.Spec then
       return true
     else
@@ -490,15 +491,15 @@ end
 
 function RE:CalendarParser()
 	if RE.CalendarMode == 1 then
-		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 0}
+		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 0}
 		PlaySound(624)
 		RE.Settings.Filters.Date[1] = time(t) - RE.PlayerTimezone
 		RE.CalendarMode = 2
 	elseif RE.CalendarMode == 2 then
-		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 24, min = 59, sec = 59}
+		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 24, min = 59, sec = 59}
 		PlaySound(624)
 		RE.Settings.Filters.Date[2] = time(t) - RE.PlayerTimezone
-		CalendarFrame:Hide()
+		_G.CalendarFrame:Hide()
 		RE:UpdateGUI()
 	end
 end
@@ -531,13 +532,13 @@ function RE:HKBarUpdate()
 		hkMax = 250000
 	end
 	if hkMax ~= 0 then
-		REFlex_HKBar_Text:SetText(hk.." / "..hkMax)
-		REFlex_HKBar_I:SetMinMaxValues(0, hkMax)
+		_G.REFlex_HKBar_Text:SetText(hk.." / "..hkMax)
+		_G.REFlex_HKBar_I:SetMinMaxValues(0, hkMax)
 	else
-		REFlex_HKBar_Text:SetText(hk)
-		REFlex_HKBar_I:SetMinMaxValues(0, hk)
+		_G.REFlex_HKBar_Text:SetText(hk)
+		_G.REFlex_HKBar_I:SetMinMaxValues(0, hk)
 	end
-	REFlex_HKBar_I:SetValue(hk)
+	_G.REFlex_HKBar_I:SetValue(hk)
 end
 
 function RE:InsideToast(label, value, databaseID, place, top)
@@ -591,11 +592,11 @@ end
 
 function RE:DumpCSV()
 	local id, d, s
-	if not REFlex:IsShown() then
+	if not _G.REFlex:IsShown() then
 		return
 	end
 	RE.DumpFrame:Clear()
-	if PanelTemplates_GetSelectedTab(REFlex) < 4 then
+	if PanelTemplates_GetSelectedTab(_G.REFlex) < 4 then
 		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl")
 		for i=1, #RE.TableBG.filtered do
 			id = RE.TableBG.data[RE.TableBG.filtered[i]][11]
