@@ -47,6 +47,7 @@ local RegisterAddonMessagePrefix = RegisterAddonMessagePrefix
 local SendAddonMessage = SendAddonMessage
 local RequestRatedInfo = RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+local TimerAfter = C_Timer.After
 
 RE.Version = 233
 RE.VersionStr = "2.3.3"
@@ -270,8 +271,9 @@ function RE:OnEvent(_, event, ...)
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
 		end
-  elseif event == "UPDATE_BATTLEFIELD_SCORE" then
-		RE:PVPEnd()
+  elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and WorldStateScoreFrame:IsVisible() then
+		RE.DataSaved = true
+		TimerAfter(1, RE.PVPEnd)
   elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
   end
@@ -648,82 +650,79 @@ function RE:UpdateConfig()
 end
 
 function RE:PVPEnd()
-  if GetBattlefieldWinner() ~= nil and not RE.DataSaved then
-    RE.DataSaved = true
-    RE.MatchData = {}
+  RE.MatchData = {}
 
-    RE.MatchData.Map = select(8, GetInstanceInfo())
-    RE.MatchData.Winner = GetBattlefieldWinner()
-    RE.MatchData.PlayerSide = GetBattlefieldArenaFaction()
-    RE.MatchData.isArena = IsActiveBattlefieldArena()
-    RE.MatchData.Season = GetCurrentArenaSeason()
-    RE.MatchData.PlayersNum = GetNumBattlefieldScores()
-    RE.MatchData.StatsNum = GetNumBattlefieldStats()
-    RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
-		RE.MatchData.Time = time(date('!*t', GetServerTime()))
-		RE.MatchData.isBrawl = IsInBrawl()
-    RE.MatchData.Version = RE.Version
+  RE.MatchData.Map = select(8, GetInstanceInfo())
+  RE.MatchData.Winner = GetBattlefieldWinner()
+  RE.MatchData.PlayerSide = GetBattlefieldArenaFaction()
+  RE.MatchData.isArena = IsActiveBattlefieldArena()
+  RE.MatchData.Season = GetCurrentArenaSeason()
+  RE.MatchData.PlayersNum = GetNumBattlefieldScores()
+  RE.MatchData.StatsNum = GetNumBattlefieldStats()
+  RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
+	RE.MatchData.Time = time(date('!*t', GetServerTime()))
+	RE.MatchData.isBrawl = IsInBrawl()
+  RE.MatchData.Version = RE.Version
 
-		if RE.MatchData.Map == 968 then
-			RE.MatchData.Map = 566
+	if RE.MatchData.Map == 968 then
+		RE.MatchData.Map = 566
+	end
+	if RE.MatchData.Map == 1035 then
+		RE.MatchData.Map = 998
+	end
+	if RE.MatchData.Map == 1681 then
+		RE.MatchData.Map = 529
+	end
+
+  if (IsRatedBattleground() and not IsWargame()) or (RE.MatchData.isArena and not IsArenaSkirmish()) then
+    RE.MatchData.isRated = true
+  else
+    RE.MatchData.isRated = false
+  end
+
+  RE.MatchData.Players = {}
+  for i=1, RE.MatchData.PlayersNum do
+		local data = {GetBattlefieldScore(i)}
+		if data[1] == RE.PlayerName then
+			RE.MatchData.PlayerNum = i
 		end
-		if RE.MatchData.Map == 1035 then
-			RE.MatchData.Map = 998
-		end
-		if RE.MatchData.Map == 1681 then
-			RE.MatchData.Map = 529
-		end
+    tinsert(RE.MatchData.Players, data)
+  end
 
-    if (IsRatedBattleground() and not IsWargame()) or (RE.MatchData.isArena and not IsArenaSkirmish()) then
-      RE.MatchData.isRated = true
-    else
-      RE.MatchData.isRated = false
-    end
+  if RE.MatchData.isRated then
+    RE.MatchData.TeamData = {}
+    RE.MatchData.TeamData[1] = {GetBattlefieldTeamInfo(0)}
+    RE.MatchData.TeamData[2] = {GetBattlefieldTeamInfo(1)}
+  end
 
-    RE.MatchData.Players = {}
+  if RE.MatchData.StatsNum > 0 then
+    RE.MatchData.PlayersStats = {}
     for i=1, RE.MatchData.PlayersNum do
-			local data = {GetBattlefieldScore(i)}
-			if data[1] == RE.PlayerName then
-				RE.MatchData.PlayerNum = i
-			end
-      tinsert(RE.MatchData.Players, data)
-    end
-
-    if RE.MatchData.isRated then
-      RE.MatchData.TeamData = {}
-      RE.MatchData.TeamData[1] = {GetBattlefieldTeamInfo(0)}
-      RE.MatchData.TeamData[2] = {GetBattlefieldTeamInfo(1)}
-    end
-
-    if RE.MatchData.StatsNum > 0 then
-      RE.MatchData.PlayersStats = {}
-      for i=1, RE.MatchData.PlayersNum do
-        RE.MatchData.PlayersStats[i] = {}
-        for j=1, RE.MatchData.StatsNum do
-          tinsert(RE.MatchData.PlayersStats[i], {GetBattlefieldStatData(i, j)})
-        end
+      RE.MatchData.PlayersStats[i] = {}
+      for j=1, RE.MatchData.StatsNum do
+        tinsert(RE.MatchData.PlayersStats[i], {GetBattlefieldStatData(i, j)})
       end
     end
-
-		-- Hide corrupted records
-		if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 then
-			RE.MatchData.Hidden = true
-		else
-			RE.MatchData.Hidden = false
-		end
-
-	  tinsert(RE.Database, RE.MatchData)
-		if not RE.MatchData.Hidden then
-			if RE.MatchData.isArena then
-				RE:UpdateArenaData(false)
-			else
-				RE:UpdateBGData(false)
-				if RE.Settings.Toasts then
-					TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
-				end
-			end
-		else
-			print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
-		end
   end
+
+	-- Hide corrupted records
+	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 then
+		RE.MatchData.Hidden = true
+	else
+		RE.MatchData.Hidden = false
+	end
+
+  tinsert(RE.Database, RE.MatchData)
+	if not RE.MatchData.Hidden then
+		if RE.MatchData.isArena then
+			RE:UpdateArenaData(false)
+		else
+			RE:UpdateBGData(false)
+			if RE.Settings.Toasts then
+				TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
+			end
+		end
+	else
+		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
+	end
 end
