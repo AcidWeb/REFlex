@@ -160,7 +160,7 @@ function RE:OnLoad(self)
 	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
 	RE.DateDropDown:SetWidth(100)
 	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
-	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = _G.HONOR_TODAY, [3] = _G.HONOR_YESTERDAY, [4] = _G.GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = _G.ARENA_THIS_SEASON, [7] = _G.CUSTOM})
+	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = _G.HONOR_TODAY, [3] = _G.HONOR_YESTERDAY, [4] = _G.GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = L["This season"], [7] = L["Prev. season"], [8] = _G.CUSTOM})
 end
 
 function RE:OnEvent(_, event, ...)
@@ -448,6 +448,7 @@ function RE:OnDateChange(_, mode)
 	local weekdayR, monthR, dayR, yearR = CalendarGetDate()
 	local t = {day = dayR, month = monthR, year = yearR, hour = 0}
 	RE.Settings.Filters.DateMode = mode
+	RE.Settings.Filters.Season = 0
 	if mode == 1 then
 		RE.Settings.Filters.Date = {0, 0}
 	elseif mode == 2 then
@@ -466,6 +467,10 @@ function RE:OnDateChange(_, mode)
 		RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
 	elseif mode == 6 then
 		RE.Settings.Filters.Date = {0, 0}
+		RE.Settings.Filters.Season = RE.Season
+	elseif mode == 7 then
+		RE.Settings.Filters.Date = {0, 0}
+		RE.Settings.Filters.Season = RE.Season - 1
 	else
 		RE.CalendarMode = 1
 		StaticPopup_Show("REFLEX_CUSTOMDATE")

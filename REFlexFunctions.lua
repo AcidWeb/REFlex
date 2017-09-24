@@ -233,7 +233,7 @@ end
 function RE:GetBGToast(databaseID)
 	local toast = {}
 	local savedFilters = RE.Settings.Filters
-	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}}
+	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0}
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
@@ -460,8 +460,8 @@ function RE:DateFilter(rowdata)
       return false
     end
   else
-		if RE.Settings.Filters.DateMode == 6 then
-			if RE.Database[rowdata[11]].Season == RE.Season then
+		if RE.Settings.Filters.Season > 0 then
+			if RE.Database[rowdata[11]].Season == RE.Settings.Filters.Season then
 				return true
 			else
 				return false

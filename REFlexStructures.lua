@@ -13,7 +13,7 @@ RE.DefaultConfig = {
 	["Toasts"] = true,
 	["ShowServerName"] = false,
 	["CurrentTab"] = 1,
-	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}},
+	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0},
 	["FirstTime"] = true,
 	["ConfigVersion"] = RE.Version
 }

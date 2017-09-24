@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale("REFlex", "enUS", true)
 L["Date"] = true
 L["Place"] = true
 L["This month"] = true
+L["This season"] = true
+L["Prev. season"] = true
 
 L["Hide minimap button"] = true
 L["Enable battleground summary"] = true

@@ -8,6 +8,10 @@ function RE:UpdateSettings()
       RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["DateMode"] = 1, ["Date"] = {0, 0}}
       RE.Settings.ConfigVersion = 220
     end
+    if RE.Settings.ConfigVersion < 234 then
+      RE.Settings.Filters.Season = 0
+      RE.Settings.ConfigVersion = 234
+    end
   end
 end
 
