@@ -13,7 +13,7 @@ local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert = table.insert
 local mfloor = math.floor
-local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit = time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit
+local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring = time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs
 local StaticPopup_Show = StaticPopup_Show
 local IsAltKeyDown = IsAltKeyDown
@@ -51,8 +51,7 @@ local RequestRatedInfo = RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = C_Timer.After
 
-RE.Version = 233
-RE.VersionStr = "2.3.3"
+RE.Version = 234
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -85,7 +84,7 @@ function RE:OnLoad(self)
 	_G.REFlexTab5:SetText(_G.PVP_TAB_HONOR)
 	_G.REFlexTab6:SetText(_G.PVP_TAB_CONQUEST)
 
-	_G.REFlex_Title:SetText("REFlex "..RE.VersionStr)
+	_G.REFlex_Title:SetText("REFlex "..tostring(RE.Version):gsub(".", "%1."):sub(1,-2))
 	_G.REFlex_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	_G.REFlex_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
@@ -225,7 +224,7 @@ function RE:OnEvent(_, event, ...)
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
 		_G.StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
-			text = L["Hold SHIFT to display tooltips."].."|n|n"..L["Hold SHIFT and ALT to display extended tooltips."],
+			text = L["Hold SHIFT to display tooltips."].."|n|n"..L["Hold SHIFT and ALT to display extended tooltips."].."|n"..L["They are available only for rated BGs."].."|n|n"..L["SHIFT + ALT + CTRL + CLICK will hide the match."],
 			button1 = _G.OKAY,
 			OnAccept = function() RE.Settings.FirstTime = false end,
 			timeout = 0,

@@ -592,9 +592,7 @@ end
 
 function RE:DumpCSV()
 	local id, d, s
-	if not _G.REFlex:IsShown() then
-		return
-	end
+	if not _G.REFlex:IsShown() then return end
 	RE.DumpFrame:Clear()
 	if PanelTemplates_GetSelectedTab(_G.REFlex) < 4 then
 		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl")
