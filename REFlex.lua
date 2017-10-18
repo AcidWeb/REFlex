@@ -51,7 +51,7 @@ local RequestRatedInfo = RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = C_Timer.After
 
-RE.Version = 234
+RE.Version = 235
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -712,7 +712,7 @@ function RE:PVPEnd()
   end
 
 	-- Hide corrupted records
-	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 then
+	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl) then
 		RE.MatchData.Hidden = true
 	else
 		RE.MatchData.Hidden = false

@@ -45,5 +45,12 @@ function RE:UpdateDatabase()
       end
       RE.Database[i].Version = 230
     end
+
+    if RE.Database[i].Version < 235 then
+      if RE.Database[i].isArena and RE.Database[i].isRated and RE.Database[i].isBrawl then
+        RE.Database[i].Hidden = true
+      end
+      RE.Database[i].Version = 235
+    end
   end
 end
