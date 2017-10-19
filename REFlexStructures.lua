@@ -24,30 +24,30 @@ RE.TooltipBackdrop = {
 }
 
 RE.MapList = {
-  [30] = GetRealZoneText(30),
-  [529] = GetRealZoneText(529),
-  [1105] = GetRealZoneText(1105),
-  [566] = GetRealZoneText(566),
-  [968] = GetRealZoneText(566),
-  [628] = GetRealZoneText(628),
-  [727] = GetRealZoneText(727),
-  [607] = GetRealZoneText(607),
-  [998] = GetRealZoneText(998),
-  [1035] = GetRealZoneText(998),
-  [761] = GetRealZoneText(761),
-  [726] = GetRealZoneText(726),
-  [489] = GetRealZoneText(489),
-  [1280] = GetRealZoneText(1280),
-  [1552] = RE:GetShortMapName(GetRealZoneText(1552)),
-  [1504] = RE:GetShortMapName(GetRealZoneText(1504)),
-  [562] = RE:GetShortMapName(GetRealZoneText(1672)),
-  [1672] = RE:GetShortMapName(GetRealZoneText(1672)),
-  [617] = RE:GetShortMapName(GetRealZoneText(617)),
-  [559] = RE:GetShortMapName(GetRealZoneText(1505)),
-  [1505] = RE:GetShortMapName(GetRealZoneText(1505)),
-  [572] = RE:GetShortMapName(GetRealZoneText(572)),
-  [1134] = RE:GetShortMapName(GetRealZoneText(1134)),
-  [980] = RE:GetShortMapName(GetRealZoneText(980))
+	[30] = GetRealZoneText(30),
+	[529] = GetRealZoneText(529),
+	[1105] = GetRealZoneText(1105),
+	[566] = GetRealZoneText(566),
+	[968] = GetRealZoneText(566),
+	[628] = GetRealZoneText(628),
+	[727] = GetRealZoneText(727),
+	[607] = GetRealZoneText(607),
+	[998] = GetRealZoneText(998),
+	[1035] = GetRealZoneText(998),
+	[761] = GetRealZoneText(761),
+	[726] = GetRealZoneText(726),
+	[489] = GetRealZoneText(489),
+	[1280] = GetRealZoneText(1280),
+	[1552] = RE:GetShortMapName(GetRealZoneText(1552)),
+	[1504] = RE:GetShortMapName(GetRealZoneText(1504)),
+	[562] = RE:GetShortMapName(GetRealZoneText(1672)),
+	[1672] = RE:GetShortMapName(GetRealZoneText(1672)),
+	[617] = RE:GetShortMapName(GetRealZoneText(617)),
+	[559] = RE:GetShortMapName(GetRealZoneText(1505)),
+	[1505] = RE:GetShortMapName(GetRealZoneText(1505)),
+	[572] = RE:GetShortMapName(GetRealZoneText(572)),
+	[1134] = RE:GetShortMapName(GetRealZoneText(1134)),
+	[980] = RE:GetShortMapName(GetRealZoneText(980))
 }
 
 RE.MapListLongBG = {
@@ -179,187 +179,187 @@ RE.AceConfig = {
 }
 
 RE.BGStructure = {
-  {
-    ["name"] = L["Date"],
-    ["width"] = 110,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Time", 0) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = BATTLEGROUND,
-    ["width"] = 130,
-    ["color"] = RE.GetMapColor,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = AUCTION_DURATION,
-    ["width"] = 70,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = WIN,
-    ["width"] = 50,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = "KB",
-    ["width"] = 50,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = "HK",
-    ["width"] = 50,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = DAMAGE,
-    ["width"] = 65,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = SHOW_COMBAT_HEALING,
-    ["width"] = 65,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = HONOR,
-    ["width"] = 65,
-    ["color"] = {
-      ["r"] = 0.80,
-      ["g"] = 0.60,
-      ["b"] = 0,
-      ["a"] = 1.0
-    },
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = RATING,
-    ["width"] = 65,
+	{
+		["name"] = L["Date"],
+		["width"] = 110,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Time", 0) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = BATTLEGROUND,
+		["width"] = 130,
+		["color"] = RE.GetMapColor,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = AUCTION_DURATION,
+		["width"] = 70,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = WIN,
+		["width"] = 50,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = "KB",
+		["width"] = 50,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = "HK",
+		["width"] = 50,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = DAMAGE,
+		["width"] = 65,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = SHOW_COMBAT_HEALING,
+		["width"] = 65,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = HONOR,
+		["width"] = 65,
+		["color"] = {
+			["r"] = 0.80,
+			["g"] = 0.60,
+			["b"] = 0,
+			["a"] = 1.0
+		},
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = RATING,
+		["width"] = 65,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
-    ["align"] = "CENTER"
-  }
+		["align"] = "CENTER"
+	}
 }
 
 RE.ArenaStructure = {
-  {
-    ["name"] = L["Date"],
-    ["width"] = 110,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Time", 0) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = ARENA,
-    ["width"] = 60,
-    ["color"] = RE.GetMapColorArena,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = TEAM,
-    ["width"] = 100,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = "MMR",
-    ["width"] = 50,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = ENEMY,
-    ["width"] = 100,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = "MMR",
-    ["width"] = 50,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = AUCTION_DURATION,
-    ["width"] = 60,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = DAMAGE,
-    ["width"] = 70,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = SHOW_COMBAT_HEALING,
-    ["width"] = 70,
-    ["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
-    ["bgcolor"] = {
-      ["r"] = 0.15,
-      ["g"] = 0.15,
-      ["b"] = 0.15,
-      ["a"] = 1.0
-    },
-    ["align"] = "CENTER"
-  },
-  {
-    ["name"] = RATING,
-    ["width"] = 50,
+	{
+		["name"] = L["Date"],
+		["width"] = 110,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Time", 0) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = ARENA,
+		["width"] = 60,
+		["color"] = RE.GetMapColorArena,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = TEAM,
+		["width"] = 100,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = "MMR",
+		["width"] = 50,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = ENEMY,
+		["width"] = 100,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = "MMR",
+		["width"] = 50,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = AUCTION_DURATION,
+		["width"] = 60,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = DAMAGE,
+		["width"] = 70,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = SHOW_COMBAT_HEALING,
+		["width"] = 70,
+		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
+		["bgcolor"] = {
+			["r"] = 0.15,
+			["g"] = 0.15,
+			["b"] = 0.15,
+			["a"] = 1.0
+		},
+		["align"] = "CENTER"
+	},
+	{
+		["name"] = RATING,
+		["width"] = 50,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
-    ["align"] = "CENTER"
-  }
+		["align"] = "CENTER"
+	}
 }

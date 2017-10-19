@@ -21,19 +21,19 @@ function RE:GetPlayerStatsData(databaseID)
 end
 
 function RE:GetPlayerWin(databaseID, icon)
-  if RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
-    if icon then
-      return "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14:0:0|t"
-    else
-      return true
-    end
-  else
-    if icon then
-      return "|TInterface\\RaidFrame\\ReadyCheck-NotReady:14:14:0:0|t"
-    else
-      return false
-    end
-  end
+	if RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
+		if icon then
+			return "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14:0:0|t"
+		else
+			return true
+		end
+	else
+		if icon then
+			return "|TInterface\\RaidFrame\\ReadyCheck-NotReady:14:14:0:0|t"
+		else
+			return false
+		end
+	end
 end
 
 function RE:GetPlayerKD(databaseID)
@@ -81,12 +81,12 @@ function RE:GetArenaTeamDetails(databaseID, player)
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-										"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
-										RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16)})
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+			"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
+			RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16)})
 		end
 	end
 	while #team < 3 do
@@ -116,75 +116,75 @@ function RE:GetRGBTeamDetails(databaseID, player)
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-										"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-										RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
-										RE.Database[databaseID].Players[i][2],
-										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-										RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-										"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
+			RE.Database[databaseID].Players[i][2],
+			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
+			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
+			"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
 		end
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum), kbSum
 end
 
 function RE:GetWinNumber(filter, arena)
-  local won, lost = 0, 0
-  for i=1, #RE.Database do
+	local won, lost = 0, 0
+	for i=1, #RE.Database do
 		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
-      local playerData = RE:GetPlayerData(i)
-      if RE:FilterStats(i, playerData) then
-        if RE:GetPlayerWin(i, false) then
-          if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
-            won = won + 1
-          end
-        else
-          if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
-            lost = lost + 1
-          end
-        end
-      end
-    end
-  end
-  return won, lost
+			local playerData = RE:GetPlayerData(i)
+			if RE:FilterStats(i, playerData) then
+				if RE:GetPlayerWin(i, false) then
+					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
+						won = won + 1
+					end
+				else
+					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
+						lost = lost + 1
+					end
+				end
+			end
+		end
+	end
+	return won, lost
 end
 
 function RE:GetStats(filter, arena, skipLatest)
 	local ili = #RE.Database
-  local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	if skipLatest then
 		ili = ili - 1
 	end
-  for i=1, ili do
+	for i=1, ili do
 		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
-      if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
-        local playerData = RE:GetPlayerData(i)
-        if RE:FilterStats(i, playerData) then
-          kb = kb + playerData[2]
-          hk = hk + playerData[3]
+			if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
+				local playerData = RE:GetPlayerData(i)
+				if RE:FilterStats(i, playerData) then
+					kb = kb + playerData[2]
+					hk = hk + playerData[3]
 					honor = honor + playerData[5]
 					damage = damage + playerData[10]
-          healing = healing + playerData[11]
-          if playerData[2] > topKB then
-            topKB = playerData[2]
-          end
-          if playerData[3] > topHK then
-            topHK = playerData[3]
-          end
+					healing = healing + playerData[11]
+					if playerData[2] > topKB then
+						topKB = playerData[2]
+					end
+					if playerData[3] > topHK then
+						topHK = playerData[3]
+					end
 					if playerData[5] > topHonor then
 						topHonor = playerData[5]
 					end
 					if playerData[10] > topDamage then
 						topDamage = playerData[10]
 					end
-          if playerData[11] > topHealing then
-            topHealing = playerData[11]
-          end
-        end
-      end
-    end
-  end
-  return kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing
+					if playerData[11] > topHealing then
+						topHealing = playerData[11]
+					end
+				end
+			end
+		end
+	end
+	return kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing
 end
 
 function RE:GetBGPlace(databaseID, onlyFaction)
@@ -257,60 +257,60 @@ end
 function RE:GetMapName(mapID)
 	local map = RE.MapList[mapID]
 	if map then
-  	return map
+		return map
 	else
 		return "E"..mapID
 	end
 end
 
 function RE:GetShortMapName(mapName)
-   local mapNameTemp = {strsplit(" ", mapName)}
-   local mapShortName = ""
-   for i=1, #mapNameTemp do
-      mapShortName = mapShortName..RE:StrSub(mapNameTemp[i],0,1)
-   end
-   return mapShortName
+	local mapNameTemp = {strsplit(" ", mapName)}
+	local mapShortName = ""
+	for i=1, #mapNameTemp do
+		mapShortName = mapShortName..RE:StrSub(mapNameTemp[i],0,1)
+	end
+	return mapShortName
 end
 
 function RE:GetMapColor(_, realrow, _, table)
-  if RE.Database[table.data[realrow][11]].isRated then
-    return {["r"] = 0.52,
-            ["g"] = 1.0,
-            ["b"] = 0.52,
-            ["a"] = 1.0}
-  elseif RE.Database[table.data[realrow][11]].isBrawl then
-    return {["r"] = 1.0,
-            ["g"] = 0.98,
-            ["b"] = 0.72,
-            ["a"] = 1}
+	if RE.Database[table.data[realrow][11]].isRated then
+		return {["r"] = 0.52,
+		["g"] = 1.0,
+		["b"] = 0.52,
+		["a"] = 1.0}
+	elseif RE.Database[table.data[realrow][11]].isBrawl then
+		return {["r"] = 1.0,
+		["g"] = 0.98,
+		["b"] = 0.72,
+		["a"] = 1}
 	else
 		return {["r"] = 1.0,
-            ["g"] = 1.0,
-            ["b"] = 1.0,
-            ["a"] = 1}
-  end
+		["g"] = 1.0,
+		["b"] = 1.0,
+		["a"] = 1}
+	end
 end
 
 function RE:GetMapColorArena(_, realrow, _, table)
-  if RE:GetPlayerWin(table.data[realrow][11], false) then
-    return {["r"] = 0,
-            ["g"] = 1.0,
-            ["b"] = 0,
-            ["a"] = 1.0}
-  else
-    return {["r"] = 1.0,
-            ["g"] = 0,
-            ["b"] = 0,
-            ["a"] = 1}
-  end
+	if RE:GetPlayerWin(table.data[realrow][11], false) then
+		return {["r"] = 0,
+		["g"] = 1.0,
+		["b"] = 0,
+		["a"] = 1.0}
+	else
+		return {["r"] = 1.0,
+		["g"] = 0,
+		["b"] = 0,
+		["a"] = 1}
+	end
 end
 
 function RE:GetClassIcon(token, size)
 	return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:"..size..":"..size..":0:0:256:256:" ..
-				 CLASS_ICON_TCOORDS[token][1]*256+5 ..
-				 ":" .. CLASS_ICON_TCOORDS[token][2]*256-5 ..
-				 ":" .. CLASS_ICON_TCOORDS[token][3]*256+5 ..
-				 ":" .. CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
+	CLASS_ICON_TCOORDS[token][1]*256+5 ..
+	":" .. CLASS_ICON_TCOORDS[token][2]*256-5 ..
+	":" .. CLASS_ICON_TCOORDS[token][3]*256+5 ..
+	":" .. CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
 end
 
 function RE:GetRaceIcon(token, size)
@@ -319,10 +319,10 @@ function RE:GetRaceIcon(token, size)
 	else
 		token = sgsub(BR[token], "_PL", "")
 		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
-					 RE.RaceIcons[token][1]*256+5 ..
-					 ":" .. RE.RaceIcons[token][2]*256-5 ..
-					 ":" .. RE.RaceIcons[token][3]*256+5 ..
-					 ":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
+		RE.RaceIcons[token][1]*256+5 ..
+		":" .. RE.RaceIcons[token][2]*256-5 ..
+		":" .. RE.RaceIcons[token][3]*256+5 ..
+		":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
 	end
 end
 
@@ -393,73 +393,73 @@ function RE:TimeClean(timeRaw)
 end
 
 function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
-  local column = obj.cols[sortbycol]
-  local direction = column.sort or column.defaultsort or "asc"
-  local rowA, rowB
-  if inside > 0 then
-    rowA = obj.data[rowa][inside]
-    rowB = obj.data[rowb][inside]
-  else
-    rowA = RE.Database[obj.data[rowa][11]][field]
-    rowB = RE.Database[obj.data[rowb][11]][field]
-  end
-  if rowA == rowB then
-    return false
-  else
-    if direction:lower() == "asc" then
-      return rowA > rowB
-    else
-      return rowA < rowB
-    end
-  end
+	local column = obj.cols[sortbycol]
+	local direction = column.sort or column.defaultsort or "asc"
+	local rowA, rowB
+	if inside > 0 then
+		rowA = obj.data[rowa][inside]
+		rowB = obj.data[rowb][inside]
+	else
+		rowA = RE.Database[obj.data[rowa][11]][field]
+		rowB = RE.Database[obj.data[rowb][11]][field]
+	end
+	if rowA == rowB then
+		return false
+	else
+		if direction:lower() == "asc" then
+			return rowA > rowB
+		else
+			return rowA < rowB
+		end
+	end
 end
 
 function RE:SpecFilter(rowdata)
-  if RE.Settings.Filters.Spec ~= _G.ALL then
-    if rowdata[14] == RE.Settings.Filters.Spec then
-      return true
-    else
-      return false
-    end
-  else
-    return true
-  end
+	if RE.Settings.Filters.Spec ~= _G.ALL then
+		if rowdata[14] == RE.Settings.Filters.Spec then
+			return true
+		else
+			return false
+		end
+	else
+		return true
+	end
 end
 
 function RE:MapFilter(rowdata)
-  if RE.Settings.Filters.Map ~= 1 then
-    if RE.Database[rowdata[11]].Map == RE.Settings.Filters.Map then
-      return true
-    else
-      return false
-    end
-  else
-    return true
-  end
+	if RE.Settings.Filters.Map ~= 1 then
+		if RE.Database[rowdata[11]].Map == RE.Settings.Filters.Map then
+			return true
+		else
+			return false
+		end
+	else
+		return true
+	end
 end
 
 function RE:BracketFilter(rowdata)
-  if RE.Database[rowdata[11]].isArena and RE.Settings.Filters.Bracket ~= 1 then
-    if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
-      return true
-    else
-      return false
-    end
-  else
-    return true
-  end
+	if RE.Database[rowdata[11]].isArena and RE.Settings.Filters.Bracket ~= 1 then
+		if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
+			return true
+		else
+			return false
+		end
+	else
+		return true
+	end
 end
 
 function RE:DateFilter(rowdata)
 	local from = RE.Settings.Filters.Date[1]
 	local to = RE.Settings.Filters.Date[2]
 	if from > 0 or to > 0 then
-    if RE.Database[rowdata[11]].Time >= from and (to == 0 or RE.Database[rowdata[11]].Time <= to) then
-      return true
-    else
-      return false
-    end
-  else
+		if RE.Database[rowdata[11]].Time >= from and (to == 0 or RE.Database[rowdata[11]].Time <= to) then
+			return true
+		else
+			return false
+		end
+	else
 		if RE.Settings.Filters.Season > 0 then
 			if RE.Database[rowdata[11]].Season == RE.Settings.Filters.Season then
 				return true
@@ -469,24 +469,24 @@ function RE:DateFilter(rowdata)
 		else
 			return true
 		end
-  end
+	end
 end
 
 function RE:FilterDefault(rowdata)
-  return not RE.Database[rowdata[11]].Hidden and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+	return not RE.Database[rowdata[11]].Hidden and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterCasual(rowdata)
-  return not RE.Database[rowdata[11]].Hidden and not RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+	return not RE.Database[rowdata[11]].Hidden and not RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterRated(rowdata)
-  return not RE.Database[rowdata[11]].Hidden and RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+	return not RE.Database[rowdata[11]].Hidden and RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterStats(id, playerdata)
-  local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16], 0}
-  return not RE.Database[data[11]].Hidden and RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
+	local data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, id, 0, 0, playerdata[16], 0}
+	return not RE.Database[data[11]].Hidden and RE:SpecFilter(data) and RE:MapFilter(data) and RE:BracketFilter(data) and RE:DateFilter(data)
 end
 
 function RE:CalendarParser()
@@ -510,8 +510,8 @@ function RE:CalendarCleanup()
 end
 
 function RE:HKBarUpdate()
-  local hk = select(4, GetAchievementCriteriaInfo(5363, 1))
-  local hkMax = 0
+	local hk = select(4, GetAchievementCriteriaInfo(5363, 1))
+	local hkMax = 0
 	if hk < 100 then
 		hkMax = 100
 	elseif hk < 500 then
@@ -635,31 +635,31 @@ function RE:AbbreviateNumbers(value)
 end
 
 function RE:CSize(char)
-   if not char then
-      return 0
-   elseif char > 240 then
-      return 4
-   elseif char > 225 then
-      return 3
-   elseif char > 192 then
-      return 2
-   else
-      return 1
-   end
+	if not char then
+		return 0
+	elseif char > 240 then
+		return 4
+	elseif char > 225 then
+		return 3
+	elseif char > 192 then
+		return 2
+	else
+		return 1
+	end
 end
 
 function RE:StrSub(str, startChar, numChars)
-   local startIndex = 1
-   while startChar > 1 do
-      local char = sbyte(str, startIndex)
-      startIndex = startIndex + RE:CSize(char)
-      startChar = startChar - 1
-   end
-   local currentIndex = startIndex
-   while numChars > 0 and currentIndex <= #str do
-      local char = sbyte(str, currentIndex)
-      currentIndex = currentIndex + RE:CSize(char)
-      numChars = numChars -1
-   end
-   return str:sub(startIndex, currentIndex - 1)
+	local startIndex = 1
+	while startChar > 1 do
+		local char = sbyte(str, startIndex)
+		startIndex = startIndex + RE:CSize(char)
+		startChar = startChar - 1
+	end
+	local currentIndex = startIndex
+	while numChars > 0 and currentIndex <= #str do
+		local char = sbyte(str, currentIndex)
+		currentIndex = currentIndex + RE:CSize(char)
+		numChars = numChars -1
+	end
+	return str:sub(startIndex, currentIndex - 1)
 end
