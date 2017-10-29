@@ -2,11 +2,11 @@ local _G = _G
 local RE = REFlexNamespace
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
-local GetRealZoneText = GetRealZoneText
-local GetClassInfoByID = GetClassInfoByID
-local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
-local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
-local ReloadUI = ReloadUI
+local GetRealZoneText = _G.GetRealZoneText
+local GetClassInfoByID = _G.GetClassInfoByID
+local GetNumSpecializationsForClassID = _G.GetNumSpecializationsForClassID
+local GetSpecializationInfoForClassID = _G.GetSpecializationInfoForClassID
+local ReloadUI = _G.ReloadUI
 
 RE.DefaultConfig = {
 	["MiniMapButtonSettings"] = {["hide"] = false},

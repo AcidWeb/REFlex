@@ -2,16 +2,16 @@ local _G = _G
 local RE = REFlexNamespace
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
-local tinsert, tsort, tconcat, tremove = table.insert, table.sort, table.concat, table.remove
-local mfloor = math.floor
-local sgsub, sbyte = string.gsub, string.byte
-local strsplit, date, select, tostring, PlaySound, time = strsplit, date, select, tostring, PlaySound, time
-local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
-local GetServerTime = GetServerTime
-local GetPrestigeInfo = GetPrestigeInfo
-local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
-local StaticPopup_Hide = StaticPopup_Hide
-local CLASS_ICON_TCOORDS, RAID_CLASS_COLORS = CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
+--GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
+local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
+local mfloor = _G.math.floor
+local sgsub, sbyte = _G.string.gsub, _G.string.byte
+local strsplit, date, select, tostring, PlaySound, time = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time
+local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
+local GetServerTime = _G.GetServerTime
+local GetPrestigeInfo = _G.GetPrestigeInfo
+local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
+local StaticPopup_Hide = _G.StaticPopup_Hide
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
