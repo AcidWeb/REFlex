@@ -8,6 +8,7 @@ local sgsub, sbyte = string.gsub, string.byte
 local strsplit, date, select, tostring, PlaySound, time = strsplit, date, select, tostring, PlaySound, time
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
 local GetServerTime = GetServerTime
+local GetPrestigeInfo = GetPrestigeInfo
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = StaticPopup_Hide
 local CLASS_ICON_TCOORDS, RAID_CLASS_COLORS = CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
@@ -327,26 +328,9 @@ function RE:GetRaceIcon(token, size)
 end
 
 function RE:GetPrestigeIcon(level, size)
-	local sufix = ""
-	if level > 0 and level < 5 then
-		sufix = level
-	elseif level > 4 and level < 10 then
-		sufix = "2-"..level - 4
-	elseif level > 9 and level < 15 then
-		sufix = "3-"..level - 9
-	elseif level > 14 and level < 20 then
-		sufix = "4-"..level - 14
-	elseif level > 19 and level < 25 then
-		sufix = "5-"..level - 19
-	elseif level > 24 and level < 30 then
-		sufix = "6-"..level - 24
-	elseif level > 29 and level < 35 then
-		sufix = "7-"..level - 29
-	elseif level > 34 and level < 40 then
-		sufix = "8-"..level - 34
-	end
-	if sufix ~= "" then
-		return "|TInterface\\PVPFrame\\Icons\\prestige-icon-"..sufix..":"..size..":"..size..":0:0|t"
+	local prestigeID = GetPrestigeInfo(level)
+	if RE.PrestigeIcons[prestigeID] then
+		return "|T"..RE.PrestigeIcons[prestigeID]..":"..size..":"..size..":0:0|t"
 	else
 		return ""
 	end
