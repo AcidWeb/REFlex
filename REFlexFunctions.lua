@@ -1,5 +1,5 @@
 local _G = _G
-local RE = REFlexNamespace
+local _, RE = ...
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 
 --GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
@@ -516,13 +516,13 @@ function RE:HKBarUpdate()
 		hkMax = 250000
 	end
 	if hkMax ~= 0 then
-		_G.REFlex_HKBar_Text:SetText(hk.." / "..hkMax)
-		_G.REFlex_HKBar_I:SetMinMaxValues(0, hkMax)
+		_G.REFlexFrame_HKBar_Text:SetText(hk.." / "..hkMax)
+		_G.REFlexFrame_HKBar_I:SetMinMaxValues(0, hkMax)
 	else
-		_G.REFlex_HKBar_Text:SetText(hk)
-		_G.REFlex_HKBar_I:SetMinMaxValues(0, hk)
+		_G.REFlexFrame_HKBar_Text:SetText(hk)
+		_G.REFlexFrame_HKBar_I:SetMinMaxValues(0, hk)
 	end
-	_G.REFlex_HKBar_I:SetValue(hk)
+	_G.REFlexFrame_HKBar_I:SetValue(hk)
 end
 
 function RE:InsideToast(label, value, databaseID, place, top)
@@ -576,9 +576,9 @@ end
 
 function RE:DumpCSV()
 	local id, d, s
-	if not _G.REFlex:IsShown() then return end
+	if not _G.REFlexFrame:IsShown() then return end
 	RE.DumpFrame:Clear()
-	if PanelTemplates_GetSelectedTab(_G.REFlex) < 4 then
+	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
 		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl")
 		for i=1, #RE.TableBG.filtered do
 			id = RE.TableBG.data[RE.TableBG.filtered[i]][11]

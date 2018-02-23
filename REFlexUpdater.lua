@@ -1,5 +1,5 @@
 local _G = _G
-local RE = REFlexNamespace
+local _, RE = ...
 
 function RE:UpdateSettings()
   if RE.Settings.ConfigVersion ~= RE.Version then

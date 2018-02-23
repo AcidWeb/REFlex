@@ -1,5 +1,5 @@
 local _G = _G
-local RE = REFlexNamespace
+local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
 local GetRealZoneText = _G.GetRealZoneText
@@ -114,7 +114,11 @@ RE.RaceIcons = {
 	["Draenei"]	= {0.5, 0.625, 0, 0.25},
 	["Goblin"] = {0.629, 0.750, 0.25, 0.5},
 	["Worgen"] = {0.629, 0.750, 0, 0.25},
-	["Pandaren"] = {0.756, 0.881, 0, 0.25}
+	["Pandaren"] = {0.756, 0.881, 0, 0.25},
+	["Nightborne"] = {0.375, 0.5, 0, 0.25},
+	["Highmountain Tauren"] = {0, 0.125, 0.25, 0.5},
+	["Void Elf"] = {0.5, 0.625, 0.25, 0.5},
+	["Lightforged Draenei"] = {0.5, 0.625, 0, 0.25}
 }
 
 RE.PrestigeIcons = {

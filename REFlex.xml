@@ -5,11 +5,11 @@
 	<Script file="REFlexStructures.lua"/>
 	<Script file="REFlexUpdater.lua"/>
 
-	<Frame name="REFlex" resizable="false" movable="true" hidden="true" parent="UIParent">
+	<Frame name="REFlexFrame" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Scripts>
-			<OnLoad>REFlexNamespace:OnLoad(self)</OnLoad>
-			<OnEvent>REFlexNamespace:OnEvent(self, event, ...)</OnEvent>
-			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); REFlexNamespace:UpdateGUI()</OnShow>
+			<OnLoad>REFlex:OnLoad(self)</OnLoad>
+			<OnEvent>REFlex:OnEvent(self, event, ...)</OnEvent>
+			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); REFlex:UpdateGUI()</OnShow>
 			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
 			<OnDragStart>self:StartMoving()</OnDragStart>
 			<OnDragStop>self:StopMovingOrSizing()</OnDragStop>
@@ -73,7 +73,7 @@
 					<Anchor point="RIGHT" relativeTo="$parent_CloseButton" relativePoint="LEFT"/>
 				</Anchors>
 				<Scripts>
-					<OnClick>REFlexNamespace:DumpCSV()</OnClick>
+					<OnClick>REFlex:DumpCSV()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
@@ -85,7 +85,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 1); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 1); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2">
@@ -97,7 +97,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 2); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 2); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3">
@@ -109,7 +109,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 3); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 3); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab6" inherits="CharacterFrameTabButtonTemplate" id="6">
@@ -121,7 +121,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 6); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 6); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab5" inherits="CharacterFrameTabButtonTemplate" id="5">
@@ -133,7 +133,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 5); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 5); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" id="4">
@@ -145,7 +145,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlex, 4); REFlexNamespace:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 4); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Frame name="$Parent_HKBar">
