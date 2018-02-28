@@ -50,7 +50,7 @@ local RequestRatedInfo = _G.RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = _G.C_Timer.After
 
-RE.Version = 237
+RE.Version = 238
 RE.FoundNewVersion = false
 
 RE.DataSaved = false

@@ -38,6 +38,7 @@ RE.MapList = {
 	[726] = GetRealZoneText(726),
 	[489] = GetRealZoneText(489),
 	[1280] = GetRealZoneText(1280),
+	[1803] = GetRealZoneText(1803),
 	[1552] = RE:GetShortMapName(GetRealZoneText(1552)),
 	[1504] = RE:GetShortMapName(GetRealZoneText(1504)),
 	[562] = RE:GetShortMapName(GetRealZoneText(1672)),
@@ -57,6 +58,7 @@ RE.MapListLongBG = {
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
 	[628] = GetRealZoneText(628),
+	[1803] = GetRealZoneText(1803),
 	[727] = GetRealZoneText(727),
 	[607] = GetRealZoneText(607),
 	[1280] = GetRealZoneText(1280),
@@ -79,7 +81,7 @@ RE.MapListLongArena = {
 }
 
 RE.MapListLongOrderBG = {
-	1, 30, 529, 1105, 566, 628, 727, 607, 1280, 998, 761, 726, 489
+	1, 30, 529, 1105, 566, 628, 1803, 727, 607, 1280, 998, 761, 726, 489
 }
 
 RE.MapListLongOrderArena = {
@@ -98,7 +100,8 @@ RE.MapListStat = {
 	[727] = {false, "Interface\\MINIMAP\\Vehicle-SilvershardMines-MineCart"},
 	[30] = {true, "Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture", "Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[628] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
-	[607] = {false, "Interface\\MINIMAP\\Vehicle-AllianceCart", "Interface\\MINIMAP\\Suramar_Door_Icon"}
+	[607] = {false, "Interface\\MINIMAP\\Vehicle-AllianceCart", "Interface\\MINIMAP\\Suramar_Door_Icon"},
+	[1803] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
 }
 
 RE.RaceIcons = {
