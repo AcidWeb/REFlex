@@ -63,7 +63,7 @@ RE.HideID = 0
 RE.Season = 0
 
 RE.PlayerName = UnitName("PLAYER")
-RE.PlayerFaction = UnitFactionGroup("PLAYER")
+RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
 RE.PlayerTimezone = time() - time(date('!*t', GetServerTime()))
 
@@ -190,7 +190,7 @@ function RE:OnEvent(_, event, ...)
 			toast:SetFormattedText(...)
 			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
 			toast:MakePersistent()
-			if RE.PlayerFaction == "Horde" then
+			if RE.PlayerFaction == 0 then
 				toast:SetSoundFile([[Sound\Doodad\BellTollHorde.ogg]])
 				toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
 			else
@@ -314,7 +314,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		local mmrLine = nil
 		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
 		if RE.Database[databaseID].isRated then
-			if RE.PlayerFaction == "Horde" then
+			if RE.PlayerFaction == 0 then
 				mmrLine = "|cFF74D06CMMR|r|n|cFFFF141D"..RE:GetMMR(databaseID, true).."|r|n|cFF00A9FF"..RE:GetMMR(databaseID, false).."|r"
 			else
 				mmrLine = "|cFF74D06CMMR|r|n|cFF00A9FF"..RE:GetMMR(databaseID, true).."|r|n|cFFFF141D"..RE:GetMMR(databaseID, false).."|r"
@@ -341,7 +341,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		local tank, healer, dps = RE:GetBGComposition(databaseID, true)
 		local tankE, healerE, dpsE = RE:GetBGComposition(databaseID, false)
 		RE.Tooltip:AddLine("|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t")
-		if RE.PlayerFaction == "Horde" then
+		if RE.PlayerFaction == 0 then
 			RE.Tooltip:AddLine("|cFFFF141D"..tank.."|r - |cFF00A9FF"..tankE.."|r", "|cFFFF141D"..healer.."|r - |cFF00A9FF"..healerE.."|r", "|cFFFF141D"..dps.."|r - |cFF00A9FF"..dpsE.."|r")
 		else
 			RE.Tooltip:AddLine("|cFF00A9FF"..tank.."|r - |cFFFF141D"..tankE.."|r", "|cFF00A9FF"..healer.."|r - |cFFFF141D"..healerE.."|r", "|cFF00A9FF"..dps.."|r - |cFFFF141D"..dpsE.."|r")
@@ -351,11 +351,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			local faction = ""
 			local playerStatsData = RE:GetPlayerStatsData(databaseID)
 			if RE.MapListStat[RE.Database[databaseID].Map][1] or RE.Database[databaseID].StatsNum == 3 then
-				if RE.PlayerFaction == "Horde" then
-					faction = 0
-				else
-					faction = 1
-				end
+				faction = RE.PlayerFaction
 			end
 			if RE.Database[databaseID].StatsNum == 1 then
 				RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil)

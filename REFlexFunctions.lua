@@ -231,6 +231,10 @@ function RE:GetBGComposition(databaseID, player)
 	return tank, healer, dps
 end
 
+function RE:GetMercenaryStatus(databaseID)
+	return not (RE.Database[databaseID].PlayerSide == RE.PlayerFaction)
+end
+
 function RE:GetBGToast(databaseID)
 	local toast = {}
 	local savedFilters = RE.Settings.Filters
@@ -283,12 +287,24 @@ function RE:GetMapColor(_, realrow, _, table)
 		return {["r"] = 1.0,
 		["g"] = 0.98,
 		["b"] = 0.72,
-		["a"] = 1}
+		["a"] = 1.0}
+	elseif RE:GetMercenaryStatus(table.data[realrow][11]) then
+		if RE.PlayerFaction == 0 then
+			return {["r"] = 0,
+			["g"] = 0.66,
+			["b"] = 1.0,
+			["a"] = 1.0}
+		else
+			return {["r"] = 1.0,
+			["g"] = 0.08,
+			["b"] = 0.11,
+			["a"] = 1.0}
+		end
 	else
 		return {["r"] = 1.0,
 		["g"] = 1.0,
 		["b"] = 1.0,
-		["a"] = 1}
+		["a"] = 1.0}
 	end
 end
 
