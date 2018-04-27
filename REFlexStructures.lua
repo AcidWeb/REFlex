@@ -18,11 +18,6 @@ RE.DefaultConfig = {
 	["ConfigVersion"] = RE.Version
 }
 
-RE.TooltipBackdrop = {
-	["bgFile"] = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-	["tileSize"] = 0
-}
-
 RE.MapList = {
 	[30] = GetRealZoneText(30),
 	[529] = GetRealZoneText(529),

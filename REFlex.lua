@@ -12,7 +12,7 @@ _G.REFlex = RE
 
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
-local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring = _G.time, _G.date, _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring
+local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.time, _G.date, _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
 local StaticPopup_Show = _G.StaticPopup_Show
 local IsAltKeyDown = _G.IsAltKeyDown
@@ -49,6 +49,7 @@ local SendAddonMessage = _G.SendAddonMessage
 local RequestRatedInfo = _G.RequestRatedInfo
 local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = _G.C_Timer.After
+local ElvUI = _G.ElvUI
 
 RE.Version = 238
 RE.FoundNewVersion = false
@@ -205,22 +206,36 @@ function RE:OnEvent(_, event, ...)
 		end)
 
 		RE.LDB = LDB:NewDataObject("REFlex", {
-			type = "launcher",
-			text = "REFlex",
-			icon = "Interface\\PvPRankBadges\\PvPRank09",
-			OnClick = function(_, button, _)
-				if button == "LeftButton" then
-					if not _G.REFlexFrame:IsVisible() then
-						_G.REFlexFrame:Show()
-					else
-						_G.REFlexFrame:Hide()
-					end
-				elseif button == "RightButton" then
-					_G.InterfaceOptionsFrame:Show()
-					InterfaceOptionsFrame_OpenToCategory(RE.OptionsMenu)
-				end
-			end
+			type = "data source",
+			text = "|cFF74D06CRE|rFlex",
+			icon = "Interface\\PvPRankBadges\\PvPRank09"
 		})
+		function RE.LDB:OnEnter()
+			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 1, "CENTER")
+			RE.Tooltip:SmartAnchorTo(self)
+			if ElvUI then
+				RE.Tooltip:SetTemplate("Transparent", nil, true)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip.db.colorAlpha)
+			end
+			RE.Tooltip:Show()
+		end
+		function RE.LDB:OnLeave()
+			QTIP:Release(RE.Tooltip)
+			RE.Tooltip = nil
+		end
+		function RE.LDB:OnClick(button)
+			if button == "LeftButton" then
+				if not _G.REFlexFrame:IsVisible() then
+					_G.REFlexFrame:Show()
+				else
+					_G.REFlexFrame:Hide()
+				end
+			elseif button == "RightButton" then
+				_G.InterfaceOptionsFrame:Show()
+				InterfaceOptionsFrame_OpenToCategory(RE.OptionsMenu)
+			end
+		end
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
 		_G.StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
@@ -383,10 +398,14 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 			RE.TooltipRGB1:AddSeparator(3)
 			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cff00ccff"..kbSum.."|r", "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r")
-			RE.TooltipRGB1:SetBackdrop(RE.TooltipBackdrop)
 			RE.TooltipRGB1:ClearAllPoints()
 			RE.TooltipRGB1:SetClampedToScreen(true)
 			RE.TooltipRGB1:SetPoint("RIGHT", RE.Tooltip, "LEFT", -5, 0)
+			if ElvUI then
+				RE.TooltipRGB1:SetTemplate("Transparent", nil, true)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.TooltipRGB1:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip.db.colorAlpha)
+			end
 			RE.TooltipRGB1:Show()
 			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
 			RE.TooltipRGB2 = QTIP:Acquire("REFlexTooltipRGB2", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
@@ -406,14 +425,22 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			end
 			RE.TooltipRGB2:AddSeparator(3)
 			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cff00ccff"..kbSum.."|r", "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r")
-			RE.TooltipRGB2:SetBackdrop(RE.TooltipBackdrop)
 			RE.TooltipRGB2:ClearAllPoints()
 			RE.TooltipRGB2:SetClampedToScreen(true)
 			RE.TooltipRGB2:SetPoint("LEFT", RE.Tooltip, "RIGHT", 5, 0)
+			if ElvUI then
+				RE.TooltipRGB2:SetTemplate("Transparent", nil, true)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.TooltipRGB2:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip.db.colorAlpha)
+			end
 			RE.TooltipRGB2:Show()
 		end
 	end
-	RE.Tooltip:SetBackdrop(RE.TooltipBackdrop)
+	if ElvUI then
+		RE.Tooltip:SetTemplate("Transparent", nil, true)
+		local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+		RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip.db.colorAlpha)
+	end
 	RE.Tooltip:SmartAnchorTo(cellFrame)
 	RE.Tooltip:Show()
 end
