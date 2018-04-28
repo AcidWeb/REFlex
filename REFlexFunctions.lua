@@ -1,17 +1,19 @@
 local _G = _G
 local _, RE = ...
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
+local DUMP = LibStub("LibTextDump-1.0")
 
 --GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
-local strsplit, date, select, tostring, PlaySound, time = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time
+local strsplit, date, select, tostring, PlaySound, time, unpack = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetServerTime = _G.GetServerTime
 local GetPrestigeInfo = _G.GetPrestigeInfo
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = _G.StaticPopup_Hide
+local IsAddOnLoaded = _G.IsAddOnLoaded
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -615,6 +617,14 @@ function RE:DumpCSV()
 		end
 	end
 	RE.DumpFrame:Display()
+
+	if IsAddOnLoaded("ElvUI") and IsAddOnLoaded("AddOnSkins") then
+		local AS = unpack(_G.AddOnSkins)
+		AS:SkinFrame(DUMP.frames[RE.DumpFrame])
+		AS:SkinFrame(DUMP.frames[RE.DumpFrame].Inset)
+		AS:SkinCloseButton(DUMP.frames[RE.DumpFrame].CloseButton)
+		AS:SkinScrollBar(DUMP.frames[RE.DumpFrame].scrollArea.ScrollBar)
+	end
 end
 
 function RE:Round(num, idp)
