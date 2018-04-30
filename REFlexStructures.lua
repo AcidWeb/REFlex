@@ -15,6 +15,8 @@ RE.DefaultConfig = {
 	["CurrentTab"] = 1,
 	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0},
 	["FirstTime"] = true,
+	["LDBMode"] = 2,
+	["LDBSide"] = "A",
 	["ConfigVersion"] = RE.Version
 }
 
@@ -157,6 +159,13 @@ RE.PrestigeIcons = {
 	[1713173] = "Interface/PVPFrame/Icons/prestige-icon-8-4",
 }
 
+RE.BracketNames = {
+	ARENA_2V2,
+	ARENA_3V3,
+	"",
+	BATTLEGROUND_10V10
+}
+
 RE.Roles = {}
 for classID=1, MAX_CLASSES do
 	local _, classTag = GetClassInfoByID(classID)
@@ -197,22 +206,36 @@ RE.AceConfig = {
 			set = function(_, val) RE.Settings.ShowServerName = val end,
 			get = function(_) return RE.Settings.ShowServerName end
 		},
+		ldbmode = {
+			name = L["LDB feed display mode"],
+			desc = L["Rating display always compares the values with the previous week."],
+			type = "select",
+			width = "double",
+			order = 4,
+			values = {
+				[1] = L["Current session"],
+				[2] = _G.HONOR_TODAY,
+				[3] = _G.GUILD_CHALLENGES_THIS_WEEK
+			},
+			set = function(_, val) RE.Settings.LDBMode = val; RE:UpdateLDBTime(); RE:UpdateLDB() end,
+			get = function(_) return RE.Settings.LDBMode end
+		},
 		deletebase = {
 			name = L["Purge database"],
 			desc = L["WARNING! This operation is not reversible!"],
 			type = "execute",
-			width = "normal",
+			width = "double",
 			confirm = true,
-			order = 4,
+			order = 5,
 			func = function() _G.REFlexDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
 			name = L["Purge previous seasons"],
 			desc = L["WARNING! This operation is not reversible!"],
 			type = "execute",
-			width = "normal",
+			width = "double",
 			confirm = true,
-			order = 5,
+			order = 6,
 			func = function() RE:SeasonPurge(); ReloadUI() end
 		}
 	}

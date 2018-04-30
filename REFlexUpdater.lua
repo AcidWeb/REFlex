@@ -12,6 +12,11 @@ function RE:UpdateSettings()
       RE.Settings.Filters.Season = 0
       RE.Settings.ConfigVersion = 234
     end
+    if RE.Settings.ConfigVersion < 240 then
+      RE.Settings.LDBMode = 2
+      RE.Settings.LDBSide = "A"
+      RE.Settings.ConfigVersion = 240
+    end
   end
 end
 

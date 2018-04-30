@@ -134,7 +134,7 @@ end
 function RE:GetWinNumber(filter, arena)
 	local won, lost = 0, 0
 	for i=1, #RE.Database do
-		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
+		if (RE.Database[i].isArena == arena or arena == nil) and not RE.Database[i].Hidden then
 			local playerData = RE:GetPlayerData(i)
 			if RE:FilterStats(i, playerData) then
 				if RE:GetPlayerWin(i, false) then
@@ -159,7 +159,7 @@ function RE:GetStats(filter, arena, skipLatest)
 		ili = ili - 1
 	end
 	for i=1, ili do
-		if RE.Database[i].isArena == arena and not RE.Database[i].Hidden then
+		if (RE.Database[i].isArena == arena or arena == nil) and not RE.Database[i].Hidden then
 			if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
 				local playerData = RE:GetPlayerData(i)
 				if RE:FilterStats(i, playerData) then
@@ -368,7 +368,7 @@ function RE:RatingChangeClean(change, databaseID)
 	elseif change < 0 then
 		return "|cFFFF141C"..change.."|r"
 	else
-		if RE.Database[databaseID].isRated then
+		if not databaseID or RE.Database[databaseID].isRated then
 			return "0"
 		else
 			return "-"
@@ -604,7 +604,7 @@ function RE:DumpCSV()
 			s = RE:GetPlayerData(id)
 			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.Duration)..";"..tostring(RE:GetPlayerWin(id, false))..";"..
 			tostring(s[2])..";"..tostring(s[3])..";"..tostring(s[4])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..
-			tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(s[17])..";"..tostring(d.isRated)..";"..tostring(d.isBrawl)..";"..tostring(not (RE.Database[id].PlayerSide == RE.PlayerFaction)))
+			tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(s[17])..";"..tostring(d.isRated)..";"..tostring(d.isBrawl)..";"..tostring(RE:GetMercenaryStatus(id)))
 		end
 	else
 		RE.DumpFrame:AddLine("Timestamp;Map;PlayersNumber;TeamComposition;EnemyComposition;Duration;Victory;KillingBlows;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;isRated")

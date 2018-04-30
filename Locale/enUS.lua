@@ -5,11 +5,14 @@ L["Place"] = true
 L["This month"] = true
 L["This season"] = true
 L["Prev. season"] = true
+L["Current session"] = true
 
 L["Hide minimap button"] = true
 L["Enable battleground summary"] = true
 L["Display toast with battleground summary after completed match."] = true
 L["Display server names"] = true
+L["LDB feed display mode"] = true
+L["Rating display always compares the values with the previous week."] = true
 L["Show player server name in match detail tooltip."] = true
 L["Purge database"] = true
 L["Purge previous seasons"] = true
