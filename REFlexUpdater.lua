@@ -1,6 +1,8 @@
 local _G = _G
 local _, RE = ...
 
+local mfloor = _G.math.floor
+
 function RE:UpdateSettings()
   if RE.Settings.ConfigVersion ~= RE.Version then
     if RE.Settings.ConfigVersion < 220 then
@@ -56,6 +58,19 @@ function RE:UpdateDatabase()
         RE.Database[i].Hidden = true
       end
       RE.Database[i].Version = 235
+    end
+  end
+end
+
+function RE:UpdateHDatabase()
+  for i=1, #_G.REFlexDatabase do
+    local date = mfloor(_G.REFlexDatabase[i].Time / 86400) * 86400
+    local playerData = RE:GetPlayerData(i)
+    if playerData[5] > 0 then
+      if not _G.REFlexHonorDatabase[date] then
+        _G.REFlexHonorDatabase[date] = 0
+      end
+      _G.REFlexHonorDatabase[date] = _G.REFlexHonorDatabase[date] + playerData[5]
     end
   end
 end

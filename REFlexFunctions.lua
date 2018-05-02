@@ -7,7 +7,7 @@ local DUMP = LibStub("LibTextDump-1.0")
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
-local strsplit, date, select, tostring, PlaySound, time, unpack = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack
+local strsplit, date, select, tostring, PlaySound, time, unpack, pairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack, _G.pairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetServerTime = _G.GetServerTime
 local GetPrestigeInfo = _G.GetPrestigeInfo
@@ -150,6 +150,18 @@ function RE:GetWinNumber(filter, arena)
 		end
 	end
 	return won, lost
+end
+
+function RE:GetHonor()
+	local honor = 0
+	local from = RE.Settings.Filters.Date[1]
+	local to = RE.Settings.Filters.Date[2]
+	for t, v in pairs(RE.HDatabase) do
+		if t >= from and (to == 0 or t <= to) then
+			honor = honor + v
+		end
+	end
+	return honor
 end
 
 function RE:GetStats(filter, arena, skipLatest)

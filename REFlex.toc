@@ -3,7 +3,7 @@
 ## Notes: Collect statistics of played arena matches and battlegrounds.
 ## Version: 2.4.0
 ## Author: AcidWeb
-## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase
+## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
 
 Embeds.xml
 Locale\Locale.xml

@@ -13,6 +13,7 @@ _G.REFlex = RE
 --GLOBALS: DAILY, WEEKLY, BATTLEGROUND, ARENA_CASUAL, LFG_CATEGORY_BATTLEFIELD
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
+local strmatch = _G.string.match
 local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.time, _G.date, _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
 local StaticPopup_Show = _G.StaticPopup_Show
@@ -80,7 +81,7 @@ RE.SessionStart = time(date('!*t', GetServerTime()))
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
-RE.PlayerTimezone = time() - time(date('!*t', GetServerTime()))
+RE.PlayerTimezone = mfloor(((time() - time(date('!*t', GetServerTime()))) + 0.5) / 3600) * 3600
 
 function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
@@ -88,6 +89,7 @@ function RE:OnLoad(self)
 	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
+	self:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN")
 	self:RegisterForDrag("LeftButton")
 	tinsert(_G.UISpecialFrames,"REFlexFrame")
 
@@ -184,11 +186,19 @@ function RE:OnEvent(_, event, ...)
 		if not _G.REFlexDatabase then
 			_G.REFlexDatabase = {}
 		end
+		if not _G.REFlexHonorDatabase then
+			_G.REFlexHonorDatabase = {}
+			RE:UpdateHDatabase()
+		end
 		RE.Settings = _G.REFlexSettings
 		RE.Database = _G.REFlexDatabase
+		RE.HDatabase = _G.REFlexHonorDatabase
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
 		RE:HiddenPurge()
+		RequestRatedInfo()
+		RequestPVPRewards()
+		RequestRandomBattlegroundInstanceInfo()
 
 		PanelTemplates_SetNumTabs(_G.REFlexFrame, 6)
 		PanelTemplates_SetTab(_G.REFlexFrame, RE.Settings.CurrentTab)
@@ -274,7 +284,7 @@ function RE:OnEvent(_, event, ...)
 					else
 						RE.Settings.LDBSide = "A"
 					end
-					RE:UpdateLDB()
+					RE.LDB.text = RE["LDB"..RE.Settings.LDBSide]
 				elseif button == "RightButton" then
 					if not _G.REFlexFrame:IsVisible() then
 						_G.REFlexFrame:Show()
@@ -355,6 +365,17 @@ function RE:OnEvent(_, event, ...)
 			RE:UpdateLDBTime()
 		end
 		RE:UpdateLDB()
+	elseif event == "CHAT_MSG_COMBAT_HONOR_GAIN" then
+		local _, monthR, dayR, yearR = CalendarGetDate()
+		local today = time({day = dayR, month = monthR, year = yearR, hour = 0}) - RE.PlayerTimezone
+		local points = tonumber(strmatch(select(1, ...), "%d+"))
+		if not RE.HDatabase[today] then
+			RE.HDatabase[today] = 0
+		end
+		RE.HDatabase[today] = RE.HDatabase[today] + points
+		if points >= 100 then
+			RE:UpdateLDB()
+		end
 	end
 end
 
@@ -762,7 +783,8 @@ end
 function RE:UpdateLDB()
 	local savedFilters = RE.Settings.Filters
 	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.LDBTime, 0}, ["Season"] = 0}
-	local _, _, hk, _, honor = RE:GetStats(1, nil, false)
+	local _, _, hk = RE:GetStats(1, nil, false)
+	local honor = RE:GetHonor()
 	local won, lost = RE:GetWinNumber(1, nil)
 	RE.Settings.Filters = savedFilters
 
@@ -849,7 +871,6 @@ function RE:PVPEnd()
 				TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
 			end
 		end
-		RE:UpdateLDB()
 	else
 		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
 	end
