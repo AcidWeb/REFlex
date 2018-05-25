@@ -240,7 +240,7 @@ function RE:OnEvent(_, event, ...)
 			if _G.ElvUI then
 				RE.Tooltip:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip.db.colorAlpha)
+				RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.Tooltip:AddHeader("", "")
 			RE.Tooltip:SetCell(1, 1, "|cFFFFD100"..DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
@@ -488,7 +488,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			if _G.ElvUI then
 				RE.TooltipRGB1:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB1:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip.db.colorAlpha)
+				RE.TooltipRGB1:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.TooltipRGB1:Show()
 			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
@@ -515,7 +515,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			if _G.ElvUI then
 				RE.TooltipRGB2:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB2:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip.db.colorAlpha)
+				RE.TooltipRGB2:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.TooltipRGB2:Show()
 		end
@@ -523,7 +523,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 	if _G.ElvUI then
 		RE.Tooltip:SetTemplate("Transparent", nil, true)
 		local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-		RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip.db.colorAlpha)
+		RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
 	end
 	RE.Tooltip:SmartAnchorTo(cellFrame)
 	RE.Tooltip:Show()
