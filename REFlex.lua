@@ -60,7 +60,7 @@ local UIParentLoadAddOn = _G.UIParentLoadAddOn
 local RegisterAddonMessagePrefix = _G.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.SendAddonMessage
 
-RE.Version = 240
+RE.Version = 241
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
