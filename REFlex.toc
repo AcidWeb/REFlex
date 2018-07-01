@@ -4,6 +4,8 @@
 ## Version: 2.4.1
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
+## X-Curse-Project-ID: 28545
+## X-WoWI-ID: 19190
 
 Embeds.xml
 Locale\Locale.xml
