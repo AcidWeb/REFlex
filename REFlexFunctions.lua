@@ -7,13 +7,18 @@ local DUMP = LibStub("LibTextDump-1.0")
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
-local strsplit, date, select, tostring, PlaySound, time, unpack, pairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack, _G.pairs
+local strsplit, date, select, tostring, PlaySound, time, unpack, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetServerTime = _G.GetServerTime
-local GetPrestigeInfo = _G.GetPrestigeInfo
+local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
+local GetQuestLineQuests = _G.C_QuestLine.GetQuestLineQuests
+local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
+local HaveQuestData = _G.HaveQuestData
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = _G.StaticPopup_Hide
 local IsAddOnLoaded = _G.IsAddOnLoaded
+local IsOnQuest = _G.C_QuestLog.IsOnQuest
+local IsQuestFlaggedCompleted = _G.IsQuestFlaggedCompleted
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -178,8 +183,10 @@ function RE:GetStats(filter, arena, skipLatest)
 					kb = kb + playerData[2]
 					hk = hk + playerData[3]
 					honor = honor + playerData[5]
-					damage = damage + playerData[10]
-					healing = healing + playerData[11]
+					if RE.Database[i].Time > RE.LastSquash then
+						damage = damage + playerData[10]
+						healing = healing + playerData[11]
+					end
 					if playerData[2] > topKB then
 						topKB = playerData[2]
 					end
@@ -189,11 +196,13 @@ function RE:GetStats(filter, arena, skipLatest)
 					if playerData[5] > topHonor then
 						topHonor = playerData[5]
 					end
-					if playerData[10] > topDamage then
-						topDamage = playerData[10]
-					end
-					if playerData[11] > topHealing then
-						topHealing = playerData[11]
+					if RE.Database[i].Time > RE.LastSquash then
+						if playerData[10] > topDamage then
+							topDamage = playerData[10]
+						end
+						if playerData[11] > topHealing then
+							topHealing = playerData[11]
+						end
 					end
 				end
 			end
@@ -358,9 +367,9 @@ function RE:GetRaceIcon(token, size)
 end
 
 function RE:GetPrestigeIcon(level, size)
-	local prestigeID = GetPrestigeInfo(level)
-	if RE.PrestigeIcons[prestigeID] then
-		return "|T"..RE.PrestigeIcons[prestigeID]..":"..size..":"..size..":0:0|t"
+	local hLevelData = GetHonorRewardInfo(level)
+	if hLevelData and hLevelData.badgeFileDataID then
+		return "|T"..hLevelData.badgeFileDataID..":"..size..":"..size..":0:0|t"
 	else
 		return ""
 	end
@@ -637,6 +646,25 @@ function RE:DumpCSV()
 		AS:SkinCloseButton(DUMP.frames[RE.DumpFrame].CloseButton)
 		AS:SkinScrollBar(DUMP.frames[RE.DumpFrame].scrollArea.ScrollBar)
 	end
+end
+
+function RE:GetConquestPoints()
+	local quests = GetQuestLineQuests(782)
+	local currentQuestID = quests[1]
+	for _, questID in ipairs(quests) do
+		if not IsQuestFlaggedCompleted(questID) and not IsOnQuest(questID) then
+			break
+		end
+		currentQuestID = questID
+	end
+	if not HaveQuestData(currentQuestID) then
+		return 0, 0
+	end
+	local objectives = GetQuestObjectives(currentQuestID)
+	if not objectives or not objectives[1] then
+		return 0, 0
+	end
+	return objectives[1].numFulfilled, objectives[1].numRequired
 end
 
 function RE:Round(num, idp)

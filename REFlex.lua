@@ -10,7 +10,6 @@ local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
---GLOBALS: DAILY, WEEKLY, BATTLEGROUND, ARENA_CASUAL, LFG_CATEGORY_BATTLEFIELD
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
 local strmatch = _G.string.match
@@ -38,29 +37,32 @@ local GetBattlefieldTeamInfo = _G.GetBattlefieldTeamInfo
 local GetBattlefieldStatData = _G.GetBattlefieldStatData
 local GetBattlefieldArenaFaction = _G.GetBattlefieldArenaFaction
 local GetInstanceInfo = _G.GetInstanceInfo
-local GetRandomBGInfo = _G.GetRandomBGInfo
+local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
 local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
 local GetNumBattlefieldStats = _G.GetNumBattlefieldStats
 local GetBattlefieldInstanceRunTime = _G.GetBattlefieldInstanceRunTime
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
-local GetWeeklyPVPRewardInfo = _G.GetWeeklyPVPRewardInfo
 local GetServerTime = _G.GetServerTime
 local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
+local GetDate = _G.C_Calendar.GetDate
 local UnitName = _G.UnitName
 local UnitFactionGroup = _G.UnitFactionGroup
+local UnitHonor = _G.UnitHonor
+local UnitHonorMax = _G.UnitHonorMax
 local RequestRatedInfo = _G.RequestRatedInfo
 local RequestPVPRewards = _G.RequestPVPRewards
 local RequestRandomBattlegroundInstanceInfo = _G.RequestRandomBattlegroundInstanceInfo
 local HasArenaSkirmishWinToday = _G.C_PvP.HasArenaSkirmishWinToday
 local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = _G.C_Timer.After
-local CalendarGetDate = _G.CalendarGetDate
 local UIParentLoadAddOn = _G.UIParentLoadAddOn
-local RegisterAddonMessagePrefix = _G.RegisterAddonMessagePrefix
-local SendAddonMessage = _G.SendAddonMessage
+local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
+local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
+local ElvUI = _G.ElvUI
 
-RE.Version = 241
+RE.Version = 250
+RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -83,6 +85,13 @@ RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
 RE.PlayerTimezone = mfloor(((time() - time(date('!*t', GetServerTime()))) + 0.5) / 3600) * 3600
 
+local function ElvUISwag(sender)
+  if sender == "Livarax-BurningLegion" then
+    return [[|TInterface\PvPRankBadges\PvPRank09:0|t ]]
+  end
+  return nil
+end
+
 function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -94,10 +103,10 @@ function RE:OnLoad(self)
 	tinsert(_G.UISpecialFrames,"REFlexFrame")
 
 	_G.REFlexFrameTab1:SetText(_G.ALL)
-	_G.REFlexFrameTab2:SetText(_G.PVP_TAB_HONOR)
+	_G.REFlexFrameTab2:SetText(_G.GUILD_PLAYSTYLE_CASUAL)
 	_G.REFlexFrameTab3:SetText(_G.PVP_TAB_CONQUEST)
 	_G.REFlexFrameTab4:SetText(_G.ALL)
-	_G.REFlexFrameTab5:SetText(_G.PVP_TAB_HONOR)
+	_G.REFlexFrameTab5:SetText(_G.GUILD_PLAYSTYLE_CASUAL)
 	_G.REFlexFrameTab6:SetText(_G.PVP_TAB_CONQUEST)
 
 	_G.REFlexFrame_Title:SetText("REFlex "..tostring(RE.Version):gsub(".", "%1."):sub(1,-2))
@@ -235,31 +244,36 @@ function RE:OnEvent(_, event, ...)
 		})
 		function RE.LDB:OnEnter()
 			local brawlInfo = GetBrawlInfo()
+			local current, max = RE:GetConquestPoints()
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
 			RE.Tooltip:SmartAnchorTo(self)
-			if _G.ElvUI then
+			if ElvUI then
 				RE.Tooltip:SetTemplate("Transparent", nil, true)
-				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(1, 1, "|cFFFFD100"..DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
-			RE.Tooltip:AddLine(BATTLEGROUND , select(3, GetRandomBGInfo()) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			RE.Tooltip:AddLine(ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:SetCell(1, 1, "|cFFFFD100".._G.DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:AddLine(_G.BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:AddLine(_G.ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			if brawlInfo and brawlInfo.active then
-				RE.Tooltip:AddLine(LFG_CATEGORY_BATTLEFIELD, select(4, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			else
-				RE.Tooltip:AddLine(LFG_CATEGORY_BATTLEFIELD, "|TInterface\\RaidFrame\\ReadyCheck-Waiting:0|t")
+				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, "|TInterface\\RaidFrame\\ReadyCheck-Waiting:0|t")
 			end
 			RE.Tooltip:AddSeparator()
 			for _, i in pairs({1, 2, 4}) do
 				RE.Tooltip:AddLine(RE.BracketNames[i], select(9, GetPersonalRatedInfo(i)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			end
+			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(9, 1, "|cFFFFD100"..WEEKLY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
-			for _, i in pairs({1, 2, 4}) do
-				RE.Tooltip:AddLine(RE.BracketNames[i], select(1, GetWeeklyPVPRewardInfo(i)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			end
+			RE.Tooltip:SetCell(10, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:AddLine("", "")
+			RE.Tooltip:SetCell(11, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
+			RE.Tooltip:AddHeader("", "")
+			RE.Tooltip:SetCell(12, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:AddLine("", "")
+			RE.Tooltip:SetCell(13, 1, current.." / "..max, "CENTER", 2)
 			RE.Tooltip:Show()
 		end
 		function RE.LDB:OnLeave()
@@ -322,6 +336,10 @@ function RE:OnEvent(_, event, ...)
 
 		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
+		if ElvUI then
+			ElvUI[1]:GetModule("Chat"):AddPluginIcons(ElvUISwag)
+		end
+
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
 	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
@@ -366,8 +384,8 @@ function RE:OnEvent(_, event, ...)
 		end
 		RE:UpdateLDB()
 	elseif event == "CHAT_MSG_COMBAT_HONOR_GAIN" then
-		local _, monthR, dayR, yearR = CalendarGetDate()
-		local today = time({day = dayR, month = monthR, year = yearR, hour = 0}) - RE.PlayerTimezone
+		local d = GetDate()
+		local today = time({day = d.monthDay, month = d.month, year = d.year, hour = 0}) - RE.PlayerTimezone
 		local points = tonumber(strmatch(select(1, ...), "%d+"))
 		if not RE.HDatabase[today] then
 			RE.HDatabase[today] = 0
@@ -485,10 +503,10 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB1:ClearAllPoints()
 			RE.TooltipRGB1:SetClampedToScreen(true)
 			RE.TooltipRGB1:SetPoint("RIGHT", RE.Tooltip, "LEFT", -5, 0)
-			if _G.ElvUI then
+			if ElvUI then
 				RE.TooltipRGB1:SetTemplate("Transparent", nil, true)
-				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB1:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.TooltipRGB1:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.TooltipRGB1:Show()
 			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
@@ -512,18 +530,18 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB2:ClearAllPoints()
 			RE.TooltipRGB2:SetClampedToScreen(true)
 			RE.TooltipRGB2:SetPoint("LEFT", RE.Tooltip, "RIGHT", 5, 0)
-			if _G.ElvUI then
+			if ElvUI then
 				RE.TooltipRGB2:SetTemplate("Transparent", nil, true)
-				local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB2:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
+				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+				RE.TooltipRGB2:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.TooltipRGB2:Show()
 		end
 	end
-	if _G.ElvUI then
+	if ElvUI then
 		RE.Tooltip:SetTemplate("Transparent", nil, true)
-		local red, green, blue = unpack(_G.ElvUI[1].media.backdropfadecolor)
-		RE.Tooltip:SetBackdropColor(red, green, blue, _G.ElvUI[1].Tooltip and _G.ElvUI[1].Tooltip.db.colorAlpha or 1)
+		local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
+		RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 	end
 	RE.Tooltip:SmartAnchorTo(cellFrame)
 	RE.Tooltip:Show()
@@ -551,8 +569,8 @@ function RE:OnBracketChange(_, bracket)
 end
 
 function RE:OnDateChange(_, mode)
-	local weekdayR, monthR, dayR, yearR = CalendarGetDate()
-	local t = {day = dayR, month = monthR, year = yearR, hour = 0}
+	local d = GetDate()
+	local t = {day = d.monthDay, month = d.month, year = d.year, hour = 0}
 	RE.Settings.Filters.DateMode = mode
 	RE.Settings.Filters.Season = 0
 	if mode == 1 then
@@ -562,14 +580,14 @@ function RE:OnDateChange(_, mode)
 	elseif mode == 3 then
 		RE.Settings.Filters.Date = {time(t) - 86400 - RE.PlayerTimezone, time(t) - RE.PlayerTimezone}
 	elseif mode == 4 then
-		if weekdayR == 1 then
-			weekdayR = 6
+		if d.weekday == 1 then
+			d.weekday = 6
 		else
-			weekdayR = weekdayR - 2
+			d.weekday = d.weekday - 2
 		end
-		RE.Settings.Filters.Date = {time(t) - (weekdayR * 86400) - RE.PlayerTimezone, 0}
+		RE.Settings.Filters.Date = {time(t) - (d.weekday * 86400) - RE.PlayerTimezone, 0}
 	elseif mode == 5 then
-		t = {day = 1, month = monthR, year = yearR, hour = 0}
+		t = {day = 1, month = d.month, year = d.year, hour = 0}
 		RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
 	elseif mode == 6 then
 		RE.Settings.Filters.Date = {0, 0}
@@ -765,18 +783,18 @@ function RE:UpdateConfig()
 end
 
 function RE:UpdateLDBTime()
-	local weekdayR, monthR, dayR, yearR = CalendarGetDate()
-	local t = {day = dayR, month = monthR, year = yearR, hour = 0}
+	local d = GetDate()
+	local t = {day = d.monthDay, month = d.month, year = d.year, hour = 0}
 	RE.LDBTime = RE.SessionStart
 	if RE.Settings.LDBMode == 2 then
 		RE.LDBTime = time(t) - RE.PlayerTimezone
 	elseif RE.Settings.LDBMode == 3 then
-		if weekdayR == 1 then
-			weekdayR = 6
+		if d.weekday == 1 then
+			d.weekday = 6
 		else
-			weekdayR = weekdayR - 2
+			d.weekday = d.weekday - 2
 		end
-		RE.LDBTime = time(t) - (weekdayR * 86400) - RE.PlayerTimezone
+		RE.LDBTime = time(t) - (d.weekday * 86400) - RE.PlayerTimezone
 	end
 end
 
@@ -790,7 +808,7 @@ function RE:UpdateLDB()
 
 	RE.LDBA = "|cFF00FF00"..won.."|r|cFF9D9D9D-|r|cFFFF141C"..lost.."|r |cFF9D9D9D|||r |cFFCC9900"..honor.."|r |cFF9D9D9D|||r "..hk
 	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
-	if _G.ElvUI then
+	if ElvUI then
 		RE.LDBA = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBA
 		RE.LDBB = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBB
 	end

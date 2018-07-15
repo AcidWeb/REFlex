@@ -3,7 +3,7 @@ local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
 local GetRealZoneText = _G.GetRealZoneText
-local GetClassInfoByID = _G.GetClassInfoByID
+local GetClassInfo = _G.GetClassInfo
 local GetNumSpecializationsForClassID = _G.GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = _G.GetSpecializationInfoForClassID
 local ReloadUI = _G.ReloadUI
@@ -13,7 +13,7 @@ RE.DefaultConfig = {
 	["Toasts"] = true,
 	["ShowServerName"] = false,
 	["CurrentTab"] = 1,
-	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0},
+	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0, ["DateMode"] = 1},
 	["FirstTime"] = true,
 	["LDBMode"] = 2,
 	["LDBSide"] = "A",
@@ -45,7 +45,9 @@ RE.MapList = {
 	[1505] = RE:GetShortMapName(GetRealZoneText(1505)),
 	[572] = RE:GetShortMapName(GetRealZoneText(572)),
 	[1134] = RE:GetShortMapName(GetRealZoneText(1134)),
-	[980] = RE:GetShortMapName(GetRealZoneText(980))
+	[980] = RE:GetShortMapName(GetRealZoneText(980)),
+	[1911] = RE:GetShortMapName(GetRealZoneText(1911)),
+	[1825] = RE:GetShortMapName(GetRealZoneText(1825))
 }
 
 RE.MapListLongBG = {
@@ -74,7 +76,9 @@ RE.MapListLongArena = {
 	[1505] = GetRealZoneText(1505),
 	[572] = GetRealZoneText(572),
 	[1134] = GetRealZoneText(1134),
-	[980] = GetRealZoneText(980)
+	[980] = GetRealZoneText(980),
+	[1911] = GetRealZoneText(1911),
+	[1825] = GetRealZoneText(1825)
 }
 
 RE.MapListLongOrderBG = {
@@ -82,7 +86,7 @@ RE.MapListLongOrderBG = {
 }
 
 RE.MapListLongOrderArena = {
-	1, 1552, 1504, 1672, 617, 1505, 572, 1134, 980
+	1, 1552, 1504, 1672, 617, 1825, 1911, 1505, 572, 1134, 980
 }
 
 RE.MapListStat = {
@@ -118,45 +122,10 @@ RE.RaceIcons = {
 	["Nightborne"] = {0.375, 0.5, 0, 0.25},
 	["Highmountain Tauren"] = {0, 0.125, 0.25, 0.5},
 	["Void Elf"] = {0.5, 0.625, 0.25, 0.5},
-	["Lightforged Draenei"] = {0.5, 0.625, 0, 0.25}
-}
-
-RE.PrestigeIcons = {
-	[1375574] = "Interface/PVPFrame/Icons/prestige-icon-1",
-	[1551554] = "Interface/PVPFrame/Icons/prestige-icon-2-1",
-	[1551555] = "Interface/PVPFrame/Icons/prestige-icon-2-2",
-	[1551556] = "Interface/PVPFrame/Icons/prestige-icon-2-3",
-	[1551557] = "Interface/PVPFrame/Icons/prestige-icon-2-4",
-	[1567394] = "Interface/PVPFrame/Icons/prestige-icon-2-5",
-	[1375575] = "Interface/PVPFrame/Icons/prestige-icon-2",
-	[1597386] = "Interface/PVPFrame/Icons/prestige-icon-3-1",
-	[1597388] = "Interface/PVPFrame/Icons/prestige-icon-3-2",
-	[1597390] = "Interface/PVPFrame/Icons/prestige-icon-3-3",
-	[1597392] = "Interface/PVPFrame/Icons/prestige-icon-3-4",
-	[1597394] = "Interface/PVPFrame/Icons/prestige-icon-3-5",
-	[1375576] = "Interface/PVPFrame/Icons/prestige-icon-3",
-	[1597396] = "Interface/PVPFrame/Icons/prestige-icon-4-1",
-	[1597397] = "Interface/PVPFrame/Icons/prestige-icon-4-2",
-	[1597398] = "Interface/PVPFrame/Icons/prestige-icon-4-3",
-	[1597399] = "Interface/PVPFrame/Icons/prestige-icon-4-4",
-	[1597400] = "Interface/PVPFrame/Icons/prestige-icon-4-5",
-	[1375577] = "Interface/PVPFrame/Icons/prestige-icon-4",
-	[1713158] = "Interface/PVPFrame/Icons/prestige-icon-5-1",
-	[1713159] = "Interface/PVPFrame/Icons/prestige-icon-5-2",
-	[1713160] = "Interface/PVPFrame/Icons/prestige-icon-5-3",
-	[1713161] = "Interface/PVPFrame/Icons/prestige-icon-5-4",
-	[1713162] = "Interface/PVPFrame/Icons/prestige-icon-6-1",
-	[1713163] = "Interface/PVPFrame/Icons/prestige-icon-6-2",
-	[1713164] = "Interface/PVPFrame/Icons/prestige-icon-6-3",
-	[1713165] = "Interface/PVPFrame/Icons/prestige-icon-6-4",
-	[1713166] = "Interface/PVPFrame/Icons/prestige-icon-7-1",
-	[1713167] = "Interface/PVPFrame/Icons/prestige-icon-7-2",
-	[1713168] = "Interface/PVPFrame/Icons/prestige-icon-7-3",
-	[1713169] = "Interface/PVPFrame/Icons/prestige-icon-7-4",
-	[1713170] = "Interface/PVPFrame/Icons/prestige-icon-8-1",
-	[1713171] = "Interface/PVPFrame/Icons/prestige-icon-8-2",
-	[1713172] = "Interface/PVPFrame/Icons/prestige-icon-8-3",
-	[1713173] = "Interface/PVPFrame/Icons/prestige-icon-8-4",
+	["Lightforged Draenei"] = {0.5, 0.625, 0, 0.25},
+	["Dark Iron Dwarf"] = {0.125, 0.25, 0, 0.25},
+	["Mag'har Orc"] = {0.375, 0.5, 0.25, 0.5},
+	["Zandalari Troll"] = {0.25, 0.375, 0.25, 0.5}
 }
 
 RE.BracketNames = {
@@ -168,7 +137,7 @@ RE.BracketNames = {
 
 RE.Roles = {}
 for classID=1, MAX_CLASSES do
-	local _, classTag = GetClassInfoByID(classID)
+	local _, classTag = GetClassInfo(classID)
 	local specNum = GetNumSpecializationsForClassID(classID)
 	RE.Roles[classTag] = {}
 	for i=1, specNum do

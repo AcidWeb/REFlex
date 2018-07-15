@@ -202,7 +202,7 @@
 			</Frame>
 			<Frame name="$parent_ScoreHolder">
 				<Size>
-					<AbsDimension y="100"/>
+					<AbsDimension x="0" y="100"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOP"/>
