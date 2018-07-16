@@ -7,7 +7,7 @@ function RE:UpdateSettings()
   if RE.Settings.ConfigVersion ~= RE.Version then
     if RE.Settings.ConfigVersion < 220 then
       RE.Settings.CurrentTab = 1
-      RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["DateMode"] = 1, ["Date"] = {0, 0}}
+      RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["DateMode"] = 1}
       RE.Settings.ConfigVersion = 220
     end
     if RE.Settings.ConfigVersion < 234 then
@@ -18,6 +18,12 @@ function RE:UpdateSettings()
       RE.Settings.LDBMode = 2
       RE.Settings.LDBSide = "A"
       RE.Settings.ConfigVersion = 240
+    end
+    if RE.Settings.ConfigVersion < 250 then
+      if not RE.Settings.Filters.DateMode then
+        RE.Settings.Filters.DateMode = 1
+      end
+      RE.Settings.ConfigVersion = 250
     end
   end
 end

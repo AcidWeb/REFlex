@@ -6,8 +6,11 @@ addons:
     packages:
     - pandoc
 
+install:
+  - echo -e "[alias]\nclone = clone --insecure" > ~/.hgrc
+
 script: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
 
 branches:
   only:
-  - /^\d+\.\d+(\.\d+)?(-\S*)?$/
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
