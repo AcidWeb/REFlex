@@ -130,7 +130,7 @@ function RE:GetRGBTeamDetails(databaseID, player)
 			RE.Database[databaseID].Players[i][2],
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-			"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+			"|n"..RE.Database[databaseID].Players[i][12].." ["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
 		end
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum), kbSum
