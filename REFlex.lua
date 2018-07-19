@@ -61,7 +61,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 251
+RE.Version = 252
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -372,7 +372,8 @@ function RE:OnEvent(_, event, ...)
 		end
 	elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and _G.WorldStateScoreFrame:IsVisible() then
 		RE.DataSaved = true
-		TimerAfter(1, RE.PVPEnd)
+		_G.WorldStateScoreFrameLeaveButton:Disable()
+		TimerAfter(2, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
 		for _, i in pairs({1, 2, 4}) do
@@ -892,4 +893,5 @@ function RE:PVPEnd()
 	else
 		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
 	end
+	_G.WorldStateScoreFrameLeaveButton:Enable()
 end
