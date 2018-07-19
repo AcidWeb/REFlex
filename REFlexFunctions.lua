@@ -678,9 +678,9 @@ function RE:AbbreviateNumbers(value)
 	elseif value >= 1000000000 then
 		value = RE:Round(value / 1000000000, 2).."B"
 	elseif value >= 100000000 then
-		value = RE:Round(value / 1000000, 0).."M"
-	elseif value >= 1000000 then
 		value = RE:Round(value / 1000000, 1).."M"
+	elseif value >= 1000000 then
+		value = RE:Round(value / 1000000, 2).."M"
 	elseif value >= 1000 then
 		value = RE:Round(value / 1000, 0).."K"
 	end
