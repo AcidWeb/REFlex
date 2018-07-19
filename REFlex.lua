@@ -47,6 +47,7 @@ local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
 local GetDate = _G.C_Calendar.GetDate
 local UnitName = _G.UnitName
+local UnitLevel = _G.UnitLevel
 local UnitFactionGroup = _G.UnitFactionGroup
 local UnitHonor = _G.UnitHonor
 local UnitHonorMax = _G.UnitHonorMax
@@ -244,7 +245,6 @@ function RE:OnEvent(_, event, ...)
 		})
 		function RE.LDB:OnEnter()
 			local brawlInfo = GetBrawlInfo()
-			local current, max = RE:GetConquestPoints()
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
 			RE.Tooltip:SmartAnchorTo(self)
 			if ElvUI then
@@ -270,10 +270,13 @@ function RE:OnEvent(_, event, ...)
 			RE.Tooltip:SetCell(10, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:SetCell(11, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
-			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(12, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
-			RE.Tooltip:AddLine("", "")
-			RE.Tooltip:SetCell(13, 1, current.." / "..max, "CENTER", 2)
+			if UnitLevel("player") == _G.MAX_PLAYER_LEVEL and GetCurrentArenaSeason() > 0 then
+				local current, max = RE:GetConquestPoints()
+				RE.Tooltip:AddHeader("", "")
+				RE.Tooltip:SetCell(12, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:AddLine("", "")
+				RE.Tooltip:SetCell(13, 1, current.." / "..max, "CENTER", 2)
+			end
 			RE.Tooltip:Show()
 		end
 		function RE.LDB:OnLeave()
