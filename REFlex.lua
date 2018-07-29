@@ -62,7 +62,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 252
+RE.Version = 253
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -339,6 +339,7 @@ function RE:OnEvent(_, event, ...)
 
 		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
+		RE.IsSkinned = _G.AddOnSkins and _G.AddOnSkins[1]:CheckOption("REFlex") or false
 		if ElvUI then
 			ElvUI[1]:GetModule("Chat"):AddPluginIcons(ElvUISwag)
 		end

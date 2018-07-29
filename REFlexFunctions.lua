@@ -7,7 +7,7 @@ local DUMP = LibStub("LibTextDump-1.0")
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
-local strsplit, date, select, tostring, PlaySound, time, unpack, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.unpack, _G.pairs, _G.ipairs
+local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetServerTime = _G.GetServerTime
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
@@ -16,7 +16,6 @@ local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
 local HaveQuestData = _G.HaveQuestData
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = _G.StaticPopup_Hide
-local IsAddOnLoaded = _G.IsAddOnLoaded
 local IsOnQuest = _G.C_QuestLog.IsOnQuest
 local IsQuestFlaggedCompleted = _G.IsQuestFlaggedCompleted
 
@@ -639,12 +638,11 @@ function RE:DumpCSV()
 	end
 	RE.DumpFrame:Display()
 
-	if IsAddOnLoaded("ElvUI") and IsAddOnLoaded("AddOnSkins") then
-		local AS = unpack(_G.AddOnSkins)
-		AS:SkinFrame(DUMP.frames[RE.DumpFrame])
-		AS:SkinFrame(DUMP.frames[RE.DumpFrame].Inset)
-		AS:SkinCloseButton(DUMP.frames[RE.DumpFrame].CloseButton)
-		AS:SkinScrollBar(DUMP.frames[RE.DumpFrame].scrollArea.ScrollBar)
+	if RE.IsSkinned then
+		_G.AddOnSkins[1]:SkinFrame(DUMP.frames[RE.DumpFrame])
+		_G.AddOnSkins[1]:SkinFrame(DUMP.frames[RE.DumpFrame].Inset)
+		_G.AddOnSkins[1]:SkinCloseButton(DUMP.frames[RE.DumpFrame].CloseButton)
+		_G.AddOnSkins[1]:SkinScrollBar(DUMP.frames[RE.DumpFrame].scrollArea.ScrollBar)
 	end
 end
 
