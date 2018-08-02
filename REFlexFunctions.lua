@@ -665,6 +665,30 @@ function RE:GetConquestPoints()
 	return objectives[1].numFulfilled, objectives[1].numRequired
 end
 
+function RE:GetWeeklyResetDay(weekday)
+	local resetday, hour
+	if RE.PlayerZone == "US" then
+		hour = 15
+		if weekday >= 3 then
+			resetday = weekday - 3
+		else
+			resetday = weekday + 4
+		end
+	else
+		if RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
+			hour = 23
+		else
+			hour = 7
+		end
+		if weekday >= 4 then
+			resetday = weekday - 4
+		else
+			resetday = weekday + 3
+		end
+	end
+	return resetday, hour
+end
+
 function RE:Round(num, idp)
 	local mult = 10^(idp or 0)
 	return mfloor(num * mult + 0.5) / mult

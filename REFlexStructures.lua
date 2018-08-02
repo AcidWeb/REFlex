@@ -15,7 +15,7 @@ RE.DefaultConfig = {
 	["CurrentTab"] = 1,
 	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0, ["DateMode"] = 1},
 	["FirstTime"] = true,
-	["LDBMode"] = 2,
+	["LDBMode"] = 3,
 	["LDBSide"] = "A",
 	["ConfigVersion"] = RE.Version
 }

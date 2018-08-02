@@ -585,14 +585,12 @@ function RE:OnDateChange(_, mode)
   elseif mode == 3 then
     RE.Settings.Filters.Date = {time(t) - 86400 - RE.PlayerTimezone, time(t) - RE.PlayerTimezone}
   elseif mode == 4 then
-    if d.weekday == 1 then
-      d.weekday = 6
-    else
-      d.weekday = d.weekday - 2
-    end
-    RE.Settings.Filters.Date = {time(t) - (d.weekday * 86400) - RE.PlayerTimezone, 0}
+    local resetday, hour = RE:GetWeeklyResetDay(d.weekday)
+    t.hour = hour
+    RE.Settings.Filters.Date = {time(t) - (resetday * 86400) - RE.PlayerTimezone, 0}
   elseif mode == 5 then
-    t = {day = 1, month = d.month, year = d.year, hour = 0}
+    t.day = 1
+    t.hour = 0
     RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
   elseif mode == 6 then
     RE.Settings.Filters.Date = {0, 0}
@@ -794,12 +792,9 @@ function RE:UpdateLDBTime()
   if RE.Settings.LDBMode == 2 then
     RE.LDBTime = time(t) - RE.PlayerTimezone
   elseif RE.Settings.LDBMode == 3 then
-    if d.weekday == 1 then
-      d.weekday = 6
-    else
-      d.weekday = d.weekday - 2
-    end
-    RE.LDBTime = time(t) - (d.weekday * 86400) - RE.PlayerTimezone
+    local resetday, hour = RE:GetWeeklyResetDay(d.weekday)
+    t.hour = hour
+    RE.LDBTime = time(t) - (resetday * 86400) - RE.PlayerTimezone
   end
 end
 
