@@ -186,7 +186,7 @@ RE.AceConfig = {
 				[2] = _G.HONOR_TODAY,
 				[3] = _G.GUILD_CHALLENGES_THIS_WEEK
 			},
-			set = function(_, val) RE.Settings.LDBMode = val; RE:UpdateLDBTime(); RE:UpdateLDB() end,
+			set = function(_, val) RE.Settings.LDBMode = val; RE.LDBUpdate = true; RE:UpdateLDBTime(); RE:UpdateLDB() end,
 			get = function(_) return RE.Settings.LDBMode end
 		},
 		deletebase = {
@@ -196,7 +196,7 @@ RE.AceConfig = {
 			width = "double",
 			confirm = true,
 			order = 5,
-			func = function() _G.REFlexDatabase = {}; ReloadUI() end
+			func = function() _G.REFlexDatabase = {}; _G.REFlexHonorDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
 			name = L["Purge previous seasons"],

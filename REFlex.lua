@@ -62,7 +62,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 253
+RE.Version = 254
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -79,6 +79,8 @@ RE.Season = 0
 RE.LDBTime = 0
 RE.LDBA = ""
 RE.LDBB = ""
+RE.LDBUpdate = true
+RE.LDBData = {["Won"] = 0, ["Lost"] = 0, ["HK"] = 0, ["Honor"] = 0}
 RE.SessionStart = time(date('!*t', GetServerTime()))
 
 RE.PlayerName = UnitName("PLAYER")
@@ -387,6 +389,7 @@ function RE:OnEvent(_, event, ...)
     if RE.LDBTime == 0 then
       RE:UpdateLDBTime()
     end
+    RE.LDBUpdate = true
     RE:UpdateLDB()
   elseif event == "CHAT_MSG_COMBAT_HONOR_GAIN" then
     local d = GetDate()
@@ -396,9 +399,7 @@ function RE:OnEvent(_, event, ...)
       RE.HDatabase[today] = 0
     end
     RE.HDatabase[today] = RE.HDatabase[today] + points
-    if points >= 100 then
-      RE:UpdateLDB()
-    end
+    RE:UpdateLDB()
   end
 end
 
@@ -792,8 +793,7 @@ function RE:UpdateLDBTime()
   if RE.Settings.LDBMode == 2 then
     RE.LDBTime = time(t) - RE.PlayerTimezone
   elseif RE.Settings.LDBMode == 3 then
-    local resetday, hour = RE:GetWeeklyResetDay(d.weekday)
-    t.hour = hour
+    local resetday = RE:GetWeeklyResetDay(d.weekday)
     RE.LDBTime = time(t) - (resetday * 86400) - RE.PlayerTimezone
   end
 end
@@ -801,12 +801,15 @@ end
 function RE:UpdateLDB()
   local savedFilters = RE.Settings.Filters
   RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.LDBTime, 0}, ["Season"] = 0}
-  local _, _, hk = RE:GetStats(1, nil, false)
-  local honor = RE:GetHonor()
-  local won, lost = RE:GetWinNumber(1, nil)
+  if RE.LDBUpdate then
+    RE.LDBUpdate = false
+    RE.LDBData.HK = select(3, RE:GetStats(1, nil, false))
+    RE.LDBData.Won, RE.LDBData.Lost = RE:GetWinNumber(1, nil)
+  end
+  RE.LDBData.Honor = RE:GetHonor()
   RE.Settings.Filters = savedFilters
 
-  RE.LDBA = "|cFF00FF00"..won.."|r|cFF9D9D9D-|r|cFFFF141C"..lost.."|r |cFF9D9D9D|||r |cFFCC9900"..honor.."|r |cFF9D9D9D|||r "..hk
+  RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..RE.LDBData.Honor.."|r |cFF9D9D9D|||r "..RE.LDBData.HK
   RE.LDBB = RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
   if ElvUI then
     RE.LDBA = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBA
