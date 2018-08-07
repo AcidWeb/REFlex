@@ -4,7 +4,7 @@ local _, RE = ...
 local mfloor = _G.math.floor
 
 function RE:UpdateSettings()
-  if RE.Settings.ConfigVersion < 250 then
+  if RE.Settings.ConfigVersion < 260 then
     if RE.Settings.ConfigVersion < 220 then
       RE.Settings.CurrentTab = 1
       RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["DateMode"] = 1}
@@ -22,10 +22,15 @@ function RE:UpdateSettings()
       RE.Settings.ConfigVersion = 240
     end
 
-    if not RE.Settings.Filters.DateMode then
-      RE.Settings.Filters.DateMode = 1
+    if RE.Settings.ConfigVersion < 250 then
+      if not RE.Settings.Filters.DateMode then
+        RE.Settings.Filters.DateMode = 1
+      end
+      RE.Settings.ConfigVersion = 250
     end
-    RE.Settings.ConfigVersion = 250
+
+    RE.Settings.ArenaStatsLimit = 3
+    RE.Settings.ConfigVersion = 260
   end
 end
 

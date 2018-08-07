@@ -1,9 +1,11 @@
 local _G = _G
 local _, RE = ...
+local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 local DUMP = LibStub("LibTextDump-1.0")
+local TOAST = LibStub("LibToast-1.0")
 
---GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS
+--GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS, LOCALIZED_CLASS_NAMES_MALE
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
@@ -111,6 +113,53 @@ function RE:GetArenaTeamCSV(databaseID, player)
 	end
 	tsort(team)
 	return tconcat(team, ",")
+end
+
+function RE:GetArenaTeamStats(mode)
+	local teamMatrix = {}
+	local payload = {}
+	for i=1, #RE.TableArena.filtered do
+		local databaseID = RE.TableArena.data[RE.TableArena.filtered[i]][11]
+		local faction = RE:GetFactionID(databaseID, false)
+		local win = RE:GetPlayerWin(databaseID, false)
+		local teamID = {}
+		for j=1, #RE.Database[databaseID].Players do
+			if RE.Database[databaseID].Players[j][6] == faction then
+				tinsert(teamID, RE.Database[databaseID].Players[j][9].."-"..RE.Database[databaseID].Players[j][16])
+			end
+		end
+		tsort(teamID)
+		teamID = tconcat(teamID, ";")
+		if teamMatrix[teamID] then
+			if win then
+				teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
+				teamMatrix[teamID].Win = teamMatrix[teamID].Win + 1
+			else
+				teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
+				teamMatrix[teamID].Loss = teamMatrix[teamID].Loss + 1
+			end
+		else
+			if win then
+				teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 1, ["Loss"] = 0}
+			else
+				teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 0, ["Loss"] = 1}
+			end
+		end
+	end
+	teamMatrix[""] = nil
+	for t, v in pairs(teamMatrix) do
+		if v.Count <= RE.Settings.ArenaStatsLimit then
+			teamMatrix[t] = nil
+		end
+	end
+	if mode == 1 then
+		RE:ForeachInOrder(teamMatrix, function(t, v) if #payload < 6 then tinsert(payload, {t, v.Count, v.Win, v.Loss}) end end, function(a,b) return teamMatrix[a].Count > teamMatrix[b].Count end)
+	elseif mode == 2 then
+		RE:ForeachInOrder(teamMatrix, function(t, v) if #payload < 6 then tinsert(payload, {t, v.Count, v.Win, v.Loss}) end end, function(a,b) return (teamMatrix[a].Win / teamMatrix[a].Count) > (teamMatrix[b].Win / teamMatrix[b].Count) end)
+	else
+		RE:ForeachInOrder(teamMatrix, function(t, v) if #payload < 6 then tinsert(payload, {t, v.Count, v.Win, v.Loss}) end end, function(a,b) return (teamMatrix[a].Loss / teamMatrix[a].Count) > (teamMatrix[b].Loss / teamMatrix[b].Count) end)
+	end
+	return payload
 end
 
 function RE:GetRGBTeamDetails(databaseID, player)
@@ -281,6 +330,39 @@ function RE:GetBGToast(databaseID)
 	tinsert(toast, RE:InsideToast(_G.DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
 	tinsert(toast, RE:InsideToast(_G.SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
 	return tconcat(toast, "")
+end
+
+function RE:GetArenaToast(mode)
+	if #RE.TableArena.filtered > 0 then
+		local payload = RE:GetArenaTeamStats(mode)
+		local title = "|cFF74D06CRE|r|cFFFFFFFFFlex|r"
+		local toast = {}
+		if mode == 1 then
+			title = title.." "..L["Most common teams"]
+		elseif mode == 2 then
+			title = title.." "..L["Easiest teams"]
+		else
+			title = title.." "..L["Hardest teams"]
+		end
+		for _, v in pairs(payload) do
+			local members = {strsplit(";", v[1])}
+			for i=1, #members do
+				local class, spec = strsplit("-", members[i])
+				tinsert(toast, "|c"..RAID_CLASS_COLORS[class]:GenerateHexColor()..LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r|n")
+			end
+			if mode == 1 then
+				tinsert(toast, "|cFFFFFFFF"..v[2].."|r | |cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r|n|n")
+			elseif mode == 2 then
+				tinsert(toast, "|cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r | |cFFFFFFFF"..v[2].."|n|n")
+			else
+				tinsert(toast, "|cFFFF0000"..v[4].."|r - |cFF00FF00"..v[3].."|r | |cFFFFFFFF"..v[2].."|n|n")
+			end
+		end
+		if #toast > 1 then
+			toast[#toast] = toast[#toast]:gsub("|n|n", "")
+			TOAST:Spawn("REFlexToastArena", title, tconcat(toast, ""))
+		end
+	end
 end
 
 function RE:GetFactionID(databaseID, player)
@@ -772,4 +854,15 @@ function RE:StrSub(str, startChar, numChars)
 		numChars = numChars -1
 	end
 	return str:sub(startIndex, currentIndex - 1)
+end
+
+function RE:ForeachInOrder(t, f, cmp)
+	local keys = {}
+	for k, _ in pairs(t) do
+		keys[#keys + 1] = k
+	end
+	tsort(keys,cmp)
+	for _, k in ipairs(keys) do
+		f(k, t[k])
+	end
 end

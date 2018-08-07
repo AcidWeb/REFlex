@@ -10,6 +10,44 @@ local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
+-- UIDropDownMenu taint workaround by foxlit
+if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
+	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
+		if UIDROPDOWNMENU_VALUE_PATCH_VERSION ~= 2 then
+			return
+		end
+		for i=1, UIDROPDOWNMENU_MAXLEVELS do
+			for j=1, UIDROPDOWNMENU_MAXBUTTONS do
+				local b = _G["DropDownList" .. i .. "Button" .. j]
+				if not (issecurevariable(b, "value") or b:IsShown()) then
+					b.value = nil
+					repeat
+						j, b["fx" .. j] = j+1
+					until issecurevariable(b, "value")
+				end
+			end
+		end
+	end)
+end
+if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
+	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
+	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
+		if UIDROPDOWNMENU_OPEN_PATCH_VERSION ~= 1 then
+			return
+		end
+		if UIDROPDOWNMENU_OPEN_MENU and UIDROPDOWNMENU_OPEN_MENU ~= frame
+		   and not issecurevariable(UIDROPDOWNMENU_OPEN_MENU, "displayMode") then
+			UIDROPDOWNMENU_OPEN_MENU = nil
+			local t, f, prefix, i = _G, issecurevariable, " \0", 1
+			repeat
+				i, t[prefix .. i] = i + 1
+			until f("UIDROPDOWNMENU_OPEN_MENU")
+		end
+	end)
+end
+
+--GLOBALS: UIDROPDOWNMENU_VALUE_PATCH_VERSION, UIDROPDOWNMENU_MAXLEVELS, UIDROPDOWNMENU_MAXBUTTONS, UIDROPDOWNMENU_OPEN_PATCH_VERSION, UIDROPDOWNMENU_OPEN_MENU, issecurevariable
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
 local strmatch = _G.string.match
@@ -228,6 +266,17 @@ function RE:OnEvent(_, event, ...)
         toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
       else
         toast:SetSoundFile([[Sound\Doodad\BellTollAlliance.ogg]])
+        toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
+      end
+    end)
+    TOAST:Register("REFlexToastArena", function(toast, title, payload)
+      toast:SetFormattedTitle(title)
+      toast:SetFormattedText(payload)
+      toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
+      toast:MakePersistent()
+      if RE.PlayerFaction == 0 then
+        toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
+      else
         toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
       end
     end)
@@ -570,6 +619,11 @@ function RE:OnBracketChange(_, bracket)
   RE:UpdateGUI()
 end
 
+function RE:OnArenaStatsClick(self)
+  _G.CloseDropDownMenus()
+  _G.EasyMenu(RE.StatsDropDown, _G.REFlexStatsDropDown, self, 0 , 0, "MENU")
+end
+
 function RE:OnDateChange(_, mode)
   RE.Settings.Filters.DateMode = mode
   RE.Settings.Filters.Season = 0
@@ -620,6 +674,7 @@ function RE:UpdateGUI()
     RE.TableBG.frame:Show()
     RE.TableArena.frame:Hide()
     RE.BracketDropDown:SetDisabled(true)
+    _G.REFlexFrame_StatsButton:Hide()
     if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
       RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
       if RE.PrepareGUI then
@@ -665,6 +720,7 @@ function RE:UpdateGUI()
     RE.TableArena.frame:Show()
     RE.TableBG.frame:Hide()
     RE.BracketDropDown:SetDisabled(false)
+    _G.REFlexFrame_StatsButton:Show()
     if RE.Settings.CurrentTab < 4 or RE.PrepareGUI then
       RE.MapDropDown:SetList(RE.MapListLongArena, RE.MapListLongOrderArena)
       if RE.PrepareGUI then

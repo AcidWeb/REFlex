@@ -17,6 +17,7 @@ RE.DefaultConfig = {
 	["FirstTime"] = true,
 	["LDBMode"] = 3,
 	["LDBSide"] = "A",
+	["ArenaStatsLimit"] = 3,
 	["ConfigVersion"] = RE.Version
 }
 
@@ -146,6 +147,12 @@ for classID=1, MAX_CLASSES do
 	end
 end
 
+RE.StatsDropDown = {
+	{ text = L["Most common teams"], notCheckable = true, func = function() RE:GetArenaToast(1) end },
+	{ text = L["Easiest teams"], notCheckable = true, func = function() RE:GetArenaToast(2) end },
+	{ text = L["Hardest teams"], notCheckable = true, func = function() RE:GetArenaToast(3) end }
+}
+
 RE.AceConfig = {
 	type = "group",
 	args = {
@@ -175,12 +182,24 @@ RE.AceConfig = {
 			set = function(_, val) RE.Settings.ShowServerName = val end,
 			get = function(_) return RE.Settings.ShowServerName end
 		},
+		arenalimit = {
+			name = L["Arena composition statistics limit"],
+			desc = L["A minimal number of matches required to be included in arena team composition statistics."],
+			type = "range",
+			width = "double",
+			order = 4,
+			min = 1,
+			max = 10,
+			step = 1,
+			set = function(_, val) RE.Settings.ArenaStatsLimit = val end,
+			get = function(_) return RE.Settings.ArenaStatsLimit end
+		},
 		ldbmode = {
 			name = L["LDB feed display mode"],
 			desc = L["Rating display always compares the values with the previous week."],
 			type = "select",
 			width = "double",
-			order = 4,
+			order = 5,
 			values = {
 				[1] = L["Current session"],
 				[2] = _G.HONOR_TODAY,
@@ -195,7 +214,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 5,
+			order = 6,
 			func = function() _G.REFlexDatabase = {}; _G.REFlexHonorDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
@@ -204,7 +223,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 6,
+			order = 7,
 			func = function() RE:SeasonPurge(); ReloadUI() end
 		}
 	}

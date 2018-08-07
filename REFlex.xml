@@ -6,6 +6,8 @@
 	<Script file="REFlexStructures.lua"/>
 	<Script file="REFlexUpdater.lua"/>
 
+	<Frame name="REFlexStatsDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true"/>
+
 	<Frame name="REFlexFrame" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Scripts>
 			<OnLoad>REFlex:OnLoad(self)</OnLoad>
@@ -75,6 +77,21 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>REFlex:DumpCSV()</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_StatsButton" text="S" inherits="UIPanelButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parent_DumpButton" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>REFlex:OnArenaStatsClick(self)</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
