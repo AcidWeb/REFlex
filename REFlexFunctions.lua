@@ -9,7 +9,6 @@ local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
-local GetServerTime = _G.GetServerTime
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
 local GetQuestLineQuests = _G.C_QuestLine.GetQuestLineQuests
 local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
@@ -160,6 +159,17 @@ function RE:GetHonor()
 	local honor = 0
 	local from = RE.Settings.Filters.Date[1]
 	local to = RE.Settings.Filters.Date[2]
+	if RE.Settings.LDBMode == 1 then
+		from = RE:ParseUTCTimestamp()
+	elseif RE.Settings.LDBMode == 3 then
+		if RE.PlayerZone == "US" then
+			from = from - 54000
+		elseif RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
+			from = from - 82800
+		else
+			from = from - 25200
+		end
+	end
 	for t, v in pairs(RE.HDatabase) do
 		if t >= from and (to == 0 or t <= to) then
 			honor = honor + v
@@ -399,9 +409,9 @@ end
 function RE:DateClean(timeRaw)
 	-- Barbarian friendly
 	if RE.PlayerZone == "US" then
-		return date("%I:%M %p %m/%d/%y", timeRaw + RE.PlayerTimezone)
+		return date("%I:%M %p %m/%d/%y", timeRaw + (RE.PlayerTimezone * 3600))
 	else
-		return date("%H:%M %d.%m.%y", timeRaw + RE.PlayerTimezone)
+		return date("%H:%M %d.%m.%y", timeRaw + (RE.PlayerTimezone * 3600))
 	end
 end
 
@@ -515,12 +525,12 @@ function RE:CalendarParser()
 	if RE.CalendarMode == 1 then
 		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 0}
 		PlaySound(624)
-		RE.Settings.Filters.Date[1] = time(t) - RE.PlayerTimezone
+		RE.Settings.Filters.Date[1] = time(t) - (RE.PlayerTimezone * 3600)
 		RE.CalendarMode = 2
 	elseif RE.CalendarMode == 2 then
-		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 24, min = 59, sec = 59}
+		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 23, min = 59, sec = 59}
 		PlaySound(624)
-		RE.Settings.Filters.Date[2] = time(t) - RE.PlayerTimezone
+		RE.Settings.Filters.Date[2] = time(t) - (RE.PlayerTimezone * 3600)
 		_G.CalendarFrame:Hide()
 		RE:UpdateGUI()
 	end
@@ -593,7 +603,7 @@ function RE:SeasonPurge()
 end
 
 function RE:HiddenPurge()
-	local currentTime = time(date('!*t', GetServerTime()))
+	local currentTime = RE:GetUTCTimestamp()
 	local toWipe = {}
 	for i=1, #RE.Database do
 		if RE.Database[i].Hidden and currentTime - RE.Database[i].Time > 604800 then
@@ -665,7 +675,8 @@ function RE:GetConquestPoints()
 	return objectives[1].numFulfilled, objectives[1].numRequired
 end
 
-function RE:GetWeeklyResetDay(weekday)
+function RE:GetWeeklyResetDay()
+	local weekday = date("!*t").wday
 	local resetday, hour
 	if RE.PlayerZone == "US" then
 		hour = 15
@@ -687,6 +698,30 @@ function RE:GetWeeklyResetDay(weekday)
 		end
 	end
 	return resetday, hour
+end
+
+function RE:GetUTCTimestamp(timezone)
+	local d1 = date("*t")
+	local d2 = date("!*t")
+	d2.isdst = d1.isdst
+	local utc = time(d2)
+	if timezone then
+		local player = time(d1)
+		return utc, RE:Round((player - utc) / 3600, 0)
+	else
+		return utc
+	end
+end
+
+function RE:ParseUTCTimestamp(month)
+	local d1 = date("*t")
+	local d2 = date("!*t")
+	d2.isdst = d1.isdst
+	if month then
+		return time(d2) - (86400 * (d1.day - 1)) - (3600 * d1.hour) - (60 * d1.min) - d1.sec
+	else
+		return time(d2) - (3600 * d1.hour) - (60 * d1.min) - d1.sec
+	end
 end
 
 function RE:Round(num, idp)

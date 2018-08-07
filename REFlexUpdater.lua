@@ -31,7 +31,7 @@ end
 
 function RE:UpdateDatabase()
   for i=1, #RE.Database do
-    if RE.Database[i].Version < 235 then
+    if RE.Database[i].Version < 260 then
       if RE.Database[i].Version < 224 then
         if RE.Database[i].Map == 1681 then
           RE.Database[i].Map = 529
@@ -61,10 +61,15 @@ function RE:UpdateDatabase()
         RE.Database[i].Version = 230
       end
 
-      if RE.Database[i].isArena and RE.Database[i].isRated and RE.Database[i].isBrawl then
-        RE.Database[i].Hidden = true
+      if RE.Database[i].Version < 235 then
+        if RE.Database[i].isArena and RE.Database[i].isRated and RE.Database[i].isBrawl then
+          RE.Database[i].Hidden = true
+        end
+        RE.Database[i].Version = 235
       end
-      RE.Database[i].Version = 235
+
+      RE.Database[i].Time = RE.Database[i].Time - (RE.PlayerTimezone * 3600)
+      RE.Database[i].Version = 260
     end
   end
 end

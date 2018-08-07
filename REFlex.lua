@@ -13,7 +13,7 @@ _G.REFlex = RE
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
 local strmatch = _G.string.match
-local time, date, pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.time, _G.date, _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
+local pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
 local StaticPopup_Show = _G.StaticPopup_Show
 local IsAltKeyDown = _G.IsAltKeyDown
@@ -42,10 +42,8 @@ local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
 local GetNumBattlefieldStats = _G.GetNumBattlefieldStats
 local GetBattlefieldInstanceRunTime = _G.GetBattlefieldInstanceRunTime
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
-local GetServerTime = _G.GetServerTime
 local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
-local GetDate = _G.C_Calendar.GetDate
 local UnitName = _G.UnitName
 local UnitLevel = _G.UnitLevel
 local UnitFactionGroup = _G.UnitFactionGroup
@@ -62,7 +60,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 254
+RE.Version = 260
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -81,12 +79,10 @@ RE.LDBA = ""
 RE.LDBB = ""
 RE.LDBUpdate = true
 RE.LDBData = {["Won"] = 0, ["Lost"] = 0, ["HK"] = 0, ["Honor"] = 0}
-RE.SessionStart = time(date('!*t', GetServerTime()))
 
 RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
-RE.PlayerTimezone = mfloor(((time() - time(date('!*t', GetServerTime()))) + 0.5) / 3600) * 3600
 
 local function ElvUISwag(sender)
   if sender == "Livarax-BurningLegion" then
@@ -96,6 +92,7 @@ local function ElvUISwag(sender)
 end
 
 function RE:OnLoad(self)
+  RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
   self:RegisterEvent("ADDON_LOADED")
   self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
   self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
@@ -392,8 +389,7 @@ function RE:OnEvent(_, event, ...)
     RE.LDBUpdate = true
     RE:UpdateLDB()
   elseif event == "CHAT_MSG_COMBAT_HONOR_GAIN" then
-    local d = GetDate()
-    local today = time({day = d.monthDay, month = d.month, year = d.year, hour = 0}) - RE.PlayerTimezone
+    local today = RE:ParseUTCTimestamp()
     local points = tonumber(strmatch(select(1, ...), "%d+"))
     if not RE.HDatabase[today] then
       RE.HDatabase[today] = 0
@@ -575,24 +571,19 @@ function RE:OnBracketChange(_, bracket)
 end
 
 function RE:OnDateChange(_, mode)
-  local d = GetDate()
-  local t = {day = d.monthDay, month = d.month, year = d.year, hour = 0}
   RE.Settings.Filters.DateMode = mode
   RE.Settings.Filters.Season = 0
   if mode == 1 then
     RE.Settings.Filters.Date = {0, 0}
   elseif mode == 2 then
-    RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
+    RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(), 0}
   elseif mode == 3 then
-    RE.Settings.Filters.Date = {time(t) - 86400 - RE.PlayerTimezone, time(t) - RE.PlayerTimezone}
+    RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - 86400, RE:ParseUTCTimestamp()}
   elseif mode == 4 then
-    local resetday, hour = RE:GetWeeklyResetDay(d.weekday)
-    t.hour = hour
-    RE.Settings.Filters.Date = {time(t) - (resetday * 86400) - RE.PlayerTimezone, 0}
+    local resetday, hour = RE:GetWeeklyResetDay()
+    RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600), 0}
   elseif mode == 5 then
-    t.day = 1
-    t.hour = 0
-    RE.Settings.Filters.Date = {time(t) - RE.PlayerTimezone, 0}
+    RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(true), 0}
   elseif mode == 6 then
     RE.Settings.Filters.Date = {0, 0}
     RE.Settings.Filters.Season = RE.Season
@@ -787,14 +778,12 @@ function RE:UpdateConfig()
 end
 
 function RE:UpdateLDBTime()
-  local d = GetDate()
-  local t = {day = d.monthDay, month = d.month, year = d.year, hour = 0}
   RE.LDBTime = RE.SessionStart
   if RE.Settings.LDBMode == 2 then
-    RE.LDBTime = time(t) - RE.PlayerTimezone
+    RE.LDBTime = RE:ParseUTCTimestamp()
   elseif RE.Settings.LDBMode == 3 then
-    local resetday = RE:GetWeeklyResetDay(d.weekday)
-    RE.LDBTime = time(t) - (resetday * 86400) - RE.PlayerTimezone
+    local resetday, hour = RE:GetWeeklyResetDay()
+    RE.LDBTime = RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600)
   end
 end
 
@@ -830,7 +819,7 @@ function RE:PVPEnd()
   RE.MatchData.PlayersNum = GetNumBattlefieldScores()
   RE.MatchData.StatsNum = GetNumBattlefieldStats()
   RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
-  RE.MatchData.Time = time(date('!*t', GetServerTime()))
+  RE.MatchData.Time = RE:GetUTCTimestamp()
   RE.MatchData.isBrawl = IsInBrawl()
   RE.MatchData.Version = RE.Version
 
