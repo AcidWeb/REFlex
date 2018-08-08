@@ -758,14 +758,14 @@ function RE:GetConquestPoints()
 end
 
 function RE:GetWeeklyResetDay()
-	local weekday = date("!*t").wday
+	local d = date("!*t")
 	local resetday, hour
 	if RE.PlayerZone == "US" then
 		hour = 15
-		if weekday >= 3 then
-			resetday = weekday - 3
+		if d.wday >= 3 then
+			resetday = d.wday - 3
 		else
-			resetday = weekday + 4
+			resetday = d.wday + 4
 		end
 	else
 		if RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
@@ -773,11 +773,14 @@ function RE:GetWeeklyResetDay()
 		else
 			hour = 7
 		end
-		if weekday >= 4 then
-			resetday = weekday - 4
+		if d.wday >= 4 then
+			resetday = d.wday - 4
 		else
-			resetday = weekday + 3
+			resetday = d.wday + 3
 		end
+	end
+	if resetday == 0 and d.hour < hour then
+		resetday = 7
 	end
 	return resetday, hour
 end
