@@ -212,11 +212,11 @@ function RE:GetHonor()
 		from = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
 		if RE.PlayerZone == "US" then
-			from = from - 54000
+			from = from - 54000 - (3600 * RE.PlayerTimezone)
 		elseif RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
-			from = from - 82800
+			from = from - 82800 - (3600 * RE.PlayerTimezone)
 		else
-			from = from - 25200
+			from = from - 25200 - (3600 * RE.PlayerTimezone)
 		end
 	end
 	for t, v in pairs(RE.HDatabase) do
@@ -225,6 +225,13 @@ function RE:GetHonor()
 		end
 	end
 	return honor
+end
+
+function RE:GetSessionHonor()
+	local savedFilters = RE.Settings.Filters
+	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.SessionStart, 0}, ["Season"] = 0}
+	RE.SessionHonor = RE:GetHonor()
+	RE.Settings.Filters = savedFilters
 end
 
 function RE:GetStats(filter, arena, skipLatest)

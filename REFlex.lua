@@ -392,6 +392,10 @@ function RE:OnEvent(_, event, ...)
       ElvUI[1]:GetModule("Chat"):AddPluginIcons(ElvUISwag)
     end
 
+    if RE.Settings.LDBMode == 1 then
+      RE:GetSessionHonor()
+    end
+
     RE:UpdateBGData(true)
     RE:UpdateArenaData(true)
   elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
@@ -834,13 +838,15 @@ function RE:UpdateConfig()
 end
 
 function RE:UpdateLDBTime()
-  RE.LDBTime = RE.SessionStart
-  if RE.Settings.LDBMode == 2 then
-    RE.LDBTime = RE:ParseUTCTimestamp()
-  elseif RE.Settings.LDBMode == 3 then
-    local resetday, hour = RE:GetWeeklyResetDay()
-    RE.LDBTime = RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600)
-  end
+	RE.LDBTime = RE.SessionStart
+	if RE.Settings.LDBMode == 1 and not RE.SessionHonor then
+		RE:GetSessionHonor()
+	elseif RE.Settings.LDBMode == 2 then
+		RE.LDBTime = RE:ParseUTCTimestamp()
+	elseif RE.Settings.LDBMode == 3 then
+		local resetday, hour = RE:GetWeeklyResetDay()
+		RE.LDBTime = RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600)
+	end
 end
 
 function RE:UpdateLDB()
@@ -852,6 +858,9 @@ function RE:UpdateLDB()
     RE.LDBData.Won, RE.LDBData.Lost = RE:GetWinNumber(1, nil)
   end
   RE.LDBData.Honor = RE:GetHonor()
+  if RE.Settings.LDBMode == 1 then
+    RE.LDBData.Honor = RE.LDBData.Honor - RE.SessionHonor
+  end
   RE.Settings.Filters = savedFilters
 
   RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..RE.LDBData.Honor.."|r |cFF9D9D9D|||r "..RE.LDBData.HK
