@@ -64,6 +64,7 @@ local IsInBrawl = _G.C_PvP.IsInBrawl
 local IsWargame = _G.IsWargame
 local IsArenaSkirmish = _G.IsArenaSkirmish
 local IsRatedBattleground = _G.IsRatedBattleground
+local IsPlayerAtEffectiveMaxLevel = _G.IsPlayerAtEffectiveMaxLevel
 local GetBrawlInfo = _G.C_PvP.GetBrawlInfo
 local GetBrawlRewards = _G.C_PvP.GetBrawlRewards
 local GetNumSpecializations = _G.GetNumSpecializations
@@ -83,7 +84,6 @@ local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
 local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
 local UnitName = _G.UnitName
-local UnitLevel = _G.UnitLevel
 local UnitFactionGroup = _G.UnitFactionGroup
 local UnitHonor = _G.UnitHonor
 local UnitHonorMax = _G.UnitHonorMax
@@ -93,12 +93,13 @@ local RequestRandomBattlegroundInstanceInfo = _G.RequestRandomBattlegroundInstan
 local HasArenaSkirmishWinToday = _G.C_PvP.HasArenaSkirmishWinToday
 local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = _G.C_Timer.After
+local AbbreviateNumbers = _G.AbbreviateNumbers
 local UIParentLoadAddOn = _G.UIParentLoadAddOn
 local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 260
+RE.Version = 261
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -132,6 +133,7 @@ end
 function RE:OnLoad(self)
 	RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
 	self:RegisterEvent("ADDON_LOADED")
+	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
@@ -243,9 +245,6 @@ function RE:OnEvent(_, event, ...)
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
 		RE:HiddenPurge()
-		RequestRatedInfo()
-		RequestPVPRewards()
-		RequestRandomBattlegroundInstanceInfo()
 
 		PanelTemplates_SetNumTabs(_G.REFlexFrame, 6)
 		PanelTemplates_SetTab(_G.REFlexFrame, RE.Settings.CurrentTab)
@@ -293,6 +292,7 @@ function RE:OnEvent(_, event, ...)
 		})
 		function RE.LDB:OnEnter()
 			local brawlInfo = GetBrawlInfo()
+			local mod = 0
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
 			RE.Tooltip:SmartAnchorTo(self)
 			if ElvUI then
@@ -304,10 +304,10 @@ function RE:OnEvent(_, event, ...)
 			RE.Tooltip:SetCell(1, 1, "|cFFFFD100".._G.DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine(_G.BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddLine(_G.ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			if brawlInfo and brawlInfo.active then
+			if IsPlayerAtEffectiveMaxLevel() and brawlInfo and brawlInfo.active then
 				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			else
-				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, "|TInterface\\RaidFrame\\ReadyCheck-Waiting:0|t")
+				mod = 1
 			end
 			RE.Tooltip:AddSeparator()
 			for _, i in pairs({1, 2, 4}) do
@@ -315,15 +315,15 @@ function RE:OnEvent(_, event, ...)
 			end
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(10, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:SetCell(10 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
-			RE.Tooltip:SetCell(11, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
-			if UnitLevel("player") == _G.MAX_PLAYER_LEVEL and GetCurrentArenaSeason() > 0 then
+			RE.Tooltip:SetCell(11 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
+			if IsPlayerAtEffectiveMaxLevel() and GetCurrentArenaSeason() > 0 then
 				local current, max = RE:GetConquestPoints()
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(12, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(12 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(13, 1, current.." / "..max, "CENTER", 2)
+				RE.Tooltip:SetCell(13 - mod, 1, current.." / "..max, "CENTER", 2)
 			end
 			RE.Tooltip:Show()
 		end
@@ -398,6 +398,11 @@ function RE:OnEvent(_, event, ...)
 
 		RE:UpdateBGData(true)
 		RE:UpdateArenaData(true)
+	elseif event == "PLAYER_LOGIN" then
+		RequestRatedInfo()
+		RequestPVPRewards()
+		RequestRandomBattlegroundInstanceInfo()
+		GetBrawlInfo()
 	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
 		hooksecurefunc("CalendarDayButton_Click", RE.CalendarParser)
 		_G.CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
@@ -418,6 +423,7 @@ function RE:OnEvent(_, event, ...)
 			RequestRatedInfo()
 			RequestPVPRewards()
 			RequestRandomBattlegroundInstanceInfo()
+			GetBrawlInfo()
 		end
 		if instanceType == "pvp" or instanceType == "arena" then
 			RE.Match = true
@@ -666,6 +672,7 @@ function RE:UpdateGUI()
 		RequestRatedInfo()
 		RequestPVPRewards()
 		RequestRandomBattlegroundInstanceInfo()
+		GetBrawlInfo()
 		for i=1, GetNumSpecializations() do
 			local Spec = select(2, GetSpecializationInfo(i))
 			RE.SpecDropDown:AddItem(Spec, Spec)
@@ -675,8 +682,8 @@ function RE:UpdateGUI()
 		RE.DateDropDown:SetValue(RE.Settings.Filters.DateMode)
 	end
 	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
-		RE.TableBG.frame:Show()
-		RE.TableArena.frame:Hide()
+		RE.TableBG:Show()
+		RE.TableArena:Hide()
 		RE.BracketDropDown:SetDisabled(true)
 		_G.REFlexFrame_StatsButton:Hide()
 		if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
@@ -719,10 +726,11 @@ function RE:UpdateGUI()
 		_G.REFlexFrame_ScoreHolder_Damage3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(damage))
 		_G.REFlexFrame_ScoreHolder_Healing2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topHealing))
 		_G.REFlexFrame_ScoreHolder_Healing3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(healing))
-		RE:HKBarUpdate()
+		RE.TableBG:Hide()
+		RE.TableBG:Show()
 	elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) > 3 then
-		RE.TableArena.frame:Show()
-		RE.TableBG.frame:Hide()
+		RE.TableArena:Show()
+		RE.TableBG:Hide()
 		RE.BracketDropDown:SetDisabled(false)
 		_G.REFlexFrame_StatsButton:Show()
 		if RE.Settings.CurrentTab < 4 or RE.PrepareGUI then
@@ -765,7 +773,10 @@ function RE:UpdateGUI()
 		_G.REFlexFrame_ScoreHolder_Damage3:SetText("")
 		_G.REFlexFrame_ScoreHolder_Healing2:SetText("")
 		_G.REFlexFrame_ScoreHolder_Healing3:SetText("")
+		RE.TableArena:Hide()
+		RE.TableArena:Show()
 	end
+	RE:HKBarUpdate()
 	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(_G.REFlexFrame)
 end
 
@@ -863,7 +874,7 @@ function RE:UpdateLDB()
 	end
 	RE.Settings.Filters = savedFilters
 
-	RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..RE.LDBData.Honor.."|r |cFF9D9D9D|||r "..RE.LDBData.HK
+	RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..AbbreviateNumbers(RE.LDBData.Honor).."|r |cFF9D9D9D|||r "..AbbreviateNumbers(RE.LDBData.HK)
 	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
 	if ElvUI then
 		RE.LDBA = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBA
