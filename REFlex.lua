@@ -99,7 +99,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 261
+RE.Version = 262
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -697,7 +697,7 @@ function RE:UpdateGUI()
 			end
 		end
 		if #RE.TableBG.data == 0 then
-			RE.TableBG.cols[1].sort = "asc"
+			RE.TableBG.cols[1].sort = ST.SORT_ASC
 		end
 		RE.TableBG:SetData(RE.BGData, true)
 		if PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 1 then
@@ -744,7 +744,7 @@ function RE:UpdateGUI()
 			end
 		end
 		if #RE.TableArena.data == 0 then
-			RE.TableArena.cols[1].sort = "asc"
+			RE.TableArena.cols[1].sort = ST.SORT_ASC
 		end
 		RE.TableArena:SetData(RE.ArenaData, true)
 		if PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 4 then

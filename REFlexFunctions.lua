@@ -4,6 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 local DUMP = LibStub("LibTextDump-1.0")
 local TOAST = LibStub("LibToast-1.0")
+local ST = LibStub("ScrollingTable")
 
 --GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS, LOCALIZED_CLASS_NAMES_MALE
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
@@ -515,7 +516,7 @@ end
 
 function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
 	local column = obj.cols[sortbycol]
-	local direction = column.sort or column.defaultsort or "asc"
+	local direction = column.sort or column.defaultsort or ST.SORT_ASC
 	local rowA, rowB
 	if inside > 0 then
 		rowA = obj.data[rowa][inside]
@@ -527,7 +528,7 @@ function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
 	if rowA == rowB then
 		return false
 	else
-		if direction:lower() == "asc" then
+		if direction == ST.SORT_ASC then
 			return rowA > rowB
 		else
 			return rowA < rowB
