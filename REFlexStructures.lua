@@ -24,6 +24,7 @@ RE.DefaultConfig = {
 RE.MapList = {
 	[30] = GetRealZoneText(30),
 	[529] = GetRealZoneText(529),
+	[1691] = GetRealZoneText(1691),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
 	[968] = GetRealZoneText(566),
@@ -55,6 +56,7 @@ RE.MapListLongBG = {
 	[1] = ALL,
 	[30] = GetRealZoneText(30),
 	[529] = GetRealZoneText(529),
+	[1691] = GetRealZoneText(1691),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
 	[628] = GetRealZoneText(628),
@@ -83,7 +85,7 @@ RE.MapListLongArena = {
 }
 
 RE.MapListLongOrderBG = {
-	1, 30, 529, 1105, 566, 628, 1803, 727, 607, 1280, 998, 761, 726, 489
+	1, 30, 529, 1691, 1105, 566, 628, 1803, 727, 607, 1280, 998, 761, 726, 489
 }
 
 RE.MapListLongOrderArena = {
@@ -104,6 +106,7 @@ RE.MapListStat = {
 	[628] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[607] = {false, "Interface\\MINIMAP\\Vehicle-AllianceCart", "Interface\\MINIMAP\\Suramar_Door_Icon"},
 	[1803] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
+	[1691] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
 }
 
 RE.RaceIcons = {
