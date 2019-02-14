@@ -11,25 +11,6 @@ local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
 -- UIDropDownMenu taint workaround by foxlit
-if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
-	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		if UIDROPDOWNMENU_VALUE_PATCH_VERSION ~= 2 then
-			return
-		end
-		for i=1, UIDROPDOWNMENU_MAXLEVELS do
-			for j=1, UIDROPDOWNMENU_MAXBUTTONS do
-				local b = _G["DropDownList" .. i .. "Button" .. j]
-				if not (issecurevariable(b, "value") or b:IsShown()) then
-					b.value = nil
-					repeat
-						j, b["fx" .. j] = j+1
-					until issecurevariable(b, "value")
-				end
-			end
-		end
-	end)
-end
 if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
 	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
 	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
@@ -43,6 +24,31 @@ if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
 			repeat
 				i, t[prefix .. i] = i + 1
 			until f("UIDROPDOWNMENU_OPEN_MENU")
+		end
+	end)
+end
+if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 1 then
+	COMMUNITY_UIDD_REFRESH_PATCH_VERSION = 1
+	local function CleanDropdowns()
+		if COMMUNITY_UIDD_REFRESH_PATCH_VERSION ~= 1 then
+			return
+		end
+		local f, f2 = FriendsFrame, FriendsTabHeader
+		local s = f:IsShown()
+		f:Hide()
+		f:Show()
+		if not f2:IsShown() then
+			f2:Show()
+			f2:Hide()
+		end
+		if not s then
+			f:Hide()
+		end
+	end
+	hooksecurefunc("Communities_LoadUI", CleanDropdowns)
+	hooksecurefunc("SetCVar", function(n)
+		if n == "lastSelectedClubId" then
+			CleanDropdowns()
 		end
 	end)
 end
@@ -99,7 +105,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 263
+RE.Version = 264
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 

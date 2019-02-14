@@ -13,13 +13,11 @@ local sgsub, sbyte = _G.string.gsub, _G.string.byte
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
-local GetQuestLineQuests = _G.C_QuestLine.GetQuestLineQuests
-local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
+local QuestUtils_GetCurrentQuestLineQuest = _G.QuestUtils_GetCurrentQuestLineQuest
 local HaveQuestData = _G.HaveQuestData
+local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = _G.StaticPopup_Hide
-local IsOnQuest = _G.C_QuestLog.IsOnQuest
-local IsQuestFlaggedCompleted = _G.IsQuestFlaggedCompleted
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -747,16 +745,9 @@ function RE:DumpCSV()
 end
 
 function RE:GetConquestPoints()
-	local quests = GetQuestLineQuests(782)
-	local currentQuestID = quests[1]
-	for _, questID in ipairs(quests) do
-		if not IsQuestFlaggedCompleted(questID) and not IsOnQuest(questID) then
-			break
-		end
-		currentQuestID = questID
-	end
-	if not HaveQuestData(currentQuestID) then
-		return 0, 0
+	local currentQuestID = QuestUtils_GetCurrentQuestLineQuest(782)
+	if currentQuestID == 0 or not HaveQuestData(currentQuestID) then
+		return 500, 500
 	end
 	local objectives = GetQuestObjectives(currentQuestID)
 	if not objectives or not objectives[1] then
