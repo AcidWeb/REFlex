@@ -105,7 +105,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 264
+RE.Version = 265
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -905,14 +905,8 @@ function RE:PVPEnd()
 	RE.MatchData.isBrawl = IsInBrawl()
 	RE.MatchData.Version = RE.Version
 
-	if RE.MatchData.Map == 968 then
-		RE.MatchData.Map = 566
-	end
-	if RE.MatchData.Map == 1035 then
-		RE.MatchData.Map = 998
-	end
-	if RE.MatchData.Map == 1681 then
-		RE.MatchData.Map = 529
+	if RE.MapIDRemap[RE.MatchData.Map] then
+		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
 	if (IsRatedBattleground() and not IsWargame()) or (RE.MatchData.isArena and not IsArenaSkirmish()) then

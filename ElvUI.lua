@@ -22,7 +22,7 @@ function AS:REFlex()
     AS:SkinTab(_G["REFlexFrameTab"..i])
   end
   _G.REFlexFrame_Title:SetPoint("TOP", 0, -10)
-  _G.REFlexFrame_HKBar:SetPoint("BOTTOM", 0, 19)
+  _G.REFlexFrame_HKBar:SetPoint("BOTTOM", 0, 18)
 end
 
 AS:RegisterSkin("REFlex", AS.REFlex)

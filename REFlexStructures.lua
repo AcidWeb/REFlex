@@ -23,7 +23,7 @@ RE.DefaultConfig = {
 
 RE.MapList = {
 	[30] = GetRealZoneText(30),
-	[529] = GetRealZoneText(529),
+	[2107] = GetRealZoneText(2107),
 	[1691] = GetRealZoneText(1691),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
@@ -31,13 +31,13 @@ RE.MapList = {
 	[628] = GetRealZoneText(628),
 	[727] = GetRealZoneText(727),
 	[607] = GetRealZoneText(607),
-	[998] = GetRealZoneText(998),
-	[1035] = GetRealZoneText(998),
+	[1035] = GetRealZoneText(1035),
 	[761] = GetRealZoneText(761),
 	[726] = GetRealZoneText(726),
-	[489] = GetRealZoneText(489),
+	[2106] = GetRealZoneText(2106),
 	[1280] = GetRealZoneText(1280),
 	[1803] = GetRealZoneText(1803),
+	[2118] = GetRealZoneText(2118),
 	[1552] = RE:GetShortMapName(GetRealZoneText(1552)),
 	[1504] = RE:GetShortMapName(GetRealZoneText(1504)),
 	[562] = RE:GetShortMapName(GetRealZoneText(1672)),
@@ -55,7 +55,7 @@ RE.MapList = {
 RE.MapListLongBG = {
 	[1] = ALL,
 	[30] = GetRealZoneText(30),
-	[529] = GetRealZoneText(529),
+	[2107] = GetRealZoneText(2107),
 	[1691] = GetRealZoneText(1691),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
@@ -64,10 +64,11 @@ RE.MapListLongBG = {
 	[727] = GetRealZoneText(727),
 	[607] = GetRealZoneText(607),
 	[1280] = GetRealZoneText(1280),
-	[998] = GetRealZoneText(998),
+	[1035] = GetRealZoneText(1035),
 	[761] = GetRealZoneText(761),
 	[726] = GetRealZoneText(726),
-	[489] = GetRealZoneText(489)
+	[2106] = GetRealZoneText(2106),
+	[2118] = GetRealZoneText(2118),
 }
 
 RE.MapListLongArena = {
@@ -85,7 +86,7 @@ RE.MapListLongArena = {
 }
 
 RE.MapListLongOrderBG = {
-	1, 30, 529, 1691, 1105, 566, 628, 1803, 727, 607, 1280, 998, 761, 726, 489
+	1, 30, 2118, 2107, 1691, 1105, 566, 628, 1803, 727, 607, 1280, 1035, 761, 726, 2106
 }
 
 RE.MapListLongOrderArena = {
@@ -93,13 +94,13 @@ RE.MapListLongOrderArena = {
 }
 
 RE.MapListStat = {
-	[489] = {true, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture", "Interface\\WorldStateFrame\\ColumnIcon-FlagReturn"},
+	[2106] = {true, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture", "Interface\\WorldStateFrame\\ColumnIcon-FlagReturn"},
 	[726] = {true, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture", "Interface\\WorldStateFrame\\ColumnIcon-FlagReturn"},
-	[529] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
+	[2107] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[566] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
 	[567] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend", "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
 	[761] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
-	[998] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2", "Interface\\GroupFrame\\UI-Group-MasterLooter"},
+	[1035] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2", "Interface\\GroupFrame\\UI-Group-MasterLooter"},
 	[1105] = {true, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture", "Interface\\WorldStateFrame\\ColumnIcon-FlagReturn", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[727] = {false, "Interface\\MINIMAP\\Vehicle-SilvershardMines-MineCart"},
 	[30] = {true, "Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture", "Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
@@ -129,7 +130,8 @@ RE.RaceIcons = {
 	["Lightforged Draenei"] = {0.5, 0.625, 0, 0.25},
 	["Dark Iron Dwarf"] = {0.125, 0.25, 0, 0.25},
 	["Mag'har Orc"] = {0.375, 0.5, 0.25, 0.5},
-	["Zandalari Troll"] = {0.25, 0.375, 0.25, 0.5}
+	["Zandalari Troll"] = {0.25, 0.375, 0.25, 0.5},
+	["Kul Tiran"] = {0, 0.125, 0, 0.25}
 }
 
 RE.BracketNames = {
@@ -137,6 +139,11 @@ RE.BracketNames = {
 	ARENA_3V3,
 	"",
 	BATTLEGROUND_10V10
+}
+
+RE.MapIDRemap = {
+	[968] = 566,
+	[1681] = 2107
 }
 
 RE.Roles = {}
