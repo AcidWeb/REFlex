@@ -143,6 +143,7 @@ RE.BracketNames = {
 
 RE.MapIDRemap = {
 	[968] = 566,
+	[998] = 1035,
 	[1681] = 2107
 }
 
