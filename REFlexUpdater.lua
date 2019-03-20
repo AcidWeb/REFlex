@@ -36,7 +36,7 @@ end
 
 function RE:UpdateDatabase()
   for i=1, #RE.Database do
-    if RE.Database[i].Version < 266 then
+    if RE.Database[i].Version < 268 then
       if RE.Database[i].Version < 224 then
         if RE.Database[i].Map == 1681 then
           RE.Database[i].Map = 2107
@@ -84,12 +84,20 @@ function RE:UpdateDatabase()
         elseif RE.Database[i].Map == 529 then
           RE.Database[i].Map = 2107
         end
+        RE.Database[i].Version = 265
       end
 
-      if RE.Database[i].Map == 998 then
-        RE.Database[i].Map = 1035
+      if RE.Database[i].Version < 266 then
+        if RE.Database[i].Map == 998 then
+          RE.Database[i].Map = 1035
+        end
+        RE.Database[i].Version = 266
       end
-      RE.Database[i].Version = 266
+
+      if RE.Database[i].Map == 2177 then
+        RE.Database[i].Hidden = true
+      end
+      RE.Database[i].Version = 268
     end
   end
 end

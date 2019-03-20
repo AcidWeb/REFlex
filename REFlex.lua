@@ -104,7 +104,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 267
+RE.Version = 268
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -940,7 +940,7 @@ function RE:PVPEnd()
 	end
 
 	-- Hide corrupted records
-	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl) then
+	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or RE.MatchData.Map == 2177 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl) then
 		RE.MatchData.Hidden = true
 	else
 		RE.MatchData.Hidden = false
