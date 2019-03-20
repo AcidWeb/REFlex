@@ -53,7 +53,6 @@ if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 1 then
 	end)
 end
 
---GLOBALS: UIDROPDOWNMENU_VALUE_PATCH_VERSION, UIDROPDOWNMENU_MAXLEVELS, UIDROPDOWNMENU_MAXBUTTONS, UIDROPDOWNMENU_OPEN_PATCH_VERSION, UIDROPDOWNMENU_OPEN_MENU, issecurevariable
 local tinsert = _G.table.insert
 local mfloor = _G.math.floor
 local strmatch = _G.string.match
@@ -576,7 +575,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				RE.TooltipRGB1:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.TooltipRGB1:Show()
-			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
+			team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
 			RE.TooltipRGB2 = QTIP:Acquire("REFlexTooltipRGB2", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
 			RE.TooltipRGB2:AddLine()
 			for i=1, 7 do

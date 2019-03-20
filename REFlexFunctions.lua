@@ -6,7 +6,6 @@ local DUMP = LibStub("LibTextDump-1.0")
 local TOAST = LibStub("LibToast-1.0")
 local ST = LibStub("ScrollingTable")
 
---GLOBALS: CLASS_ICON_TCOORDS, RAID_CLASS_COLORS, LOCALIZED_CLASS_NAMES_MALE
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
