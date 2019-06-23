@@ -714,23 +714,25 @@ function RE:DumpCSV()
 	if not _G.REFlexFrame:IsShown() then return end
 	RE.DumpFrame:Clear()
 	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
-		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl;isMercenary;CurrentRating")
+		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl;isMercenary;CurrentRating;MatchType")
 		for i=1, #RE.TableBG.filtered do
 			id = RE.TableBG.data[RE.TableBG.filtered[i]][11]
 			d = RE.Database[id]
 			s = RE:GetPlayerData(id)
 			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.Duration)..";"..tostring(RE:GetPlayerWin(id, false))..";"..
 			tostring(s[2])..";"..tostring(s[3])..";"..tostring(s[4])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..
-			tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(s[17])..";"..tostring(d.isRated)..";"..tostring(d.isBrawl)..";"..tostring(RE:GetMercenaryStatus(id))..";"..RE:GetCleanRating(d.CurrentRating))
+			tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(s[17])..";"..tostring(d.isRated)..";"..tostring(d.isBrawl)..";"..tostring(RE:GetMercenaryStatus(id))..";"
+			..RE:GetNonNilString(d.CurrentRating)..";"..RE:GetNonNilString(d.Type))
 		end
 	else
-		RE.DumpFrame:AddLine("Timestamp;Map;PlayersNumber;TeamComposition;EnemyComposition;Duration;Victory;KillingBlows;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;isRated;CurrentRating")
+		RE.DumpFrame:AddLine("Timestamp;Map;PlayersNumber;TeamComposition;EnemyComposition;Duration;Victory;KillingBlows;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;isRated;CurrentRating;MatchType")
 		for i=1, #RE.TableArena.filtered do
 			id = RE.TableArena.data[RE.TableArena.filtered[i]][11]
 			d = RE.Database[id]
 			s = RE:GetPlayerData(id)
 			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.PlayersNum)..";"..RE:GetArenaTeamCSV(id, true)..";"..RE:GetArenaTeamCSV(id, false)..";"..tostring(d.Duration)..";"..
-			tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(d.isRated)..";"..RE:GetCleanRating(d.CurrentRating))
+			tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..
+			tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(d.isRated)..";"..RE:GetNonNilString(d.CurrentRating)..";"..RE:GetNonNilString(d.Type))
 		end
 	end
 	RE.DumpFrame:Display()
@@ -743,11 +745,11 @@ function RE:DumpCSV()
 	end
 end
 
-function RE:GetCleanRating(currentRating)
-	if currentRating == nil then 
+function RE:GetNonNilString(value)
+	if value == nil then 
 		return ""
 	else 
-		return tostring(currentRating) 
+		return tostring(value) 
 	end
 end
 
