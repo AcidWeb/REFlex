@@ -927,6 +927,26 @@ function RE:PVPEnd()
 		RE.MatchData.TeamData = {}
 		RE.MatchData.TeamData[1] = {GetBattlefieldTeamInfo(0)}
 		RE.MatchData.TeamData[2] = {GetBattlefieldTeamInfo(1)}
+		
+		local bracket = 0
+		if RE.MatchData.isArena then
+			local _, _, teamSize, _, _, _, _, _ = _G.GetBattlefieldStatus(index)
+			if teamSize == 2 then
+				bracket = 1
+				RE.MatchData.Type = "2v2"
+			else
+				if teamSize == 3 then
+					bracket = 2	
+					RE.MatchData.Type = "3v3"
+				end
+			else
+				RE.MatchData.Type = "RGB"
+			end
+		end
+		
+		local currentRating, _, _, _, _, _, _, _ = GetPersonalRatedInfo(bracket)		
+		RE.MatchData.CurrentRating = currentRating
+		print("current rating for bracket", RE.MatchData.Type, "is:", currentRating)	
 	end
 
 	if RE.MatchData.StatsNum > 0 then
