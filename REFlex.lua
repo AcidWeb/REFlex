@@ -930,13 +930,29 @@ function RE:PVPEnd()
 		
 		local bracket = 0
 		if RE.MatchData.isArena then
-			local _, _, teamSize, _, _, _, _, _ = _G.GetBattlefieldStatus(index)
-			if teamSize == 2 then
-				bracket = 1
-				RE.MatchData.Type = "2v2"
-			elseif teamSize == 3 then
-				bracket = 2	
-				RE.MatchData.Type = "3v3"
+			local bgs = _G.GetMaxBattlefieldID();
+			for i=1, bgs do 
+				local status, _, teamSize, _, _, _, _, _ = _G.GetBattlefieldStatus(i)
+				if status == "active" then
+					if teamSize == 2 then
+						bracket = 1
+						RE.MatchData.Type = "2v2"
+					elseif teamSize == 3 then
+						bracket = 2	
+						RE.MatchData.Type = "3v3"
+					end
+				end
+			end
+			
+			--backup plan
+			if bracket == 0 then
+				if RE.MatchData.PlayersNum <= 4 then
+					bracket = 1
+					RE.MatchData.Type = "2v2"
+				elseif RE.MatchData.PlayersNum <= 6 then
+					bracket = 2	
+					RE.MatchData.Type = "3v3"
+				end
 			end
 		else
 			bracket = 4	
@@ -945,7 +961,6 @@ function RE:PVPEnd()
 		
 		local currentRating, _, _, _, _, _, _, _ = GetPersonalRatedInfo(bracket)
 		RE.MatchData.CurrentRating = currentRating
-		print("current rating for bracket", RE.MatchData.Type, "is:", currentRating)	
 	end
 
 	if RE.MatchData.StatsNum > 0 then
