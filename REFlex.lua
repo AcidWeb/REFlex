@@ -934,17 +934,16 @@ function RE:PVPEnd()
 			if teamSize == 2 then
 				bracket = 1
 				RE.MatchData.Type = "2v2"
-			else
-				if teamSize == 3 then
-					bracket = 2	
-					RE.MatchData.Type = "3v3"
-				end
-			else
-				RE.MatchData.Type = "RGB"
+			elseif teamSize == 3 then
+				bracket = 2	
+				RE.MatchData.Type = "3v3"
 			end
+		else
+			bracket = 4	
+			RE.MatchData.Type = "RGB"
 		end
 		
-		local currentRating, _, _, _, _, _, _, _ = GetPersonalRatedInfo(bracket)		
+		local currentRating, _, _, _, _, _, _, _ = GetPersonalRatedInfo(bracket)
 		RE.MatchData.CurrentRating = currentRating
 		print("current rating for bracket", RE.MatchData.Type, "is:", currentRating)	
 	end
