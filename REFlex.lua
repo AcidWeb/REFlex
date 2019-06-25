@@ -66,11 +66,11 @@ local IsInInstance = _G.IsInInstance
 local IsInGuild = _G.IsInGuild
 local IsActiveBattlefieldArena = _G.IsActiveBattlefieldArena
 local IsInBrawl = _G.C_PvP.IsInBrawl
-local IsWargame = _G.IsWargame
+local IsRatedArena = _G.C_PvP.IsRatedArena
+local IsRatedBattleground = _G.C_PvP.IsRatedBattleground
 local IsArenaSkirmish = _G.IsArenaSkirmish
-local IsRatedBattleground = _G.IsRatedBattleground
 local IsPlayerAtEffectiveMaxLevel = _G.IsPlayerAtEffectiveMaxLevel
-local GetBrawlInfo = _G.C_PvP.GetBrawlInfo
+local GetAvailableBrawlInfo = _G.C_PvP.GetAvailableBrawlInfo
 local GetBrawlRewards = _G.C_PvP.GetBrawlRewards
 local GetNumSpecializations = _G.GetNumSpecializations
 local GetSpecializationInfo = _G.GetSpecializationInfo
@@ -83,7 +83,7 @@ local GetBattlefieldArenaFaction = _G.GetBattlefieldArenaFaction
 local GetInstanceInfo = _G.GetInstanceInfo
 local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
 local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
-local GetNumBattlefieldStats = _G.GetNumBattlefieldStats
+local GetNumBattlefieldStats = _G.GetNumBattlefieldStats -- Deprecated
 local GetBattlefieldInstanceRunTime = _G.GetBattlefieldInstanceRunTime
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
 local GetCVar = _G.GetCVar
@@ -266,10 +266,10 @@ function RE:OnEvent(_, event, ...)
 			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
 			toast:MakePersistent()
 			if RE.PlayerFaction == 0 then
-				toast:SetSoundFile([[Sound\Doodad\BellTollHorde.ogg]])
+				toast:SetSoundFile(565853)
 				toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
 			else
-				toast:SetSoundFile([[Sound\Doodad\BellTollAlliance.ogg]])
+				toast:SetSoundFile(566564)
 				toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
 			end
 		end)
@@ -296,7 +296,7 @@ function RE:OnEvent(_, event, ...)
 			icon = "Interface\\PvPRankBadges\\PvPRank09"
 		})
 		function RE.LDB:OnEnter()
-			local brawlInfo = GetBrawlInfo()
+			local brawlInfo = GetAvailableBrawlInfo()
 			local mod = 0
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
 			RE.Tooltip:SmartAnchorTo(self)
@@ -309,7 +309,7 @@ function RE:OnEvent(_, event, ...)
 			RE.Tooltip:SetCell(1, 1, "|cFFFFD100".._G.DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine(_G.BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddLine(_G.ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			if IsPlayerAtEffectiveMaxLevel() and brawlInfo and brawlInfo.active then
+			if IsPlayerAtEffectiveMaxLevel() and brawlInfo and brawlInfo.canQueue then
 				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			else
 				mod = 1
@@ -407,7 +407,7 @@ function RE:OnEvent(_, event, ...)
 		RequestRatedInfo()
 		RequestPVPRewards()
 		RequestRandomBattlegroundInstanceInfo()
-		GetBrawlInfo()
+		GetAvailableBrawlInfo()
 	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
 		hooksecurefunc("CalendarDayButton_Click", RE.CalendarParser)
 		_G.CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
@@ -428,7 +428,7 @@ function RE:OnEvent(_, event, ...)
 			RequestRatedInfo()
 			RequestPVPRewards()
 			RequestRandomBattlegroundInstanceInfo()
-			GetBrawlInfo()
+			GetAvailableBrawlInfo()
 		end
 		if instanceType == "pvp" or instanceType == "arena" then
 			RE.Match = true
@@ -437,9 +437,9 @@ function RE:OnEvent(_, event, ...)
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
 		end
-	elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and _G.WorldStateScoreFrame:IsVisible() then
+	elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and _G.PVPMatchResults:IsVisible() then
 		RE.DataSaved = true
-		_G.WorldStateScoreFrameLeaveButton:Disable()
+		_G.PVPMatchResults.buttonContainer.leaveButton:Disable()
 		TimerAfter(2, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
@@ -677,7 +677,7 @@ function RE:UpdateGUI()
 		RequestRatedInfo()
 		RequestPVPRewards()
 		RequestRandomBattlegroundInstanceInfo()
-		GetBrawlInfo()
+		GetAvailableBrawlInfo()
 		for i=1, GetNumSpecializations() do
 			local Spec = select(2, GetSpecializationInfo(i))
 			RE.SpecDropDown:AddItem(Spec, Spec)
@@ -908,7 +908,7 @@ function RE:PVPEnd()
 		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
-	if (IsRatedBattleground() and not IsWargame()) or (RE.MatchData.isArena and not IsArenaSkirmish()) then
+	if IsRatedBattleground() or IsRatedArena() and not IsArenaSkirmish() then
 		RE.MatchData.isRated = true
 	else
 		RE.MatchData.isRated = false
@@ -959,5 +959,5 @@ function RE:PVPEnd()
 	else
 		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
 	end
-	_G.WorldStateScoreFrameLeaveButton:Enable()
+	_G.PVPMatchResults.buttonContainer.leaveButton:Enable()
 end
