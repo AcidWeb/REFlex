@@ -54,7 +54,6 @@ if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 1 then
 end
 
 local tinsert = _G.table.insert
-local mfloor = _G.math.floor
 local strmatch = _G.string.match
 local pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
@@ -84,7 +83,7 @@ local GetInstanceInfo = _G.GetInstanceInfo
 local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
 local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
 local GetNumBattlefieldStats = _G.GetNumBattlefieldStats -- Deprecated
-local GetBattlefieldInstanceRunTime = _G.GetBattlefieldInstanceRunTime
+local GetActiveMatchDuration = _G.C_PvP.GetActiveMatchDuration
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
 local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
@@ -142,7 +141,7 @@ function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_LOGIN")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-	self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
+	self:RegisterEvent("PVP_MATCH_COMPLETE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN")
@@ -446,10 +445,10 @@ function RE:OnEvent(_, event, ...)
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
 		end
-	elseif event == "UPDATE_BATTLEFIELD_SCORE" and not RE.DataSaved and GetBattlefieldWinner() ~= nil and _G.PVPMatchResults:IsVisible() then
+	elseif event == "PVP_MATCH_COMPLETE" and not RE.DataSaved then
 		RE.DataSaved = true
 		_G.PVPMatchResults.buttonContainer.leaveButton:Disable()
-		TimerAfter(2, RE.PVPEnd)
+		TimerAfter(1, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
 		for _, i in pairs({1, 2, 4}) do
@@ -908,7 +907,7 @@ function RE:PVPEnd()
 	RE.MatchData.Season = GetCurrentArenaSeason()
 	RE.MatchData.PlayersNum = GetNumBattlefieldScores()
 	RE.MatchData.StatsNum = GetNumBattlefieldStats()
-	RE.MatchData.Duration = mfloor(GetBattlefieldInstanceRunTime() / 1000)
+	RE.MatchData.Duration = GetActiveMatchDuration()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
 	RE.MatchData.Version = RE.Version
