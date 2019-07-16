@@ -50,7 +50,8 @@ RE.MapList = {
 	[1134] = RE:GetShortMapName(GetRealZoneText(1134)),
 	[980] = RE:GetShortMapName(GetRealZoneText(980)),
 	[1911] = RE:GetShortMapName(GetRealZoneText(1911)),
-	[1825] = RE:GetShortMapName(GetRealZoneText(1825))
+	[1825] = RE:GetShortMapName(GetRealZoneText(1825)),
+	[2167] = RE:GetShortMapName(GetRealZoneText(2167))
 }
 
 RE.MapListLongBG = {
@@ -70,7 +71,7 @@ RE.MapListLongBG = {
 	[761] = GetRealZoneText(761),
 	[726] = GetRealZoneText(726),
 	[2106] = GetRealZoneText(2106),
-	[2118] = GetRealZoneText(2118),
+	[2118] = GetRealZoneText(2118)
 }
 
 RE.MapListLongArena = {
@@ -84,7 +85,8 @@ RE.MapListLongArena = {
 	[1134] = GetRealZoneText(1134),
 	[980] = GetRealZoneText(980),
 	[1911] = GetRealZoneText(1911),
-	[1825] = GetRealZoneText(1825)
+	[1825] = GetRealZoneText(1825),
+	[2167] = GetRealZoneText(2167)
 }
 
 RE.MapListLongOrderBG = {
@@ -92,7 +94,7 @@ RE.MapListLongOrderBG = {
 }
 
 RE.MapListLongOrderArena = {
-	1, 1552, 1504, 1672, 617, 1825, 1911, 1505, 572, 1134, 980
+	1, 1552, 1504, 1672, 617, 1825, 1911, 1505, 2167, 572, 1134, 980
 }
 
 RE.MapListStat = {
