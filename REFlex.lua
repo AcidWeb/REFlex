@@ -128,6 +128,8 @@ RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
 
+SLASH_REFLEX1 = "/reflex"
+
 local function ElvUISwag(sender)
 	if sender == "Livarax-BurningLegion" then
 		return [[|TInterface\PvPRankBadges\PvPRank09:0|t ]]
@@ -259,6 +261,13 @@ function RE:OnEvent(_, event, ...)
 		RegisterAddonMessagePrefix("REFlex")
 		_G.BINDING_HEADER_REFLEXB = "REFlex"
 		_G.BINDING_NAME_REFLEXOPEN = L["Show main window"]
+		_G.SlashCmdList["REFLEX"] = function()
+			if not _G.REFlexFrame:IsVisible() then
+				_G.REFlexFrame:Show()
+			else
+				_G.REFlexFrame:Hide()
+			end
+		end
 
 		TOAST:Register("REFlexToast", function(toast, ...)
 			toast:SetFormattedTitle("|cFF74D06CRE|r|cFFFFFFFFFlex|r")
