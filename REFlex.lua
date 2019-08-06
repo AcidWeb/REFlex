@@ -103,7 +103,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 270
+RE.Version = 271
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -166,6 +166,7 @@ function RE:OnLoad(self)
 		RE.TableBG.frame["col"..i.."bg"]:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -9)
 		RE.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -9)
 	end
+	RE.TableBG.frame:ClearAllPoints()
 	RE.TableBG.frame:SetPoint("TOP", _G.REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
@@ -187,6 +188,7 @@ function RE:OnLoad(self)
 		end,
 	})
 	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, _G.REFlexFrame)
+	RE.TableArena.frame:ClearAllPoints()
 	RE.TableArena.frame:SetPoint("TOP", _G.REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 	RE.TableArena:RegisterEvents({
