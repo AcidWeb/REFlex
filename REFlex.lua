@@ -82,7 +82,7 @@ local GetBattlefieldArenaFaction = _G.GetBattlefieldArenaFaction
 local GetInstanceInfo = _G.GetInstanceInfo
 local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
 local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
-local GetNumBattlefieldStats = _G.GetNumBattlefieldStats -- Deprecated
+local GetMatchPVPStatColumns = _G.C_PvP.GetMatchPVPStatColumns
 local GetActiveMatchDuration = _G.C_PvP.GetActiveMatchDuration
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
 local GetCVar = _G.GetCVar
@@ -103,7 +103,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 271
+RE.Version = 272
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -902,13 +902,14 @@ end
 function RE:PVPEnd()
 	RE.MatchData = {}
 
+	local StatsNum = GetMatchPVPStatColumns()
 	RE.MatchData.Map = select(8, GetInstanceInfo())
 	RE.MatchData.Winner = GetBattlefieldWinner()
 	RE.MatchData.PlayerSide = GetBattlefieldArenaFaction()
 	RE.MatchData.isArena = IsActiveBattlefieldArena()
 	RE.MatchData.Season = GetCurrentArenaSeason()
 	RE.MatchData.PlayersNum = GetNumBattlefieldScores()
-	RE.MatchData.StatsNum = GetNumBattlefieldStats()
+	RE.MatchData.StatsNum = #StatsNum
 	RE.MatchData.Duration = GetActiveMatchDuration()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
