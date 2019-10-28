@@ -69,6 +69,7 @@ local IsRatedArena = _G.C_PvP.IsRatedArena
 local IsRatedBattleground = _G.C_PvP.IsRatedBattleground
 local IsArenaSkirmish = _G.IsArenaSkirmish
 local IsPlayerAtEffectiveMaxLevel = _G.IsPlayerAtEffectiveMaxLevel
+local SetBattlefieldScoreFaction = _G.SetBattlefieldScoreFaction
 local GetAvailableBrawlInfo = _G.C_PvP.GetAvailableBrawlInfo
 local GetBrawlRewards = _G.C_PvP.GetBrawlRewards
 local GetNumSpecializations = _G.GetNumSpecializations
@@ -103,7 +104,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 272
+RE.Version = 273
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 
@@ -901,6 +902,7 @@ end
 
 function RE:PVPEnd()
 	RE.MatchData = {}
+	SetBattlefieldScoreFaction(-1)
 
 	local StatsNum = GetMatchPVPStatColumns()
 	RE.MatchData.Map = select(8, GetInstanceInfo())
