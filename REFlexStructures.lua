@@ -26,6 +26,7 @@ RE.MapList = {
 	[2107] = GetRealZoneText(2107),
 	[1191] = GetRealZoneText(1191),
 	[1691] = GetRealZoneText(1691),
+	[2245] = GetRealZoneText(2245),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
 	[968] = GetRealZoneText(566),
@@ -60,6 +61,7 @@ RE.MapListLongBG = {
 	[2107] = GetRealZoneText(2107),
 	[1191] = GetRealZoneText(1191),
 	[1691] = GetRealZoneText(1691),
+	[2245] = GetRealZoneText(2245),
 	[1105] = GetRealZoneText(1105),
 	[566] = GetRealZoneText(566),
 	[628] = GetRealZoneText(628),
@@ -90,7 +92,7 @@ RE.MapListLongArena = {
 }
 
 RE.MapListLongOrderBG = {
-	1, 30, 2107, 1191, 2118, 1691, 1105, 566, 628, 1803, 727, 1280, 607, 1035, 761, 726, 2106
+	1, 30, 2107, 1191, 2118, 1691, 2245, 1105, 566, 628, 1803, 727, 1280, 607, 1035, 761, 726, 2106
 }
 
 RE.MapListLongOrderArena = {
@@ -105,6 +107,7 @@ RE.MapListStat = {
 	[567] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend", "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2"},
 	[761] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[1035] = {false, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture2", "Interface\\GroupFrame\\UI-Group-MasterLooter"},
+	[2245] = {true, "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[1105] = {true, "Interface\\WorldStateFrame\\ColumnIcon-FlagCapture", "Interface\\WorldStateFrame\\ColumnIcon-FlagReturn", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
 	[727] = {false, "Interface\\MINIMAP\\Vehicle-SilvershardMines-MineCart"},
 	[30] = {true, "Interface\\WorldStateFrame\\ColumnIcon-GraveyardCapture", "Interface\\WorldStateFrame\\ColumnIcon-GraveyardDefend", "Interface\\WorldStateFrame\\ColumnIcon-TowerCapture", "Interface\\WorldStateFrame\\ColumnIcon-TowerDefend"},
@@ -116,38 +119,42 @@ RE.MapListStat = {
 }
 
 RE.RaceIcons = {
-	["Human"]	= {0, 0.125, 0, 0.25},
-	["Humans"]	= {0, 0.125, 0, 0.25},
-	["Dwarf"]	= {0.125, 0.25, 0, 0.25},
-	["Dwarves"]	= {0.125, 0.25, 0, 0.25},
-	["Gnome"]	= {0.25, 0.375, 0, 0.25},
-	["Gnomes"]	= {0.25, 0.375, 0, 0.25},
-	["Night Elf"]	= {0.375, 0.5, 0, 0.25},
-	["Night elves"]	= {0.375, 0.5, 0, 0.25},
-	["Tauren"] = {0, 0.125, 0.25, 0.5},
-	["Undead"] = {0.125, 0.25, 0.25, 0.5},
-	["Troll"]	= {0.25, 0.375, 0.25, 0.5},
-	["Trolls"]	= {0.25, 0.375, 0.25, 0.5},
-	["Orc"]	= {0.375, 0.5, 0.25, 0.5},
-	["Ors"]	= {0.375, 0.5, 0.25, 0.5},
-	["Blood Elf"]	= {0.5, 0.625, 0.25, 0.5},
-	["Blood elves"]	= {0.5, 0.625, 0.25, 0.5},
-	["Draenei"]	= {0.5, 0.625, 0, 0.25},
-	["Goblin"] = {0.629, 0.750, 0.25, 0.5},
-	["Goblins"] = {0.629, 0.750, 0.25, 0.5},
-	["Worgen"] = {0.629, 0.750, 0, 0.25},
-	["Pandaren"] = {0.756, 0.881, 0, 0.25},
-	["Nightborne"] = {0.375, 0.5, 0, 0.25},
-	["Highmountain Tauren"] = {0, 0.125, 0.25, 0.5},
-	["Void Elf"] = {0.5, 0.625, 0.25, 0.5},
-	["Void elves"] = {0.5, 0.625, 0.25, 0.5},
-	["Lightforged Draenei"] = {0.5, 0.625, 0, 0.25},
-	["Dark Iron Dwarf"] = {0.125, 0.25, 0, 0.25},
-	["Dark Iron Dwarves"] = {0.125, 0.25, 0, 0.25},
-	["Mag'har Orc"] = {0.375, 0.5, 0.25, 0.5},
-	["Zandalari Troll"] = {0.25, 0.375, 0.25, 0.5},
-	["Zandalari Trolls"] = {0.25, 0.375, 0.25, 0.5},
-	["Kul Tiran"] = {0, 0.125, 0, 0.25}
+	["Human"]	= {0.388672, 0.513672, 0.130859, 0.255859},
+	["Humans"]	= {0.388672, 0.513672, 0.130859, 0.255859},
+	["Dwarf"]	= {0.00195312, 0.126953, 0.130859, 0.255859},
+	["Dwarves"]	= {0.00195312, 0.126953, 0.130859, 0.255859},
+	["Gnome"]	= {0.00195312, 0.126953, 0.388672, 0.513672},
+	["Gnomes"]	= {0.00195312, 0.126953, 0.388672, 0.513672},
+	["Night Elf"]	= {0.388672, 0.513672, 0.259766, 0.384766},
+	["Night elves"]	= {0.388672, 0.513672, 0.259766, 0.384766},
+	["Tauren"] = {0.259766, 0.384766, 0.646484, 0.771484},
+	["Undead"] = {0.646484, 0.771484, 0.388672, 0.513672},
+	["Troll"]	= {0.388672, 0.513672, 0.388672, 0.513672},
+	["Trolls"]	= {0.388672, 0.513672, 0.388672, 0.513672},
+	["Orc"]	= {0.646484, 0.771484, 0.259766, 0.384766},
+	["Orcs"]	= {0.646484, 0.771484, 0.259766, 0.384766},
+	["Blood Elf"]	= {0.130859, 0.255859, 0.00195312, 0.126953},
+	["Blood elves"]	= {0.130859, 0.255859, 0.00195312, 0.126953},
+	["Draenei"]	= {0.646484, 0.771484, 0.00195312, 0.126953},
+	["Goblin"] = {0.00195312, 0.126953, 0.646484, 0.771484},
+	["Goblins"] = {0.00195312, 0.126953, 0.646484, 0.771484},
+	["Worgen"] = {0.388672, 0.513672, 0.775391, 0.900391},
+	["Pandaren"] = {0.259766, 0.384766, 0.388672, 0.513672},
+	["Nightborne"] = {0.130859, 0.255859, 0.775391, 0.900391},
+	["Highmountain Tauren"] = {0.130859, 0.255859, 0.130859, 0.255859},
+	["Void Elf"] = {0.388672, 0.513672, 0.517578, 0.642578},
+	["Void elves"] = {0.388672, 0.513672, 0.517578, 0.642578},
+	["Lightforged Draenei"] = {0.130859, 0.255859, 0.259766, 0.384766},
+	["Dark Iron Dwarf"] = {0.388672, 0.513672, 0.00195312, 0.126953},
+	["Dark Iron Dwarves"] = {0.388672, 0.513672, 0.00195312, 0.126953},
+	["Mag'har Orc"] = {0.130859, 0.255859, 0.517578, 0.642578},
+	["Zandalari Troll"] = {0.646484, 0.771484, 0.517578, 0.642578},
+	["Zandalari Trolls"] = {0.646484, 0.771484, 0.517578, 0.642578},
+	["Kul Tiran"] = {0.646484, 0.771484, 0.130859, 0.255859},
+	["Vulpera"] = {0.646484, 0.771484, 0.646484, 0.771484},
+	["Vulperas"] = {0.646484, 0.771484, 0.646484, 0.771484},
+	["Mechagnome"] = {0.517578, 0.642578, 0.646484, 0.771484},
+	["Mechagnomes"] = {0.517578, 0.642578, 0.646484, 0.771484}
 }
 
 RE.BracketNames = {

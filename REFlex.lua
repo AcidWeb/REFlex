@@ -131,7 +131,7 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 274
+RE.Version = 275
 RE.LastSquash = 1531828800
 RE.FoundNewVersion = false
 

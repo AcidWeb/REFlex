@@ -454,7 +454,7 @@ function RE:GetRaceIcon(token, size)
 		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
 	else
 		token = sgsub(BR[token], "_PL", "")
-		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Races:"..size..":"..size..":0:0:256:256:" ..
+		return "|TInterface\\Glues\\CharacterCreate\\CharacterCreateIcons:"..size..":"..size..":0:0:256:256:" ..
 		RE.RaceIcons[token][1]*256+5 ..
 		":" .. RE.RaceIcons[token][2]*256-5 ..
 		":" .. RE.RaceIcons[token][3]*256+5 ..
@@ -736,10 +736,12 @@ function RE:DumpCSV()
 	RE.DumpFrame:Display()
 
 	if RE.IsSkinned then
-		_G.AddOnSkins[1]:SkinFrame(DUMP.frames[RE.DumpFrame])
-		_G.AddOnSkins[1]:SkinFrame(DUMP.frames[RE.DumpFrame].Inset)
-		_G.AddOnSkins[1]:SkinCloseButton(DUMP.frames[RE.DumpFrame].CloseButton)
-		_G.AddOnSkins[1]:SkinScrollBar(DUMP.frames[RE.DumpFrame].scrollArea.ScrollBar)
+		local f = DUMP.frames[RE.DumpFrame]:GetName()
+		_G.AddOnSkins[1]:SkinFrame(_G[f])
+		_G.AddOnSkins[1]:CreateBackdrop(_G[f].scrollArea)
+		_G.AddOnSkins[1]:SetOutside(_G[f].scrollArea.Backdrop, _G[f].scrollArea, 4, 4)
+		_G.AddOnSkins[1]:SkinCloseButton(_G[f.."Close"])
+		_G.AddOnSkins[1]:SkinScrollBar(_G[f].scrollArea.ScrollBar)
 	end
 end
 
