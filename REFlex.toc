@@ -1,7 +1,7 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 2.7.5
+## Version: 3.0.0
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
 ## X-Website: https://www.curseforge.com/wow/addons/reflex-battleground-historian
