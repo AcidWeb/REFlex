@@ -8,7 +8,7 @@
 
 	<Frame name="REFlexStatsDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true"/>
 
-	<Frame name="REFlexFrame" resizable="false" movable="true" hidden="true" parent="UIParent">
+	<Frame name="REFlexFrame" inherits="BackdropTemplate" resizable="false" movable="true" hidden="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="790" y="625"/>
 		</Size>
@@ -16,24 +16,16 @@
 			<Anchor point="CENTER"/>
 		</Anchors>
 		<Scripts>
-			<OnLoad>REFlex:OnLoad(self)</OnLoad>
+			<OnLoad inherit="prepend">REFlex:OnLoad(self)</OnLoad>
 			<OnEvent>REFlex:OnEvent(self, event, ...)</OnEvent>
 			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); REFlex:UpdateGUI()</OnShow>
 			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
 			<OnDragStart>self:StartMoving()</OnDragStart>
 			<OnDragStop>self:StopMovingOrSizing()</OnDragStop>
 		</Scripts>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="32"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
-			</BackgroundInsets>
-		</Backdrop>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="REFlex.BackdropA" type="global"/>
+		</KeyValues>
 		<Layers>
 			<Layer level="ARTWORK">
 				<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
@@ -166,15 +158,13 @@
 					<OnClick>PanelTemplates_SetTab(REFlexFrame, 4); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Frame name="$Parent_HKBar">
+			<Frame name="$Parent_HKBar" inherits="BackdropTemplate">
 				<Size>
 					<AbsDimension x="240" y="25"/>
 				</Size>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-					<EdgeSize>
-						<AbsValue val="16"/>
-					</EdgeSize>
-				</Backdrop>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="REFlex.BackdropB" type="global"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOM">
 						<Offset>

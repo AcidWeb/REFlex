@@ -12,18 +12,13 @@ local sgsub, sbyte = _G.string.gsub, _G.string.byte
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
-local QuestUtils_GetCurrentQuestLineQuest = _G.QuestUtils_GetCurrentQuestLineQuest
-local HaveQuestData = _G.HaveQuestData
-local GetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
+local GetConquestWeeklyProgress = _G.C_WeeklyRewards.GetConquestWeeklyProgress
+local GetSecondsUntilWeeklyReset = _G.C_DateAndTime.GetSecondsUntilWeeklyReset
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
 local StaticPopup_Hide = _G.StaticPopup_Hide
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
-end
-
-function RE:GetPlayerStatsData(databaseID)
-	return RE.Database[databaseID].PlayersStats[RE.Database[databaseID].PlayerNum]
 end
 
 function RE:GetPlayerWin(databaseID, icon)
@@ -87,8 +82,8 @@ function RE:GetArenaTeamDetails(databaseID, player)
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
 			"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
@@ -169,8 +164,8 @@ function RE:GetRGBTeamDetails(databaseID, player)
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
 			RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
 			RE.Database[databaseID].Players[i][2],
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
@@ -209,13 +204,7 @@ function RE:GetHonor()
 	if RE.Settings.LDBMode == 1 then
 		from = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
-		if RE.PlayerZone == "US" then
-			from = from - 54000 - (3600 * RE.PlayerTimezone)
-		elseif RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
-			from = from - 82800 - (3600 * RE.PlayerTimezone)
-		else
-			from = from - 25200 - (3600 * RE.PlayerTimezone)
-		end
+		from = from - RE:GetPreviousWeeklyReset() - (3600 * RE.PlayerTimezone)
 	end
 	for t, v in pairs(RE.HDatabase) do
 		if t >= from and (to == 0 or t <= to) then
@@ -274,24 +263,24 @@ function RE:GetStats(filter, arena, skipLatest)
 	return kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing
 end
 
-function RE:GetBGPlace(databaseID, onlyFaction)
+function RE:GetBGPlace(matchData, onlyFaction)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = 1, 1, 1, 1, 1
-	local playerData = RE:GetPlayerData(databaseID)
-	for i=1, #RE.Database[databaseID].Players do
-		if RE.Database[databaseID].Players[i][1] ~= RE.PlayerName and (not onlyFaction or (onlyFaction and RE.Database[databaseID].Players[i][6] == RE.Database[databaseID].PlayerSide)) then
-			if playerData[2] < RE.Database[databaseID].Players[i][2] then
+	local playerData = matchData.Players[matchData.PlayerNum]
+	for i=1, #matchData.Players do
+		if matchData.Players[i][1] ~= RE.PlayerName and (not onlyFaction or (onlyFaction and matchData.Players[i][6] == matchData.PlayerSide)) then
+			if playerData[2] < matchData.Players[i][2] then
 				placeKB = placeKB + 1
 			end
-			if playerData[3] < RE.Database[databaseID].Players[i][3] then
+			if playerData[3] < matchData.Players[i][3] then
 				placeHK = placeHK + 1
 			end
-			if playerData[5] < RE.Database[databaseID].Players[i][5] then
+			if playerData[5] < matchData.Players[i][5] then
 				placeHonor = placeHonor + 1
 			end
-			if playerData[10] < RE.Database[databaseID].Players[i][10] then
+			if playerData[10] < matchData.Players[i][10] then
 				placeDamage = placeDamage + 1
 			end
-			if playerData[11] < RE.Database[databaseID].Players[i][11] then
+			if playerData[11] < matchData.Players[i][11] then
 				placeHealing = placeHealing + 1
 			end
 		end
@@ -299,12 +288,16 @@ function RE:GetBGPlace(databaseID, onlyFaction)
 	return placeKB, placeHK, placeHonor, placeDamage, placeHealing
 end
 
-function RE:GetBGComposition(databaseID, player)
-	local tank, healer, dps = 0, 0, 0
-	local faction = RE:GetFactionID(databaseID, player)
-	for i=1, #RE.Database[databaseID].Players do
-		if RE.Database[databaseID].Players[i][6] == faction and RE.Database[databaseID].Players[i][9] ~= nil then
-			local role = RE.Roles[RE.Database[databaseID].Players[i][9]][RE.Database[databaseID].Players[i][16]]
+function RE:GetBGComposition(matchData, player)
+	local tank, healer, dps, faction = 0, 0, 0
+	if player then
+		faction = matchData.PlayerSide
+	else
+		faction = 1 - matchData.PlayerSide
+	end
+	for i=1, #matchData.Players do
+		if matchData.Players[i][6] == faction and matchData.Players[i][9] ~= nil then
+			local role = RE.Roles[matchData.Players[i][9]][matchData.Players[i][16]]
 			if role == "TANK" then
 				tank = tank + 1
 			elseif role == "HEALER" then
@@ -326,7 +319,7 @@ function RE:GetBGToast(databaseID)
 	local savedFilters = RE.Settings.Filters
 	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0}
 	local playerData = RE:GetPlayerData(databaseID)
-	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
+	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = unpack(RE.Database[databaseID].BGPlace[2])
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.Settings.Filters = savedFilters
 	tinsert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
@@ -353,7 +346,7 @@ function RE:GetArenaToast(mode)
 			local members = {strsplit(";", v[1])}
 			for i=1, #members do
 				local class, spec = strsplit("-", members[i])
-				tinsert(toast, "|c"..RAID_CLASS_COLORS[class]:GenerateHexColor()..LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r|n")
+				tinsert(toast, "|c".._G.RAID_CLASS_COLORS[class]:GenerateHexColor().._G.LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r|n")
 			end
 			if mode == 1 then
 				tinsert(toast, "|cFFFFFFFF"..v[2].."|r | |cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r|n|n")
@@ -443,10 +436,10 @@ end
 
 function RE:GetClassIcon(token, size)
 	return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:"..size..":"..size..":0:0:256:256:" ..
-	CLASS_ICON_TCOORDS[token][1]*256+5 ..
-	":" .. CLASS_ICON_TCOORDS[token][2]*256-5 ..
-	":" .. CLASS_ICON_TCOORDS[token][3]*256+5 ..
-	":" .. CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
+	_G.CLASS_ICON_TCOORDS[token][1]*256+5 ..
+	":" .. _G.CLASS_ICON_TCOORDS[token][2]*256-5 ..
+	":" .. _G.CLASS_ICON_TCOORDS[token][3]*256+5 ..
+	":" .. _G.CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
 end
 
 function RE:GetRaceIcon(token, size)
@@ -709,6 +702,7 @@ function RE:DatabasePurge(idTable)
 	end
 end
 
+-- TODO Coroutine
 function RE:DumpCSV()
 	local id, d, s
 	if not _G.REFlexFrame:IsShown() then return end
@@ -746,43 +740,17 @@ function RE:DumpCSV()
 end
 
 function RE:GetConquestPoints()
-	local currentQuestID = QuestUtils_GetCurrentQuestLineQuest(782)
-	if currentQuestID == 0 or not HaveQuestData(currentQuestID) then
-		return 500, 500
-	end
-	local objectives = GetQuestObjectives(currentQuestID)
-	if not objectives or not objectives[1] then
+	local progress = GetConquestWeeklyProgress()
+	if progress then
+		return progress.progress, progress.maxProgress
+	else
 		return 0, 0
 	end
-	return objectives[1].numFulfilled, objectives[1].numRequired
 end
 
-function RE:GetWeeklyResetDay()
-	local d = date("!*t")
-	local resetday, hour
-	if RE.PlayerZone == "US" then
-		hour = 15
-		if d.wday >= 3 then
-			resetday = d.wday - 3
-		else
-			resetday = d.wday + 4
-		end
-	else
-		if RE.PlayerZone == "CN" or RE.PlayerZone == "KR" then
-			hour = 23
-		else
-			hour = 7
-		end
-		if d.wday >= 4 then
-			resetday = d.wday - 4
-		else
-			resetday = d.wday + 3
-		end
-	end
-	if resetday == 0 and d.hour < hour then
-		resetday = 7
-	end
-	return resetday, hour
+function RE:GetPreviousWeeklyReset()
+	local timeToNextWeeklyReset = GetSecondsUntilWeeklyReset()
+	return 604800 - timeToNextWeeklyReset
 end
 
 function RE:GetUTCTimestamp(timezone)

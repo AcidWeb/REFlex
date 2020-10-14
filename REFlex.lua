@@ -10,76 +10,6 @@ local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
--- UIDropDownMenu taint workaround by foxlit
-if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
-	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
-		if UIDROPDOWNMENU_OPEN_PATCH_VERSION ~= 1 then
-			return
-		end
-		if UIDROPDOWNMENU_OPEN_MENU and UIDROPDOWNMENU_OPEN_MENU ~= frame
-		   and not issecurevariable(UIDROPDOWNMENU_OPEN_MENU, "displayMode") then
-			UIDROPDOWNMENU_OPEN_MENU = nil
-			local t, f, prefix, i = _G, issecurevariable, " \0", 1
-			repeat
-				i, t[prefix .. i] = i + 1
-			until f("UIDROPDOWNMENU_OPEN_MENU")
-		end
-	end)
-end
-if (COMMUNITY_UIDD_REFRESH_PATCH_VERSION or 0) < 2 then
-	COMMUNITY_UIDD_REFRESH_PATCH_VERSION = 2
-	if select(4, GetBuildInfo()) > 8e4 then
-		local function CleanDropdowns()
-			if COMMUNITY_UIDD_REFRESH_PATCH_VERSION ~= 2 then
-				return
-			end
-			local f, f2 = FriendsFrame, FriendsTabHeader
-			local s = f:IsShown()
-			f:Hide()
-			f:Show()
-			if not f2:IsShown() then
-				f2:Show()
-				f2:Hide()
-			end
-			if not s then
-				f:Hide()
-			end
-		end
-		hooksecurefunc("Communities_LoadUI", CleanDropdowns)
-		hooksecurefunc("SetCVar", function(n)
-			if n == "lastSelectedClubId" then
-				CleanDropdowns()
-			end
-		end)
-	end
-end
-if (UIDD_REFRESH_OVERREAD_PATCH_VERSION or 0) < 1 then
-	UIDD_REFRESH_OVERREAD_PATCH_VERSION = 1
-	local function drop(t, k)
-		local c = 42
-		t[k] = nil
-		while not issecurevariable(t, k) do
-			if t[c] == nil then
-				t[c] = nil
-			end
-			c = c + 1
-		end
-	end
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		if UIDD_REFRESH_OVERREAD_PATCH_VERSION ~= 1 then
-			return
-		end
-		for i=1,UIDROPDOWNMENU_MAXLEVELS do
-			for j=1,UIDROPDOWNMENU_MAXBUTTONS do
-				local b, _ = _G["DropDownList" .. i .. "Button" .. j]
-				_ = issecurevariable(b, "checked")      or drop(b, "checked")
-				_ = issecurevariable(b, "notCheckable") or drop(b, "notCheckable")
-			end
-		end
-	end)
-end
-
 local tinsert = _G.table.insert
 local strmatch = _G.string.match
 local pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
@@ -131,8 +61,8 @@ local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local ElvUI = _G.ElvUI
 
-RE.Version = 275
-RE.LastSquash = 1531828800
+RE.Version = 300
+RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -155,8 +85,21 @@ RE.PlayerName = UnitName("PLAYER")
 RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
 
-SLASH_REFLEX1 = "/reflex"
+RE.BackdropA = {
+	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+	tile = true,
+	tileSize = 32,
+	edgeSize = 32,
+	insets = { left = 5, right = 5, top = 5, bottom = 5 },
+}
+RE.BackdropB = {
+	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	tile = true,
+	edgeSize = 16,
+}
 
+_G.SLASH_REFLEX1 = "/reflex"
 
 function RE:OnLoad(self)
 	RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
@@ -521,8 +464,8 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r", nil, nil, "|cFFFF141D"..damageSumEnemy.."|r", "|cFF00ff00"..healingSumEnemy.."|r")
 	else
 		local playerData = RE:GetPlayerData(databaseID)
-		local placeKB, placeHK, placeHonor, placeDamage, placeHealing = RE:GetBGPlace(databaseID, false)
-		local placeFKB, placeFHK, placeFHonor, placeFDamage, placeFHealing = RE:GetBGPlace(databaseID, true)
+		local placeKB, placeHK, placeHonor, placeDamage, placeHealing = unpack(RE.Database[databaseID].BGPlace[2])
+		local placeFKB, placeFHK, placeFHonor, placeFDamage, placeFHealing = unpack(RE.Database[databaseID].BGPlace[1])
 		local mmrLine = nil
 		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
 		if RE.Database[databaseID].isRated then
@@ -550,29 +493,32 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
 		RE.Tooltip:SetColumnLayout(3, "CENTER", "CENTER", "CENTER")
 		RE.Tooltip:AddSeparator(3)
-		local tank, healer, dps = RE:GetBGComposition(databaseID, true)
-		local tankE, healerE, dpsE = RE:GetBGComposition(databaseID, false)
+		local tank, healer, dps = unpack(RE.Database[databaseID].BGComposition[1])
+		local tankE, healerE, dpsE = unpack(RE.Database[databaseID].BGComposition[2])
 		RE.Tooltip:AddLine("|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t", "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t")
 		if RE.PlayerFaction == 0 then
 			RE.Tooltip:AddLine("|cFFFF141D"..tank.."|r - |cFF00A9FF"..tankE.."|r", "|cFFFF141D"..healer.."|r - |cFF00A9FF"..healerE.."|r", "|cFFFF141D"..dps.."|r - |cFF00A9FF"..dpsE.."|r")
 		else
 			RE.Tooltip:AddLine("|cFF00A9FF"..tank.."|r - |cFFFF141D"..tankE.."|r", "|cFF00A9FF"..healer.."|r - |cFFFF141D"..healerE.."|r", "|cFF00A9FF"..dps.."|r - |cFFFF141D"..dpsE.."|r")
 		end
-		if RE.Database[databaseID].StatsNum > 0 then
-			RE.Tooltip:AddSeparator(3)
-			local faction = ""
-			local playerStatsData = RE:GetPlayerStatsData(databaseID)
-			if RE.MapListStat[RE.Database[databaseID].Map][1] or RE.Database[databaseID].StatsNum == 3 then
-				faction = RE.PlayerFaction
-			end
-			if RE.Database[databaseID].StatsNum == 1 then
-				RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil)
-			elseif RE.Database[databaseID].StatsNum == 3 then
-				RE.Tooltip:AddLine("|T"..RE.MapListStat[567][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], "|T"..RE.MapListStat[567][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1], "|T"..RE.MapListStat[567][4]..":16:16:0:0|t: "..playerStatsData[3][1])
-			else
-				RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1][1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2][1])
-				if RE.Database[databaseID].StatsNum > 2 then
-					RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][4]..faction..":16:16:0:0|t: "..playerStatsData[3][1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][5]..faction..":16:16:0:0|t: "..playerStatsData[4][1])
+		if RE.Database[databaseID].PlayerStats then
+			local statsNum = #RE.Database[databaseID].PlayerStats
+			if statsNum > 0 then
+				RE.Tooltip:AddSeparator(3)
+				local faction = ""
+				local playerStatsData = RE.Database[databaseID].PlayerStats
+				if RE.MapListStat[RE.Database[databaseID].Map][1] or statsNum == 3 then
+					faction = RE.PlayerFaction
+				end
+				if statsNum == 1 then
+					RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1], nil)
+				elseif statsNum == 3 then
+					RE.Tooltip:AddLine("|T"..RE.MapListStat[567][2]..faction..":16:16:0:0|t: "..playerStatsData[1], "|T"..RE.MapListStat[567][3]..faction..":16:16:0:0|t: "..playerStatsData[2], "|T"..RE.MapListStat[567][4]..":16:16:0:0|t: "..playerStatsData[3])
+				else
+					RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][3]..faction..":16:16:0:0|t: "..playerStatsData[2])
+					if statsNum > 2 then
+						RE.Tooltip:AddLine("|T"..RE.MapListStat[RE.Database[databaseID].Map][4]..faction..":16:16:0:0|t: "..playerStatsData[3], nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][5]..faction..":16:16:0:0|t: "..playerStatsData[4])
+					end
 				end
 			end
 		end
@@ -678,8 +624,7 @@ function RE:OnDateChange(_, mode)
 	elseif mode == 3 then
 		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - 86400, RE:ParseUTCTimestamp()}
 	elseif mode == 4 then
-		local resetday, hour = RE:GetWeeklyResetDay()
-		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600), 0}
+		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600), 0}
 	elseif mode == 5 then
 		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(true), 0}
 	elseif mode == 6 then
@@ -889,8 +834,7 @@ function RE:UpdateLDBTime()
 	elseif RE.Settings.LDBMode == 2 then
 		RE.LDBTime = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
-		local resetday, hour = RE:GetWeeklyResetDay()
-		RE.LDBTime = RE:ParseUTCTimestamp() - (resetday * 86400) + (hour * 3600) + (RE.PlayerTimezone * 3600)
+		RE.LDBTime = RE:ParseUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600)
 	end
 end
 
@@ -922,14 +866,13 @@ function RE:PVPEnd()
 	RE.MatchData = {}
 	SetBattlefieldScoreFaction(-1)
 
-	local StatsNum = GetMatchPVPStatColumns()
+	local StatsNum = #GetMatchPVPStatColumns()
 	RE.MatchData.Map = select(8, GetInstanceInfo())
 	RE.MatchData.Winner = GetBattlefieldWinner()
 	RE.MatchData.PlayerSide = GetBattlefieldArenaFaction()
 	RE.MatchData.isArena = IsActiveBattlefieldArena()
 	RE.MatchData.Season = GetCurrentArenaSeason()
 	RE.MatchData.PlayersNum = GetNumBattlefieldScores()
-	RE.MatchData.StatsNum = #StatsNum
 	RE.MatchData.Duration = GetActiveMatchDuration()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
@@ -960,13 +903,24 @@ function RE:PVPEnd()
 		RE.MatchData.TeamData[2] = {GetBattlefieldTeamInfo(1)}
 	end
 
-	if RE.MatchData.StatsNum > 0 then
-		RE.MatchData.PlayersStats = {}
-		for i=1, RE.MatchData.PlayersNum do
-			RE.MatchData.PlayersStats[i] = {}
-			for j=1, RE.MatchData.StatsNum do
-				tinsert(RE.MatchData.PlayersStats[i], {GetBattlefieldStatData(i, j)})
-			end
+	if StatsNum > 0 then
+		RE.MatchData.PlayerStats = {}
+		for j=1, StatsNum do
+			tinsert(RE.MatchData.PlayerStats, GetBattlefieldStatData(RE.MatchData.PlayerNum, j))
+		end
+	end
+
+	if not RE.MatchData.isArena then
+		RE.MatchData.BGPlace = {}
+		tinsert(RE.MatchData.BGPlace, {RE:GetBGPlace(RE.MatchData, true)})
+		tinsert(RE.MatchData.BGPlace, {RE:GetBGPlace(RE.MatchData, false)})
+		RE.MatchData.BGComposition = {}
+		tinsert(RE.MatchData.BGComposition, {RE:GetBGComposition(RE.MatchData, true)})
+		tinsert(RE.MatchData.BGComposition, {RE:GetBGComposition(RE.MatchData, false)})
+
+		if not RE.MatchData.isRated and RE.MatchData.PlayerNum then
+			RE.MatchData.Players = {RE.MatchData.Players[RE.MatchData.PlayerNum]}
+			RE.MatchData.PlayerNum = 1
 		end
 	end
 

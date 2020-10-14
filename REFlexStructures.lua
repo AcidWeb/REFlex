@@ -13,7 +13,7 @@ RE.DefaultConfig = {
 	["Toasts"] = true,
 	["ShowServerName"] = false,
 	["CurrentTab"] = 1,
-	["Filters"] = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0, ["DateMode"] = 1},
+	["Filters"] = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0, ["DateMode"] = 1},
 	["FirstTime"] = true,
 	["LDBMode"] = 3,
 	["LDBSide"] = "A",
@@ -56,7 +56,7 @@ RE.MapList = {
 }
 
 RE.MapListLongBG = {
-	[1] = ALL,
+	[1] = _G.ALL,
 	[30] = GetRealZoneText(30),
 	[2107] = GetRealZoneText(2107),
 	[1191] = GetRealZoneText(1191),
@@ -77,7 +77,7 @@ RE.MapListLongBG = {
 }
 
 RE.MapListLongArena = {
-	[1] = ALL,
+	[1] = _G.ALL,
 	[1552] = GetRealZoneText(1552),
 	[1504] = GetRealZoneText(1504),
 	[1672] = GetRealZoneText(1672),
@@ -158,10 +158,10 @@ RE.RaceIcons = {
 }
 
 RE.BracketNames = {
-	ARENA_2V2,
-	ARENA_3V3,
+	_G.ARENA_2V2,
+	_G.ARENA_3V3,
 	"",
-	BATTLEGROUND_10V10
+	_G.BATTLEGROUND_10V10
 }
 
 RE.MapIDRemap = {
@@ -172,7 +172,7 @@ RE.MapIDRemap = {
 }
 
 RE.Roles = {}
-for classID=1, MAX_CLASSES do
+for classID=1, _G.MAX_CLASSES do
 	local _, classTag = GetClassInfo(classID)
 	local specNum = GetNumSpecializationsForClassID(classID)
 	RE.Roles[classTag] = {}
@@ -278,14 +278,14 @@ RE.BGStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = BATTLEGROUND,
+		["name"] = _G.BATTLEGROUND,
 		["width"] = 130,
 		["color"] = RE.GetMapColor,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = AUCTION_DURATION,
+		["name"] = _G.AUCTION_DURATION,
 		["width"] = 70,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
 		["bgcolor"] = {
@@ -297,7 +297,7 @@ RE.BGStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = WIN,
+		["name"] = _G.WIN,
 		["width"] = 50,
 		["align"] = "CENTER"
 	},
@@ -318,7 +318,7 @@ RE.BGStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = DAMAGE,
+		["name"] = _G.DAMAGE,
 		["width"] = 65,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
 		["bgcolor"] = {
@@ -330,13 +330,13 @@ RE.BGStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = SHOW_COMBAT_HEALING,
+		["name"] = _G.SHOW_COMBAT_HEALING,
 		["width"] = 65,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = HONOR,
+		["name"] = _G.HONOR,
 		["width"] = 65,
 		["color"] = {
 			["r"] = 0.80,
@@ -353,7 +353,7 @@ RE.BGStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = RATING,
+		["name"] = _G.RATING,
 		["width"] = 65,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
 		["align"] = "CENTER"
@@ -374,14 +374,14 @@ RE.ArenaStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = ARENA,
+		["name"] = _G.ARENA,
 		["width"] = 60,
 		["color"] = RE.GetMapColorArena,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Map", 0) end,
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = TEAM,
+		["name"] = _G.TEAM,
 		["width"] = 100,
 		["bgcolor"] = {
 			["r"] = 0.15,
@@ -397,7 +397,7 @@ RE.ArenaStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = ENEMY,
+		["name"] = _G.ENEMY,
 		["width"] = 100,
 		["bgcolor"] = {
 			["r"] = 0.15,
@@ -413,7 +413,7 @@ RE.ArenaStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = AUCTION_DURATION,
+		["name"] = _G.AUCTION_DURATION,
 		["width"] = 60,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Duration", 0) end,
 		["bgcolor"] = {
@@ -425,13 +425,13 @@ RE.ArenaStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = DAMAGE,
+		["name"] = _G.DAMAGE,
 		["width"] = 70,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Damage", 12) end,
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = SHOW_COMBAT_HEALING,
+		["name"] = _G.SHOW_COMBAT_HEALING,
 		["width"] = 70,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Healing", 13) end,
 		["bgcolor"] = {
@@ -443,7 +443,7 @@ RE.ArenaStructure = {
 		["align"] = "CENTER"
 	},
 	{
-		["name"] = RATING,
+		["name"] = _G.RATING,
 		["width"] = 50,
 		["comparesort"] = function (self, rowa, rowb, sortbycol) return RE:CustomSort(self, rowa, rowb, sortbycol, "Rating", 15) end,
 		["align"] = "CENTER"
