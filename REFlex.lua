@@ -157,12 +157,6 @@ RE.PlayerZone = GetCVar("portal")
 
 SLASH_REFLEX1 = "/reflex"
 
-local function ElvUISwag(sender)
-	if sender == "Livarax-BurningLegion" then
-		return [[|TInterface\PvPRankBadges\PvPRank09:0|t ]]
-	end
-	return nil
-end
 
 function RE:OnLoad(self)
 	RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
@@ -431,9 +425,6 @@ function RE:OnEvent(_, event, ...)
 		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
 		RE.IsSkinned = _G.AddOnSkins and _G.AddOnSkins[1]:CheckOption("REFlex") or false
-		if ElvUI then
-			ElvUI[1]:GetModule("Chat"):AddPluginIcons(ElvUISwag)
-		end
 
 		if RE.Settings.LDBMode == 1 then
 			RE:GetSessionHonor()
