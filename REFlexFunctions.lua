@@ -447,11 +447,11 @@ function RE:GetRaceIcon(token, size)
 		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
 	else
 		token = sgsub(BR[token], "_PL", "")
-		return "|TInterface\\Glues\\CharacterCreate\\CharacterCreateIcons:"..size..":"..size..":0:0:256:256:" ..
-		RE.RaceIcons[token][1]*256+5 ..
-		":" .. RE.RaceIcons[token][2]*256-5 ..
-		":" .. RE.RaceIcons[token][3]*256+5 ..
-		":" .. RE.RaceIcons[token][4]*256-5 .. "|t"
+		return "|TInterface\\Glues\\CharacterCreate\\CharacterCreateIcons:"..size..":"..size..":0:0:2048:1024:" ..
+		RE.RaceIcons[token][1]*2048+5 ..
+		":" .. RE.RaceIcons[token][2]*2048-5 ..
+		":" .. RE.RaceIcons[token][3]*1024+5 ..
+		":" .. RE.RaceIcons[token][4]*1024-5 .. "|t"
 	end
 end
 
