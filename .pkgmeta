@@ -18,10 +18,6 @@ externals:
 ignore:
   - README.md
   - .luacheckrc
-  - Libs/LibToast-1.0/LibStub
-  - Libs/LibToast-1.0/LibToast-1.0.toc
-  - Libs/LibToast-1.0/lib.xml
-  - Libs/LibToast-1.0/LibStub
   - Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
   - Libs/LibBabble-Race-3.0/LibBabble-Race-3.0.toc
   - Libs/LibBabble-Race-3.0/lib.xml

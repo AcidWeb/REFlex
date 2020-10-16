@@ -5,7 +5,6 @@ local ST = LibStub("ScrollingTable")
 local GUI = LibStub("AceGUI-3.0")
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBI = LibStub("LibDBIcon-1.0")
-local TOAST = LibStub("LibToast-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
@@ -59,6 +58,7 @@ local AbbreviateNumbers = _G.AbbreviateNumbers
 local UIParentLoadAddOn = _G.UIParentLoadAddOn
 local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
+local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
 RE.Version = 300
@@ -200,6 +200,13 @@ function RE:OnLoad(self)
 	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = _G.HONOR_TODAY, [3] = _G.HONOR_YESTERDAY, [4] = _G.GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = L["This season"], [7] = L["Prev. season"], [8] = _G.CUSTOM})
 end
 
+function RE:OnHide(_)
+	if RE.Tooltip and RE.Tooltip:IsVisible() then
+		QTIP:Release(RE.Tooltip)
+	end
+	PlaySound(_G.SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
+end
+
 function RE:OnEvent(_, event, ...)
 	if event == "ADDON_LOADED" and ... == "REFlex" then
 		if not _G.REFlexSettings then
@@ -234,36 +241,6 @@ function RE:OnEvent(_, event, ...)
 				_G.REFlexFrame:Hide()
 			end
 		end
-
-		TOAST:Register("REFlexToast", function(toast, ...)
-			toast:SetFormattedTitle("|cFF74D06CRE|r|cFFFFFFFFFlex|r")
-			toast:SetFormattedText(...)
-			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
-			toast:MakePersistent()
-			if RE.PlayerFaction == 0 then
-				toast:SetSoundFile(565853)
-				toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
-			else
-				toast:SetSoundFile(566564)
-				toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
-			end
-		end)
-		TOAST:Register("REFlexToastArena", function(toast, title, payload)
-			toast:SetFormattedTitle(title)
-			toast:SetFormattedText(payload)
-			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
-			toast:MakePersistent()
-			if RE.PlayerFaction == 0 then
-				toast:SetPrimaryCallback(_G.HORDE_CHEER, RE.CloseToast)
-			else
-				toast:SetPrimaryCallback(_G.ALLIANCE_CHEER, RE.CloseToast)
-			end
-		end)
-		TOAST:Register("REFlexToastInfo", function(toast, ...)
-			toast:SetFormattedTitle("|cFF74D06CRE|r|cFFFFFFFFFlex|r")
-			toast:SetFormattedText(...)
-			toast:SetIconTexture([[Interface\PvPRankBadges\PvPRank09]])
-		end)
 
 		RE.LDB = LDB:NewDataObject("REFlex", {
 			type = "data source",
@@ -388,7 +365,7 @@ function RE:OnEvent(_, event, ...)
 		local messageEx = {strsplit(";", message)}
 		if messageEx[1] == "Version" then
 			if not RE.FoundNewVersion and tonumber(messageEx[2]) > RE.Version then
-				TOAST:Spawn("REFlexToastInfo", L["New version released!"])
+				print("\124cFF74D06C[REFlex]\124r "..L["New version released!"])
 				RE.FoundNewVersion = true
 			end
 		end
@@ -408,6 +385,7 @@ function RE:OnEvent(_, event, ...)
 			if IsInGuild() then
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
+			_G.REFlexBGFrameText:SetText("")
 		end
 	elseif event == "PVP_MATCH_COMPLETE" and not RE.DataSaved then
 		RE.DataSaved = true
@@ -610,8 +588,12 @@ function RE:OnBracketChange(_, bracket)
 end
 
 function RE:OnArenaStatsClick(self)
-	_G.CloseDropDownMenus()
-	_G.EasyMenu(RE.StatsDropDown, _G.REFlexStatsDropDown, self, 0 , 0, "MENU")
+	if RE.Tooltip and RE.Tooltip:IsVisible() then
+		QTIP:Release(RE.Tooltip)
+	else
+		_G.CloseDropDownMenus()
+		_G.EasyMenu(RE.StatsDropDown, _G.REFlexStatsDropDown, self, 0 , 0, "MENU")
+	end
 end
 
 function RE:OnDateChange(_, mode)
@@ -935,11 +917,10 @@ function RE:PVPEnd()
 	if not RE.MatchData.Hidden then
 		if RE.MatchData.isArena then
 			RE:UpdateArenaData(false)
+			_G.REFlexBGFrameText:SetText("")
 		else
 			RE:UpdateBGData(false)
-			if RE.Settings.Toasts then
-				TOAST:Spawn("REFlexToast", RE:GetBGToast(#RE.Database))
-			end
+			_G.REFlexBGFrameText:SetText(RE:GetBGScoreText(#RE.Database))
 		end
 	else
 		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])

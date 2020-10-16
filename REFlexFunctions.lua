@@ -2,9 +2,9 @@ local _G = _G
 local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
-local DUMP = LibStub("LibTextDump-1.0")
-local TOAST = LibStub("LibToast-1.0")
 local ST = LibStub("ScrollingTable")
+local QTIP = LibStub("LibQTip-1.0")
+local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor = _G.math.floor
@@ -314,52 +314,52 @@ function RE:GetMercenaryStatus(databaseID)
 	return not (RE.Database[databaseID].PlayerSide == RE.PlayerFaction)
 end
 
-function RE:GetBGToast(databaseID)
-	local toast = {}
+function RE:GetBGScoreText(databaseID)
+	local text = {}
 	local savedFilters = RE.Settings.Filters
 	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0}
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = unpack(RE.Database[databaseID].BGPlace[2])
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.Settings.Filters = savedFilters
-	tinsert(toast, RE:InsideToast("KB", playerData[2], databaseID, placeKB, topKB))
-	tinsert(toast, RE:InsideToast("HK", playerData[3], databaseID, placeHK, topHK))
-	tinsert(toast, RE:InsideToast(_G.HONOR, playerData[5], databaseID, placeHonor, topHonor))
-	tinsert(toast, RE:InsideToast(_G.DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
-	tinsert(toast, RE:InsideToast(_G.SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
-	return tconcat(toast, "")
+	tinsert(text, RE:ScoreTextParser("KB", playerData[2], databaseID, placeKB, topKB))
+	tinsert(text, RE:ScoreTextParser("HK", playerData[3], databaseID, placeHK, topHK))
+	tinsert(text, RE:ScoreTextParser(_G.HONOR, playerData[5], databaseID, placeHonor, topHonor))
+	tinsert(text, RE:ScoreTextParser(_G.DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
+	tinsert(text, RE:ScoreTextParser(_G.SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
+	return tconcat(text, " |cFF808080|||r ")
 end
 
-function RE:GetArenaToast(mode)
+function RE:GetArenaStatsTooltip(mode)
 	if #RE.TableArena.filtered > 0 then
 		local payload = RE:GetArenaTeamStats(mode)
-		local title = "|cFF74D06CRE|r|cFFFFFFFFFlex|r"
-		local toast = {}
+		RE.Tooltip = QTIP:Acquire("REFlexTooltipArena", 1, "CENTER")
+		RE.Tooltip:SmartAnchorTo(_G.REFlexFrame_StatsButton)
 		if mode == 1 then
-			title = title.." "..L["Most common teams"]
+			RE.Tooltip:AddHeader("|cFF74D06C"..L["Most common teams"].."|r")
 		elseif mode == 2 then
-			title = title.." "..L["Easiest teams"]
+			RE.Tooltip:AddHeader("|cFF74D06C"..L["Easiest teams"].."|r")
 		else
-			title = title.." "..L["Hardest teams"]
+			RE.Tooltip:AddHeader("|cFF74D06C"..L["Hardest teams"].."|r")
 		end
+		RE.Tooltip:AddLine()
+		RE.Tooltip:AddLine()
 		for _, v in pairs(payload) do
 			local members = {strsplit(";", v[1])}
 			for i=1, #members do
 				local class, spec = strsplit("-", members[i])
-				tinsert(toast, "|c".._G.RAID_CLASS_COLORS[class]:GenerateHexColor().._G.LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r|n")
+				RE.Tooltip:AddLine("|c".._G.RAID_CLASS_COLORS[class]:GenerateHexColor().._G.LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r")
 			end
 			if mode == 1 then
-				tinsert(toast, "|cFFFFFFFF"..v[2].."|r | |cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r|n|n")
+				RE.Tooltip:AddLine("|cFFFFFFFF"..v[2].."|r | |cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r")
 			elseif mode == 2 then
-				tinsert(toast, "|cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r | |cFFFFFFFF"..v[2].."|n|n")
+				RE.Tooltip:AddLine("|cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r | |cFFFFFFFF"..v[2])
 			else
-				tinsert(toast, "|cFFFF0000"..v[4].."|r - |cFF00FF00"..v[3].."|r | |cFFFFFFFF"..v[2].."|n|n")
+				RE.Tooltip:AddLine("|cFFFF0000"..v[4].."|r - |cFF00FF00"..v[3].."|r | |cFFFFFFFF"..v[2])
 			end
+			RE.Tooltip:AddLine()
 		end
-		if #toast > 1 then
-			toast[#toast] = toast[#toast]:gsub("|n|n", "")
-			TOAST:Spawn("REFlexToastArena", title, tconcat(toast, ""))
-		end
+		RE.Tooltip:Show()
 	end
 end
 
@@ -653,17 +653,13 @@ function RE:HKBarUpdate()
 	_G.REFlexFrame_HKBar_I:SetValue(hk)
 end
 
-function RE:InsideToast(label, value, databaseID, place, top)
-	local toast = {}
-	tinsert(toast, "|cFFC5F3BC"..label..":|r |cFFFFFFFF"..RE:AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
+function RE:ScoreTextParser(label, value, databaseID, place, top)
+	local text = {}
+	tinsert(text, "|cFF90EE90"..label..":|r |cFFFFFFFF"..RE:AbbreviateNumbers(value).." - "..place.."/"..RE.Database[databaseID].PlayersNum.."|r")
 	if value > top then
-		tinsert(toast, " |cFFFFFFFF-|r |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
+		tinsert(text, " |TInterface\\GroupFrame\\UI-Group-LeaderIcon:14:14:0:0|t")
 	end
-	tinsert(toast, "|n")
-	return tconcat(toast, "")
-end
-
-function RE:CloseToast()
+	return tconcat(text, "")
 end
 
 function RE:HideEntry(databaseID)

@@ -19,7 +19,7 @@
 			<OnLoad inherit="prepend">REFlex:OnLoad(self)</OnLoad>
 			<OnEvent>REFlex:OnEvent(self, event, ...)</OnEvent>
 			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); REFlex:UpdateGUI()</OnShow>
-			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
+			<OnHide>REFlex:OnHide(self)</OnHide>
 			<OnDragStart>self:StartMoving()</OnDragStart>
 			<OnDragStop>self:StopMovingOrSizing()</OnDragStop>
 		</Scripts>
@@ -369,6 +369,24 @@
 				</Layers>
 			</Frame>
 		</Frames>
+	</Frame>
+
+	<Frame name="REFlexBGFrame" frameStrata="DIALOG" toplevel="true" parent="PVPMatchScoreboard">
+		<Size>
+			<AbsDimension x="5" y="5"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOP">
+				<Offset>
+					<AbsDimension x="0" y="-25"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString name="$ParentText" justifyH="CENTER" inherits="SystemFont_Shadow_Med1"/>
+			</Layer>
+		</Layers>
 	</Frame>
 
 </Ui>

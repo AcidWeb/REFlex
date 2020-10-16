@@ -10,7 +10,6 @@ local ReloadUI = _G.ReloadUI
 
 RE.DefaultConfig = {
 	["MiniMapButtonSettings"] = {["hide"] = false},
-	["Toasts"] = true,
 	["ShowServerName"] = false,
 	["CurrentTab"] = 1,
 	["Filters"] = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0, ["DateMode"] = 1},
@@ -183,9 +182,9 @@ for classID=1, _G.MAX_CLASSES do
 end
 
 RE.StatsDropDown = {
-	{ text = L["Most common teams"], notCheckable = true, func = function() RE:GetArenaToast(1) end },
-	{ text = L["Easiest teams"], notCheckable = true, func = function() RE:GetArenaToast(2) end },
-	{ text = L["Hardest teams"], notCheckable = true, func = function() RE:GetArenaToast(3) end }
+	{ text = L["Most common teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(1) end },
+	{ text = L["Easiest teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(2) end },
+	{ text = L["Hardest teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(3) end }
 }
 
 RE.AceConfig = {
@@ -199,21 +198,12 @@ RE.AceConfig = {
 			set = function(_, val) RE.Settings.MiniMapButtonSettings.hide = val; RE:UpdateConfig() end,
 			get = function(_) return RE.Settings.MiniMapButtonSettings.hide end
 		},
-		toasts = {
-			name = L["Enable battleground summary"],
-			desc = L["Display toast with battleground summary after completed match."],
-			type = "toggle",
-			width = "full",
-			order = 2,
-			set = function(_, val) RE.Settings.Toasts = val end,
-			get = function(_) return RE.Settings.Toasts end
-		},
 		servername = {
 			name = L["Display server names"],
 			desc = L["Show player server name in match detail tooltip."],
 			type = "toggle",
 			width = "full",
-			order = 3,
+			order = 2,
 			set = function(_, val) RE.Settings.ShowServerName = val end,
 			get = function(_) return RE.Settings.ShowServerName end
 		},
@@ -222,7 +212,7 @@ RE.AceConfig = {
 			desc = L["A minimal number of matches required to be included in arena team composition statistics."],
 			type = "range",
 			width = "double",
-			order = 4,
+			order = 3,
 			min = 1,
 			max = 10,
 			step = 1,
@@ -234,7 +224,7 @@ RE.AceConfig = {
 			desc = L["Rating display always compares the values with the previous week."],
 			type = "select",
 			width = "double",
-			order = 5,
+			order = 4,
 			values = {
 				[1] = L["Current session"],
 				[2] = _G.HONOR_TODAY,
@@ -249,7 +239,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 6,
+			order = 5,
 			func = function() _G.REFlexDatabase = {}; _G.REFlexHonorDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
@@ -258,7 +248,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 7,
+			order = 6,
 			func = function() RE:SeasonPurge(); ReloadUI() end
 		}
 	}
