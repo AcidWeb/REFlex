@@ -371,14 +371,14 @@
 		</Frames>
 	</Frame>
 
-	<Frame name="REFlexBGFrame" frameStrata="DIALOG" toplevel="true" parent="PVPMatchScoreboard">
+	<Frame name="REFlexBGFrame" frameStrata="DIALOG" toplevel="true" parent="PVPMatchResults">
 		<Size>
 			<AbsDimension x="5" y="5"/>
 		</Size>
 		<Anchors>
-			<Anchor point="TOP">
+			<Anchor point="BOTTOM">
 				<Offset>
-					<AbsDimension x="0" y="-25"/>
+					<AbsDimension x="0" y="30"/>
 				</Offset>
 			</Anchor>
 		</Anchors>
