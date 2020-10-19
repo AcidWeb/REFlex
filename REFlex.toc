@@ -8,6 +8,7 @@
 ## X-Curse-Project-ID: 28545
 ## X-WoWI-ID: 19190
 
+TaintLess.xml
 Embeds.xml
 Locale\Locale.xml
 REFlex.xml
