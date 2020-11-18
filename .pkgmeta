@@ -9,7 +9,6 @@ externals:
   Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   Libs/LibBabble-Race-3.0: https://repos.wowace.com/wow/libbabble-race-3-0/trunk
   Libs/LibTextDump-1.0: https://repos.wowace.com/wow/libtextdump-1-0
-  Libs/LibToast-1.0: https://hg.curseforge.com/wow/libtoast-1-0
   Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
   Libs/AceConfigDialog-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0/AceConfigDialog-3.0
   Libs/AceConfigRegistry-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0/AceConfigRegistry-3.0
