@@ -61,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 301
+RE.Version = 302
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -606,7 +606,7 @@ function RE:OnDateChange(_, mode)
 	elseif mode == 3 then
 		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - 86400, RE:ParseUTCTimestamp()}
 	elseif mode == 4 then
-		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600), 0}
+		RE.Settings.Filters.Date = {RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600), 0}
 	elseif mode == 5 then
 		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(true), 0}
 	elseif mode == 6 then
@@ -816,7 +816,7 @@ function RE:UpdateLDBTime()
 	elseif RE.Settings.LDBMode == 2 then
 		RE.LDBTime = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
-		RE.LDBTime = RE:ParseUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600)
+		RE.LDBTime = RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600)
 	end
 end
 

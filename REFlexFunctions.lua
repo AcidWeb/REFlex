@@ -204,7 +204,7 @@ function RE:GetHonor()
 	if RE.Settings.LDBMode == 1 then
 		from = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
-		from = from - RE:GetPreviousWeeklyReset() - (3600 * RE.PlayerTimezone)
+		from = RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() - (RE.PlayerTimezone * 3600)
 	end
 	for t, v in pairs(RE.HDatabase) do
 		if t >= from and (to == 0 or t <= to) then
@@ -767,9 +767,9 @@ function RE:ParseUTCTimestamp(month)
 	local d2 = date("!*t")
 	d2.isdst = d1.isdst
 	if month then
-		return time(d2) - (86400 * (d1.day - 1)) - (3600 * d1.hour) - (60 * d1.min) - d1.sec
+		return time(d2) - (86400 * (d2.day - 1)) - (3600 * d2.hour) - (60 * d2.min) - d2.sec
 	else
-		return time(d2) - (3600 * d1.hour) - (60 * d1.min) - d1.sec
+		return time(d2) - (3600 * d2.hour) - (60 * d2.min) - d2.sec
 	end
 end
 
