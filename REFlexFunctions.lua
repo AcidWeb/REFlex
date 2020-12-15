@@ -7,11 +7,12 @@ local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
-local mfloor = _G.math.floor
+local mfloor, min = _G.math.floor, _G.math.min
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
+local GetCurrencyInfo = _G.C_CurrencyInfo.GetCurrencyInfo
 local GetConquestWeeklyProgress = _G.C_WeeklyRewards.GetConquestWeeklyProgress
 local GetSecondsUntilWeeklyReset = _G.C_DateAndTime.GetSecondsUntilWeeklyReset
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
@@ -736,11 +737,27 @@ function RE:DumpCSV()
 end
 
 function RE:GetConquestPoints()
-	local progress = GetConquestWeeklyProgress()
-	if progress then
-		return progress.progress, progress.maxProgress
+	local currencyInfo = GetCurrencyInfo(_G.Constants.CurrencyConsts.CONQUEST_CURRENCY_ID)
+	if currencyInfo then
+		return min(currencyInfo.totalEarned, currencyInfo.maxQuantity), currencyInfo.maxQuantity
 	else
 		return 0, 0
+	end
+end
+
+function RE:GetWeeklyChest()
+	local progress = GetConquestWeeklyProgress()
+	if progress then
+		local weeklyStatus = {}
+		for _=1, progress.unlocksCompleted do
+			tinsert(weeklyStatus, "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t")
+		end
+		for _=1, progress.maxUnlocks - progress.unlocksCompleted do
+			tinsert(weeklyStatus, "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+		end
+		return progress.progress, progress.maxProgress, tconcat(weeklyStatus, " ")
+	else
+		return 0, 0, ""
 	end
 end
 

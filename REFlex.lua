@@ -38,6 +38,7 @@ local GetBattlefieldStatData = _G.GetBattlefieldStatData
 local GetBattlefieldArenaFaction = _G.GetBattlefieldArenaFaction
 local GetInstanceInfo = _G.GetInstanceInfo
 local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
+local GetRandomEpicBGInfo = _G.C_PvP.GetRandomEpicBGInfo
 local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
 local GetMatchPVPStatColumns = _G.C_PvP.GetMatchPVPStatColumns
 local GetActiveMatchDuration = _G.C_PvP.GetActiveMatchDuration
@@ -260,6 +261,7 @@ function RE:OnEvent(_, event, ...)
 			RE.Tooltip:AddHeader("", "")
 			RE.Tooltip:SetCell(1, 1, "|cFFFFD100".._G.DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine(_G.BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:AddLine(_G.ITEM_QUALITY4_DESC.." ".._G.BATTLEGROUND, GetRandomEpicBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddLine(_G.ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			if IsPlayerAtEffectiveMaxLevel() and brawlInfo and brawlInfo.canQueue then
 				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
@@ -272,15 +274,22 @@ function RE:OnEvent(_, event, ...)
 			end
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(10 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:SetCell(11 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
-			RE.Tooltip:SetCell(11 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
+			RE.Tooltip:SetCell(12 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
 			if IsPlayerAtEffectiveMaxLevel() and GetCurrentArenaSeason() > 0 then
-				local current, max = RE:GetConquestPoints()
+				local current, cap = RE:GetConquestPoints()
+				local weeklyCurrent, weeklycap, weeklyProgress = RE:GetWeeklyChest()
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(12 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(13 - mod, 1, current.." / "..max, "CENTER", 2)
+				RE.Tooltip:SetCell(14 - mod, 1, current.." / "..cap, "CENTER", 2)
+				RE.Tooltip:AddHeader("", "")
+				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100".._G.RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:AddLine("", "")
+				RE.Tooltip:SetCell(16 - mod, 1, weeklyCurrent.." / "..weeklycap, "CENTER", 2)
+				RE.Tooltip:AddLine("", "")
+				RE.Tooltip:SetCell(17 - mod, 1, weeklyProgress, "CENTER", 2)
 			end
 			RE.Tooltip:Show()
 		end
