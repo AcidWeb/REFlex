@@ -882,7 +882,7 @@ function RE:PVPEnd()
 	RE.MatchData.Players = {}
 	for i=1, RE.MatchData.PlayersNum do
 		local data = {GetBattlefieldScore(i)}
-		if data[1] == RE.PlayerName then
+		if data[1]:lower() == RE.PlayerName:lower() then
 			RE.MatchData.PlayerNum = i
 		end
 		tinsert(RE.MatchData.Players, data)
