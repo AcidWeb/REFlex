@@ -102,7 +102,7 @@ function RE:GetArenaTeamCSV(databaseID, player)
 	local team = {}
 	for i=1, #RE.Database[databaseID].Players do
 		if RE.Database[databaseID].Players[i][6] == faction then
-			tinsert(team, RE.Database[databaseID].Players[i][9].."-"..RE.Database[databaseID].Players[i][16])
+			tinsert(team, RE.Database[databaseID].Players[i][9].."-"..RE.Database[databaseID].Players[i][16].."-"..RE.Database[databaseID].Players[i][1])
 		end
 	end
 	tsort(team)
