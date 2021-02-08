@@ -62,7 +62,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 302
+RE.Version = 303
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -82,7 +82,7 @@ RE.LDBB = ""
 RE.LDBUpdate = true
 RE.LDBData = {["Won"] = 0, ["Lost"] = 0, ["HK"] = 0, ["Honor"] = 0}
 
-RE.PlayerName = UnitName("PLAYER")
+RE.PlayerName = UnitName("PLAYER"):lower()
 RE.PlayerFaction = UnitFactionGroup("PLAYER") == "Horde" and 0 or 1
 RE.PlayerZone = GetCVar("portal")
 
@@ -882,7 +882,7 @@ function RE:PVPEnd()
 	RE.MatchData.Players = {}
 	for i=1, RE.MatchData.PlayersNum do
 		local data = {GetBattlefieldScore(i)}
-		if data[1] == RE.PlayerName then
+		if data[1]:lower() == RE.PlayerName then
 			RE.MatchData.PlayerNum = i
 		end
 		tinsert(RE.MatchData.Players, data)

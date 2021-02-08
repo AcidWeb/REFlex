@@ -268,7 +268,7 @@ function RE:GetBGPlace(matchData, onlyFaction)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = 1, 1, 1, 1, 1
 	local playerData = matchData.Players[matchData.PlayerNum]
 	for i=1, #matchData.Players do
-		if matchData.Players[i][1] ~= RE.PlayerName and (not onlyFaction or (onlyFaction and matchData.Players[i][6] == matchData.PlayerSide)) then
+		if matchData.Players[i][1]:lower() ~= RE.PlayerName and (not onlyFaction or (onlyFaction and matchData.Players[i][6] == matchData.PlayerSide)) then
 			if playerData[2] < matchData.Players[i][2] then
 				placeKB = placeKB + 1
 			end
