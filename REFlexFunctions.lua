@@ -489,7 +489,7 @@ end
 
 function RE:DateClean(timeRaw)
 	-- Barbarian friendly
-	if RE.PlayerZone == "US" then
+	if RE.PlayerZone == "US" and not RE.Settings.ForceCivilisedClock then
 		return date("%I:%M %p %m/%d/%y", timeRaw + (RE.PlayerTimezone * 3600))
 	else
 		return date("%H:%M %d.%m.%y", timeRaw + (RE.PlayerTimezone * 3600))

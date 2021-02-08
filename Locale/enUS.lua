@@ -9,6 +9,8 @@ L["Current session"] = true
 
 L["Hide minimap button"] = true
 L["Display server names"] = true
+L["Force 24-hour time format"] = true
+L["Display 24-hour timestamps even if US realm is detected."] = true
 L["LDB feed display mode"] = true
 L["Rating display always compares the values with the previous week."] = true
 L["Show player server name in match detail tooltip."] = true

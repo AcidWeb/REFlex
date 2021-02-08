@@ -17,6 +17,7 @@ RE.DefaultConfig = {
 	["LDBMode"] = 3,
 	["LDBSide"] = "A",
 	["ArenaStatsLimit"] = 3,
+	["ForceCivilisedClock"] = false,
 	["ConfigVersion"] = RE.Version
 }
 
@@ -209,12 +210,21 @@ RE.AceConfig = {
 			set = function(_, val) RE.Settings.ShowServerName = val end,
 			get = function(_) return RE.Settings.ShowServerName end
 		},
+		civilisedclock = {
+			name = L["Force 24-hour time format"],
+			desc = L["Display 24-hour timestamps even if US realm is detected."],
+			type = "toggle",
+			width = "full",
+			order = 3,
+			set = function(_, val) RE.Settings.ForceCivilisedClock = val end,
+			get = function(_) return RE.Settings.ForceCivilisedClock end
+		},
 		arenalimit = {
 			name = L["Arena composition statistics limit"],
 			desc = L["A minimal number of matches required to be included in arena team composition statistics."],
 			type = "range",
 			width = "double",
-			order = 3,
+			order = 4,
 			min = 1,
 			max = 10,
 			step = 1,
@@ -226,7 +236,7 @@ RE.AceConfig = {
 			desc = L["Rating display always compares the values with the previous week."],
 			type = "select",
 			width = "double",
-			order = 4,
+			order = 5,
 			values = {
 				[1] = L["Current session"],
 				[2] = _G.HONOR_TODAY,
@@ -241,7 +251,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 5,
+			order = 6,
 			func = function() _G.REFlexDatabase = {}; _G.REFlexHonorDatabase = {}; ReloadUI() end
 		},
 		deleteoldseason = {
@@ -250,7 +260,7 @@ RE.AceConfig = {
 			type = "execute",
 			width = "double",
 			confirm = true,
-			order = 6,
+			order = 7,
 			func = function() RE:SeasonPurge(); ReloadUI() end
 		}
 	}
