@@ -30,8 +30,15 @@ function RE:UpdateSettings()
       RE.Settings.ConfigVersion = 250
     end
 
-    RE.Settings.ArenaStatsLimit = 3
-    RE.Settings.ConfigVersion = 260
+    if RE.Settings.ConfigVersion < 260 then
+      RE.Settings.ArenaStatsLimit = 3
+      RE.Settings.ConfigVersion = 260
+    end
+
+    if RE.Settings.Filters.DateMode > 1 then
+      RE.Settings.Filters.DateMode = RE.Settings.Filters.DateMode + 1
+    end
+    RE.Settings.ConfigVersion = 310
   end
 end
 

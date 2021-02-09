@@ -62,7 +62,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 303
+RE.Version = 310
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -198,7 +198,7 @@ function RE:OnLoad(self)
 	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
 	RE.DateDropDown:SetWidth(100)
 	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
-	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = _G.HONOR_TODAY, [3] = _G.HONOR_YESTERDAY, [4] = _G.GUILD_CHALLENGES_THIS_WEEK, [5] = L["This month"], [6] = L["This season"], [7] = L["Prev. season"], [8] = _G.CUSTOM})
+	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = L["Session"], [3] = _G.HONOR_TODAY, [4] = _G.HONOR_YESTERDAY, [5] = _G.GUILD_CHALLENGES_THIS_WEEK, [6] = L["This month"], [7] = L["This season"], [8] = L["Prev. season"], [9] = _G.CUSTOM})
 end
 
 function RE:OnHide(_)
@@ -611,17 +611,19 @@ function RE:OnDateChange(_, mode)
 	if mode == 1 then
 		RE.Settings.Filters.Date = {0, 0}
 	elseif mode == 2 then
-		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(), 0}
+		RE.Settings.Filters.Date = {RE.SessionStart, 0}
 	elseif mode == 3 then
-		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - 86400, RE:ParseUTCTimestamp()}
+		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(), 0}
 	elseif mode == 4 then
-		RE.Settings.Filters.Date = {RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600), 0}
+		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp() - 86400, RE:ParseUTCTimestamp()}
 	elseif mode == 5 then
-		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(true), 0}
+		RE.Settings.Filters.Date = {RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() + (RE.PlayerTimezone * 3600), 0}
 	elseif mode == 6 then
+		RE.Settings.Filters.Date = {RE:ParseUTCTimestamp(true), 0}
+	elseif mode == 7 then
 		RE.Settings.Filters.Date = {0, 0}
 		RE.Settings.Filters.Season = RE.Season
-	elseif mode == 7 then
+	elseif mode == 8 then
 		RE.Settings.Filters.Date = {0, 0}
 		RE.Settings.Filters.Season = RE.Season - 1
 	else
