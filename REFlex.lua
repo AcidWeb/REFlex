@@ -110,7 +110,7 @@ function RE:OnLoad(self)
 	self:RegisterEvent("PVP_MATCH_COMPLETE")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
-	self:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN")
+	self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 	self:RegisterForDrag("LeftButton")
 	tinsert(_G.UISpecialFrames,"REFlexFrame")
 
@@ -411,14 +411,11 @@ function RE:OnEvent(_, event, ...)
 		end
 		RE.LDBUpdate = true
 		RE:UpdateLDB()
-	elseif event == "CHAT_MSG_COMBAT_HONOR_GAIN" then
-		local today = RE:ParseUTCTimestamp()
-		local points = tonumber(strmatch(select(1, ...), "%d+"))
-		if not RE.HDatabase[today] then
-			RE.HDatabase[today] = 0
+	elseif event == "CURRENCY_DISPLAY_UPDATE" then
+		local currency, _, quantity = ...
+		if currency and quantity and currency == 1792 and quantity > 0 then
+			RE:ParseHonor(quantity)
 		end
-		RE.HDatabase[today] = RE.HDatabase[today] + points
-		RE:UpdateLDB()
 	end
 end
 

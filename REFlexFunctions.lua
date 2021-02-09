@@ -222,6 +222,15 @@ function RE:GetSessionHonor()
 	RE.Settings.Filters = savedFilters
 end
 
+function RE:ParseHonor(points)
+	local today = RE:ParseUTCTimestamp()
+	if not RE.HDatabase[today] then
+		RE.HDatabase[today] = 0
+	end
+	RE.HDatabase[today] = RE.HDatabase[today] + points
+	RE:UpdateLDB()
+end
+
 function RE:GetStats(filter, arena, skipLatest)
 	local ili = #RE.Database
 	local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
