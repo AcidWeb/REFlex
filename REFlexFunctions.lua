@@ -7,7 +7,7 @@ local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
-local mfloor, min = _G.math.floor, _G.math.min
+local mfloor, min, mfmod = _G.math.floor, _G.math.min, _G.math.fmod
 local sgsub, sbyte = _G.string.gsub, _G.string.byte
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
@@ -205,7 +205,7 @@ function RE:GetHonor()
 	if RE.Settings.LDBMode == 1 then
 		from = RE:ParseUTCTimestamp()
 	elseif RE.Settings.LDBMode == 3 then
-		from = RE:GetUTCTimestamp() - RE:GetPreviousWeeklyReset() - (RE.PlayerTimezone * 3600)
+		from = RE:ParseUTCTimestamp() - (RE:GetPreviousWeeklyReset() - mfmod(RE:GetPreviousWeeklyReset(), 86400))
 	end
 	for t, v in pairs(RE.HDatabase) do
 		if t >= from and (to == 0 or t <= to) then

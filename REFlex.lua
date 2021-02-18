@@ -10,7 +10,6 @@ local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
 local tinsert = _G.table.insert
-local strmatch = _G.string.match
 local pairs, select, print, tonumber, hooksecurefunc, strsplit, tostring, unpack = _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.tostring, _G.unpack
 local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
 local StaticPopup_Show = _G.StaticPopup_Show
@@ -62,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 310
+RE.Version = 311
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 

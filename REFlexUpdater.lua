@@ -117,7 +117,7 @@ function RE:UpdateDatabase()
       end
 
       RE.Database[i].StatsNum = nil
-      if RE.Database[i].PlayersStats then
+      if not RE.Database[i].Hidden and RE.Database[i].PlayersStats then
         local tmp = RE.Database[i].PlayersStats[RE.Database[i].PlayerNum]
         RE.Database[i].PlayerStats = {}
         for _, v in pairs(tmp) do
@@ -125,7 +125,7 @@ function RE:UpdateDatabase()
         end
         RE.Database[i].PlayersStats = nil
       end
-      if not RE.Database[i].isArena then
+      if not RE.Database[i].Hidden and not RE.Database[i].isArena then
         RE.Database[i].BGPlace = {}
         tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], true)})
         tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], false)})
