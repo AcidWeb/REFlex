@@ -61,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 311
+RE.Version = 312
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -100,6 +100,7 @@ RE.BackdropB = {
 }
 
 _G.SLASH_REFLEX1 = "/reflex"
+_G.SLASH_REFLEXGG1 = "/gg"
 
 function RE:OnLoad(self)
 	RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
@@ -241,6 +242,9 @@ function RE:OnEvent(_, event, ...)
 				_G.REFlexFrame:Hide()
 			end
 		end
+		_G.SlashCmdList["REFLEXGG"] = function()
+			RE:SurrenderMatch()
+		end
 
 		RE.LDB = LDB:NewDataObject("REFlex", {
 			type = "data source",
@@ -303,6 +307,8 @@ function RE:OnEvent(_, event, ...)
 					else
 						_G.REFlexFrame:Hide()
 					end
+				elseif button == "MiddleButton" then
+					RE:SurrenderMatch()
 				elseif button == "RightButton" then
 					_G.InterfaceOptionsFrame:Show()
 					InterfaceOptionsFrame_OpenToCategory(RE.OptionsMenu)
@@ -315,6 +321,8 @@ function RE:OnEvent(_, event, ...)
 						RE.Settings.LDBSide = "A"
 					end
 					RE.LDB.text = RE["LDB"..RE.Settings.LDBSide]
+				elseif button == "MiddleButton" then
+					RE:SurrenderMatch()
 				elseif button == "RightButton" then
 					if not _G.REFlexFrame:IsVisible() then
 						_G.REFlexFrame:Show()

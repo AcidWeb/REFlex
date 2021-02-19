@@ -16,6 +16,10 @@ local GetCurrencyInfo = _G.C_CurrencyInfo.GetCurrencyInfo
 local GetConquestWeeklyProgress = _G.C_WeeklyRewards.GetConquestWeeklyProgress
 local GetSecondsUntilWeeklyReset = _G.C_DateAndTime.GetSecondsUntilWeeklyReset
 local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
+local IsActiveBattlefieldArena = _G.IsActiveBattlefieldArena
+local IsInBrawl = _G.C_PvP.IsInBrawl
+local CanSurrenderArena = _G.CanSurrenderArena
+local SurrenderArena = _G.SurrenderArena
 local StaticPopup_Hide = _G.StaticPopup_Hide
 
 function RE:GetPlayerData(databaseID)
@@ -796,6 +800,12 @@ function RE:ParseUTCTimestamp(month)
 		return time(d2) - (86400 * (d2.day - 1)) - (3600 * d2.hour) - (60 * d2.min) - d2.sec
 	else
 		return time(d2) - (3600 * d2.hour) - (60 * d2.min) - d2.sec
+	end
+end
+
+function RE:SurrenderMatch()
+	if IsActiveBattlefieldArena() and not IsInBrawl() and CanSurrenderArena() then
+		SurrenderArena()
 	end
 end
 
