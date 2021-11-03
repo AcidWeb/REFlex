@@ -1,2 +1,3 @@
-Libs
+Libs/*
+!Libs/LibQTip-1.0/
 desktop.ini
