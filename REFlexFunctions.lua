@@ -3,7 +3,7 @@ local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
 local ST = LibStub("ScrollingTable")
-local QTIP = LibStub("LibQTip-1.0-DuctTape")
+local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove

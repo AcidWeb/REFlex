@@ -5,7 +5,7 @@ local ST = LibStub("ScrollingTable")
 local GUI = LibStub("AceGUI-3.0")
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBI = LibStub("LibDBIcon-1.0")
-local QTIP = LibStub("LibQTip-1.0-DuctTape")
+local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 _G.REFlex = RE
 
@@ -61,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 316
+RE.Version = 317
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
