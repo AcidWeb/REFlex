@@ -1,6 +1,6 @@
 ﻿# REFlex
 
-[Curse](http://www.curse.com/addons/wow/reflex-battleground-historian)
+[Wago Addons](https://addons.wago.io/addons/reflex-arenabattleground-historian)
 
 [WoWInterface](http://www.wowinterface.com/downloads/info19190-REFlex-ArenaBattlegroundHistorian.html)
 
@@ -8,4 +8,4 @@
 
 All Rights Reserved unless otherwise explicitly stated.
 
-Copyright (c) 2013-2020 Paweł Jastrzębski <pawelj@iosphe.re>
+Copyright (c) 2013-2022 Paweł Jastrzębski <pawelj@iosphe.re>
