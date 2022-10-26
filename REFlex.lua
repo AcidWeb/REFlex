@@ -44,6 +44,7 @@ local GetActiveMatchDuration = _G.C_PvP.GetActiveMatchDuration
 local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
 local GetCVar = _G.GetCVar
 local GetMouseFocus = _G.GetMouseFocus
+local GetAddOnMetadata = _G.GetAddOnMetadata
 local UnitName = _G.UnitName
 local UnitFactionGroup = _G.UnitFactionGroup
 local UnitHonor = _G.UnitHonor
@@ -52,7 +53,6 @@ local RequestRatedInfo = _G.RequestRatedInfo
 local RequestPVPRewards = _G.RequestPVPRewards
 local RequestRandomBattlegroundInstanceInfo = _G.RequestRandomBattlegroundInstanceInfo
 local HasArenaSkirmishWinToday = _G.C_PvP.HasArenaSkirmishWinToday
-local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local TimerAfter = _G.C_Timer.After
 local AbbreviateNumbers = _G.AbbreviateNumbers
 local UIParentLoadAddOn = _G.UIParentLoadAddOn
@@ -61,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3110
+RE.Version = 3200
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -121,7 +121,7 @@ function RE:OnLoad(self)
 	_G.REFlexFrameTab5:SetText(_G.GUILD_PLAYSTYLE_CASUAL)
 	_G.REFlexFrameTab6:SetText(_G.PVP_TAB_CONQUEST)
 
-	_G.REFlexFrame_Title:SetText("REFlex "..tostring(RE.Version):gsub(".", "%1."):sub(1,-2))
+	_G.REFlexFrame_Title:SetText("REFlex "..GetAddOnMetadata("REFlex", "version"))
 	_G.REFlexFrame_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	_G.REFlexFrame_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
@@ -310,8 +310,8 @@ function RE:OnEvent(_, event, ...)
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					_G.InterfaceOptionsFrame:Show()
-					InterfaceOptionsFrame_OpenToCategory(RE.OptionsMenu)
+					_G.SettingsPanel:Show()
+					_G.SettingsPanel:OpenToCategory("REFlex")
 				end
 			else
 				if button == "LeftButton" then
@@ -656,6 +656,13 @@ function RE:UpdateGUI()
 		RE.SpecDropDown:SetValue(RE.Settings.Filters.Spec)
 		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
 		RE.DateDropDown:SetValue(RE.Settings.Filters.DateMode)
+
+		_G.REFlexFrameTab6:ClearAllPoints()
+		_G.REFlexFrameTab5:ClearAllPoints()
+		_G.REFlexFrameTab4:ClearAllPoints()
+		_G.REFlexFrameTab6:SetPoint("CENTER", _G.REFlexFrame, "BOTTOMRIGHT", -40, -10)
+		_G.REFlexFrameTab5:SetPoint("RIGHT", _G.REFlexFrameTab6, "LEFT", -3, 0)
+		_G.REFlexFrameTab4:SetPoint("RIGHT", _G.REFlexFrameTab5, "LEFT", -3, 0)
 	end
 	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
 		RE.TableBG:Show()

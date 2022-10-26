@@ -55,7 +55,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-5"/>
+							<AbsDimension x="-10" y="-10"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -86,7 +86,7 @@
 					<OnClick>REFlex:OnArenaStatsClick(self)</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab1" inherits="CharacterFrameTabButtonTemplate" id="1">
+			<Button name="$parentTab1" inherits="CharacterFrameTabTemplate" id="1">
 				<Anchors>
 					<Anchor point="CENTER" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -98,7 +98,7 @@
 					<OnClick>PanelTemplates_SetTab(REFlexFrame, 1); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab2" inherits="CharacterFrameTabButtonTemplate" id="2">
+			<Button name="$parentTab2" inherits="CharacterFrameTabTemplate" id="2">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
 						<Offset>
@@ -110,7 +110,7 @@
 					<OnClick>PanelTemplates_SetTab(REFlexFrame, 2); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab3" inherits="CharacterFrameTabButtonTemplate" id="3">
+			<Button name="$parentTab3" inherits="CharacterFrameTabTemplate" id="3">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
 						<Offset>
@@ -122,40 +122,19 @@
 					<OnClick>PanelTemplates_SetTab(REFlexFrame, 3); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab6" inherits="CharacterFrameTabButtonTemplate" id="6">
-				<Anchors>
-					<Anchor point="CENTER" relativePoint="BOTTOMRIGHT">
-						<Offset>
-							<AbsDimension x="-40" y="-10"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
+			<Button name="$parentTab4" inherits="CharacterFrameTabTemplate" id="4">
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlexFrame, 6); REFlex:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 4); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab5" inherits="CharacterFrameTabButtonTemplate" id="5">
-				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentTab6" relativePoint="LEFT">
-						<Offset>
-							<AbsDimension x="15" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
+			<Button name="$parentTab5" inherits="CharacterFrameTabTemplate" id="5">
 				<Scripts>
 					<OnClick>PanelTemplates_SetTab(REFlexFrame, 5); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab4" inherits="CharacterFrameTabButtonTemplate" id="4">
-				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentTab5" relativePoint="LEFT">
-						<Offset>
-							<AbsDimension x="15" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
+			<Button name="$parentTab6" inherits="CharacterFrameTabTemplate" id="6">
 				<Scripts>
-					<OnClick>PanelTemplates_SetTab(REFlexFrame, 4); REFlex:UpdateGUI()</OnClick>
+					<OnClick>PanelTemplates_SetTab(REFlexFrame, 6); REFlex:UpdateGUI()</OnClick>
 				</Scripts>
 			</Button>
 			<Frame name="$Parent_HKBar" inherits="BackdropTemplate">
