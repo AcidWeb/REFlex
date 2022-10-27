@@ -1,7 +1,7 @@
 ## Interface: 100000
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 3.2.0
+## Version: 3.2.1
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
 ## X-WoWI-ID: 19190
