@@ -303,7 +303,7 @@ function RE:GetBGPlace(matchData, onlyFaction)
 end
 
 function RE:GetBGComposition(matchData, player)
-	local tank, healer, dps, faction = 0, 0, 0
+	local tank, healer, dps, faction = 0, 0, 0, nil
 	if player then
 		faction = matchData.PlayerSide
 	else

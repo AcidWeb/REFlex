@@ -16,18 +16,3 @@ externals:
 
 ignore:
   - README.md
-  - .luacheckrc
-  - Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
-  - Libs/LibBabble-Race-3.0/LibBabble-Race-3.0.toc
-  - Libs/LibBabble-Race-3.0/lib.xml
-  - Libs/LibDBIcon-1.0/lib.xml
-  - Libs/LibDataBroker-1.1/README.textile
-  - Libs/LibQTip-1.0/lib.xml
-  - Libs/LibQTip-1.0/LibQTip-1.0.toc
-  - Libs/LibQTip-1.0/LICENSE.txt
-  - Libs/LibQTip-1.0/LibStub
-  - Libs/LibScrollingTable/lib-st.toc
-  - Libs/LibScrollingTable/lib-st.xml
-  - Libs/LibTextDump-1.0/LibTextDump-1.0.toc
-  - Libs/LibTextDump-1.0/lib.xml
-  - Libs/LibTextDump-1.0/LibStub
