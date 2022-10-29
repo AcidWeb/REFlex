@@ -61,7 +61,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3210
+RE.Version = 3220
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -233,7 +233,7 @@ function RE:OnEvent(_, event, ...)
 		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = _G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
-		_G.BINDING_HEADER_REFLEXB = "REFlex"
+		_G.BINDING_HEADER_REFLEXB = "|cFF74D06CRE|rFlex"
 		_G.BINDING_NAME_REFLEXOPEN = L["Show main window"]
 		_G.SlashCmdList["REFLEX"] = function()
 			if not _G.REFlexFrame:IsVisible() then

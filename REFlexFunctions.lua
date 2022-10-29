@@ -8,7 +8,7 @@ local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor, min, mfmod = _G.math.floor, _G.math.min, _G.math.fmod
-local sgsub, sbyte = _G.string.gsub, _G.string.byte
+local sgsub, sbyte, slower = _G.string.gsub, _G.string.byte, _G.string.lower
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
@@ -449,11 +449,7 @@ function RE:GetMapColorArena(_, realrow, _, table)
 end
 
 function RE:GetClassIcon(token, size)
-	return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:"..size..":"..size..":0:0:256:256:" ..
-	_G.CLASS_ICON_TCOORDS[token][1]*256+5 ..
-	":" .. _G.CLASS_ICON_TCOORDS[token][2]*256-5 ..
-	":" .. _G.CLASS_ICON_TCOORDS[token][3]*256+5 ..
-	":" .. _G.CLASS_ICON_TCOORDS[token][4]*256-5 .. "|t"
+	return "|A:classicon-"..slower(token)..":"..size..":"..size.."|a"
 end
 
 function RE:GetRaceIcon(token, size)
