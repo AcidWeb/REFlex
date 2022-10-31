@@ -44,7 +44,7 @@ end
 
 function RE:UpdateDatabase()
   for i=1, #RE.Database do
-    if RE.Database[i].Version < 300 then
+    if RE.Database[i].Version < 3300 then
       if RE.Database[i].Version < 224 then
         if RE.Database[i].Map == 1681 then
           RE.Database[i].Map = 2107
@@ -116,28 +116,33 @@ function RE:UpdateDatabase()
         RE.Database[i].Version = 274
       end
 
-      RE.Database[i].StatsNum = nil
-      if not RE.Database[i].Hidden and RE.Database[i].PlayersStats then
-        local tmp = RE.Database[i].PlayersStats[RE.Database[i].PlayerNum]
-        RE.Database[i].PlayerStats = {}
-        for _, v in pairs(tmp) do
-          tinsert(RE.Database[i].PlayerStats, v[1])
+      if RE.Database[i].Version < 300 then
+        RE.Database[i].StatsNum = nil
+        if not RE.Database[i].Hidden and RE.Database[i].PlayersStats then
+          local tmp = RE.Database[i].PlayersStats[RE.Database[i].PlayerNum]
+          RE.Database[i].PlayerStats = {}
+          for _, v in pairs(tmp) do
+            tinsert(RE.Database[i].PlayerStats, v[1])
+          end
+          RE.Database[i].PlayersStats = nil
         end
-        RE.Database[i].PlayersStats = nil
-      end
-      if not RE.Database[i].Hidden and not RE.Database[i].isArena then
-        RE.Database[i].BGPlace = {}
-        tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], true)})
-        tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], false)})
-        RE.Database[i].BGComposition = {}
-        tinsert(RE.Database[i].BGComposition, {RE:GetBGComposition(RE.Database[i], true)})
-        tinsert(RE.Database[i].BGComposition, {RE:GetBGComposition(RE.Database[i], false)})
-        if not RE.Database[i].isRated then
-          RE.Database[i].Players = {RE.Database[i].Players[RE.Database[i].PlayerNum]}
-          RE.Database[i].PlayerNum = 1
+        if not RE.Database[i].Hidden and not RE.Database[i].isArena then
+          RE.Database[i].BGPlace = {}
+          tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], true)})
+          tinsert(RE.Database[i].BGPlace, {RE:GetBGPlace(RE.Database[i], false)})
+          RE.Database[i].BGComposition = {}
+          tinsert(RE.Database[i].BGComposition, {RE:GetBGComposition(RE.Database[i], true)})
+          tinsert(RE.Database[i].BGComposition, {RE:GetBGComposition(RE.Database[i], false)})
+          if not RE.Database[i].isRated then
+            RE.Database[i].Players = {RE.Database[i].Players[RE.Database[i].PlayerNum]}
+            RE.Database[i].PlayerNum = 1
+          end
         end
+        RE.Database[i].Version = 300
       end
-      RE.Database[i].Version = 300
+
+      RE.Database[i].isSoloShuffle = false
+      RE.Database[i].Version = 3300
     end
   end
 end

@@ -20,6 +20,8 @@ local IsInInstance = _G.IsInInstance
 local IsInGuild = _G.IsInGuild
 local IsActiveBattlefieldArena = _G.IsActiveBattlefieldArena
 local IsInBrawl = _G.C_PvP.IsInBrawl
+local IsSoloShuffle = _G.C_PvP.IsSoloShuffle
+local IsRatedSoloShuffle = _G.C_PvP.IsRatedSoloShuffle
 local IsRatedArena = _G.C_PvP.IsRatedArena
 local IsRatedBattleground = _G.C_PvP.IsRatedBattleground
 local IsArenaSkirmish = _G.IsArenaSkirmish
@@ -61,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3220
+RE.Version = 3300
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -71,7 +73,7 @@ RE.PrepareGUI = true
 RE.MatchData = {}
 RE.BGData = {}
 RE.ArenaData = {}
-RE.RatingChange = {0, 0, 0, 0}
+RE.RatingChange = {0, 0, 0, 0, 0, 0, 0}
 RE.CalendarMode = 0
 RE.HideID = 0
 RE.Season = 0
@@ -187,7 +189,7 @@ function RE:OnLoad(self)
 	RE.BracketDropDown.frame:SetPoint("LEFT", RE.SpecDropDown.frame, "RIGHT", 5, 0)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
-	RE.BracketDropDown:SetList({[1] = _G.ALL, [4] = "2v2", [6] = "3v3"})
+	RE.BracketDropDown:SetList({[1] = _G.ALL, [2] = _G.SOLO, [4] = "2v2", [6] = "3v3"})
 	RE.MapDropDown = GUI:Create("Dropdown")
 	RE.MapDropDown.frame:SetParent(_G.REFlexFrame)
 	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", _G.REFlexFrame, "BOTTOMRIGHT", -19, 18)
@@ -271,28 +273,29 @@ function RE:OnEvent(_, event, ...)
 			else
 				mod = 1
 			end
+			RE.Tooltip:AddLine(_G.PVP_RATED_SOLO_SHUFFLE, select(5, GetBrawlRewards(4)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddSeparator()
-			for _, i in pairs({1, 2, 4}) do
+			for _, i in pairs({7, 1, 2, 4}) do
 				RE.Tooltip:AddLine(RE.BracketNames[i], select(9, GetPersonalRatedInfo(i)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			end
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(11 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
-			RE.Tooltip:SetCell(12 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
+			RE.Tooltip:SetCell(14 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
 			if IsPlayerAtEffectiveMaxLevel() and GetCurrentArenaSeason() > 0 then
 				local current, cap = RE:GetConquestPoints()
 				local weeklyCurrent, weeklycap, weeklyProgress = RE:GetWeeklyChest()
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(14 - mod, 1, current.." / "..cap, "CENTER", 2)
+				RE.Tooltip:SetCell(16 - mod, 1, current.." / "..cap, "CENTER", 2)
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100".._G.RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(17 - mod, 1, "|cFFFFD100".._G.RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(16 - mod, 1, weeklyCurrent.." / "..weeklycap, "CENTER", 2)
+				RE.Tooltip:SetCell(18 - mod, 1, weeklyCurrent.." / "..weeklycap, "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(17 - mod, 1, weeklyProgress, "CENTER", 2)
+				RE.Tooltip:SetCell(19 - mod, 1, weeklyProgress, "CENTER", 2)
 			end
 			RE.Tooltip:Show()
 		end
@@ -409,7 +412,7 @@ function RE:OnEvent(_, event, ...)
 		TimerAfter(1, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
-		for _, i in pairs({1, 2, 4}) do
+		for _, i in pairs({1, 2, 4, 7}) do
 			local currentRating, _, _, _, _, _, _, bestRating = GetPersonalRatedInfo(i)
 			RE.RatingChange[i] = currentRating - bestRating
 		end
@@ -428,31 +431,54 @@ end
 
 function RE:OnEnterTooltip(cellFrame, databaseID)
 	if RE.Database[databaseID].isArena then
-		local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
-		local teamEnemy, damageSumEnemy, healingSumEnemy = RE:GetArenaTeamDetails(databaseID, false)
-		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
-		RE.Tooltip:AddLine()
-		for i=1, 7 do
-			if i == 4 then
-				RE.Tooltip:SetCell(1, 4, "", nil, nil, nil, nil, nil, nil, nil, 50)
-			else
+		if RE.Database[databaseID].isSoloShuffle then
+			local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
+			RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
+			RE.Tooltip:AddLine()
+			for i=1, 3 do
 				RE.Tooltip:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
 			end
-		end
-		for i=1, 3 do
-			if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
-				RE.Tooltip:AddLine(team[i][1], team[i][7].." "..team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][7].." "..teamEnemy[i][2], teamEnemy[i][3])
+			for i=1, 6 do
+				if team[i][2] ~= "" then
+					RE.Tooltip:AddLine(team[i][1], team[i][7].." "..team[i][2], team[i][3])
+				end
 			end
-		end
-		RE.Tooltip:AddSeparator(3)
-		RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
-		for i=1, 3 do
-			if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
-				RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
+			RE.Tooltip:AddSeparator(3)
+			RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			for i=1, 6 do
+				if team[i][2] ~= "" then
+					RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5])
+				end
 			end
+			RE.Tooltip:AddSeparator(3)
+			RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r")
+		else
+			local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
+			local teamEnemy, damageSumEnemy, healingSumEnemy = RE:GetArenaTeamDetails(databaseID, false)
+			RE.Tooltip = QTIP:Acquire("REFlexTooltip", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE.Tooltip:AddLine()
+			for i=1, 7 do
+				if i == 4 then
+					RE.Tooltip:SetCell(1, 4, "", nil, nil, nil, nil, nil, nil, nil, 50)
+				else
+					RE.Tooltip:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
+				end
+			end
+			for i=1, 3 do
+				if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
+					RE.Tooltip:AddLine(team[i][1], team[i][7].." "..team[i][2], team[i][3], nil, teamEnemy[i][1], teamEnemy[i][7].." "..teamEnemy[i][2], teamEnemy[i][3])
+				end
+			end
+			RE.Tooltip:AddSeparator(3)
+			RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			for i=1, 3 do
+				if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
+					RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
+				end
+			end
+			RE.Tooltip:AddSeparator(3)
+			RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r", nil, nil, "|cFFFF141D"..damageSumEnemy.."|r", "|cFF00ff00"..healingSumEnemy.."|r")
 		end
-		RE.Tooltip:AddSeparator(3)
-		RE.Tooltip:AddLine(nil, "|cFFFF141D"..damageSum.."|r", "|cFF00ff00"..healingSum.."|r", nil, nil, "|cFFFF141D"..damageSumEnemy.."|r", "|cFF00ff00"..healingSumEnemy.."|r")
 	else
 		local playerData = RE:GetPlayerData(databaseID)
 		local placeKB, placeHK, placeHonor, placeDamage, placeHealing = unpack(RE.Database[databaseID].BGPlace[2])
@@ -732,13 +758,13 @@ function RE:UpdateGUI()
 		RE.TableArena:SetData(RE.ArenaData, true)
 		if PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 4 then
 			RE.TableArena:SetFilter(RE.FilterDefault)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 5 then
 			RE.TableArena:SetFilter(RE.FilterCasual)
 			_G.REFlexFrame_ScoreHolder_RBG:SetText("")
 		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 6 then
 			RE.TableArena:SetFilter(RE.FilterRated)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		end
 		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(_G.REFlexFrame) - 3, true)
 		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(_G.REFlexFrame) - 3, true, false)
@@ -775,7 +801,7 @@ function RE:UpdateBGData(all)
 			local playeData = RE:GetPlayerData(i)
 			local tempData = {RE:DateClean(RE.Database[i].Time),
 			RE:GetMapName(RE.Database[i].Map),
-			RE:TimeClean(RE.Database[i].Duration),
+			RE:TimeClean(RE.Database[i].Duration, RE.Database[i].isSoloShuffle),
 			RE:GetPlayerWin(i, true),
 			playeData[2],
 			playeData[3],
@@ -809,7 +835,7 @@ function RE:UpdateArenaData(all)
 			RE:GetMMR(i, true),
 			RE:GetArenaTeamIcons(i, false),
 			RE:GetMMR(i, false),
-			RE:TimeClean(RE.Database[i].Duration),
+			RE:TimeClean(RE.Database[i].Duration, RE.Database[i].isSoloShuffle),
 			RE:AbbreviateNumbers(playeData[10]),
 			RE:AbbreviateNumbers(playeData[11]),
 			RE:RatingChangeClean(playeData[13], i),
@@ -857,7 +883,7 @@ function RE:UpdateLDB()
 	RE.Settings.Filters = savedFilters
 
 	RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..AbbreviateNumbers(RE.LDBData.Honor).."|r |cFF9D9D9D|||r "..AbbreviateNumbers(RE.LDBData.HK)
-	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
+	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[7], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
 	if ElvUI then
 		RE.LDBA = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBA
 		RE.LDBB = "|TInterface\\PvPRankBadges\\PvPRank09:0|t "..RE.LDBB
@@ -880,13 +906,14 @@ function RE:PVPEnd()
 	RE.MatchData.Duration = GetActiveMatchDuration()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
+	RE.MatchData.isSoloShuffle = IsSoloShuffle()
 	RE.MatchData.Version = RE.Version
 
 	if RE.MapIDRemap[RE.MatchData.Map] then
 		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
-	if IsRatedBattleground() or IsRatedArena() and not IsArenaSkirmish() then
+	if IsRatedBattleground() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() then
 		RE.MatchData.isRated = true
 	else
 		RE.MatchData.isRated = false
@@ -929,7 +956,7 @@ function RE:PVPEnd()
 	end
 
 	-- Hide corrupted records
-	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or RE.MatchData.Map == 2177 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl) then
+	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or RE.MatchData.Map == 2177 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl and not RE.MatchData.isSoloShuffle) then
 		RE.MatchData.Hidden = true
 	else
 		RE.MatchData.Hidden = false

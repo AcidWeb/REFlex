@@ -171,7 +171,10 @@ RE.BracketNames = {
 	_G.ARENA_2V2,
 	_G.ARENA_3V3,
 	"",
-	_G.BATTLEGROUND_10V10
+	_G.BATTLEGROUND_10V10,
+	"",
+	"",
+	_G.SOLO
 }
 
 RE.MapIDRemap = {

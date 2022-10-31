@@ -8,7 +8,7 @@ local DUMP = LibStub("LibTextDump-1.0")
 
 local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
 local mfloor, min, mfmod = _G.math.floor, _G.math.min, _G.math.fmod
-local sgsub, sbyte, slower = _G.string.gsub, _G.string.byte, _G.string.lower
+local sgsub, sbyte, slower, srep = _G.string.gsub, _G.string.byte, _G.string.lower, _G.string.rep
 local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
@@ -27,7 +27,13 @@ function RE:GetPlayerData(databaseID)
 end
 
 function RE:GetPlayerWin(databaseID, icon)
-	if RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
+	if RE.Database[databaseID].isSoloShuffle then
+		if icon then
+			return "|TInterface\\RaidFrame\\ReadyCheck-Waiting:14:14:0:0|t"
+		else
+			return nil
+		end
+	elseif RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
 		if icon then
 			return "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14:0:0|t"
 		else
@@ -54,7 +60,15 @@ end
 function RE:GetMMR(databaseID, player, csv)
 	local faction = RE:GetFactionID(databaseID, player) + 1
 	if RE.Database[databaseID].isRated then
-		return RE.Database[databaseID].TeamData[faction][4]
+		if RE.Database[databaseID].isSoloShuffle then
+			if player then
+				return RE.Database[databaseID].TeamData[1][4]
+			else
+				return RE.Database[databaseID].TeamData[2][4]
+			end
+		else
+			return RE.Database[databaseID].TeamData[faction][4]
+		end
 	else
 		if csv then
 			return 0
@@ -65,16 +79,23 @@ function RE:GetMMR(databaseID, player, csv)
 end
 
 function RE:GetArenaTeamIcons(databaseID, player)
+	if RE.Database[databaseID].isSoloShuffle and not player then
+		return srep("|TInterface\\RaidFrame\\ReadyCheck-Ready:12:12:0:0|t", RE.Database[databaseID].PlayerStats[1])..srep("|TInterface\\RaidFrame\\ReadyCheck-NotReady:12:12:0:0|t", (6 - RE.Database[databaseID].PlayerStats[1]))
+	end
 	local faction = RE:GetFactionID(databaseID, player)
 	local teamRaw, team = {}, {}
+	local iconSize = 20
+	if RE.Database[databaseID].isSoloShuffle then
+		iconSize = 10
+	end
 	for i=1, #RE.Database[databaseID].Players do
-		if RE.Database[databaseID].Players[i][6] == faction then
+		if RE.Database[databaseID].Players[i][6] == faction or RE.Database[databaseID].isSoloShuffle then
 			tinsert(teamRaw, RE.Database[databaseID].Players[i][9])
 		end
 	end
 	tsort(teamRaw)
 	for i=1, #teamRaw do
-		tinsert(team, RE:GetClassIcon(teamRaw[i], 20))
+		tinsert(team, RE:GetClassIcon(teamRaw[i], iconSize))
 	end
 	return tconcat(team, " ")
 end
@@ -83,7 +104,7 @@ function RE:GetArenaTeamDetails(databaseID, player)
 	local faction = RE:GetFactionID(databaseID, player)
 	local team, damageSum, healingSum = {}, 0, 0
 	for i=1, #RE.Database[databaseID].Players do
-		if RE.Database[databaseID].Players[i][6] == faction then
+		if RE.Database[databaseID].Players[i][6] == faction or RE.Database[databaseID].isSoloShuffle then
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
@@ -118,29 +139,31 @@ function RE:GetArenaTeamStats(mode)
 	local payload = {}
 	for i=1, #RE.TableArena.filtered do
 		local databaseID = RE.TableArena.data[RE.TableArena.filtered[i]][11]
-		local faction = RE:GetFactionID(databaseID, false)
-		local win = RE:GetPlayerWin(databaseID, false)
-		local teamID = {}
-		for j=1, #RE.Database[databaseID].Players do
-			if RE.Database[databaseID].Players[j][6] == faction then
-				tinsert(teamID, RE.Database[databaseID].Players[j][9].."-"..RE.Database[databaseID].Players[j][16])
+		if not RE.Database[databaseID].isSoloShuffle then
+			local faction = RE:GetFactionID(databaseID, false)
+			local win = RE:GetPlayerWin(databaseID, false)
+			local teamID = {}
+			for j=1, #RE.Database[databaseID].Players do
+				if RE.Database[databaseID].Players[j][6] == faction then
+					tinsert(teamID, RE.Database[databaseID].Players[j][9].."-"..RE.Database[databaseID].Players[j][16])
+				end
 			end
-		end
-		tsort(teamID)
-		teamID = tconcat(teamID, ";")
-		if teamMatrix[teamID] then
-			if win then
-				teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
-				teamMatrix[teamID].Win = teamMatrix[teamID].Win + 1
+			tsort(teamID)
+			teamID = tconcat(teamID, ";")
+			if teamMatrix[teamID] then
+				if win then
+					teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
+					teamMatrix[teamID].Win = teamMatrix[teamID].Win + 1
+				else
+					teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
+					teamMatrix[teamID].Loss = teamMatrix[teamID].Loss + 1
+				end
 			else
-				teamMatrix[teamID].Count = teamMatrix[teamID].Count + 1
-				teamMatrix[teamID].Loss = teamMatrix[teamID].Loss + 1
-			end
-		else
-			if win then
-				teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 1, ["Loss"] = 0}
-			else
-				teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 0, ["Loss"] = 1}
+				if win then
+					teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 1, ["Loss"] = 0}
+				else
+					teamMatrix[teamID] = {["Count"] = 1, ["Win"] = 0, ["Loss"] = 1}
+				end
 			end
 		end
 	end
@@ -187,13 +210,19 @@ function RE:GetWinNumber(filter, arena)
 		if (RE.Database[i].isArena == arena or arena == nil) and not RE.Database[i].Hidden then
 			local playerData = RE:GetPlayerData(i)
 			if RE:FilterStats(i, playerData) then
-				if RE:GetPlayerWin(i, false) then
+				local win = RE:GetPlayerWin(i, false)
+				if win then
 					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
 						won = won + 1
 					end
-				else
+				elseif win == false then
 					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
 						lost = lost + 1
+					end
+				else
+					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
+						won = won + RE.Database[i].PlayerStats[1]
+						lost = lost + (6 - RE.Database[i].PlayerStats[1])
 					end
 				end
 			end
@@ -435,14 +464,20 @@ function RE:GetMapColor(_, realrow, _, table)
 end
 
 function RE:GetMapColorArena(_, realrow, _, table)
-	if RE:GetPlayerWin(table.data[realrow][11], false) then
+	local win = RE:GetPlayerWin(table.data[realrow][11], false)
+	if win then
 		return {["r"] = 0,
 		["g"] = 1.0,
 		["b"] = 0,
 		["a"] = 1.0}
-	else
+	elseif win == false then
 		return {["r"] = 1.0,
 		["g"] = 0,
+		["b"] = 0,
+		["a"] = 1}
+	else
+		return {["r"] = 1.0,
+		["g"] = 1.0,
 		["b"] = 0,
 		["a"] = 1}
 	end
@@ -501,7 +536,10 @@ function RE:DateClean(timeRaw)
 	end
 end
 
-function RE:TimeClean(timeRaw)
+function RE:TimeClean(timeRaw, isSoloShuffle)
+	if isSoloShuffle then
+		return "-"
+	end
 	local timeSec = mfloor(timeRaw % 60)
 	local timeMin = mfloor(timeRaw / 60)
 	if timeSec < 10 then
@@ -558,10 +596,14 @@ end
 
 function RE:BracketFilter(rowdata)
 	if RE.Database[rowdata[11]].isArena and RE.Settings.Filters.Bracket ~= 1 then
-		if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
-			return true
+		if RE.Settings.Filters.Bracket == 2 then
+			return RE.Database[rowdata[11]].isSoloShuffle
 		else
-			return false
+			if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
+				return true
+			else
+				return false
+			end
 		end
 	else
 		return true
@@ -704,7 +746,6 @@ function RE:DatabasePurge(idTable)
 	end
 end
 
--- TODO Coroutine
 function RE:DumpCSV()
 	local id, d, s
 	if not _G.REFlexFrame:IsShown() then return end
@@ -723,10 +764,12 @@ function RE:DumpCSV()
 		RE.DumpFrame:AddLine("Timestamp;Map;PlayersNumber;TeamComposition;EnemyComposition;Duration;Victory;KillingBlows;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;isRated")
 		for i=1, #RE.TableArena.filtered do
 			id = RE.TableArena.data[RE.TableArena.filtered[i]][11]
-			d = RE.Database[id]
-			s = RE:GetPlayerData(id)
-			RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.PlayersNum)..";"..RE:GetArenaTeamCSV(id, true)..";"..RE:GetArenaTeamCSV(id, false)..";"..tostring(d.Duration)..";"..
-			tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(d.isRated))
+			if not RE.Database[id].isSoloShuffle then
+				d = RE.Database[id]
+				s = RE:GetPlayerData(id)
+				RE.DumpFrame:AddLine(tostring(d.Time)..";"..tostring(d.Map)..";"..tostring(d.PlayersNum)..";"..RE:GetArenaTeamCSV(id, true)..";"..RE:GetArenaTeamCSV(id, false)..";"..tostring(d.Duration)..";"..
+				tostring(RE:GetPlayerWin(id, false))..";"..tostring(s[2])..";"..tostring(s[10])..";"..tostring(s[11])..";"..tostring(s[5])..";"..tostring(s[13])..";"..tostring(RE:GetMMR(id, true, true))..";"..tostring(RE:GetMMR(id, false, true))..";"..tostring(s[16])..";"..tostring(d.isRated))
+			end
 		end
 	end
 	RE.DumpFrame:Display()
