@@ -488,11 +488,12 @@ function RE:GetClassIcon(token, size)
 end
 
 function RE:GetRaceIcon(token, size)
-	if BR[token] == nil then
+	if RE.RaceIcons[token] ~= nil then
+		return "|A:"..RE.RaceIcons[token]..":"..size..":"..size.."|a"
+	elseif BR[token] == nil then
 		return "|TInterface\\Icons\\INV_Misc_QuestionMark:"..size..":"..size.."|t"
 	else
-		token = sgsub(BR[token], "_PL", "")
-		return "|A:"..RE.RaceIcons[token]..":"..size..":"..size.."|a"
+		return "|A:"..RE.RaceIcons[sgsub(BR[token], "_PL", "")]..":"..size..":"..size.."|a"
 	end
 end
 
