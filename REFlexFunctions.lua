@@ -600,7 +600,7 @@ function RE:BracketFilter(rowdata)
 		if RE.Settings.Filters.Bracket == 2 then
 			return RE.Database[rowdata[11]].isSoloShuffle
 		else
-			if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket then
+			if RE.Database[rowdata[11]].PlayersNum == RE.Settings.Filters.Bracket and not RE.Database[rowdata[11]].isSoloShuffle then
 				return true
 			else
 				return false
