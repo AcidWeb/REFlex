@@ -635,7 +635,7 @@ function RE:OnArenaStatsClick(self)
 	end
 end
 
-function RE:OnDateChange(_, mode)
+function RE:OnDateChange(_, mode, internal)
 	RE.Settings.Filters.DateMode = mode
 	RE.Settings.Filters.Season = 0
 	if mode == 1 then
@@ -663,7 +663,9 @@ function RE:OnDateChange(_, mode)
 		_G.CalendarFrame:Show()
 		return
 	end
-	RE:UpdateGUI()
+	if internal == nil then
+		RE:UpdateGUI()
+	end
 end
 
 function RE:UpdateGUI()
@@ -682,6 +684,9 @@ function RE:UpdateGUI()
 		RE.SpecDropDown:SetValue(RE.Settings.Filters.Spec)
 		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
 		RE.DateDropDown:SetValue(RE.Settings.Filters.DateMode)
+		if RE.Settings.Filters.DateMode < 9 then
+			RE:OnDateChange(_, RE.Settings.Filters.DateMode, true)
+		end
 
 		_G.REFlexFrameTab6:ClearAllPoints()
 		_G.REFlexFrameTab5:ClearAllPoints()
