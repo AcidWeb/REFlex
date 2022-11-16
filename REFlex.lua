@@ -63,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3301
+RE.Version = 3302
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -313,7 +313,6 @@ function RE:OnEvent(_, event, ...)
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					_G.SettingsPanel:Show()
 					_G.SettingsPanel:OpenToCategory("REFlex")
 				end
 			else
