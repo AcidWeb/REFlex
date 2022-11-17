@@ -63,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3302
+RE.Version = 3303
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -259,7 +259,7 @@ function RE:OnEvent(_, event, ...)
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
 			RE.Tooltip:SmartAnchorTo(self)
 			if ElvUI then
-				RE.Tooltip:SetTemplate("Transparent", nil, true)
+				--RE.Tooltip:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
 				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
@@ -561,7 +561,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB1:SetClampedToScreen(true)
 			RE.TooltipRGB1:SetPoint("RIGHT", RE.Tooltip, "LEFT", -5, 0)
 			if ElvUI then
-				RE.TooltipRGB1:SetTemplate("Transparent", nil, true)
+				--RE.TooltipRGB1:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
 				RE.TooltipRGB1:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
@@ -588,7 +588,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB2:SetClampedToScreen(true)
 			RE.TooltipRGB2:SetPoint("LEFT", RE.Tooltip, "RIGHT", 5, 0)
 			if ElvUI then
-				RE.TooltipRGB2:SetTemplate("Transparent", nil, true)
+				--RE.TooltipRGB2:SetTemplate("Transparent", nil, true)
 				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
 				RE.TooltipRGB2:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
@@ -596,7 +596,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		end
 	end
 	if ElvUI then
-		RE.Tooltip:SetTemplate("Transparent", nil, true)
+		--RE.Tooltip:SetTemplate("Transparent", nil, true)
 		local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
 		RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 	end
