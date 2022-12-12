@@ -222,7 +222,8 @@ function RE:GetWinNumber(filter, arena)
 				else
 					if filter == 1 or (filter == 2 and not RE.Database[i].isRated) or (filter == 3 and RE.Database[i].isRated) then
 						won = won + RE.Database[i].PlayerStats[1]
-						lost = lost + (6 - RE.Database[i].PlayerStats[1])
+						-- TODO: Handle better Solo Shuffles that had less than 6 rounds
+						-- lost = lost + (6 - RE.Database[i].PlayerStats[1])
 					end
 				end
 			end

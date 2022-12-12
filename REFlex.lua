@@ -63,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3303
+RE.Version = 3304
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -960,7 +960,7 @@ function RE:PVPEnd()
 	end
 
 	-- Hide corrupted records
-	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or RE.MatchData.Map == 2177 or (RE.MatchData.isArena and RE.MatchData.isRated and RE.MatchData.isBrawl and not RE.MatchData.isSoloShuffle) then
+	if not RE.MatchData.PlayerNum or RE.MatchData.Map == 1170 or RE.MatchData.Map == 2177 or (RE.MatchData.isArena and RE.MatchData.isBrawl and not RE.MatchData.isSoloShuffle) then
 		RE.MatchData.Hidden = true
 	else
 		RE.MatchData.Hidden = false
