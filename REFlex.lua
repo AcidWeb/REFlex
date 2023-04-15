@@ -63,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3306
+RE.Version = 3307
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -235,7 +235,6 @@ function RE:OnEvent(_, event, ...)
 		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
 		RE.OptionsMenu = _G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
-		_G.BINDING_HEADER_REFLEXB = "|cFF74D06CRE|rFlex"
 		_G.BINDING_NAME_REFLEXOPEN = L["Show main window"]
 		_G.SlashCmdList["REFLEX"] = function()
 			if not _G.REFlexFrame:IsVisible() then
@@ -312,7 +311,7 @@ function RE:OnEvent(_, event, ...)
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					_G.SettingsPanel:OpenToCategory("REFlex")
+					_G.Settings.OpenToCategory("REFlex")
 				end
 			else
 				if button == "LeftButton" then

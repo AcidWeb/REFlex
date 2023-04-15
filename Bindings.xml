@@ -1,5 +1,5 @@
 <Bindings>
-  <Binding category="BINDING_HEADER_REFLEXB" name="REFLEXOPEN">
+  <Binding category="|cFF74D06CRE|rFlex" name="REFLEXOPEN">
     if not REFlexFrame:IsVisible() then
       REFlexFrame:Show()
     else
