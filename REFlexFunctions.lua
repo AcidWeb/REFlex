@@ -906,3 +906,16 @@ function RE:ForeachInOrder(t, f, cmp)
 		f(k, t[k])
 	end
 end
+
+function REFlex_CompartmentOnClick(_, button)
+	REFlex_CompartmentClick = true
+	RE.LDB:OnClick(button)
+end
+
+function REFlex_CompartmentOnEnter(_, frame)
+	RE.LDB:OnEnter(frame)
+end
+
+function REFlex_CompartmentOnLeave()
+	RE.LDB:OnLeave()
+end

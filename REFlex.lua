@@ -63,7 +63,7 @@ local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
 local PlaySound = _G.PlaySound
 local ElvUI = _G.ElvUI
 
-RE.Version = 3307
+RE.Version = 3308
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -252,11 +252,11 @@ function RE:OnEvent(_, event, ...)
 			text = "|cFF74D06CRE|rFlex",
 			icon = "Interface\\PvPRankBadges\\PvPRank09"
 		})
-		function RE.LDB:OnEnter()
+		function RE.LDB:OnEnter(frame)
 			local brawlInfo = GetAvailableBrawlInfo()
 			local mod = 0
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
-			RE.Tooltip:SmartAnchorTo(self)
+			RE.Tooltip:SmartAnchorTo(frame or self)
 			if ElvUI then
 				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
 				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
@@ -301,7 +301,7 @@ function RE:OnEvent(_, event, ...)
 			QTIP:Release(RE.Tooltip)
 		end
 		function RE.LDB:OnClick(button)
-			if LDBI:GetMinimapButton("REFlex") == GetMouseFocus() then
+			if REFlex_CompartmentClick or LDBI:GetMinimapButton("REFlex") == GetMouseFocus() then
 				if button == "LeftButton" then
 					if not _G.REFlexFrame:IsVisible() then
 						_G.REFlexFrame:Show()
@@ -331,6 +331,7 @@ function RE:OnEvent(_, event, ...)
 					end
 				end
 			end
+			REFlex_CompartmentClick = false
 		end
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 

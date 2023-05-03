@@ -1,9 +1,13 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 3.3.7
+## Version: 3.3.8
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
+## AddonCompartmentFunc: REFlex_CompartmentOnClick
+## AddonCompartmentFuncOnEnter: REFlex_CompartmentOnEnter
+## AddonCompartmentFuncOnLeave: REFlex_CompartmentOnLeave
+## IconTexture: Interface\AddOns\REFlex\RELogo
 ## X-WoWI-ID: 19190
 ## X-Wago-ID: vEGPQRN1
 
