@@ -1,4 +1,3 @@
-local _G = _G
 local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local ST = LibStub("ScrollingTable")
@@ -7,61 +6,60 @@ local LDB = LibStub("LibDataBroker-1.1")
 local LDBI = LibStub("LibDBIcon-1.0")
 local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
-_G.REFlex = RE
+REFlex = RE
 
-local tinsert = _G.table.insert
-local pairs, select, print, tonumber, hooksecurefunc, strsplit, unpack = _G.pairs, _G.select, _G.print, _G.tonumber, _G.hooksecurefunc, _G.strsplit, _G.unpack
-local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = _G.PanelTemplates_GetSelectedTab, _G.PanelTemplates_SetTab, _G.PanelTemplates_SetNumTabs
-local StaticPopup_Show = _G.StaticPopup_Show
-local IsAltKeyDown = _G.IsAltKeyDown
-local IsControlKeyDown = _G.IsControlKeyDown
-local IsShiftKeyDown = _G.IsShiftKeyDown
-local IsInInstance = _G.IsInInstance
-local IsInGuild = _G.IsInGuild
-local IsActiveBattlefieldArena = _G.IsActiveBattlefieldArena
-local IsInBrawl = _G.C_PvP.IsInBrawl
-local IsSoloShuffle = _G.C_PvP.IsSoloShuffle
-local IsRatedSoloShuffle = _G.C_PvP.IsRatedSoloShuffle
-local IsRatedArena = _G.C_PvP.IsRatedArena
-local IsRatedBattleground = _G.C_PvP.IsRatedBattleground
-local IsArenaSkirmish = _G.IsArenaSkirmish
-local IsPlayerAtEffectiveMaxLevel = _G.IsPlayerAtEffectiveMaxLevel
-local SetBattlefieldScoreFaction = _G.SetBattlefieldScoreFaction
-local GetAvailableBrawlInfo = _G.C_PvP.GetAvailableBrawlInfo
-local GetBrawlRewards = _G.C_PvP.GetBrawlRewards
-local GetNumSpecializations = _G.GetNumSpecializations
-local GetSpecializationInfo = _G.GetSpecializationInfo
-local GetPersonalRatedInfo = _G.GetPersonalRatedInfo
-local GetBattlefieldWinner = _G.GetBattlefieldWinner
-local GetBattlefieldScore = _G.GetBattlefieldScore
-local GetBattlefieldTeamInfo = _G.GetBattlefieldTeamInfo
-local GetBattlefieldStatData = _G.GetBattlefieldStatData
-local GetBattlefieldArenaFaction = _G.GetBattlefieldArenaFaction
-local GetInstanceInfo = _G.GetInstanceInfo
-local GetRandomBGInfo = _G.C_PvP.GetRandomBGInfo
-local GetRandomEpicBGInfo = _G.C_PvP.GetRandomEpicBGInfo
-local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
-local GetMatchPVPStatColumns = _G.C_PvP.GetMatchPVPStatColumns
-local GetActiveMatchDuration = _G.C_PvP.GetActiveMatchDuration
-local GetCurrentArenaSeason = _G.GetCurrentArenaSeason
-local GetCVar = _G.GetCVar
-local GetMouseFocus = _G.GetMouseFocus
-local GetAddOnMetadata = _G.GetAddOnMetadata
-local UnitName = _G.UnitName
-local UnitFactionGroup = _G.UnitFactionGroup
-local UnitHonor = _G.UnitHonor
-local UnitHonorMax = _G.UnitHonorMax
-local RequestRatedInfo = _G.RequestRatedInfo
-local RequestPVPRewards = _G.RequestPVPRewards
-local RequestRandomBattlegroundInstanceInfo = _G.RequestRandomBattlegroundInstanceInfo
-local HasArenaSkirmishWinToday = _G.C_PvP.HasArenaSkirmishWinToday
-local TimerAfter = _G.C_Timer.After
-local AbbreviateNumbers = _G.AbbreviateNumbers
-local UIParentLoadAddOn = _G.UIParentLoadAddOn
-local RegisterAddonMessagePrefix = _G.C_ChatInfo.RegisterAddonMessagePrefix
-local SendAddonMessage = _G.C_ChatInfo.SendAddonMessage
-local PlaySound = _G.PlaySound
-local ElvUI = _G.ElvUI
+local tinsert = table.insert
+local PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs = PanelTemplates_GetSelectedTab, PanelTemplates_SetTab, PanelTemplates_SetNumTabs
+local StaticPopup_Show = StaticPopup_Show
+local IsAltKeyDown = IsAltKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsShiftKeyDown = IsShiftKeyDown
+local IsInInstance = IsInInstance
+local IsInGuild = IsInGuild
+local IsActiveBattlefieldArena = IsActiveBattlefieldArena
+local IsInBrawl = C_PvP.IsInBrawl
+local IsSoloShuffle = C_PvP.IsSoloShuffle
+local IsRatedSoloShuffle = C_PvP.IsRatedSoloShuffle
+local IsRatedArena = C_PvP.IsRatedArena
+local IsRatedBattleground = C_PvP.IsRatedBattleground
+local IsArenaSkirmish = IsArenaSkirmish
+local IsPlayerAtEffectiveMaxLevel = IsPlayerAtEffectiveMaxLevel
+local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
+local GetAvailableBrawlInfo = C_PvP.GetAvailableBrawlInfo
+local GetBrawlRewards = C_PvP.GetBrawlRewards
+local GetNumSpecializations = GetNumSpecializations
+local GetSpecializationInfo = GetSpecializationInfo
+local GetPersonalRatedInfo = GetPersonalRatedInfo
+local GetBattlefieldWinner = GetBattlefieldWinner
+local GetBattlefieldScore = GetBattlefieldScore
+local GetBattlefieldTeamInfo = GetBattlefieldTeamInfo
+local GetBattlefieldStatData = GetBattlefieldStatData
+local GetBattlefieldArenaFaction = GetBattlefieldArenaFaction
+local GetInstanceInfo = GetInstanceInfo
+local GetRandomBGInfo = C_PvP.GetRandomBGInfo
+local GetRandomEpicBGInfo = C_PvP.GetRandomEpicBGInfo
+local GetNumBattlefieldScores = GetNumBattlefieldScores
+local GetMatchPVPStatColumns = C_PvP.GetMatchPVPStatColumns
+local GetActiveMatchDuration = C_PvP.GetActiveMatchDuration
+local GetCurrentArenaSeason = GetCurrentArenaSeason
+local GetCVar = GetCVar
+local GetMouseFocus = GetMouseFocus
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
+local UnitName = UnitName
+local UnitFactionGroup = UnitFactionGroup
+local UnitHonor = UnitHonor
+local UnitHonorMax = UnitHonorMax
+local RequestRatedInfo = RequestRatedInfo
+local RequestPVPRewards = RequestPVPRewards
+local RequestRandomBattlegroundInstanceInfo = RequestRandomBattlegroundInstanceInfo
+local HasArenaSkirmishWinToday = C_PvP.HasArenaSkirmishWinToday
+local TimerAfter = C_Timer.After
+local AbbreviateNumbers = AbbreviateNumbers
+local UIParentLoadAddOn = UIParentLoadAddOn
+local RegisterAddonMessagePrefix = C_ChatInfo.RegisterAddonMessagePrefix
+local SendAddonMessage = C_ChatInfo.SendAddonMessage
+local PlaySound = PlaySound
+local ElvUI = ElvUI
 
 RE.Version = 3313
 RE.LastSquash = 1602662400
@@ -101,8 +99,8 @@ RE.BackdropB = {
 	edgeSize = 16,
 }
 
-_G.SLASH_REFLEX1 = "/reflex"
-_G.SLASH_REFLEXGG1 = "/gg"
+SLASH_REFLEX1 = "/reflex"
+SLASH_REFLEXGG1 = "/gg"
 
 function RE:OnLoad(self)
 	RE.SessionStart, RE.PlayerTimezone = RE:GetUTCTimestamp(true)
@@ -114,20 +112,20 @@ function RE:OnLoad(self)
 	self:RegisterEvent("PVP_RATED_STATS_UPDATE")
 	self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 	self:RegisterForDrag("LeftButton")
-	tinsert(_G.UISpecialFrames,"REFlexFrame")
+	tinsert(UISpecialFrames,"REFlexFrame")
 
-	_G.REFlexFrameTab1:SetText(_G.ALL)
-	_G.REFlexFrameTab2:SetText(_G.GUILD_PLAYSTYLE_CASUAL)
-	_G.REFlexFrameTab3:SetText(_G.PVP_TAB_CONQUEST)
-	_G.REFlexFrameTab4:SetText(_G.ALL)
-	_G.REFlexFrameTab5:SetText(_G.GUILD_PLAYSTYLE_CASUAL)
-	_G.REFlexFrameTab6:SetText(_G.PVP_TAB_CONQUEST)
+	REFlexFrameTab1:SetText(ALL)
+	REFlexFrameTab2:SetText(GUILD_PLAYSTYLE_CASUAL)
+	REFlexFrameTab3:SetText(PVP_TAB_CONQUEST)
+	REFlexFrameTab4:SetText(ALL)
+	REFlexFrameTab5:SetText(GUILD_PLAYSTYLE_CASUAL)
+	REFlexFrameTab6:SetText(PVP_TAB_CONQUEST)
 
-	_G.REFlexFrame_Title:SetText("REFlex "..GetAddOnMetadata("REFlex", "version"))
-	_G.REFlexFrame_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	_G.REFlexFrame_HKBar_I:SetStatusBarColor(0, 0.9, 0)
+	REFlexFrame_Title:SetText("REFlex "..GetAddOnMetadata("REFlex", "version"))
+	REFlexFrame_HKBar_I:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	REFlexFrame_HKBar_I:SetStatusBarColor(0, 0.9, 0)
 
-	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, _G.REFlexFrame)
+	RE.TableBG = ST:CreateST(RE.BGStructure, 30, nil, nil, REFlexFrame)
 	RE.TableBG.head:SetHeight(25)
 	for _, i in pairs({1,3,5,7,9}) do
 		local _, parent = RE.TableBG.frame["col"..i.."bg"]:GetPoint(1)
@@ -135,7 +133,7 @@ function RE:OnLoad(self)
 		RE.TableBG.frame["col"..i.."bg"]:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -9)
 	end
 	RE.TableBG.frame:ClearAllPoints()
-	RE.TableBG.frame:SetPoint("TOP", _G.REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableBG.frame:SetPoint("TOP", REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableBG.frame:Hide()
 	RE.TableBG:RegisterEvents({
 		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
@@ -155,9 +153,9 @@ function RE:OnLoad(self)
 			end
 		end,
 	})
-	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, _G.REFlexFrame)
+	RE.TableArena = ST:CreateST(RE.ArenaStructure, 18, 25, nil, REFlexFrame)
 	RE.TableArena.frame:ClearAllPoints()
-	RE.TableArena.frame:SetPoint("TOP", _G.REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
+	RE.TableArena.frame:SetPoint("TOP", REFlexFrame_ScoreHolder, "BOTTOM", 0, -15)
 	RE.TableArena.frame:Hide()
 	RE.TableArena:RegisterEvents({
 		["OnClick"] = function (_, _, data, _, _, realRow, _, _, button, _)
@@ -179,71 +177,71 @@ function RE:OnLoad(self)
 	})
 
 	RE.SpecDropDown = GUI:Create("Dropdown")
-	RE.SpecDropDown.frame:SetParent(_G.REFlexFrame)
-	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", _G.REFlexFrame, "BOTTOMLEFT", 15, 18)
+	RE.SpecDropDown.frame:SetParent(REFlexFrame)
+	RE.SpecDropDown.frame:SetPoint("BOTTOMLEFT", REFlexFrame, "BOTTOMLEFT", 15, 18)
 	RE.SpecDropDown:SetWidth(150)
-	RE.SpecDropDown:SetList({[_G.ALL] = _G.ALL})
+	RE.SpecDropDown:SetList({[ALL] = ALL})
 	RE.SpecDropDown:SetCallback("OnValueChanged", RE.OnSpecChange)
 	RE.BracketDropDown = GUI:Create("Dropdown")
-	RE.BracketDropDown.frame:SetParent(_G.REFlexFrame)
+	RE.BracketDropDown.frame:SetParent(REFlexFrame)
 	RE.BracketDropDown.frame:SetPoint("LEFT", RE.SpecDropDown.frame, "RIGHT", 5, 0)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
-	RE.BracketDropDown:SetList({[1] = _G.ALL, [2] = _G.SOLO, [4] = "2v2", [6] = "3v3"})
+	RE.BracketDropDown:SetList({[1] = ALL, [2] = SOLO, [4] = "2v2", [6] = "3v3"})
 	RE.MapDropDown = GUI:Create("Dropdown")
-	RE.MapDropDown.frame:SetParent(_G.REFlexFrame)
-	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", _G.REFlexFrame, "BOTTOMRIGHT", -19, 18)
+	RE.MapDropDown.frame:SetParent(REFlexFrame)
+	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlexFrame, "BOTTOMRIGHT", -19, 18)
 	RE.MapDropDown:SetWidth(150)
 	RE.MapDropDown:SetCallback("OnValueChanged", RE.OnMapChange)
 	RE.DateDropDown = GUI:Create("Dropdown")
-	RE.DateDropDown.frame:SetParent(_G.REFlexFrame)
+	RE.DateDropDown.frame:SetParent(REFlexFrame)
 	RE.DateDropDown.frame:SetPoint("RIGHT", RE.MapDropDown.frame, "LEFT", -5, 0)
 	RE.DateDropDown:SetWidth(100)
 	RE.DateDropDown:SetCallback("OnValueChanged", RE.OnDateChange)
-	RE.DateDropDown:SetList({[1] = _G.ALL, [2] = L["Session"], [3] = _G.HONOR_TODAY, [4] = _G.HONOR_YESTERDAY, [5] = _G.GUILD_CHALLENGES_THIS_WEEK, [6] = L["This month"], [7] = L["This season"], [8] = L["Prev. season"], [9] = _G.CUSTOM})
+	RE.DateDropDown:SetList({[1] = ALL, [2] = L["Session"], [3] = HONOR_TODAY, [4] = HONOR_YESTERDAY, [5] = GUILD_CHALLENGES_THIS_WEEK, [6] = L["This month"], [7] = L["This season"], [8] = L["Prev. season"], [9] = CUSTOM})
 end
 
 function RE:OnHide(_)
 	if RE.Tooltip and RE.Tooltip:IsVisible() then
 		QTIP:Release(RE.Tooltip)
 	end
-	PlaySound(_G.SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
 end
 
 function RE:OnEvent(_, event, ...)
 	if event == "ADDON_LOADED" and ... == "REFlex" then
-		if not _G.REFlexSettings then
-			_G.REFlexSettings = RE.DefaultConfig
+		if not REFlexSettings then
+			REFlexSettings = RE.DefaultConfig
 		end
-		if not _G.REFlexDatabase then
-			_G.REFlexDatabase = {}
+		if not REFlexDatabase then
+			REFlexDatabase = {}
 		end
-		if not _G.REFlexHonorDatabase then
-			_G.REFlexHonorDatabase = {}
+		if not REFlexHonorDatabase then
+			REFlexHonorDatabase = {}
 			RE:UpdateHDatabase()
 		end
-		RE.Settings = _G.REFlexSettings
-		RE.Database = _G.REFlexDatabase
-		RE.HDatabase = _G.REFlexHonorDatabase
+		RE.Settings = REFlexSettings
+		RE.Database = REFlexDatabase
+		RE.HDatabase = REFlexHonorDatabase
 		RE:UpdateSettings()
 		RE:UpdateDatabase()
 		RE:HiddenPurge()
 
-		PanelTemplates_SetNumTabs(_G.REFlexFrame, 6)
-		PanelTemplates_SetTab(_G.REFlexFrame, RE.Settings.CurrentTab)
+		PanelTemplates_SetNumTabs(REFlexFrame, 6)
+		PanelTemplates_SetTab(REFlexFrame, RE.Settings.CurrentTab)
 
-		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
-		RE.OptionsMenu = _G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
+		LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("REFlex", RE.AceConfig)
+		RE.OptionsMenu = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("REFlex", "REFlex")
 		RegisterAddonMessagePrefix("REFlex")
-		_G.BINDING_NAME_REFLEXOPEN = L["Show main window"]
-		_G.SlashCmdList["REFLEX"] = function()
-			if not _G.REFlexFrame:IsVisible() then
-				_G.REFlexFrame:Show()
+		BINDING_NAME_REFLEXOPEN = L["Show main window"]
+		SlashCmdList["REFLEX"] = function()
+			if not REFlexFrame:IsVisible() then
+				REFlexFrame:Show()
 			else
-				_G.REFlexFrame:Hide()
+				REFlexFrame:Hide()
 			end
 		end
-		_G.SlashCmdList["REFLEXGG"] = function()
+		SlashCmdList["REFLEXGG"] = function()
 			RE:SurrenderMatch()
 		end
 
@@ -262,34 +260,34 @@ function RE:OnEvent(_, event, ...)
 				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 			end
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(1, 1, "|cFFFFD100".._G.DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
-			RE.Tooltip:AddLine(_G.BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			RE.Tooltip:AddLine(_G.ITEM_QUALITY4_DESC.." ".._G.BATTLEGROUND, GetRandomEpicBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-			RE.Tooltip:AddLine(_G.ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:SetCell(1, 1, "|cFFFFD100"..DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:AddLine(BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:AddLine(ITEM_QUALITY4_DESC.." "..BATTLEGROUND, GetRandomEpicBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:AddLine(ARENA_CASUAL, HasArenaSkirmishWinToday() and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			if IsPlayerAtEffectiveMaxLevel() and brawlInfo and brawlInfo.canQueue then
-				RE.Tooltip:AddLine(_G.LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+				RE.Tooltip:AddLine(LFG_CATEGORY_BATTLEFIELD, select(5, GetBrawlRewards(brawlInfo.brawlType)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			else
 				mod = 1
 			end
-			RE.Tooltip:AddLine(_G.PVP_RATED_SOLO_SHUFFLE, select(5, GetBrawlRewards(4)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
+			RE.Tooltip:AddLine(PVP_RATED_SOLO_SHUFFLE, select(5, GetBrawlRewards(4)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddSeparator()
 			for _, i in pairs({7, 1, 2, 4}) do
 				RE.Tooltip:AddLine(RE.BracketNames[i], select(9, GetPersonalRatedInfo(i)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			end
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100".._G.HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100"..HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:SetCell(14 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
 			if IsPlayerAtEffectiveMaxLevel() and GetCurrentArenaSeason() > 0 then
 				local current, cap = RE:GetConquestPoints()
 				local weeklyCurrent, weeklycap, weeklyProgress = RE:GetWeeklyChest()
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100".._G.PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100"..PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
 				RE.Tooltip:SetCell(16 - mod, 1, current.." / "..cap, "CENTER", 2)
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(17 - mod, 1, "|cFFFFD100".._G.RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(17 - mod, 1, "|cFFFFD100"..RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
 				RE.Tooltip:SetCell(18 - mod, 1, weeklyCurrent.." / "..weeklycap, "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
@@ -303,15 +301,15 @@ function RE:OnEvent(_, event, ...)
 		function RE.LDB:OnClick(button)
 			if REFlex_CompartmentClick or LDBI:GetMinimapButton("REFlex") == GetMouseFocus() then
 				if button == "LeftButton" then
-					if not _G.REFlexFrame:IsVisible() then
-						_G.REFlexFrame:Show()
+					if not REFlexFrame:IsVisible() then
+						REFlexFrame:Show()
 					else
-						_G.REFlexFrame:Hide()
+						REFlexFrame:Hide()
 					end
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					_G.Settings.OpenToCategory("REFlex")
+					Settings.OpenToCategory("REFlex")
 				end
 			else
 				if button == "LeftButton" then
@@ -324,10 +322,10 @@ function RE:OnEvent(_, event, ...)
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					if not _G.REFlexFrame:IsVisible() then
-						_G.REFlexFrame:Show()
+					if not REFlexFrame:IsVisible() then
+						REFlexFrame:Show()
 					else
-						_G.REFlexFrame:Hide()
+						REFlexFrame:Hide()
 					end
 				end
 			end
@@ -335,24 +333,24 @@ function RE:OnEvent(_, event, ...)
 		end
 		LDBI:Register("REFlex", RE.LDB, RE.Settings.MiniMapButtonSettings)
 
-		_G.StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
+		StaticPopupDialogs["REFLEX_FIRSTTIME"] = {
 			text = L["Hold SHIFT to display tooltips."].."|n|n"..L["Hold SHIFT and ALT to display extended tooltips."].."|n"..L["They are available only for rated BGs."].."|n|n"..L["SHIFT + ALT + CTRL + CLICK will hide the match."],
-			button1 = _G.OKAY,
+			button1 = OKAY,
 			OnAccept = function() RE.Settings.FirstTime = false end,
 			timeout = 0,
 			whileDead = true,
 			hideOnEscape = false
 		}
-		_G.StaticPopupDialogs["REFLEX_CUSTOMDATE"] = {
+		StaticPopupDialogs["REFLEX_CUSTOMDATE"] = {
 			text = L["Select start and end date by clicking it."],
 			timeout = 0,
 			whileDead = true,
 			hideOnEscape = false
 		}
-		_G.StaticPopupDialogs["REFLEX_CONFIRMDELETE"] = {
+		StaticPopupDialogs["REFLEX_CONFIRMDELETE"] = {
 			text = L["Are you sure you want to hide this entry?"],
-			button1 = _G.YES,
-			button2 = _G.NO,
+			button1 = YES,
+			button2 = NO,
 			OnAccept = function() RE:HideEntry(RE.HideID) end,
 			timeout = 0,
 			whileDead = true,
@@ -361,7 +359,7 @@ function RE:OnEvent(_, event, ...)
 
 		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
-		RE.IsSkinned = _G.AddOnSkins and _G.AddOnSkins[1]:CheckOption("REFlex") or false
+		RE.IsSkinned = AddOnSkins and AddOnSkins[1]:CheckOption("REFlex") or false
 
 		if RE.Settings.LDBMode == 1 then
 			RE:GetSessionHonor()
@@ -376,7 +374,7 @@ function RE:OnEvent(_, event, ...)
 		GetAvailableBrawlInfo()
 	elseif event == "ADDON_LOADED" and ... == "Blizzard_Calendar" then
 		hooksecurefunc("CalendarDayButton_Click", RE.CalendarParser)
-		_G.CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
+		CalendarFrame:HookScript("OnHide", RE.CalendarCleanup)
 	elseif event == "CHAT_MSG_ADDON" and ... == "REFlex" then
 		local _, message, _ = ...
 		local messageEx = {strsplit(";", message)}
@@ -402,11 +400,11 @@ function RE:OnEvent(_, event, ...)
 			if IsInGuild() then
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end
-			_G.REFlexBGFrameText:SetText("")
+			REFlexBGFrameText:SetText("")
 		end
 	elseif event == "PVP_MATCH_COMPLETE" and not RE.DataSaved then
 		RE.DataSaved = true
-		_G.PVPMatchResults.buttonContainer.leaveButton:Disable()
+		PVPMatchResults.buttonContainer.leaveButton:Disable()
 		TimerAfter(1, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
@@ -442,7 +440,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				end
 			end
 			RE.Tooltip:AddSeparator(3)
-			RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 			for i=1, 6 do
 				if team[i][2] ~= "" then
 					RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5])
@@ -468,7 +466,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				end
 			end
 			RE.Tooltip:AddSeparator(3)
-			RE.Tooltip:AddLine(nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			RE.Tooltip:AddLine(nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r", nil, nil, "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 			for i=1, 3 do
 				if team[i][2] ~= "" or teamEnemy[i][2] ~= "" then
 					RE.Tooltip:AddLine(team[i][2]..team[i][6], team[i][4], team[i][5], nil, teamEnemy[i][2]..teamEnemy[i][6], teamEnemy[i][4], teamEnemy[i][5])
@@ -493,16 +491,16 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		RE.Tooltip:AddLine()
 		RE.Tooltip:SetCell(1, 1, "|cFF74D06CHK/D|r|n"..RE:GetPlayerKD(databaseID), nil, nil, nil, nil, nil, nil, nil, 50)
 		RE.Tooltip:SetCell(1, 2, mmrLine, nil, nil, nil, nil, nil, nil, nil, 50)
-		RE.Tooltip:SetCell(1, 3, "|cFF74D06C".._G.DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
+		RE.Tooltip:SetCell(1, 3, "|cFF74D06C"..DEATHS.."|r|n"..playerData[4], nil, nil, nil, nil, nil, nil, nil, 50)
 		RE.Tooltip:AddSeparator(3)
 		RE.Tooltip:AddLine(nil, "|cFF74D06C"..L["Place"].."|r", nil)
 		RE.Tooltip:SetColumnLayout(3, "LEFT", "CENTER", "CENTER")
-		RE.Tooltip:AddLine(nil, _G.FACTION, _G.ALL)
+		RE.Tooltip:AddLine(nil, FACTION, ALL)
 		RE.Tooltip:AddLine("KB", placeFKB, placeKB)
 		RE.Tooltip:AddLine("HK", placeFHK, placeHK)
-		RE.Tooltip:AddLine(_G.HONOR, placeFHonor, placeHonor)
-		RE.Tooltip:AddLine(_G.DAMAGE, placeFDamage, placeDamage)
-		RE.Tooltip:AddLine(_G.SHOW_COMBAT_HEALING, placeFHealing, placeHealing)
+		RE.Tooltip:AddLine(HONOR, placeFHonor, placeHonor)
+		RE.Tooltip:AddLine(DAMAGE, placeFDamage, placeDamage)
+		RE.Tooltip:AddLine(SHOW_COMBAT_HEALING, placeFHealing, placeHealing)
 		RE.Tooltip:SetLineColor(5, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(7, 1, 1, 1, 0.5)
 		RE.Tooltip:SetLineColor(9, 1, 1, 1, 0.5)
@@ -523,7 +521,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 				local faction = ""
 				local playerStatsData = RE.Database[databaseID].PlayerStats
 				if RE.MapListStat[RE.Database[databaseID].Map][1] or statsNum == 3 then
-					faction = RE.PlayerFaction
+					faction = tostring(RE.PlayerFaction)
 				end
 				if statsNum == 1 then
 					RE.Tooltip:AddLine(nil, "|T"..RE.MapListStat[RE.Database[databaseID].Map][2]..faction..":16:16:0:0|t: "..playerStatsData[1], nil)
@@ -550,7 +548,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 					RE.TooltipRGB1:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
 				end
 			end
-			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			RE.TooltipRGB1:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 			for i=1, #team do
 				RE.TooltipRGB1:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
 			end
@@ -576,7 +574,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 					RE.TooltipRGB2:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
 				end
 			end
-			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C".._G.DAMAGE.."|r", "|cFF74D06C".._G.SHOW_COMBAT_HEALING.."|r")
+			RE.TooltipRGB2:AddLine(nil, nil, nil, nil, "|cFF74D06CKB|r", "|cFF74D06C"..DAMAGE.."|r", "|cFF74D06C"..SHOW_COMBAT_HEALING.."|r")
 			for i=1, #team do
 				RE.TooltipRGB2:AddLine(team[i][1], team[i][4], team[i][2]..team[i][8], team[i][3], team[i][5], team[i][6], team[i][7])
 			end
@@ -625,8 +623,8 @@ function RE:OnArenaStatsClick(self)
 	if RE.Tooltip and RE.Tooltip:IsVisible() then
 		QTIP:Release(RE.Tooltip)
 	else
-		_G.CloseDropDownMenus()
-		_G.EasyMenu(RE.StatsDropDown, _G.REFlexStatsDropDown, self, 0 , 0, "MENU")
+		CloseDropDownMenus()
+		EasyMenu(RE.StatsDropDown, REFlexStatsDropDown, self, 0 , 0, "MENU")
 	end
 end
 
@@ -655,7 +653,7 @@ function RE:OnDateChange(_, mode, internal)
 		RE.CalendarMode = 1
 		StaticPopup_Show("REFLEX_CUSTOMDATE")
 		UIParentLoadAddOn("Blizzard_Calendar")
-		_G.CalendarFrame:Show()
+		CalendarFrame:Show()
 		return
 	end
 	if internal == nil then
@@ -683,18 +681,18 @@ function RE:UpdateGUI()
 			RE:OnDateChange(_, RE.Settings.Filters.DateMode, true)
 		end
 
-		_G.REFlexFrameTab6:ClearAllPoints()
-		_G.REFlexFrameTab5:ClearAllPoints()
-		_G.REFlexFrameTab4:ClearAllPoints()
-		_G.REFlexFrameTab6:SetPoint("CENTER", _G.REFlexFrame, "BOTTOMRIGHT", -40, -10)
-		_G.REFlexFrameTab5:SetPoint("RIGHT", _G.REFlexFrameTab6, "LEFT", -3, 0)
-		_G.REFlexFrameTab4:SetPoint("RIGHT", _G.REFlexFrameTab5, "LEFT", -3, 0)
+		REFlexFrameTab6:ClearAllPoints()
+		REFlexFrameTab5:ClearAllPoints()
+		REFlexFrameTab4:ClearAllPoints()
+		REFlexFrameTab6:SetPoint("CENTER", REFlexFrame, "BOTTOMRIGHT", -40, -10)
+		REFlexFrameTab5:SetPoint("RIGHT", REFlexFrameTab6, "LEFT", -3, 0)
+		REFlexFrameTab4:SetPoint("RIGHT", REFlexFrameTab5, "LEFT", -3, 0)
 	end
-	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
+	if PanelTemplates_GetSelectedTab(REFlexFrame) < 4 then
 		RE.TableBG:Show()
 		RE.TableArena:Hide()
 		RE.BracketDropDown:SetDisabled(true)
-		_G.REFlexFrame_StatsButton:Hide()
+		REFlexFrame_StatsButton:Hide()
 		if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
 			if RE.PrepareGUI then
@@ -709,39 +707,39 @@ function RE:UpdateGUI()
 			RE.TableBG.cols[1].sort = ST.SORT_ASC
 		end
 		RE.TableBG:SetData(RE.BGData, true)
-		if PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 1 then
+		if PanelTemplates_GetSelectedTab(REFlexFrame) == 1 then
 			RE.TableBG:SetFilter(RE.FilterDefault)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
-		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 2 then
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 2 then
 			RE.TableBG:SetFilter(RE.FilterCasual)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 3 then
+			REFlexFrame_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 3 then
 			RE.TableBG:SetFilter(RE.FilterRated)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(_G.REFlexFrame), false)
-		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(_G.REFlexFrame), false, false)
-		_G.REFlexFrame_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
-		_G.REFlexFrame_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
-		_G.REFlexFrame_ScoreHolder_Damage1:SetText("|cFFFFD100".._G.DAMAGE.."|r")
-		_G.REFlexFrame_ScoreHolder_Healing1:SetText("|cFFFFD100".._G.SHOW_COMBAT_HEALING.."|r")
-		_G.REFlexFrame_ScoreHolder_Wins:SetText(won)
-		_G.REFlexFrame_ScoreHolder_Lose:SetText(lost)
-		_G.REFlexFrame_ScoreHolder_HK2:SetText(_G.BEST..": "..topHK)
-		_G.REFlexFrame_ScoreHolder_HK3:SetText(_G.TOTAL..": "..hk)
-		_G.REFlexFrame_ScoreHolder_KB2:SetText(_G.BEST..": "..topKB)
-		_G.REFlexFrame_ScoreHolder_KB3:SetText(_G.TOTAL..": "..kb)
-		_G.REFlexFrame_ScoreHolder_Damage2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topDamage))
-		_G.REFlexFrame_ScoreHolder_Damage3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(damage))
-		_G.REFlexFrame_ScoreHolder_Healing2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topHealing))
-		_G.REFlexFrame_ScoreHolder_Healing3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(healing))
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexFrame), false)
+		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexFrame), false, false)
+		REFlexFrame_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
+		REFlexFrame_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
+		REFlexFrame_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
+		REFlexFrame_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
+		REFlexFrame_ScoreHolder_Wins:SetText(won)
+		REFlexFrame_ScoreHolder_Lose:SetText(lost)
+		REFlexFrame_ScoreHolder_HK2:SetText(BEST..": "..topHK)
+		REFlexFrame_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
+		REFlexFrame_ScoreHolder_KB2:SetText(BEST..": "..topKB)
+		REFlexFrame_ScoreHolder_KB3:SetText(TOTAL..": "..kb)
+		REFlexFrame_ScoreHolder_Damage2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
+		REFlexFrame_ScoreHolder_Damage3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
+		REFlexFrame_ScoreHolder_Healing2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
+		REFlexFrame_ScoreHolder_Healing3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
 		RE.TableBG:Hide()
 		RE.TableBG:Show()
-	elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) > 3 then
+	elseif PanelTemplates_GetSelectedTab(REFlexFrame) > 3 then
 		RE.TableArena:Show()
 		RE.TableBG:Hide()
 		RE.BracketDropDown:SetDisabled(false)
-		_G.REFlexFrame_StatsButton:Show()
+		REFlexFrame_StatsButton:Show()
 		if RE.Settings.CurrentTab < 4 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongArena, RE.MapListLongOrderArena)
 			if RE.PrepareGUI then
@@ -756,37 +754,37 @@ function RE:UpdateGUI()
 			RE.TableArena.cols[1].sort = ST.SORT_ASC
 		end
 		RE.TableArena:SetData(RE.ArenaData, true)
-		if PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 4 then
+		if PanelTemplates_GetSelectedTab(REFlexFrame) == 4 then
 			RE.TableArena:SetFilter(RE.FilterDefault)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
-		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 5 then
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 5 then
 			RE.TableArena:SetFilter(RE.FilterCasual)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("")
-		elseif PanelTemplates_GetSelectedTab(_G.REFlexFrame) == 6 then
+			REFlexFrame_ScoreHolder_RBG:SetText("")
+		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 6 then
 			RE.TableArena:SetFilter(RE.FilterRated)
-			_G.REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100".._G.RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(7)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(1)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(2)))
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(_G.REFlexFrame) - 3, true)
-		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(_G.REFlexFrame) - 3, true, false)
-		_G.REFlexFrame_ScoreHolder_HK1:SetText("|cFFFFD100".._G.SHOW_COMBAT_HEALING.."|r")
-		_G.REFlexFrame_ScoreHolder_KB1:SetText("|cFFFFD100".._G.DAMAGE.."|r")
-		_G.REFlexFrame_ScoreHolder_Damage1:SetText("")
-		_G.REFlexFrame_ScoreHolder_Healing1:SetText("")
-		_G.REFlexFrame_ScoreHolder_Wins:SetText(won)
-		_G.REFlexFrame_ScoreHolder_Lose:SetText(lost)
-		_G.REFlexFrame_ScoreHolder_HK2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topHealing))
-		_G.REFlexFrame_ScoreHolder_HK3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(healing))
-		_G.REFlexFrame_ScoreHolder_KB2:SetText(_G.BEST..": "..RE:AbbreviateNumbers(topDamage))
-		_G.REFlexFrame_ScoreHolder_KB3:SetText(_G.TOTAL..": "..RE:AbbreviateNumbers(damage))
-		_G.REFlexFrame_ScoreHolder_Damage2:SetText("")
-		_G.REFlexFrame_ScoreHolder_Damage3:SetText("")
-		_G.REFlexFrame_ScoreHolder_Healing2:SetText("")
-		_G.REFlexFrame_ScoreHolder_Healing3:SetText("")
+		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexFrame) - 3, true)
+		local _, _, _, _, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexFrame) - 3, true, false)
+		REFlexFrame_ScoreHolder_HK1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
+		REFlexFrame_ScoreHolder_KB1:SetText("|cFFFFD100"..DAMAGE.."|r")
+		REFlexFrame_ScoreHolder_Damage1:SetText("")
+		REFlexFrame_ScoreHolder_Healing1:SetText("")
+		REFlexFrame_ScoreHolder_Wins:SetText(won)
+		REFlexFrame_ScoreHolder_Lose:SetText(lost)
+		REFlexFrame_ScoreHolder_HK2:SetText(BEST..": "..RE:AbbreviateNumbers(topHealing))
+		REFlexFrame_ScoreHolder_HK3:SetText(TOTAL..": "..RE:AbbreviateNumbers(healing))
+		REFlexFrame_ScoreHolder_KB2:SetText(BEST..": "..RE:AbbreviateNumbers(topDamage))
+		REFlexFrame_ScoreHolder_KB3:SetText(TOTAL..": "..RE:AbbreviateNumbers(damage))
+		REFlexFrame_ScoreHolder_Damage2:SetText("")
+		REFlexFrame_ScoreHolder_Damage3:SetText("")
+		REFlexFrame_ScoreHolder_Healing2:SetText("")
+		REFlexFrame_ScoreHolder_Healing3:SetText("")
 		RE.TableArena:Hide()
 		RE.TableArena:Show()
 	end
 	RE:HKBarUpdate()
-	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(_G.REFlexFrame)
+	RE.Settings.CurrentTab = PanelTemplates_GetSelectedTab(REFlexFrame)
 end
 
 function RE:UpdateBGData(all)
@@ -870,7 +868,7 @@ end
 
 function RE:UpdateLDB()
 	local savedFilters = RE.Settings.Filters
-	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.LDBTime, 0}, ["Season"] = 0}
+	RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.LDBTime, 0}, ["Season"] = 0}
 	if RE.LDBUpdate then
 		RE.LDBUpdate = false
 		RE.LDBData.HK = select(3, RE:GetStats(1, nil, false))
@@ -962,13 +960,13 @@ function RE:PVPEnd()
 	if not RE.MatchData.Hidden then
 		if RE.MatchData.isArena then
 			RE:UpdateArenaData(false)
-			_G.REFlexBGFrameText:SetText("")
+			REFlexBGFrameText:SetText("")
 		else
 			RE:UpdateBGData(false)
-			_G.REFlexBGFrameText:SetText(RE:GetBGScoreText(#RE.Database))
+			REFlexBGFrameText:SetText(RE:GetBGScoreText(#RE.Database))
 		end
 	else
 		print("\124cFF74D06C[REFlex]\124r "..L["API returned corrupted data. Match will not be recorded."])
 	end
-	_G.PVPMatchResults.buttonContainer.leaveButton:Enable()
+	PVPMatchResults.buttonContainer.leaveButton:Enable()
 end

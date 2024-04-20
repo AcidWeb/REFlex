@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
+  <Include file="Libs\TaintLess\TaintLess.xml"/>
   <Script file="Libs\LibStub\LibStub.lua"/>
   <Script file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
   <Script file="Libs\LibScrollingTable\Core.lua"/>

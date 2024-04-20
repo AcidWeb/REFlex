@@ -1,14 +1,13 @@
-local _G = _G
 local _, RE = ...
 
-local mfloor = _G.math.floor
-local tinsert = _G.table.insert
+local mfloor = math.floor
+local tinsert = table.insert
 
 function RE:UpdateSettings()
   if RE.Settings.ConfigVersion < 260 then
     if RE.Settings.ConfigVersion < 220 then
       RE.Settings.CurrentTab = 1
-      RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["DateMode"] = 1}
+      RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {0, 0}, ["DateMode"] = 1}
       RE.Settings.ConfigVersion = 220
     end
 
@@ -148,14 +147,14 @@ function RE:UpdateDatabase()
 end
 
 function RE:UpdateHDatabase()
-  for i=1, #_G.REFlexDatabase do
-    local date = mfloor(_G.REFlexDatabase[i].Time / 86400) * 86400
+  for i=1, #REFlexDatabase do
+    local date = mfloor(REFlexDatabase[i].Time / 86400) * 86400
     local playerData = RE:GetPlayerData(i)
     if playerData[5] > 0 then
-      if not _G.REFlexHonorDatabase[date] then
-        _G.REFlexHonorDatabase[date] = 0
+      if not REFlexHonorDatabase[date] then
+        REFlexHonorDatabase[date] = 0
       end
-      _G.REFlexHonorDatabase[date] = _G.REFlexHonorDatabase[date] + playerData[5]
+      REFlexHonorDatabase[date] = REFlexHonorDatabase[date] + playerData[5]
     end
   end
 end

@@ -1,4 +1,3 @@
-local _G = _G
 local _, RE = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 local BR = LibStub("LibBabble-Race-3.0"):GetReverseLookupTable()
@@ -6,21 +5,20 @@ local ST = LibStub("ScrollingTable")
 local QTIP = LibStub("LibQTip-1.0")
 local DUMP = LibStub("LibTextDump-1.0")
 
-local tinsert, tsort, tconcat, tremove = _G.table.insert, _G.table.sort, _G.table.concat, _G.table.remove
-local mfloor, min, mfmod = _G.math.floor, _G.math.min, _G.math.fmod
-local sgsub, sbyte, slower, srep = _G.string.gsub, _G.string.byte, _G.string.lower, _G.string.rep
-local strsplit, date, select, tostring, PlaySound, time, pairs, ipairs = _G.strsplit, _G.date, _G.select, _G.tostring, _G.PlaySound, _G.time, _G.pairs, _G.ipairs
-local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
-local GetHonorRewardInfo = _G.C_PvP.GetHonorRewardInfo
-local GetCurrencyInfo = _G.C_CurrencyInfo.GetCurrencyInfo
-local GetConquestWeeklyProgress = _G.C_WeeklyRewards.GetConquestWeeklyProgress
-local GetSecondsUntilWeeklyReset = _G.C_DateAndTime.GetSecondsUntilWeeklyReset
-local PanelTemplates_GetSelectedTab = _G.PanelTemplates_GetSelectedTab
-local IsActiveBattlefieldArena = _G.IsActiveBattlefieldArena
-local IsInBrawl = _G.C_PvP.IsInBrawl
-local CanSurrenderArena = _G.CanSurrenderArena
-local SurrenderArena = _G.SurrenderArena
-local StaticPopup_Hide = _G.StaticPopup_Hide
+local tinsert, tsort, tconcat, tremove = table.insert, table.sort, table.concat, table.remove
+local mfloor, min, mfmod = math.floor, math.min, math.fmod
+local sgsub, sbyte, slower, srep = string.gsub, string.byte, string.lower, string.rep
+local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local GetHonorRewardInfo = C_PvP.GetHonorRewardInfo
+local GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
+local GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress
+local GetSecondsUntilWeeklyReset = C_DateAndTime.GetSecondsUntilWeeklyReset
+local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
+local IsActiveBattlefieldArena = IsActiveBattlefieldArena
+local IsInBrawl = C_PvP.IsInBrawl
+local CanSurrenderArena = CanSurrenderArena
+local SurrenderArena = SurrenderArena
+local StaticPopup_Hide = StaticPopup_Hide
 
 function RE:GetPlayerData(databaseID)
 	return RE.Database[databaseID].Players[RE.Database[databaseID].PlayerNum]
@@ -108,8 +106,8 @@ function RE:GetArenaTeamDetails(databaseID, player)
 			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
 			"|n["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]",
@@ -149,6 +147,7 @@ function RE:GetArenaTeamStats(mode)
 				end
 			end
 			tsort(teamID)
+			---@diagnostic disable-next-line: cast-local-type
 			teamID = tconcat(teamID, ";")
 			if teamMatrix[teamID] then
 				if win then
@@ -192,8 +191,8 @@ function RE:GetRGBTeamDetails(databaseID, player)
 			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
 			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
 			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-			"|c".._G.RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
+			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
 			RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
 			RE.Database[databaseID].Players[i][2],
 			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
@@ -251,7 +250,7 @@ end
 
 function RE:GetSessionHonor()
 	local savedFilters = RE.Settings.Filters
-	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.SessionStart, 0}, ["Season"] = 0}
+	RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = 1, ["Bracket"] = 1, ["Date"] = {RE.SessionStart, 0}, ["Season"] = 0}
 	RE.SessionHonor = RE:GetHonor()
 	RE.Settings.Filters = savedFilters
 end
@@ -361,16 +360,16 @@ end
 function RE:GetBGScoreText(databaseID)
 	local text = {}
 	local savedFilters = RE.Settings.Filters
-	RE.Settings.Filters = {["Spec"] = _G.ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0}
+	RE.Settings.Filters = {["Spec"] = ALL, ["Map"] = RE.Database[databaseID].Map, ["Bracket"] = 1, ["Date"] = {0, 0}, ["Season"] = 0}
 	local playerData = RE:GetPlayerData(databaseID)
 	local placeKB, placeHK, placeHonor, placeDamage, placeHealing = unpack(RE.Database[databaseID].BGPlace[2])
 	local _, topKB, _, topHK, _, topHonor, _, topDamage, _, topHealing = RE:GetStats(1, false, true)
 	RE.Settings.Filters = savedFilters
 	tinsert(text, RE:ScoreTextParser("KB", playerData[2], databaseID, placeKB, topKB))
 	tinsert(text, RE:ScoreTextParser("HK", playerData[3], databaseID, placeHK, topHK))
-	tinsert(text, RE:ScoreTextParser(_G.HONOR, playerData[5], databaseID, placeHonor, topHonor))
-	tinsert(text, RE:ScoreTextParser(_G.DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
-	tinsert(text, RE:ScoreTextParser(_G.SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
+	tinsert(text, RE:ScoreTextParser(HONOR, playerData[5], databaseID, placeHonor, topHonor))
+	tinsert(text, RE:ScoreTextParser(DAMAGE, playerData[10], databaseID, placeDamage, topDamage))
+	tinsert(text, RE:ScoreTextParser(SHOW_COMBAT_HEALING, playerData[11], databaseID, placeHealing, topHealing))
 	return tconcat(text, " |cFF808080|||r ")
 end
 
@@ -378,7 +377,7 @@ function RE:GetArenaStatsTooltip(mode)
 	if #RE.TableArena.filtered > 0 then
 		local payload = RE:GetArenaTeamStats(mode)
 		RE.Tooltip = QTIP:Acquire("REFlexTooltipArena", 1, "CENTER")
-		RE.Tooltip:SmartAnchorTo(_G.REFlexFrame_StatsButton)
+		RE.Tooltip:SmartAnchorTo(REFlexFrame_StatsButton)
 		if mode == 1 then
 			RE.Tooltip:AddHeader("|cFF74D06C"..L["Most common teams"].."|r")
 		elseif mode == 2 then
@@ -392,7 +391,7 @@ function RE:GetArenaStatsTooltip(mode)
 			local members = {strsplit(";", v[1])}
 			for i=1, #members do
 				local class, spec = strsplit("-", members[i])
-				RE.Tooltip:AddLine("|c".._G.RAID_CLASS_COLORS[class]:GenerateHexColor().._G.LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r")
+				RE.Tooltip:AddLine("|c"..RAID_CLASS_COLORS[class]:GenerateHexColor()..LOCALIZED_CLASS_NAMES_MALE[class].." "..spec.."|r")
 			end
 			if mode == 1 then
 				RE.Tooltip:AddLine("|cFFFFFFFF"..v[2].."|r | |cFF00FF00"..v[3].."|r - |cFFFF0000"..v[4].."|r")
@@ -545,6 +544,7 @@ function RE:TimeClean(timeRaw, isSoloShuffle)
 	local timeSec = mfloor(timeRaw % 60)
 	local timeMin = mfloor(timeRaw / 60)
 	if timeSec < 10 then
+		---@diagnostic disable-next-line: cast-local-type
 		timeSec = "0"..timeSec
 	end
 	return timeMin..":"..timeSec
@@ -573,7 +573,7 @@ function RE:CustomSort(obj, rowa, rowb, sortbycol, field, inside)
 end
 
 function RE:SpecFilter(rowdata)
-	if RE.Settings.Filters.Spec ~= _G.ALL then
+	if RE.Settings.Filters.Spec ~= ALL then
 		if rowdata[14] == RE.Settings.Filters.Spec then
 			return true
 		else
@@ -653,15 +653,15 @@ end
 
 function RE:CalendarParser()
 	if RE.CalendarMode == 1 then
-		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 0}
+		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 0}
 		PlaySound(624)
 		RE.Settings.Filters.Date[1] = time(t) - (RE.PlayerTimezone * 3600)
 		RE.CalendarMode = 2
 	elseif RE.CalendarMode == 2 then
-		local t = {day = _G.CalendarFrame.selectedDay, month = _G.CalendarFrame.selectedMonth, year = _G.CalendarFrame.selectedYear, hour = 23, min = 59, sec = 59}
+		local t = {day = CalendarFrame.selectedDay, month = CalendarFrame.selectedMonth, year = CalendarFrame.selectedYear, hour = 23, min = 59, sec = 59}
 		PlaySound(624)
 		RE.Settings.Filters.Date[2] = time(t) - (RE.PlayerTimezone * 3600)
-		_G.CalendarFrame:Hide()
+		CalendarFrame:Hide()
 		RE:UpdateGUI()
 	end
 end
@@ -694,13 +694,13 @@ function RE:HKBarUpdate()
 		hkMax = 250000
 	end
 	if hkMax ~= 0 then
-		_G.REFlexFrame_HKBar_Text:SetText(hk.." / "..hkMax)
-		_G.REFlexFrame_HKBar_I:SetMinMaxValues(0, hkMax)
+		REFlexFrame_HKBar_Text:SetText(hk.." / "..hkMax)
+		REFlexFrame_HKBar_I:SetMinMaxValues(0, hkMax)
 	else
-		_G.REFlexFrame_HKBar_Text:SetText(hk)
-		_G.REFlexFrame_HKBar_I:SetMinMaxValues(0, hk)
+		REFlexFrame_HKBar_Text:SetText(hk)
+		REFlexFrame_HKBar_I:SetMinMaxValues(0, hk)
 	end
-	_G.REFlexFrame_HKBar_I:SetValue(hk)
+	REFlexFrame_HKBar_I:SetValue(hk)
 end
 
 function RE:ScoreTextParser(label, value, databaseID, place, top)
@@ -750,9 +750,9 @@ end
 
 function RE:DumpCSV()
 	local id, d, s
-	if not _G.REFlexFrame:IsShown() then return end
+	if not REFlexFrame:IsShown() then return end
 	RE.DumpFrame:Clear()
-	if PanelTemplates_GetSelectedTab(_G.REFlexFrame) < 4 then
+	if PanelTemplates_GetSelectedTab(REFlexFrame) < 4 then
 		RE.DumpFrame:AddLine("Timestamp;Map;Duration;Victory;KillingBlows;HonorKills;Deaths;Damage;Healing;Honor;RatingChange;MMR;EnemyMMR;Specialization;PrestigeLevel;isRated;isBrawl;isMercenary")
 		for i=1, #RE.TableBG.filtered do
 			id = RE.TableBG.data[RE.TableBG.filtered[i]][11]
@@ -778,16 +778,16 @@ function RE:DumpCSV()
 
 	if RE.IsSkinned then
 		local f = DUMP.frames[RE.DumpFrame]:GetName()
-		_G.AddOnSkins[1]:SkinFrame(_G[f])
-		_G.AddOnSkins[1]:CreateBackdrop(_G[f].scrollArea)
-		_G.AddOnSkins[1]:SetOutside(_G[f].scrollArea.Backdrop, _G[f].scrollArea, 4, 4)
-		_G.AddOnSkins[1]:SkinCloseButton(_G[f.."Close"])
-		_G.AddOnSkins[1]:SkinScrollBar(_G[f].scrollArea.ScrollBar)
+		AddOnSkins[1]:SkinFrame(_G[f])
+		AddOnSkins[1]:CreateBackdrop(_G[f].scrollArea)
+		AddOnSkins[1]:SetOutside(_G[f].scrollArea.Backdrop, _G[f].scrollArea, 4, 4)
+		AddOnSkins[1]:SkinCloseButton(_G[f.."Close"])
+		AddOnSkins[1]:SkinScrollBar(_G[f].scrollArea.ScrollBar)
 	end
 end
 
 function RE:GetConquestPoints()
-	local currencyInfo = GetCurrencyInfo(_G.Constants.CurrencyConsts.CONQUEST_CURRENCY_ID)
+	local currencyInfo = GetCurrencyInfo(Constants.CurrencyConsts.CONQUEST_CURRENCY_ID)
 	if currencyInfo then
 		return min(currencyInfo.totalEarned, currencyInfo.maxQuantity), currencyInfo.maxQuantity
 	else
