@@ -4,11 +4,11 @@ externals:
   Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
   Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
   Libs/LibScrollingTable: https://github.com/ddumont/lib-st
-  Libs/LibQTip-1.0: https://repos.curseforge.com/wow/wow/libqtip-1-0
-  Libs/LibDataBroker-1.1: https://repos.curseforge.com/wow/wow/libdatabroker-1-1
+  Libs/LibQTip-1.0: https://repos.curseforge.com/wow/libqtip-1-0
+  Libs/LibDataBroker-1.1: https://repos.curseforge.com/wow/libdatabroker-1-1
   Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
-  Libs/LibBabble-Race-3.0: https://repos.curseforge.com/wow/wow/libbabble-race-3-0/trunk
-  Libs/LibTextDump-1.0: https://repos.curseforge.com/wow/wow/libtextdump-1-0
+  Libs/LibBabble-Race-3.0: https://repos.curseforge.com/wow/libbabble-race-3-0/trunk
+  Libs/LibTextDump-1.0: https://repos.curseforge.com/wow/libtextdump-1-0
   Libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
   Libs/AceConfigDialog-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0/AceConfigDialog-3.0
   Libs/AceConfigRegistry-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0/AceConfigRegistry-3.0

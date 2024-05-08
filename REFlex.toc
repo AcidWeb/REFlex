@@ -1,7 +1,7 @@
-## Interface: 100206
+## Interface: 100207
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 3.3.13
+## Version: 3.3.14
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
 ## AddonCompartmentFunc: REFlex_CompartmentOnClick
