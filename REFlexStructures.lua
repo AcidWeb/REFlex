@@ -194,12 +194,6 @@ for classID=1, MAX_CLASSES do
 	end
 end
 
-RE.StatsDropDown = {
-	{ text = L["Most common teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(1) end },
-	{ text = L["Easiest teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(2) end },
-	{ text = L["Hardest teams"], notCheckable = true, func = function() RE:GetArenaStatsTooltip(3) end }
-}
-
 RE.AceConfig = {
 	type = "group",
 	args = {

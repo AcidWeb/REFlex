@@ -43,7 +43,7 @@ local GetMatchPVPStatColumns = C_PvP.GetMatchPVPStatColumns
 local GetActiveMatchDuration = C_PvP.GetActiveMatchDuration
 local GetCurrentArenaSeason = GetCurrentArenaSeason
 local GetCVar = GetCVar
-local GetMouseFocus = GetMouseFocus
+local GetMouseFoci = GetMouseFoci
 local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 local UnitName = UnitName
 local UnitFactionGroup = UnitFactionGroup
@@ -61,7 +61,7 @@ local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
 local ElvUI = ElvUI
 
-RE.Version = 3314
+RE.Version = 3315
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
@@ -299,7 +299,17 @@ function RE:OnEvent(_, event, ...)
 			QTIP:Release(RE.Tooltip)
 		end
 		function RE.LDB:OnClick(button)
-			if REFlex_CompartmentClick or LDBI:GetMinimapButton("REFlex") == GetMouseFocus() then
+			local isMouseOverMinimapButton = false
+			local mouseFoci = GetMouseFoci()
+
+			for _, region in ipairs(mouseFoci) do
+				if region:IsMouseMotionFocus() and region == LDBI:GetMinimapButton("REFlex") then
+					isMouseOverMinimapButton = true
+					break
+				end
+			end
+
+			if REFlex_CompartmentClick or isMouseOverMinimapButton then
 				if button == "LeftButton" then
 					if not REFlexFrame:IsVisible() then
 						REFlexFrame:Show()
@@ -624,7 +634,6 @@ function RE:OnArenaStatsClick(self)
 		QTIP:Release(RE.Tooltip)
 	else
 		CloseDropDownMenus()
-		EasyMenu(RE.StatsDropDown, REFlexStatsDropDown, self, 0 , 0, "MENU")
 	end
 end
 
@@ -687,6 +696,12 @@ function RE:UpdateGUI()
 		REFlexFrameTab6:SetPoint("CENTER", REFlexFrame, "BOTTOMRIGHT", -40, -10)
 		REFlexFrameTab5:SetPoint("RIGHT", REFlexFrameTab6, "LEFT", -3, 0)
 		REFlexFrameTab4:SetPoint("RIGHT", REFlexFrameTab5, "LEFT", -3, 0)
+
+		MenuUtil.CreateButtonMenu(REFlexFrame_StatsButton,
+			{L["Most common teams"], function() RE:GetArenaStatsTooltip(1) end, 1},
+			{L["Easiest teams"], function() RE:GetArenaStatsTooltip(2) end, 2},
+			{L["Hardest teams"], function() RE:GetArenaStatsTooltip(3) end, 3}
+		)
 	end
 	if PanelTemplates_GetSelectedTab(REFlexFrame) < 4 then
 		RE.TableBG:Show()
