@@ -22,6 +22,7 @@ local IsSoloShuffle = C_PvP.IsSoloShuffle
 local IsRatedSoloShuffle = C_PvP.IsRatedSoloShuffle
 local IsRatedArena = C_PvP.IsRatedArena
 local IsRatedBattleground = C_PvP.IsRatedBattleground
+local IsSoloRBG = C_PvP.IsSoloRBG
 local IsArenaSkirmish = IsArenaSkirmish
 local IsPlayerAtEffectiveMaxLevel = IsPlayerAtEffectiveMaxLevel
 local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
@@ -922,7 +923,7 @@ function RE:PVPEnd()
 		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
-	if IsRatedBattleground() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() then
+	if IsRatedBattleground() or IsSoloRBG() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() then
 		RE.MatchData.isRated = true
 	else
 		RE.MatchData.isRated = false
