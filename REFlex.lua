@@ -22,7 +22,7 @@ local IsSoloShuffle = C_PvP.IsSoloShuffle
 local IsRatedSoloShuffle = C_PvP.IsRatedSoloShuffle
 local IsRatedArena = C_PvP.IsRatedArena
 local IsRatedBattleground = C_PvP.IsRatedBattleground
-local IsSoloRBG = C_PvP.IsSoloRBG
+local IsRatedBgBlitz = C_PvP.IsRatedSoloRBG
 local IsArenaSkirmish = IsArenaSkirmish
 local IsPlayerAtEffectiveMaxLevel = IsPlayerAtEffectiveMaxLevel
 local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
@@ -94,6 +94,7 @@ RE.BackdropA = {
 	edgeSize = 32,
 	insets = { left = 5, right = 5, top = 5, bottom = 5 },
 }
+
 RE.BackdropB = {
 	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 	tile = true,
@@ -188,7 +189,6 @@ function RE:OnLoad(self)
 	RE.BracketDropDown.frame:SetPoint("LEFT", RE.SpecDropDown.frame, "RIGHT", 5, 0)
 	RE.BracketDropDown:SetWidth(100)
 	RE.BracketDropDown:SetCallback("OnValueChanged", RE.OnBracketChange)
-	RE.BracketDropDown:SetList({[1] = ALL, [2] = SOLO, [4] = "2v2", [6] = "3v3"})
 	RE.MapDropDown = GUI:Create("Dropdown")
 	RE.MapDropDown.frame:SetParent(REFlexFrame)
 	RE.MapDropDown.frame:SetPoint("BOTTOMRIGHT", REFlexFrame, "BOTTOMRIGHT", -19, 18)
@@ -296,9 +296,11 @@ function RE:OnEvent(_, event, ...)
 			end
 			RE.Tooltip:Show()
 		end
+
 		function RE.LDB:OnLeave()
 			QTIP:Release(RE.Tooltip)
 		end
+
 		function RE.LDB:OnClick(button)
 			local isMouseOverMinimapButton = false
 			local mouseFoci = GetMouseFoci()
@@ -626,7 +628,11 @@ function RE:OnMapChange(_, map)
 end
 
 function RE:OnBracketChange(_, bracket)
-	RE.Settings.Filters.Bracket = bracket
+	if PanelTemplates_GetSelectedTab(REFlexFrame) > 3 then
+		RE.Settings.Filters.Bracket = bracket
+	else
+		RE.Settings.Filters.BgBracket = bracket
+	end
 	RE:UpdateGUI()
 end
 
@@ -703,11 +709,21 @@ function RE:UpdateGUI()
 			{L["Easiest teams"], function() RE:GetArenaStatsTooltip(2) end, 2},
 			{L["Hardest teams"], function() RE:GetArenaStatsTooltip(3) end, 3}
 		)
+
 	end
+
+	if PanelTemplates_GetSelectedTab(REFlexFrame) < 4 then
+		RE.BracketDropDown:SetList({ [1] = "" })
+		RE.BracketDropDown:SetValue(1)
+		RE.BracketDropDown:SetDisabled(true)
+	else
+		RE.BracketDropDown:SetList({ [1] = ALL, [2] = SOLO, [4] = "2v2", [6] = "3v3" })
+		RE.BracketDropDown:SetValue(RE.Settings.Filters.Bracket)
+	end
+
 	if PanelTemplates_GetSelectedTab(REFlexFrame) < 4 then
 		RE.TableBG:Show()
 		RE.TableArena:Hide()
-		RE.BracketDropDown:SetDisabled(true)
 		REFlexFrame_StatsButton:Hide()
 		if RE.Settings.CurrentTab > 3 or RE.PrepareGUI then
 			RE.MapDropDown:SetList(RE.MapListLongBG, RE.MapListLongOrderBG)
@@ -719,28 +735,38 @@ function RE:UpdateGUI()
 				RE.Settings.Filters.Map = 1
 			end
 		end
+
+		local filterUsed
 		if #RE.TableBG.data == 0 then
 			RE.TableBG.cols[1].sort = ST.SORT_ASC
 		end
 		RE.TableBG:SetData(RE.BGData, true)
 		if PanelTemplates_GetSelectedTab(REFlexFrame) == 1 then
-			RE.TableBG:SetFilter(RE.FilterDefault)
-			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			filterUsed =  RE.FilterDefault
+			REFlexFrame_ScoreHolder_RBG:SetText("")
 		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 2 then
-			RE.TableBG:SetFilter(RE.FilterCasual)
+			filterUsed = RE.FilterCasual
 			REFlexFrame_ScoreHolder_RBG:SetText("")
 		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 3 then
-			RE.TableBG:SetFilter(RE.FilterRated)
-			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			RE.BracketDropDown:SetList({ [1] = "BLITZ", [2] = "RBG" })
+			RE.BracketDropDown:SetValue(RE.Settings.Filters.BgBracket)
+			RE.BracketDropDown:SetDisabled(false)
+			if RE.Settings.Filters.BgBracket == 2 then
+				filterUsed = RE.FilterRated
+				REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100" .. RATING .. ":|r " .. select(1, GetPersonalRatedInfo(4)))
+			elseif RE.Settings.Filters.BgBracket == 1 then
+				filterUsed = RE.FilterBlitz
+				REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100" .. RATING .. ":|r " .. select(1, GetPersonalRatedInfo(9)))
+			end
 		end
-		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexFrame), false)
-		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexFrame), false, false)
+		RE.TableBG:SetFilter(filterUsed)
+		local wins, losses, draws, kb, topKB, hk, topHK, damage, topDamage, healing, topHealing = RE:ConsolidatedStats(filterUsed, false)
 		REFlexFrame_ScoreHolder_HK1:SetText("|cFFFFD100HK|r")
 		REFlexFrame_ScoreHolder_KB1:SetText("|cFFFFD100KB|r")
 		REFlexFrame_ScoreHolder_Damage1:SetText("|cFFFFD100"..DAMAGE.."|r")
 		REFlexFrame_ScoreHolder_Healing1:SetText("|cFFFFD100"..SHOW_COMBAT_HEALING.."|r")
-		REFlexFrame_ScoreHolder_Wins:SetText(won)
-		REFlexFrame_ScoreHolder_Lose:SetText(lost)
+		REFlexFrame_ScoreHolder_Wins:SetText(wins)
+		REFlexFrame_ScoreHolder_Lose:SetText(losses)
 		REFlexFrame_ScoreHolder_HK2:SetText(BEST..": "..topHK)
 		REFlexFrame_ScoreHolder_HK3:SetText(TOTAL..": "..hk)
 		REFlexFrame_ScoreHolder_KB2:SetText(BEST..": "..topKB)
@@ -917,13 +943,14 @@ function RE:PVPEnd()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
 	RE.MatchData.isSoloShuffle = IsSoloShuffle()
+	RE.MatchData.isBgBlitz = IsRatedBgBlitz()
 	RE.MatchData.Version = RE.Version
 
 	if RE.MapIDRemap[RE.MatchData.Map] then
 		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
-	if IsRatedBattleground() or IsSoloRBG() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() then
+	if IsRatedBattleground() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() or IsRatedBgBlitz() then
 		RE.MatchData.isRated = true
 	else
 		RE.MatchData.isRated = false

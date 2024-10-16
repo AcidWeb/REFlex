@@ -25,25 +25,47 @@ function RE:GetPlayerData(databaseID)
 end
 
 function RE:GetPlayerWin(databaseID, icon)
-	if RE.Database[databaseID].isSoloShuffle then
-		if icon then
-			return "|TInterface\\RaidFrame\\ReadyCheck-Waiting:14:14:0:0|t"
-		else
-			return nil
-		end
-	elseif RE.Database[databaseID].PlayerSide == RE.Database[databaseID].Winner then
+	local result = RE:InterpretResult(databaseID)
+	if result == "win" then
 		if icon then
 			return "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14:0:0|t"
 		else
 			return true
 		end
-	else
+	elseif result == "draw" then
+		if icon then
+			return "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t"
+		else
+			return false
+		end
+	elseif result == "loss" then
 		if icon then
 			return "|TInterface\\RaidFrame\\ReadyCheck-NotReady:14:14:0:0|t"
 		else
 			return false
 		end
+	else
+		if icon then
+			return "|TInterface\\RaidFrame\\ReadyCheck-Waiting:14:14:0:0|t"
+		else
+			return nil
+		end
 	end
+end
+
+function RE:InterpretResult(rowId)
+	local rowData = RE.Database[rowId]
+	local result = nil
+	if not rowData.isSoloShuffle then
+		if rowData.PlayerSide == rowData.Winner then
+			result = "win"
+		elseif rowData.Winner == 255 or rowData.Winner == nil then
+			result = "draw"
+		else
+			result = "loss"
+		end
+	end
+	return result
 end
 
 function RE:GetPlayerKD(databaseID)
@@ -182,22 +204,36 @@ function RE:GetArenaTeamStats(mode)
 	return payload
 end
 
-function RE:GetRGBTeamDetails(databaseID, player)
-	local faction = RE:GetFactionID(databaseID, player)
+function RE.table_copy(t)
+	local t2 = {}
+	for k,v in pairs(t) do
+	   t2[k] = v
+	end
+	return t2
+ end
+
+function RE:GetRGBTeamDetails(databaseID, matchPlayerFaction)
+	local faction = RE:GetFactionID(databaseID, matchPlayerFaction)
 	local team, damageSum, healingSum, kbSum = {}, 0, 0, 0
-	for i=1, #RE.Database[databaseID].Players do
-		if RE.Database[databaseID].Players[i][6] == faction then
-			damageSum = damageSum + RE.Database[databaseID].Players[i][10]
-			healingSum = healingSum + RE.Database[databaseID].Players[i][11]
-			kbSum = kbSum + RE.Database[databaseID].Players[i][2]
-			tinsert(team, {RE:GetRaceIcon(RE.Database[databaseID].Players[i][7], 30).."   "..RE:GetClassIcon(RE.Database[databaseID].Players[i][9], 30),
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE:NameClean(RE.Database[databaseID].Players[i][1]).."|r",
-			"|c"..RAID_CLASS_COLORS[RE.Database[databaseID].Players[i][9]].colorStr..RE.Database[databaseID].Players[i][16].."|r",
-			RE:GetPrestigeIcon(RE.Database[databaseID].Players[i][17], 16),
-			RE.Database[databaseID].Players[i][2],
-			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][10]),
-			RE:AbbreviateNumbers(RE.Database[databaseID].Players[i][11]),
-			"|n"..RE.Database[databaseID].Players[i][12].." ["..RE:RatingChangeClean(RE.Database[databaseID].Players[i][13], databaseID).."]"})
+	local playerTable = RE.table_copy(RE.Database[databaseID].Players)
+	table.sort(playerTable,
+	function(left, right)
+		return left[10] > right[10]
+		end)
+	for i = 1, #playerTable do
+		if playerTable[i][6] == faction then
+			damageSum = damageSum + playerTable[i][10]
+			healingSum = healingSum + playerTable[i][11]
+			kbSum = kbSum + playerTable[i][2]
+			tinsert(team,
+				{ RE:GetRaceIcon(playerTable[i][7], 30).."   " .. RE:GetClassIcon(playerTable[i][9], 30),
+				"|c"..RAID_CLASS_COLORS[playerTable[i][9]].colorStr..RE:NameClean(playerTable[i][1]).."|r",
+				"|c"..RAID_CLASS_COLORS[playerTable[i][9]].colorStr..playerTable[i][16].."|r",
+				RE:GetPrestigeIcon(playerTable[i][17], 16),
+				playerTable[i][2],
+				RE:AbbreviateNumbers(playerTable[i][10]),
+				RE:AbbreviateNumbers(playerTable[i][11]),
+				"|n"..playerTable[i][12].." [" .. RE:RatingChangeClean(playerTable[i][13], databaseID) .. "]" })
 		end
 	end
 	return team, RE:AbbreviateNumbers(damageSum), RE:AbbreviateNumbers(healingSum), kbSum
@@ -574,7 +610,8 @@ end
 
 function RE:SpecFilter(rowdata)
 	if RE.Settings.Filters.Spec ~= ALL then
-		if rowdata[14] == RE.Settings.Filters.Spec then
+		local playerData = RE:GetPlayerData(rowdata[11])
+		if playerData[16] == RE.Settings.Filters.Spec then
 			return true
 		else
 			return false
@@ -634,16 +671,26 @@ function RE:DateFilter(rowdata)
 	end
 end
 
+function RE:IsBlitzRecord(rowdata)
+	local beginRating = RE.Database[rowdata[11]].Players[1][12]
+	local ratingChange = RE.Database[rowdata[11]].Players[1][13]
+	return RE.Database[rowdata[11]].isBgBlitz or (not RE.Database[rowdata[11]].isRated and (beginRating > 0 or ratingChange > 0))
+end
+
 function RE:FilterDefault(rowdata)
 	return not RE.Database[rowdata[11]].Hidden and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
 end
 
 function RE:FilterCasual(rowdata)
-	return not RE.Database[rowdata[11]].Hidden and not RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+	return RE:FilterDefault(rowdata) and not RE.Database[rowdata[11]].isRated and not RE:IsBlitzRecord(rowdata)
 end
 
 function RE:FilterRated(rowdata)
-	return not RE.Database[rowdata[11]].Hidden and RE.Database[rowdata[11]].isRated and RE:SpecFilter(rowdata) and RE:MapFilter(rowdata) and RE:BracketFilter(rowdata) and RE:DateFilter(rowdata)
+	return RE:FilterDefault(rowdata) and RE.Database[rowdata[11]].isRated and not RE:IsBlitzRecord(rowdata)
+end
+
+function RE:FilterBlitz(rowdata)
+	return RE:FilterDefault(rowdata) and RE:IsBlitzRecord(rowdata)
 end
 
 function RE:FilterStats(id, playerdata)
@@ -918,4 +965,44 @@ end
 
 function REFlex_CompartmentOnLeave()
 	RE.LDB:OnLeave()
+end
+
+function RE:ConsolidatedStats(selectedFilter, arena)
+	local wins, losses, draws = 0, 0, 0
+	local kb, topKB, hk, topHK, honor, topHonor, damage, topDamage, healing, topHealing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	local playerData
+	local rowData
+	local matchResult
+
+	for i = 1, #RE.Database do
+		playerData = RE:GetPlayerData(i)
+		rowData = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, i, 0, 0, playerData, 0 }
+		if selectedFilter(self, rowData) and RE.Database[i].isArena == arena then
+			matchResult = RE.InterpretResult(self, i)
+			if matchResult == "win" then
+				wins = wins + 1
+			elseif matchResult == "loss" then
+				losses = losses + 1
+			elseif matchResult == 'draw' then
+				draws = draws + 1
+			end
+			kb = kb + playerData[2]
+			hk = hk + playerData[3]
+			damage = damage + playerData[10]
+			healing = healing + playerData[11]
+			if playerData[2] > topKB then
+				topKB = playerData[2]
+			end
+			if playerData[3] > topHK then
+				topHK = playerData[3]
+			end
+			if playerData[10] > topDamage then
+				topDamage = playerData[10]
+			end
+			if playerData[11] > topHealing then
+				topHealing = playerData[11]
+			end
+		end
+	end
+	return wins, losses, draws, kb, topKB, hk, topHK, damage, topDamage, healing, topHealing
 end
