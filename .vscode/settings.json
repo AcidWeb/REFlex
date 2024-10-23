@@ -1,7 +1,20 @@
 {
-	"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-	"runtime.version": "Lua 5.1",
-	"diagnostics.globals": [
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.builtin": {
+        "basic": "disable",
+        "debug": "disable",
+        "io": "disable",
+        "math": "disable",
+        "os": "disable",
+        "package": "disable",
+        "string": "disable",
+        "table": "disable",
+        "utf8": "disable"
+    },
+    "Lua.workspace.library": [
+        "~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"
+    ],
+	"Lua.diagnostics.globals": [
 		"ALL",
 		"SOLO",
 		"BEST",
@@ -89,7 +102,7 @@
         "ENEMY",
         "REFlexFrame_HKBar"
     ],
-    "diagnostics.disable": [
+    "Lua.diagnostics.disable": [
 		"undefined-field",
 		"missing-parameter",
 		"redundant-parameter",
