@@ -12,7 +12,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.18.2\\Annotations"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\Core"
     ],
 	"Lua.diagnostics.globals": [
         "ALL",
@@ -99,7 +99,11 @@
         "ARENA",
         "TEAM",
         "ENEMY",
-        "REFlexFrame_HKBar"
+        "REFlexFrame_HKBar",
+        "LOCALIZED_CLASS_NAMES_MALE",
+        "RAID_CLASS_COLORS",
+        "SOUNDKIT",
+        "MAX_CLASSES"
     ],
     "Lua.diagnostics.disable": [
 		"undefined-field",
