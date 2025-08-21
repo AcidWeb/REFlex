@@ -62,7 +62,7 @@ local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
 local ElvUI = ElvUI
 
-RE.Version = 3321
+RE.Version = 3322
 RE.LastSquash = 1602662400
 RE.FoundNewVersion = false
 
