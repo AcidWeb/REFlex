@@ -60,7 +60,6 @@ local UIParentLoadAddOn = UIParentLoadAddOn
 local RegisterAddonMessagePrefix = C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
-local ElvUI = ElvUI
 
 RE.Version = 3400
 RE.LastSquash = 1768917600
@@ -255,11 +254,8 @@ function RE:OnEvent(_, event, ...)
 			local brawlInfo = GetAvailableBrawlInfo()
 			local mod = 0
 			RE.Tooltip = QTIP:Acquire("REFlexTooltipLDB", 2, "LEFT", "LEFT")
+			RE:SkinTooltip(RE.Tooltip)
 			RE.Tooltip:SmartAnchorTo(frame or self)
-			if ElvUI then
-				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
-				RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
-			end
 			RE.Tooltip:AddHeader("", "")
 			RE.Tooltip:SetCell(1, 1, "|cFFFFD100"..DAILY.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine(BATTLEGROUND , GetRandomBGInfo().hasRandomWinToday and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
@@ -370,8 +366,6 @@ function RE:OnEvent(_, event, ...)
 
 		RE.DumpFrame = DUMP:New("REFlex - CSV")
 
-		RE.IsSkinned = AddOnSkins and AddOnSkins[1]:CheckOption("REFlex") or false
-
 		if RE.Settings.LDBMode == 1 then
 			RE:GetSessionHonor()
 		end
@@ -440,6 +434,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		if RE.Database[databaseID].isSoloShuffle then
 			local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
 			RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
+			RE:SkinTooltip(RE.Tooltip)
 			RE.Tooltip:AddLine()
 			for i=1, 3 do
 				RE.Tooltip:SetCell(1, i, "", nil, nil, nil, nil, nil, nil, nil, 80)
@@ -462,6 +457,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			local team, damageSum, healingSum = RE:GetArenaTeamDetails(databaseID, true)
 			local teamEnemy, damageSumEnemy, healingSumEnemy = RE:GetArenaTeamDetails(databaseID, false)
 			RE.Tooltip = QTIP:Acquire("REFlexTooltip", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE:SkinTooltip(RE.Tooltip)
 			RE.Tooltip:AddLine()
 			for i=1, 7 do
 				if i == 4 then
@@ -491,6 +487,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		local placeFKB, placeFHK, placeFHonor, placeFDamage, placeFHealing = unpack(RE.Database[databaseID].BGPlace[1])
 		local mmrLine = nil
 		RE.Tooltip = QTIP:Acquire("REFlexTooltip", 3, "CENTER", "CENTER", "CENTER")
+		RE:SkinTooltip(RE.Tooltip)
 		if RE.Database[databaseID].isRated then
 			if RE.PlayerFaction == 0 then
 				mmrLine = "|cFF74D06CMMR|r|n|cFFFF141D"..RE:GetMMR(databaseID, true).."|r|n|cFF00A9FF"..RE:GetMMR(databaseID, false).."|r"
@@ -548,6 +545,7 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 		if IsAltKeyDown() and RE.Database[databaseID].isRated then
 			local team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, true)
 			RE.TooltipRGB1 = QTIP:Acquire("REFlexTooltipRGB1", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE:SkinTooltip(RE.TooltipRGB1)
 			RE.TooltipRGB1:AddLine()
 			for i=1, 7 do
 				if i == 2 then
@@ -567,13 +565,10 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB1:ClearAllPoints()
 			RE.TooltipRGB1:SetClampedToScreen(true)
 			RE.TooltipRGB1:SetPoint("RIGHT", RE.Tooltip, "LEFT", -5, 0)
-			if ElvUI then
-				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB1:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
-			end
 			RE.TooltipRGB1:Show()
 			team, damageSum, healingSum, kbSum = RE:GetRGBTeamDetails(databaseID, false)
 			RE.TooltipRGB2 = QTIP:Acquire("REFlexTooltipRGB2", 7, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
+			RE:SkinTooltip(RE.TooltipRGB2)
 			RE.TooltipRGB2:AddLine()
 			for i=1, 7 do
 				if i == 2 then
@@ -593,16 +588,8 @@ function RE:OnEnterTooltip(cellFrame, databaseID)
 			RE.TooltipRGB2:ClearAllPoints()
 			RE.TooltipRGB2:SetClampedToScreen(true)
 			RE.TooltipRGB2:SetPoint("LEFT", RE.Tooltip, "RIGHT", 5, 0)
-			if ElvUI then
-				local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
-				RE.TooltipRGB2:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
-			end
 			RE.TooltipRGB2:Show()
 		end
-	end
-	if ElvUI then
-		local red, green, blue = unpack(ElvUI[1].media.backdropfadecolor)
-		RE.Tooltip:SetBackdropColor(red, green, blue, ElvUI[1].Tooltip and ElvUI[1].Tooltip.db.colorAlpha or 1)
 	end
 	RE.Tooltip:SmartAnchorTo(cellFrame)
 	RE.Tooltip:Show()

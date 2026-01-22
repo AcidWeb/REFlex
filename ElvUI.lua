@@ -1,28 +1,34 @@
-local _G = _G
-local unpack = unpack
+local _, RE = ...
 
-if not AddOnSkins then return end
-local AS = unpack(AddOnSkins)
-if not AS:CheckAddOn("REFlex") then return end
+if ElvUI then
+  local E = unpack(ElvUI)
+  local S = E:GetModule("Skins")
 
-function AS:REFlex()
-  AS:SkinFrame(REFlexFrame)
-  AS:SkinFrame(REFlex.TableBG.frame, nil, true)
-  AS:StripTextures(_G[REFlex.TableBG.frame:GetName().."ScrollTrough"], true)
-  AS:SkinScrollBar(_G[REFlex.TableBG.frame:GetName().."ScrollFrameScrollBar"])
-  AS:SkinFrame(REFlex.TableArena.frame, nil, true)
-  AS:StripTextures(_G[REFlex.TableArena.frame:GetName().."ScrollTrough"], true)
-  AS:SkinScrollBar(_G[REFlex.TableArena.frame:GetName().."ScrollFrameScrollBar"])
-  AS:SkinButton(REFlexFrame_DumpButton)
-  AS:SkinButton(REFlexFrame_StatsButton)
-  AS:SkinCloseButton(REFlexFrame_CloseButton)
-  AS:StripTextures(REFlexFrame_HKBar)
-  AS:SkinStatusBar(REFlexFrame_HKBar_I)
-  for i = 1, REFlexFrame.numTabs do
-    AS:SkinTab(_G["REFlexFrameTab"..i])
+  function RE:SkinTooltip(tt)
+    S:HandleFrame(tt)
   end
-  REFlexFrame_Title:SetPoint("TOP", 0, -10)
-  REFlexFrame_HKBar:SetPoint("BOTTOM", 0, 18)
-end
 
-AS:RegisterSkin("REFlex", AS.REFlex)
+  local function Skin_REFlex()
+    S:HandleFrame(REFlexFrame)
+    S:HandleFrame(REFlex.TableBG.frame, nil, true)
+    _G[REFlex.TableBG.frame:GetName().."ScrollTrough"]:StripTextures()
+    S:HandleScrollBar(_G[REFlex.TableBG.frame:GetName().."ScrollFrameScrollBar"])
+    S:HandleFrame(REFlex.TableArena.frame, nil, true)
+    _G[REFlex.TableArena.frame:GetName().."ScrollTrough"]:StripTextures()
+    S:HandleScrollBar(_G[REFlex.TableArena.frame:GetName().."ScrollFrameScrollBar"])
+    S:HandleButton(REFlexFrame_DumpButton)
+    S:HandleButton(REFlexFrame_StatsButton)
+    S:HandleCloseButton(REFlexFrame_CloseButton)
+    REFlexFrame_HKBar:StripTextures()
+    S:HandleStatusBar(REFlexFrame_HKBar_I)
+    for i = 1, REFlexFrame.numTabs do
+      S:HandleTab(_G["REFlexFrameTab"..i])
+    end
+    REFlexFrame_Title:SetPoint("TOP", 0, -10)
+    REFlexFrame_HKBar:SetPoint("BOTTOM", 0, 18)
+  end
+
+  S:AddCallbackForAddon("REFlex", "REFlex", Skin_REFlex)
+else
+  function RE:SkinTooltip(tt) end
+end
