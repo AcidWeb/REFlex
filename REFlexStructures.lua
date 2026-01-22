@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("REFlex")
 
 local GetRealZoneText = GetRealZoneText
 local GetClassInfo = GetClassInfo
-local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
+local GetNumSpecializationsForClassID = C_SpecializationInfo.GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local ReloadUI = ReloadUI
 
@@ -170,7 +170,9 @@ RE.RaceIcons = {
 	["Dracthyr"]	= "raceicon128-dracthyr-male",
 	["Dracthyrs"]	= "raceicon128-dracthyr-male",
 	["Earthen"]	= "raceicon128-earthen-male",
-	["Earthens"]	= "raceicon128-earthen-male"
+	["Earthens"]	= "raceicon128-earthen-male",
+	["Haranir"]	= "raceicon128-haranir-male",
+	["Haranirs"]	= "raceicon128-haranir-male"
 }
 
 RE.BracketNames = {

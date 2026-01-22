@@ -62,8 +62,8 @@ local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
 local ElvUI = ElvUI
 
-RE.Version = 3322
-RE.LastSquash = 1602662400
+RE.Version = 3400
+RE.LastSquash = 1768917600
 RE.FoundNewVersion = false
 
 RE.DataSaved = false
@@ -320,7 +320,7 @@ function RE:OnEvent(_, event, ...)
 				elseif button == "MiddleButton" then
 					RE:SurrenderMatch()
 				elseif button == "RightButton" then
-					Settings.OpenToCategory("REFlex")
+					Settings.OpenToCategory(RE.OptionsMenu.name)
 				end
 			else
 				if button == "LeftButton" then
@@ -407,7 +407,6 @@ function RE:OnEvent(_, event, ...)
 		end
 		if instanceType == "pvp" or instanceType == "arena" then
 			RE.Match = true
-			SendAddonMessage("REFlex", "Version;"..RE.Version, "INSTANCE_CHAT")
 			if IsInGuild() then
 				SendAddonMessage("REFlex", "Version;"..RE.Version, "GUILD")
 			end

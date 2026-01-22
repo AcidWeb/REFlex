@@ -1,14 +1,14 @@
-## Interface: 110200
+## Interface: 120000
 ## Title: |cFF74D06CRE|rFlex
 ## Notes: Collect statistics of played arena matches and battlegrounds.
-## Version: 3.3.22
+## Version: 3.4.0
 ## Author: AcidWeb
 ## SavedVariablesPerCharacter: REFlexSettings, REFlexDatabase, REFlexHonorDatabase
 ## AddonCompartmentFunc: REFlex_CompartmentOnClick
 ## AddonCompartmentFuncOnEnter: REFlex_CompartmentOnEnter
 ## AddonCompartmentFuncOnLeave: REFlex_CompartmentOnLeave
 ## IconTexture: Interface\AddOns\REFlex\RELogo
-## Category-enUS: PvP
+## Category: PvP
 ## Category-deDE: PvP
 ## Category-esES: JcJ
 ## Category-esMX: JcJ
