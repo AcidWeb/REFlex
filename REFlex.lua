@@ -61,7 +61,7 @@ local RegisterAddonMessagePrefix = C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
 
-RE.Version = 3400
+RE.Version = 3401
 RE.LastSquash = 1768917600
 RE.FoundNewVersion = false
 
