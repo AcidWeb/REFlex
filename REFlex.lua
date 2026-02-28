@@ -71,7 +71,7 @@ RE.PrepareGUI = true
 RE.MatchData = {}
 RE.BGData = {}
 RE.ArenaData = {}
-RE.RatingChange = {0, 0, 0, 0, 0, 0, 0}
+RE.RatingChange = {0, 0, 0, 0, 0, 0, 0, 0, 0}
 RE.CalendarMode = 0
 RE.HideID = 0
 RE.Season = 0
@@ -266,29 +266,21 @@ function RE:OnEvent(_, event, ...)
 			else
 				mod = 1
 			end
-			RE.Tooltip:AddLine(PVP_RATED_SOLO_SHUFFLE, select(5, GetBrawlRewards(4)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			RE.Tooltip:AddSeparator()
-			for _, i in pairs({7, 1, 2, 4}) do
+			for _, i in pairs({7, 1, 2, 9, 4}) do
 				RE.Tooltip:AddLine(RE.BracketNames[i], select(9, GetPersonalRatedInfo(i)) and "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t" or "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
 			end
 			RE.Tooltip:AddLine("", "")
 			RE.Tooltip:AddHeader("", "")
-			RE.Tooltip:SetCell(13 - mod, 1, "|cFFFFD100"..HONOR.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+			RE.Tooltip:SetCell(12 - mod, 1, "|cFFFFD100"..LFG_LIST_HONOR_LEVEL_INSTR_SHORT.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 			RE.Tooltip:AddLine("", "")
-			RE.Tooltip:SetCell(14 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
+			RE.Tooltip:SetCell(13 - mod, 1, UnitHonor("player").." / "..UnitHonorMax("player"), "CENTER", 2)
 			if IsPlayerAtEffectiveMaxLevel() and GetCurrentArenaSeason() > 0 then
 				local current, cap = RE:GetConquestPoints()
-				local weeklyCurrent, weeklycap, weeklyProgress = RE:GetWeeklyChest()
 				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(15 - mod, 1, "|cFFFFD100"..PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
+				RE.Tooltip:SetCell(14 - mod, 1, "|cFFFFD100"..PVP_CONQUEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
 				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(16 - mod, 1, current.." / "..cap, "CENTER", 2)
-				RE.Tooltip:AddHeader("", "")
-				RE.Tooltip:SetCell(17 - mod, 1, "|cFFFFD100"..RATED_PVP_WEEKLY_CHEST.."|r", RE.Tooltip:GetHeaderFont(), "CENTER", 2)
-				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(18 - mod, 1, weeklyCurrent.." / "..weeklycap, "CENTER", 2)
-				RE.Tooltip:AddLine("", "")
-				RE.Tooltip:SetCell(19 - mod, 1, weeklyProgress, "CENTER", 2)
+				RE.Tooltip:SetCell(15 - mod, 1, current.." / "..cap, "CENTER", 2)
 			end
 			RE.Tooltip:Show()
 		end
@@ -412,7 +404,7 @@ function RE:OnEvent(_, event, ...)
 		TimerAfter(1, RE.PVPEnd)
 	elseif event == "PVP_RATED_STATS_UPDATE" then
 		RE.Season = GetCurrentArenaSeason()
-		for _, i in pairs({1, 2, 4, 7}) do
+		for _, i in pairs({1, 2, 4, 7, 9}) do
 			local currentRating, _, _, _, _, _, _, bestRating = GetPersonalRatedInfo(i)
 			RE.RatingChange[i] = currentRating - bestRating
 		end
@@ -711,13 +703,13 @@ function RE:UpdateGUI()
 		RE.TableBG:SetData(RE.BGData, true)
 		if PanelTemplates_GetSelectedTab(REFlexFrame) == 1 then
 			RE.TableBG:SetFilter(RE.FilterDefault)
-			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(9)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(4)))
 		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 2 then
 			RE.TableBG:SetFilter(RE.FilterCasual)
 			REFlexFrame_ScoreHolder_RBG:SetText("")
 		elseif PanelTemplates_GetSelectedTab(REFlexFrame) == 3 then
 			RE.TableBG:SetFilter(RE.FilterRated)
-			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(4)))
+			REFlexFrame_ScoreHolder_RBG:SetText("|cFFFFD100"..RATING..":|r "..select(1, GetPersonalRatedInfo(9)).." |cFFFFD100/|r "..select(1, GetPersonalRatedInfo(4)))
 		end
 		local won, lost = RE:GetWinNumber(PanelTemplates_GetSelectedTab(REFlexFrame), false)
 		local kb, topKB, hk, topHK, _, _, damage, topDamage, healing, topHealing = RE:GetStats(PanelTemplates_GetSelectedTab(REFlexFrame), false, false)
@@ -882,8 +874,8 @@ function RE:UpdateLDB()
 	end
 	RE.Settings.Filters = savedFilters
 
-	RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r |cFF9D9D9D|||r |cFFCC9900"..AbbreviateNumbers(RE.LDBData.Honor).."|r |cFF9D9D9D|||r "..AbbreviateNumbers(RE.LDBData.HK)
-	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[7], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[1], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[2], false).." |cFF9D9D9D|||r "..RE:RatingChangeClean(RE.RatingChange[4], false)
+	RE.LDBA = "|cFF00FF00"..RE.LDBData.Won.."|r|cFF9D9D9D-|r|cFFFF141C"..RE.LDBData.Lost.."|r | |cFFCC9900"..AbbreviateNumbers(RE.LDBData.Honor).."|r | "..AbbreviateNumbers(RE.LDBData.HK)
+	RE.LDBB = RE:RatingChangeClean(RE.RatingChange[7], false).." | "..RE:RatingChangeClean(RE.RatingChange[1], false).." | "..RE:RatingChangeClean(RE.RatingChange[2], false).." | "..RE:RatingChangeClean(RE.RatingChange[9], false).." | "..RE:RatingChangeClean(RE.RatingChange[4], false)
 
 	RE.LDB.text = RE["LDB"..RE.Settings.LDBSide]
 end

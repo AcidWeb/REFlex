@@ -182,7 +182,9 @@ RE.BracketNames = {
 	BATTLEGROUND_10V10,
 	"",
 	"",
-	SOLO
+	SOLO.." "..ARENA,
+	"",
+	SOLO.." "..BATTLEGROUND
 }
 
 RE.MapIDRemap = {

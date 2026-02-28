@@ -11,7 +11,6 @@ local sgsub, sbyte, slower, srep = string.gsub, string.byte, string.lower, strin
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
 local GetHonorRewardInfo = C_PvP.GetHonorRewardInfo
 local GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
-local GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress
 local GetSecondsUntilWeeklyReset = C_DateAndTime.GetSecondsUntilWeeklyReset
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
 local IsActiveBattlefieldArena = IsActiveBattlefieldArena
@@ -793,22 +792,6 @@ function RE:GetConquestPoints()
 		return min(currencyInfo.totalEarned, currencyInfo.maxQuantity), currencyInfo.maxQuantity
 	else
 		return 0, 0
-	end
-end
-
-function RE:GetWeeklyChest()
-	local progress = GetConquestWeeklyProgress()
-	if progress then
-		local weeklyStatus = {}
-		for _=1, progress.unlocksCompleted do
-			tinsert(weeklyStatus, "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t")
-		end
-		for _=1, progress.maxUnlocks - progress.unlocksCompleted do
-			tinsert(weeklyStatus, "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t")
-		end
-		return progress.progress, progress.maxProgress, tconcat(weeklyStatus, " ")
-	else
-		return 0, 0, ""
 	end
 end
 
