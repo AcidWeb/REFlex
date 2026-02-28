@@ -43,7 +43,7 @@ end
 
 function RE:UpdateDatabase()
   for i=1, #RE.Database do
-    if RE.Database[i].Version < 3300 then
+    if RE.Database[i].Version < 3500 then
       if RE.Database[i].Version < 224 then
         if RE.Database[i].Map == 1681 then
           RE.Database[i].Map = 2107
@@ -140,8 +140,13 @@ function RE:UpdateDatabase()
         RE.Database[i].Version = 300
       end
 
-      RE.Database[i].isSoloShuffle = false
-      RE.Database[i].Version = 3300
+      if RE.Database[i].Version < 3300 then
+        RE.Database[i].isSoloShuffle = false
+        RE.Database[i].Version = 3300
+      end
+
+      RE.Database[i].isRatedSoloShuffle = false
+      RE.Database[i].Version = 3500
     end
   end
 end

@@ -61,7 +61,7 @@ local RegisterAddonMessagePrefix = C_ChatInfo.RegisterAddonMessagePrefix
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local PlaySound = PlaySound
 
-RE.Version = 3401
+RE.Version = 3500
 RE.LastSquash = 1768917600
 RE.FoundNewVersion = false
 
@@ -895,13 +895,14 @@ function RE:PVPEnd()
 	RE.MatchData.Time = RE:GetUTCTimestamp()
 	RE.MatchData.isBrawl = IsInBrawl()
 	RE.MatchData.isSoloShuffle = IsSoloShuffle()
+	RE.MatchData.isRatedSoloShuffle = IsRatedSoloShuffle()
 	RE.MatchData.Version = RE.Version
 
 	if RE.MapIDRemap[RE.MatchData.Map] then
 		RE.MatchData.Map = RE.MapIDRemap[RE.MatchData.Map]
 	end
 
-	if IsRatedBattleground() or IsSoloRBG() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or IsRatedSoloShuffle() then
+	if IsRatedBattleground() or IsSoloRBG() or (IsRatedArena() and not IsArenaSkirmish() and not RE.MatchData.isSoloShuffle) or RE.MatchData.isRatedSoloShuffle then
 		RE.MatchData.isRated = true
 	else
 		RE.MatchData.isRated = false
